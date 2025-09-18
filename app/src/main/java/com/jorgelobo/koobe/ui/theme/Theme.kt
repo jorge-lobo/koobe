@@ -1,58 +1,138 @@
 package com.jorgelobo.koobe.ui.theme
 
-import android.app.Activity
-import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.darkColorScheme
-import androidx.compose.material3.dynamicDarkColorScheme
-import androidx.compose.material3.dynamicLightColorScheme
-import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.staticCompositionLocalOf
 
-private val DarkColorScheme = darkColorScheme(
-    primary = Purple80,
-    secondary = PurpleGrey80,
-    tertiary = Pink80
+val LightColors = AppColorScheme(
+    brandColor = BrandBlue,
+    negative = AccentCoral,
+    positive = AccentMint,
+    neutralAccent = AccentGold,
+    backgroundColors = BackgroundColors(
+        splashBackground = BrandBlue,
+        screenBackground = OffWhite
+    ),
+    containerColors = ContainerColors(
+        containerPrimary = White,
+        containerOutline = LightThemeGrey1,
+        containerSelected = AccentMint,
+        containerNeutralAmount = LightThemeGrey1,
+        outlinePrimary = LightThemeGrey1,
+        avatarContainerDefault = LightThemeGrey3,
+        bottomSheetDragHandle = LightThemeGrey1,
+        scrim = LightThemeGrey4,
+        divider = LightThemeGrey1
+    ),
+    textColors = TextColors(
+        textPrimary = LightThemeGrey4,
+        textSecondary = BrandBlue,
+        textHint = LightThemeGrey2,
+        textLabel = BrandBlue,
+        textSupportMessage = LightThemeGrey3,
+        textActiveLabelText = BrandBlue,
+        textUnselectedLabelText = LightThemeGrey3
+    ),
+    iconColors = IconColors(
+        iconPrimary = BrandBlue,
+        iconAvatar = White,
+        iconSelected = BrandBlue,
+        iconDisabled = LightThemeGrey2
+    ),
+    navigationColors = NavigationColors(
+        navigationActiveIndicator = AccentMint,
+        navigationActiveIcon = BrandBlue,
+        navigationUnselectedIcon = LightThemeGrey3
+    ),
+    buttonColors = ButtonColors(
+        buttonPrimaryContainer = BrandBlue,
+        buttonPrimaryLabelText = White,
+        buttonSecondaryContainer = White,
+        buttonSecondaryOutline = BrandBlue,
+        buttonSecondaryLabelText = BrandBlue,
+        buttonSquareContainer = White,
+        buttonSquareOutline = LightThemeGrey1,
+        buttonSquareIcon = BrandBlue,
+        buttonDisabledContainer = LightThemeGrey1,
+        buttonDisabledOutline = LightThemeGrey1,
+        buttonDisabledLabelText = LightThemeGrey2,
+        buttonTextDefault = AccentBlue
+    ),
+    switchButtonColors = SwitchButtonColors(
+        switchPrimary = BrandBlue,
+        switchSecondary = White
+    ),
+    toggleButtonColors = ToggleButtonColors(
+        toggleContainer = LightThemeGrey1,
+        toggleSelectedContainer = BrandBlue,
+        toggleUnselectedContainer = White,
+        toggleSelectedLabelText = White,
+        toggleUnselectedLabelText = BrandBlue
+    ),
+    radioButtonColors = RadioButtonColors(
+        radioButtonSelectedIcon = BrandBlue,
+        radioButtonUnselectedIcon = LightThemeGrey3
+    ),
+    tabColors = TabColors(
+        tabActiveIndicator = BrandBlue
+    ),
+    keypadColors = KeypadColors(
+        keypadContainer = LightThemeGrey1,
+        keypadKeyPrimaryContainer = White,
+        keypadKeySecondaryContainer = OffWhite,
+        keypadKeyPressedContainer = AccentMint,
+        keypadKeySymbol = BrandBlue
+    ),
+    snackBarColors = SnackBarColors(
+        snackBarContainer = LightThemeGrey3,
+        snackBarSupportingText = White,
+        snackBarAction = AccentBlue,
+        snackBarIcon = White
+    ),
+    progressBarColors = ProgressBarColors(
+        progressBarTrack = OffWhite,
+        progressBarOutline = LightThemeGrey1,
+        progressBarActiveIndicator = BrandBlue,
+        progressBarText = White
+    ),
+    listSelectorColors = ListSelectorColors(
+        listSelectorContainer = LightThemeGrey1,
+        listSelectorUnselected = White,
+        listSelectorSelected = AccentMint,
+        listSelectorText = BrandBlue
+    )
 )
 
-private val LightColorScheme = lightColorScheme(
-    primary = Purple40,
-    secondary = PurpleGrey40,
-    tertiary = Pink40
-
-    /* Other default colors to override
-    background = Color(0xFFFFFBFE),
-    surface = Color(0xFFFFFBFE),
-    onPrimary = Color.White,
-    onSecondary = Color.White,
-    onTertiary = Color.White,
-    onBackground = Color(0xFF1C1B1F),
-    onSurface = Color(0xFF1C1B1F),
-    */
+// TODO assign correct colors for dark theme
+val DarkColors = LightColors.copy(
+    backgroundColors = LightColors.backgroundColors.copy(
+        screenBackground = DarkThemeGrey1
+    ),
+    containerColors = LightColors.containerColors.copy(
+        containerPrimary = DarkThemeGrey3,
+        containerOutline = BrandBlue
+    ),
+    textColors = LightColors.textColors.copy(
+        textPrimary = White,
+        textSecondary = DarkThemeGrey4
+    )
 )
+
+val LocalAppColors = staticCompositionLocalOf<AppColorScheme> {
+    error("No AppColorScheme provided - wrap your composable in KoobeTheme")
+}
 
 @Composable
 fun KoobeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
-    // Dynamic color is available on Android 12+
-    dynamicColor: Boolean = true,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = when {
-        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
-            val context = LocalContext.current
-            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
-        }
+    val colorScheme = if (darkTheme) DarkColors else LightColors
 
-        darkTheme -> DarkColorScheme
-        else -> LightColorScheme
+    CompositionLocalProvider(
+        LocalAppColors provides colorScheme
+    ) {
+        content()
     }
-
-    MaterialTheme(
-        colorScheme = colorScheme,
-        typography = Typography,
-        content = content
-    )
 }
