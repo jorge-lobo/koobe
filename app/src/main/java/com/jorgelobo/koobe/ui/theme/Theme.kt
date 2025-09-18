@@ -123,15 +123,24 @@ val LocalAppColors = staticCompositionLocalOf<AppColorScheme> {
     error("No AppColorScheme provided - wrap your composable in KoobeTheme")
 }
 
+val LocalAppTypography = staticCompositionLocalOf<AppTypography> {
+    error("No AppTypography provided - wrap your composable in KoobeTheme")
+}
+
 @Composable
 fun KoobeTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     content: @Composable () -> Unit
 ) {
     val colorScheme = if (darkTheme) DarkColors else LightColors
+    val typography = AppTypography(
+        text = TextTypography,
+        numbers = NumberTypography
+    )
 
     CompositionLocalProvider(
-        LocalAppColors provides colorScheme
+        LocalAppColors provides colorScheme,
+        LocalAppTypography provides typography
     ) {
         content()
     }
