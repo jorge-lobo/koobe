@@ -9,3 +9,7 @@ val LocalAppColors = staticCompositionLocalOf<AppColorScheme> {
 val LocalAppTypography = staticCompositionLocalOf<AppTypography> {
     error("No AppTypography provided - wrap your composable in KoobeTheme")
 }
+
+val LocalAppShapes = staticCompositionLocalOf<AppShapes> {
+    error("No AppShapes provided - wrap your composable in KoobeTheme")
+}

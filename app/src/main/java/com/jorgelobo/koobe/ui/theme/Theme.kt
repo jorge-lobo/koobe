@@ -14,10 +14,12 @@ fun KoobeTheme(
         text = TextTypography,
         numbers = NumberTypography
     )
+    val shapes = AppShapes()
 
     CompositionLocalProvider(
         LocalAppColors provides colorScheme,
-        LocalAppTypography provides typography
+        LocalAppTypography provides typography,
+        LocalAppShapes provides shapes
     ) {
         content()
     }
