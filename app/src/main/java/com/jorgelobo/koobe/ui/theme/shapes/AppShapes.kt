@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.ui.theme
+package com.jorgelobo.koobe.ui.theme.shapes
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.unit.dp

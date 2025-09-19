@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.ui.theme
+package com.jorgelobo.koobe.ui.theme.color
 
 // TODO assign correct colors for dark theme
 val DarkColors = LightColors.copy(

@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.ui.theme
+package com.jorgelobo.koobe.ui.theme.typography
 
 import androidx.compose.material3.Typography
 

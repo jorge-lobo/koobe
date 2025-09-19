@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.ui.theme
+package com.jorgelobo.koobe.ui.theme.color
 
 import androidx.compose.ui.graphics.Color
 
