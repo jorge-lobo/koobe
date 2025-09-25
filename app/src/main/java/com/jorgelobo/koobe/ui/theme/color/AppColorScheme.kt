@@ -55,7 +55,9 @@ data class IconColors(
     val iconPrimary: Color,
     val iconAvatar: Color,
     val iconSelected: Color,
-    val iconDisabled: Color
+    val iconDisabled: Color,
+    val iconWarning: Color,
+    val iconTextButton: Color
 )
 
 data class NavigationColors(

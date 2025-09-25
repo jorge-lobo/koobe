@@ -1,12 +1,19 @@
 package com.jorgelobo.koobe.ui.components.model
 
-enum class ButtonType { PRIMARY, SECONDARY, SQUARE, TEXT, ICON, TOGGLE }
-enum class ButtonState { ENABLED, DISABLED, LOADING }
+import androidx.compose.ui.graphics.vector.ImageVector
+import com.jorgelobo.koobe.ui.icons.getIconFromName
+
+enum class ButtonType { PRIMARY, SECONDARY, SECONDARY_COMPACT, SQUARE, TEXT }
+enum class IconButtonType { APP_BAR, DISCLOSURE, INPUT, LIST_ITEM }
+enum class ButtonState { ENABLED, DISABLED }
 
 data class ButtonConfig(
-    val text: String,
     val type: ButtonType,
     val state: ButtonState = ButtonState.ENABLED,
-    val icon: String? = null,
+    val text: String,
+    val icon: IconName? = null,
     val onClick: () -> Unit
 )
+
+fun ButtonConfig.iconVector(): ImageVector? =
+    icon?.let { getIconFromName(it) }

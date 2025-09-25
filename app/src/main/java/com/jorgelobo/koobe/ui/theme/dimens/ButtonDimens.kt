@@ -3,7 +3,7 @@ package com.jorgelobo.koobe.ui.theme.dimens
 import androidx.compose.ui.unit.dp
 
 object ButtonSize {
-    object CurrentDayButton {
+    object CompactButton {
         val Height = 40.dp
         val Width = 80.dp
     }
@@ -14,6 +14,10 @@ object ButtonSize {
 
     object ToggleButton {
         val Height = 32.dp
+    }
+
+    object TextButton {
+        val Height = 40.dp
     }
 
     object SquareButton {
