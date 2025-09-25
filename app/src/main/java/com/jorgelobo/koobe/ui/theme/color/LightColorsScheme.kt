@@ -54,7 +54,9 @@ val LightColors = AppColorScheme(
         buttonDisabledContainer = LightThemeGrey1,
         buttonDisabledOutline = LightThemeGrey1,
         buttonDisabledLabelText = LightThemeGrey2,
-        buttonTextDefault = AccentBlue
+        buttonTextDefault = AccentBlue,
+        buttonAddIncomeContainer = AccentMint,
+        buttonAddExpenseContainer = AccentCoral
     ),
     switchButtonColors = SwitchButtonColors(
         switchPrimary = BrandBlue,

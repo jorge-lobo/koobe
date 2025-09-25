@@ -32,7 +32,7 @@ fun BaseButton(
     val shapes = AppTheme.shapes
 
     val shape = when (type) {
-        ButtonType.SQUARE, ButtonType.SECONDARY_COMPACT -> shapes.large
+        ButtonType.SQUARE, ButtonType.SECONDARY_COMPACT, ButtonType.ADD_TRANSACTION -> shapes.large
         else -> shapes.extraLarge
     }
 
@@ -40,12 +40,14 @@ fun BaseButton(
         ButtonType.SQUARE -> ButtonSize.SquareButton.Dimension
         ButtonType.TEXT -> ButtonSize.TextButton.Height
         ButtonType.SECONDARY_COMPACT -> ButtonSize.CompactButton.Height
+        ButtonType.ADD_TRANSACTION -> ButtonSize.AddTransactionButton.Height
         else -> ButtonSize.MainButton.Height
     }
 
     val baseModifier = when (type) {
         ButtonType.SQUARE -> modifier.size(ButtonSize.SquareButton.Dimension)
         ButtonType.SECONDARY_COMPACT -> modifier.width(ButtonSize.CompactButton.Width)
+        ButtonType.ADD_TRANSACTION -> modifier.height(height)
         else -> modifier
             .fillMaxWidth()
             .height(height)

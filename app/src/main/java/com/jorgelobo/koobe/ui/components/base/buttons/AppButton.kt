@@ -2,13 +2,16 @@ package com.jorgelobo.koobe.ui.components.base.buttons
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.model.constants.TransactionType
 import com.jorgelobo.koobe.ui.components.base.Background
 import com.jorgelobo.koobe.ui.components.model.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.ButtonConfig
@@ -60,6 +63,17 @@ fun AppButton(config: ButtonConfig, modifier: Modifier = Modifier) {
                 enabled = enabled,
                 text = config.text,
                 iconUrl = iconVector
+            )
+        }
+
+        ButtonType.ADD_TRANSACTION -> {
+            val txType = config.transactionType
+                ?: error("AddTransactionButton needs a TransactionType")
+            AddTransactionButton(
+                onClick = config.onClick,
+                enabled = enabled,
+                type = txType,
+                modifier = modifier
             )
         }
     }
@@ -137,6 +151,33 @@ fun PreviewButtons() {
                     onClick = {}
                 )
             )
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(Spacing.Small)
+            ) {
+                AppButton(
+                    ButtonConfig(
+                        type = ButtonType.ADD_TRANSACTION,
+                        state = ButtonState.ENABLED,
+                        transactionType = TransactionType.INCOME,
+                        onClick = {},
+                        text = ""
+                    ),
+                    modifier = Modifier.weight(1f)
+                )
+
+                AppButton(
+                    ButtonConfig(
+                        type = ButtonType.ADD_TRANSACTION,
+                        state = ButtonState.ENABLED,
+                        transactionType = TransactionType.EXPENSE,
+                        onClick = {},
+                        text = ""
+                    ),
+                    modifier = Modifier.weight(1f)
+                )
+            }
         }
     }
 }

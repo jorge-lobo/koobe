@@ -78,7 +78,9 @@ data class ButtonColors(
     val buttonDisabledOutline: Color,
     val buttonDisabledLabelText: Color,
     val buttonSquareIcon: Color,
-    val buttonTextDefault: Color
+    val buttonTextDefault: Color,
+    val buttonAddIncomeContainer: Color,
+    val buttonAddExpenseContainer: Color
 )
 
 data class SwitchButtonColors(

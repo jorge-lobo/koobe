@@ -6,6 +6,7 @@ import com.adamglin.phosphoricons.regular.ArrowsLeftRight
 import com.adamglin.phosphoricons.regular.CaretDown
 import com.adamglin.phosphoricons.regular.CaretRight
 import com.adamglin.phosphoricons.regular.CaretUp
+import com.adamglin.phosphoricons.regular.Minus
 import com.adamglin.phosphoricons.regular.PencilSimple
 import com.adamglin.phosphoricons.regular.Plus
 import com.adamglin.phosphoricons.regular.Trash
@@ -22,5 +23,6 @@ enum class IconName(val icon: ImageVector) {
     COLLAPSE(RegularGroup.CaretUp),
     RESET(RegularGroup.XCircle),
     CHANGE(RegularGroup.ArrowsLeftRight),
-    ADD(RegularGroup.Plus)
+    ADD(RegularGroup.Plus),
+    MINUS(RegularGroup.Minus)
 }
