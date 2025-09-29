@@ -13,7 +13,8 @@ object ButtonSize {
     }
 
     object ToggleButton {
-        val Height = 32.dp
+        val ContainerHeight = 32.dp
+        val ButtonHeight = 28.dp
     }
 
     object TextButton {

@@ -60,7 +60,8 @@ val LightColors = AppColorScheme(
     ),
     switchButtonColors = SwitchButtonColors(
         switchPrimary = BrandBlue,
-        switchSecondary = White
+        switchSecondary = White,
+        switchOutline = LightThemeGrey1
     ),
     toggleButtonColors = ToggleButtonColors(
         toggleContainer = LightThemeGrey1,

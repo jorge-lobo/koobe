@@ -85,7 +85,8 @@ data class ButtonColors(
 
 data class SwitchButtonColors(
     val switchPrimary: Color,
-    val switchSecondary: Color
+    val switchSecondary: Color,
+    val switchOutline: Color
 )
 
 data class ToggleButtonColors(
