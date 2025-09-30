@@ -1,5 +1,5 @@
 package com.jorgelobo.koobe.domain.model.constants
 
-interface ToggleLabel {
+interface UiLabel {
     fun toLabel(): Int
 }

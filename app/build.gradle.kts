@@ -102,7 +102,7 @@ dependencies {
     // Lazy Grid
     implementation(libs.androidx.foundation)
 
-    implementation(libs.accompanist.systemuicontroller.v0301)
+    implementation(libs.accompanist.systemuicontroller)
 
     // Hilt
     implementation(libs.hilt.android)

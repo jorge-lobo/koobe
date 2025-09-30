@@ -103,7 +103,10 @@ data class RadioButtonColors(
 )
 
 data class TabColors(
-    val tabActiveIndicator: Color
+    val tabContainer: Color,
+    val tabActive: Color,
+    val tabInactive: Color,
+    val tabDisabled: Color
 )
 
 data class KeypadColors(

@@ -75,7 +75,10 @@ val LightColors = AppColorScheme(
         radioButtonUnselectedIcon = LightThemeGrey3
     ),
     tabColors = TabColors(
-        tabActiveIndicator = BrandBlue
+        tabContainer = White,
+        tabActive = BrandBlue,
+        tabInactive = LightThemeGrey3,
+        tabDisabled = LightThemeGrey2
     ),
     keypadColors = KeypadColors(
         keypadContainer = LightThemeGrey1,
