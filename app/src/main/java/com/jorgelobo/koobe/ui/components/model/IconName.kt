@@ -2,19 +2,23 @@ package com.jorgelobo.koobe.ui.components.model
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.adamglin.phosphoricons.RegularGroup
+import com.adamglin.phosphoricons.regular.ArrowLeft
 import com.adamglin.phosphoricons.regular.ArrowsLeftRight
 import com.adamglin.phosphoricons.regular.CaretDown
 import com.adamglin.phosphoricons.regular.CaretRight
 import com.adamglin.phosphoricons.regular.CaretUp
+import com.adamglin.phosphoricons.regular.Faders
 import com.adamglin.phosphoricons.regular.Minus
 import com.adamglin.phosphoricons.regular.PencilSimple
 import com.adamglin.phosphoricons.regular.Plus
+import com.adamglin.phosphoricons.regular.SortAscending
 import com.adamglin.phosphoricons.regular.Trash
+import com.adamglin.phosphoricons.regular.Wrench
 import com.adamglin.phosphoricons.regular.X
 import com.adamglin.phosphoricons.regular.XCircle
 
 enum class IconName(val icon: ImageVector) {
-    BACK(RegularGroup.ArrowsLeftRight),
+    BACK(RegularGroup.ArrowLeft),
     CLOSE(RegularGroup.X),
     DELETE(RegularGroup.Trash),
     EDIT(RegularGroup.PencilSimple),
@@ -24,5 +28,8 @@ enum class IconName(val icon: ImageVector) {
     RESET(RegularGroup.XCircle),
     CHANGE(RegularGroup.ArrowsLeftRight),
     ADD(RegularGroup.Plus),
-    MINUS(RegularGroup.Minus)
+    MINUS(RegularGroup.Minus),
+    FILTER(RegularGroup.Faders),
+    SETTINGS(RegularGroup.Wrench),
+    SORT(RegularGroup.SortAscending)
 }
