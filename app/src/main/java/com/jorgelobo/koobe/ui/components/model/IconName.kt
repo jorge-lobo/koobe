@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import com.adamglin.phosphoricons.RegularGroup
 import com.adamglin.phosphoricons.regular.ArrowLeft
 import com.adamglin.phosphoricons.regular.ArrowsLeftRight
+import com.adamglin.phosphoricons.regular.Backspace
 import com.adamglin.phosphoricons.regular.CaretDown
 import com.adamglin.phosphoricons.regular.CaretRight
 import com.adamglin.phosphoricons.regular.CaretUp
@@ -31,5 +32,6 @@ enum class IconName(val icon: ImageVector) {
     MINUS(RegularGroup.Minus),
     FILTER(RegularGroup.Faders),
     SETTINGS(RegularGroup.Wrench),
-    SORT(RegularGroup.SortAscending)
+    SORT(RegularGroup.SortAscending),
+    BACKSPACE(RegularGroup.Backspace)
 }
