@@ -25,7 +25,6 @@
     <string name="btn_apply">Apply</string>
     <string name="btn_delete">Delete</string>
     <string name="btn_discard">Discard</string>
-    <string name="btn_use_name">Use name</string>
     <string name="btn_repeat">Repeat</string>
     <string name="btn_view_all">View all</string>
 
@@ -181,4 +180,8 @@
     <string name="keypad_8">8</string>
     <string name="keypad_9">9</string>
     <string name="keypad_.">.</string>
+
+    <!-- SnackBar -->
+    <string name="snackBar_action">Use name</string>
+    <string name="snackBar_message">No description added.\nUse subcategory name instead?</string>
 </resources>
