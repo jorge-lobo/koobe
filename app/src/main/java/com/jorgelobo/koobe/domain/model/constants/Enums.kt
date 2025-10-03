@@ -55,7 +55,41 @@ enum class ReportsTabs : UiLabel {
     }
 }
 
-enum class PaymentMethodType { CASH, CARD, TRANSFER, CRYPTO }
-enum class CurrencyType { EUR, USD, GBP }
-enum class StartOfWeek { SUNDAY, MONDAY }
-enum class AppLanguage { ENGLISH, PORTUGUESE }
+enum class PaymentMethodType : UiLabel {
+    CASH, CARD, TRANSFER, CRYPTO;
+
+    override fun toLabel() = when (this) {
+        CASH -> R.string.radio_cash
+        CARD -> R.string.radio_card
+        TRANSFER -> R.string.radio_transfer
+        CRYPTO -> R.string.radio_crypto
+    }
+}
+
+enum class CurrencyType : UiLabel {
+    EUR, USD, GBP;
+
+    override fun toLabel() = when (this) {
+        EUR -> R.string.radio_euro
+        USD -> R.string.radio_dollar
+        GBP -> R.string.radio_pound
+    }
+}
+
+enum class StartOfWeek : UiLabel {
+    SUNDAY, MONDAY;
+
+    override fun toLabel() = when (this) {
+        SUNDAY -> R.string.radio_sunday
+        MONDAY -> R.string.radio_monday
+    }
+}
+
+enum class AppLanguage : UiLabel {
+    ENGLISH, PORTUGUESE;
+
+    override fun toLabel() = when (this) {
+        ENGLISH -> R.string.radio_english
+        PORTUGUESE -> R.string.radio_portuguese
+    }
+}

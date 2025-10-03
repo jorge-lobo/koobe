@@ -184,4 +184,17 @@
     <!-- SnackBar -->
     <string name="snackBar_action">Use name</string>
     <string name="snackBar_message">No description added.\nUse subcategory name instead?</string>
+
+    <!-- RadioButtons -->
+    <string name="radio_cash">Cash</string>
+    <string name="radio_card">Card</string>
+    <string name="radio_transfer">Transfer</string>
+    <string name="radio_crypto">Crypto</string>
+    <string name="radio_sunday">Sunday</string>
+    <string name="radio_monday">Monday</string>
+    <string name="radio_euro">EUR</string>
+    <string name="radio_dollar">USD</string>
+    <string name="radio_pound">GBP</string>
+    <string name="radio_english">English</string>
+    <string name="radio_portuguese">Portuguese</string>
 </resources>
