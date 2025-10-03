@@ -7,7 +7,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
 import androidx.compose.material3.Text
@@ -18,6 +20,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.constants.AppLanguage
@@ -31,6 +34,7 @@ import com.jorgelobo.koobe.ui.components.model.RadioButtonConfig
 import com.jorgelobo.koobe.ui.components.model.RadioButtonState
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
+import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
 @Composable
@@ -39,6 +43,7 @@ fun AppRadioButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean,
+    icon: ImageVector? = null,
     label: String
 ) {
     val colors = AppTheme.colors.radioButtonColors
@@ -58,7 +63,19 @@ fun AppRadioButton(
             onClick = onClick,
             colors = radioButtonColors
         )
+
         Spacer(modifier = Modifier.width(Spacing.Medium))
+
+        if (icon != null) {
+            Icon(
+                imageVector = icon,
+                modifier = Modifier.size(IconSize.ExtraSmall),
+                contentDescription = null,
+                tint = AppTheme.colors.iconColors.iconPaymentMethod
+            )
+
+            Spacer(modifier = Modifier.width(Spacing.Medium))
+        }
 
         Text(
             text = label,
@@ -84,6 +101,7 @@ fun <T> RadioGroup(
                 enabled = enabled,
                 selected = selected == option,
                 label = stringResource(option.toLabel()),
+                icon = config.icons[option]?.icon,
                 onClick = {
                     if (enabled) {
                         selected = option

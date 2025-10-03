@@ -8,6 +8,9 @@ import com.adamglin.phosphoricons.regular.Backspace
 import com.adamglin.phosphoricons.regular.CaretDown
 import com.adamglin.phosphoricons.regular.CaretRight
 import com.adamglin.phosphoricons.regular.CaretUp
+import com.adamglin.phosphoricons.regular.Coins
+import com.adamglin.phosphoricons.regular.CreditCard
+import com.adamglin.phosphoricons.regular.CurrencyBtc
 import com.adamglin.phosphoricons.regular.Faders
 import com.adamglin.phosphoricons.regular.Minus
 import com.adamglin.phosphoricons.regular.PencilSimple
@@ -33,5 +36,10 @@ enum class IconName(val icon: ImageVector) {
     FILTER(RegularGroup.Faders),
     SETTINGS(RegularGroup.Wrench),
     SORT(RegularGroup.SortAscending),
-    BACKSPACE(RegularGroup.Backspace)
+    BACKSPACE(RegularGroup.Backspace),
+    /* Payment Method */
+    CASH(RegularGroup.Coins),
+    CARD(RegularGroup.CreditCard),
+    TRANSFER(RegularGroup.ArrowsLeftRight),
+    CRYPTO(RegularGroup.CurrencyBtc)
 }

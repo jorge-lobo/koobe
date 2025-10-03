@@ -35,7 +35,8 @@ val LightColors = AppColorScheme(
         iconSelected = BrandBlue,
         iconDisabled = LightThemeGrey2,
         iconWarning = AccentCoral,
-        iconTextButton = AccentBlue
+        iconTextButton = AccentBlue,
+        iconPaymentMethod = AccentGold
     ),
     navigationColors = NavigationColors(
         navigationActiveIndicator = AccentMint,
