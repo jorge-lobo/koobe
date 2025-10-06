@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.ui.components.base.Background
 import com.jorgelobo.koobe.ui.components.model.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.IconName
+import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.icons.getIconFromName
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -20,7 +20,7 @@ fun BackButton(
 ) {
     AppBarIconButton(
         onClick = onClick,
-        iconUrl = getIconFromName(IconName.BACK),
+        iconUrl = getIconFromName(IconGeneral.BACK),
         enabled = true
     )
 }
@@ -31,7 +31,7 @@ fun CloseButton(
 ) {
     AppBarIconButton(
         onClick = onClick,
-        iconUrl = getIconFromName(IconName.CLOSE),
+        iconUrl = getIconFromName(IconGeneral.CLOSE),
         enabled = true
     )
 }
@@ -42,7 +42,7 @@ fun DisclosureButton(
 ) {
     DisclosureIconButton(
         onClick = onClick,
-        iconUrl = getIconFromName(IconName.DISCLOSURE),
+        iconUrl = getIconFromName(IconGeneral.DISCLOSURE),
         enabled = true
     )
 }
@@ -54,7 +54,7 @@ fun ExpandCollapseButton(
 ) {
     DisclosureIconButton(
         onClick = onClick,
-        iconUrl = if (isExpanded) getIconFromName(IconName.COLLAPSE) else getIconFromName(IconName.EXPAND),
+        iconUrl = if (isExpanded) getIconFromName(IconGeneral.COLLAPSE) else getIconFromName(IconGeneral.EXPAND),
         enabled = true
     )
 }
@@ -66,7 +66,7 @@ fun ResetInputButton(
 ) {
     InputIconButton(
         onClick = onClick,
-        iconUrl = getIconFromName(IconName.RESET),
+        iconUrl = getIconFromName(IconGeneral.RESET),
         enabled = enabled
     )
 }
@@ -77,7 +77,7 @@ fun EditItemButton(
 ) {
     ListItemIconButton(
         onClick = onClick,
-        iconUrl = getIconFromName(IconName.EDIT),
+        iconUrl = getIconFromName(IconGeneral.EDIT),
         enabled = true
     )
 }
@@ -88,7 +88,7 @@ fun DeleteItemButton(
 ) {
     ListItemIconButton(
         onClick = onClick,
-        iconUrl = getIconFromName(IconName.DELETE),
+        iconUrl = getIconFromName(IconGeneral.DELETE),
         enabled = true
     )
 }

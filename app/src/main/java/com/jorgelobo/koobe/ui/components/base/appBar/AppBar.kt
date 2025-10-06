@@ -27,7 +27,7 @@ import com.jorgelobo.koobe.ui.components.base.buttons.AppBarIconButton
 import com.jorgelobo.koobe.ui.components.model.AppBarAction
 import com.jorgelobo.koobe.ui.components.model.AppBarConfig
 import com.jorgelobo.koobe.ui.components.model.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.IconName
+import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.icons.getIconFromName
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
@@ -105,10 +105,10 @@ fun PreviewAppBars() {
             CommonAppBar(
                 config = AppBarConfig(
                     headline = stringResource(R.string.headline_shortcut_editor),
-                    leadingAction = AppBarAction(IconName.BACK) {},
+                    leadingAction = AppBarAction(IconGeneral.BACK) {},
                     trailingActions = listOf(
-                        AppBarAction(IconName.CHANGE) {},
-                        AppBarAction(IconName.DELETE) {}
+                        AppBarAction(IconGeneral.CHANGE) {},
+                        AppBarAction(IconGeneral.DELETE) {}
                     )
                 )
             )

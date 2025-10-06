@@ -27,7 +27,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.ui.components.base.Background
 import com.jorgelobo.koobe.ui.components.model.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.IconName
+import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.components.model.SnackBarConfig
 import com.jorgelobo.koobe.ui.icons.getIconFromName
 import com.jorgelobo.koobe.ui.theme.AppTheme
@@ -100,7 +100,7 @@ fun SnackBarDemoScreen() {
                 val config = SnackBarConfig(
                     messageRes = R.string.snackBar_message,
                     actionLabelRes = R.string.snackBar_action,
-                    icon = IconName.EDIT,
+                    icon = IconGeneral.EDIT,
                     onActionClick = { data.performAction() },
                     onIconClick = { scope.launch { data.dismiss() } }
                 )
@@ -149,7 +149,7 @@ fun PreviewSnackBars() {
                 config = SnackBarConfig(
                     messageRes = R.string.snackBar_message,
                     actionLabelRes = R.string.snackBar_action,
-                    icon = IconName.EDIT,
+                    icon = IconGeneral.EDIT,
                     onActionClick = {},
                     onIconClick = {}
                 )

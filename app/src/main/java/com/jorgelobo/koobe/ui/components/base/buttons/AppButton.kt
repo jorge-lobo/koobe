@@ -17,7 +17,7 @@ import com.jorgelobo.koobe.ui.components.model.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.ButtonConfig
 import com.jorgelobo.koobe.ui.components.model.ButtonState
 import com.jorgelobo.koobe.ui.components.model.ButtonType
-import com.jorgelobo.koobe.ui.components.model.IconName
+import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.components.model.iconVector
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -130,7 +130,7 @@ fun PreviewButtons() {
                 ButtonConfig(
                     text = "",
                     type = ButtonType.SQUARE,
-                    icon = IconName.CHANGE,
+                    icon = IconGeneral.CHANGE,
                     onClick = {}
                 )
             )
@@ -139,7 +139,7 @@ fun PreviewButtons() {
                 ButtonConfig(
                     text = stringResource(R.string.btn_add_subcategory),
                     type = ButtonType.TEXT,
-                    icon = IconName.ADD,
+                    icon = IconGeneral.ADD,
                     onClick = {}
                 )
             )

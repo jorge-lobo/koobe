@@ -1,5 +1,7 @@
 package com.jorgelobo.koobe.ui.components.model
 
+import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+
 data class AppBarConfig(
     val headline: String,
     val leadingAction: AppBarAction,
@@ -7,6 +9,6 @@ data class AppBarConfig(
 )
 
 data class AppBarAction(
-    val icon: IconName,
+    val icon: IconGeneral,
     val onClick: () -> Unit
 )

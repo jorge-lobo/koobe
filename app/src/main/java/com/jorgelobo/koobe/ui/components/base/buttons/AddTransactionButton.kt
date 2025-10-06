@@ -15,7 +15,7 @@ import androidx.compose.ui.res.stringResource
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.TransactionType
 import com.jorgelobo.koobe.ui.components.model.ButtonType
-import com.jorgelobo.koobe.ui.components.model.IconName
+import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.icons.getIconFromName
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
@@ -30,8 +30,8 @@ fun AddTransactionButton(
 ) {
     val colors = AppTheme.colors.buttonColors
     val icon = when (type) {
-        TransactionType.INCOME -> getIconFromName(IconName.ADD)
-        TransactionType.EXPENSE -> getIconFromName(IconName.MINUS)
+        TransactionType.INCOME -> getIconFromName(IconGeneral.ADD)
+        TransactionType.EXPENSE -> getIconFromName(IconGeneral.MINUS)
     }
     val buttonColor = when (type) {
         TransactionType.INCOME -> colors.buttonAddIncomeContainer

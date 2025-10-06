@@ -2,6 +2,7 @@ package com.jorgelobo.koobe.ui.components.model
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.jorgelobo.koobe.domain.model.constants.TransactionType
+import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.icons.getIconFromName
 
 enum class ButtonType { PRIMARY, SECONDARY, SECONDARY_COMPACT, SQUARE, TEXT, ADD_TRANSACTION }
@@ -12,7 +13,7 @@ data class ButtonConfig(
     val type: ButtonType,
     val state: ButtonState = ButtonState.ENABLED,
     val text: String,
-    val icon: IconName? = null,
+    val icon: IconGeneral? = null,
     val transactionType: TransactionType? = null,
     val onClick: () -> Unit
 )

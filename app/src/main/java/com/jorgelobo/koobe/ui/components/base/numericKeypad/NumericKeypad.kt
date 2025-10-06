@@ -24,7 +24,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.ui.components.base.Background
 import com.jorgelobo.koobe.ui.components.model.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.IconName
+import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.components.model.KeyType
 import com.jorgelobo.koobe.ui.components.model.KeypadKey
 import com.jorgelobo.koobe.ui.components.model.keypadKeys
@@ -76,7 +76,7 @@ fun BaseKey(
 
             KeyType.BACKSPACE -> {
                 Icon(
-                    imageVector = getIconFromName(IconName.BACKSPACE),
+                    imageVector = getIconFromName(IconGeneral.BACKSPACE),
                     contentDescription = null,
                     tint = AppTheme.colors.iconColors.iconPrimary
                 )

@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.ui.components.model
+package com.jorgelobo.koobe.ui.components.model.icons
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.adamglin.phosphoricons.RegularGroup
@@ -8,9 +8,6 @@ import com.adamglin.phosphoricons.regular.Backspace
 import com.adamglin.phosphoricons.regular.CaretDown
 import com.adamglin.phosphoricons.regular.CaretRight
 import com.adamglin.phosphoricons.regular.CaretUp
-import com.adamglin.phosphoricons.regular.Coins
-import com.adamglin.phosphoricons.regular.CreditCard
-import com.adamglin.phosphoricons.regular.CurrencyBtc
 import com.adamglin.phosphoricons.regular.Faders
 import com.adamglin.phosphoricons.regular.Minus
 import com.adamglin.phosphoricons.regular.PencilSimple
@@ -21,7 +18,7 @@ import com.adamglin.phosphoricons.regular.Wrench
 import com.adamglin.phosphoricons.regular.X
 import com.adamglin.phosphoricons.regular.XCircle
 
-enum class IconName(val icon: ImageVector) {
+enum class IconGeneral(val icon: ImageVector) {
     BACK(RegularGroup.ArrowLeft),
     CLOSE(RegularGroup.X),
     DELETE(RegularGroup.Trash),
@@ -37,9 +34,4 @@ enum class IconName(val icon: ImageVector) {
     SETTINGS(RegularGroup.Wrench),
     SORT(RegularGroup.SortAscending),
     BACKSPACE(RegularGroup.Backspace),
-    /* Payment Method */
-    CASH(RegularGroup.Coins),
-    CARD(RegularGroup.CreditCard),
-    TRANSFER(RegularGroup.ArrowsLeftRight),
-    CRYPTO(RegularGroup.CurrencyBtc)
 }
