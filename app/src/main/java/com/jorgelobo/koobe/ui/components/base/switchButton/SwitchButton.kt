@@ -13,9 +13,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.domain.model.constants.UiState
 import com.jorgelobo.koobe.ui.components.base.Background
 import com.jorgelobo.koobe.ui.components.model.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.ButtonState
 import com.jorgelobo.koobe.ui.components.model.SwitchConfig
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
@@ -29,7 +29,7 @@ fun AppSwitchButton(config: SwitchConfig) {
     val secondaryColor = switchColors.switchSecondary
     val uncheckedBorerColor = switchColors.switchOutline
 
-    val enabled = config.state == ButtonState.ENABLED
+    val enabled = config.state == UiState.ENABLED
 
     Switch(
         checked = config.checked,
@@ -62,7 +62,7 @@ fun PreviewSwitchButtons() {
             AppSwitchButton(
                 config = SwitchConfig(
                     checked = isChecked,
-                    state = ButtonState.ENABLED,
+                    state = UiState.ENABLED,
                     onCheckedChange = { isChecked = it }
                 )
             )

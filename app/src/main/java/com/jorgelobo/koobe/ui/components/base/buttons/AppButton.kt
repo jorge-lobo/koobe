@@ -12,19 +12,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.TransactionType
+import com.jorgelobo.koobe.domain.model.constants.UiState
 import com.jorgelobo.koobe.ui.components.base.Background
 import com.jorgelobo.koobe.ui.components.model.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.ButtonConfig
-import com.jorgelobo.koobe.ui.components.model.ButtonState
 import com.jorgelobo.koobe.ui.components.model.ButtonType
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.components.model.iconVector
+import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
 @Composable
 fun AppButton(config: ButtonConfig, modifier: Modifier = Modifier) {
-    val enabled = config.state == ButtonState.ENABLED
+    val enabled = config.state == UiState.ENABLED
 
     when (config.type) {
         ButtonType.PRIMARY -> PrimaryButton(
@@ -95,7 +95,7 @@ fun PreviewButtons() {
                 ButtonConfig(
                     text = stringResource(R.string.btn_continue),
                     type = ButtonType.PRIMARY,
-                    state = ButtonState.DISABLED,
+                    state = UiState.ENABLED,
                     onClick = {}
                 )
             )
@@ -104,7 +104,7 @@ fun PreviewButtons() {
                 ButtonConfig(
                     text = stringResource(R.string.btn_continue),
                     type = ButtonType.PRIMARY,
-                    state = ButtonState.ENABLED,
+                    state = UiState.ENABLED,
                     onClick = {}
                 )
             )
@@ -113,7 +113,7 @@ fun PreviewButtons() {
                 ButtonConfig(
                     text = stringResource(R.string.btn_create_shortcuts),
                     type = ButtonType.SECONDARY,
-                    state = ButtonState.ENABLED,
+                    state = UiState.ENABLED,
                     onClick = {}
                 )
             )
@@ -159,7 +159,7 @@ fun PreviewButtons() {
                 AppButton(
                     ButtonConfig(
                         type = ButtonType.ADD_TRANSACTION,
-                        state = ButtonState.ENABLED,
+                        state = UiState.ENABLED,
                         transactionType = TransactionType.INCOME,
                         onClick = {},
                         text = ""
@@ -170,7 +170,7 @@ fun PreviewButtons() {
                 AppButton(
                     ButtonConfig(
                         type = ButtonType.ADD_TRANSACTION,
-                        state = ButtonState.ENABLED,
+                        state = UiState.ENABLED,
                         transactionType = TransactionType.EXPENSE,
                         onClick = {},
                         text = ""

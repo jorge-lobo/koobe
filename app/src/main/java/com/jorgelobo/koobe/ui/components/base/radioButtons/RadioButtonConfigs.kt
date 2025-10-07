@@ -4,8 +4,8 @@ import com.jorgelobo.koobe.domain.model.constants.AppLanguage
 import com.jorgelobo.koobe.domain.model.constants.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.StartOfWeek
+import com.jorgelobo.koobe.domain.model.constants.UiState
 import com.jorgelobo.koobe.ui.components.model.RadioButtonConfig
-import com.jorgelobo.koobe.ui.components.model.RadioButtonState
 import com.jorgelobo.koobe.ui.components.model.icons.IconPayment
 
 fun paymentMethodRadioButtonConfig(
@@ -18,7 +18,7 @@ fun paymentMethodRadioButtonConfig(
         options = PaymentMethodType.entries,
         selectedOption = selected,
         icons = iconMap,
-        state = RadioButtonState.ENABLED,
+        state = UiState.ENABLED,
         onSelectionChanged = onOptionSelected
     )
 }
@@ -30,7 +30,7 @@ fun currencyRadioButtonConfig(
     return RadioButtonConfig(
         options = CurrencyType.entries,
         selectedOption = selected,
-        state = RadioButtonState.ENABLED,
+        state = UiState.ENABLED,
         onSelectionChanged = onOptionSelected
     )
 }
@@ -42,7 +42,7 @@ fun startOfWeekRadioButtonConfig(
     return RadioButtonConfig(
         options = StartOfWeek.entries,
         selectedOption = selected,
-        state = RadioButtonState.ENABLED,
+        state = UiState.ENABLED,
         onSelectionChanged = onOptionSelected
     )
 }
@@ -54,7 +54,7 @@ fun languageRadioButtonConfig(
     return RadioButtonConfig(
         options = AppLanguage.entries,
         selectedOption = selected,
-        state = RadioButtonState.ENABLED,
+        state = UiState.ENABLED,
         onSelectionChanged = onOptionSelected
     )
 }

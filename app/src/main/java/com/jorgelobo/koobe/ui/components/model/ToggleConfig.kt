@@ -1,12 +1,11 @@
 package com.jorgelobo.koobe.ui.components.model
 
 import com.jorgelobo.koobe.domain.model.constants.UiLabel
-
-enum class ToggleState { ENABLED, DISABLED }
+import com.jorgelobo.koobe.domain.model.constants.UiState
 
 data class ToggleConfig<T>(
     val options: List<T>,
     val selectedOption: T,
-    val state: ToggleState = ToggleState.ENABLED,
+    val state: UiState = UiState.ENABLED,
     val onSelectionChanged: (T) -> Unit
 ) where T : Enum<T>, T : UiLabel

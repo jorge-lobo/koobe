@@ -93,3 +93,8 @@ enum class AppLanguage : UiLabel {
         PORTUGUESE -> R.string.radio_portuguese
     }
 }
+
+enum class UiState {
+    ENABLED,
+    DISABLED
+}

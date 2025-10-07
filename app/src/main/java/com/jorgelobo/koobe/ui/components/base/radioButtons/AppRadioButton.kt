@@ -28,10 +28,10 @@ import com.jorgelobo.koobe.domain.model.constants.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.StartOfWeek
 import com.jorgelobo.koobe.domain.model.constants.UiLabel
+import com.jorgelobo.koobe.domain.model.constants.UiState
 import com.jorgelobo.koobe.ui.components.base.Background
 import com.jorgelobo.koobe.ui.components.model.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.RadioButtonConfig
-import com.jorgelobo.koobe.ui.components.model.RadioButtonState
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
@@ -90,7 +90,7 @@ fun <T> RadioGroup(
     config: RadioButtonConfig<T>,
     modifier: Modifier = Modifier
 ) where T : Enum<T>, T : UiLabel {
-    val enabled = config.state == RadioButtonState.ENABLED
+    val enabled = config.state == UiState.ENABLED
     var selected by remember { mutableStateOf(config.selectedOption) }
 
     Column(

@@ -27,12 +27,12 @@ import androidx.compose.ui.unit.dp
 import com.jorgelobo.koobe.domain.model.constants.MetricType
 import com.jorgelobo.koobe.domain.model.constants.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.ThemeOption
-import com.jorgelobo.koobe.domain.model.constants.UiLabel
 import com.jorgelobo.koobe.domain.model.constants.TransactionType
+import com.jorgelobo.koobe.domain.model.constants.UiLabel
+import com.jorgelobo.koobe.domain.model.constants.UiState
 import com.jorgelobo.koobe.ui.components.base.Background
 import com.jorgelobo.koobe.ui.components.model.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.ToggleConfig
-import com.jorgelobo.koobe.ui.components.model.ToggleState
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.ButtonSize
@@ -74,7 +74,7 @@ fun <T> AppToggle(
     config: ToggleConfig<T>,
     modifier: Modifier = Modifier
 ) where T : Enum<T>, T : UiLabel {
-    val enabled = config.state == ToggleState.ENABLED
+    val enabled = config.state == UiState.ENABLED
     val colors = AppTheme.colors.toggleButtonColors
     var selected by remember { mutableStateOf(config.selectedOption) }
 

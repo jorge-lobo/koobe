@@ -4,8 +4,8 @@ import com.jorgelobo.koobe.domain.model.constants.MetricType
 import com.jorgelobo.koobe.domain.model.constants.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.TransactionType
+import com.jorgelobo.koobe.domain.model.constants.UiState
 import com.jorgelobo.koobe.ui.components.model.ToggleConfig
-import com.jorgelobo.koobe.ui.components.model.ToggleState
 
 fun transactionToggleConfig(
     selected: TransactionType,
@@ -14,7 +14,7 @@ fun transactionToggleConfig(
     return ToggleConfig(
         options = TransactionType.entries,
         selectedOption = selected,
-        state = ToggleState.ENABLED,
+        state = UiState.ENABLED,
         onSelectionChanged = onOptionSelected
     )
 }
@@ -26,7 +26,7 @@ fun metricToggleConfig(
     return ToggleConfig(
         options = MetricType.entries,
         selectedOption = selected,
-        state = ToggleState.ENABLED,
+        state = UiState.ENABLED,
         onSelectionChanged = onOptionSelected
     )
 }
@@ -38,7 +38,7 @@ fun periodToggleConfig(
     return ToggleConfig(
         options = PeriodType.entries,
         selectedOption = selected,
-        state = ToggleState.ENABLED,
+        state = UiState.ENABLED,
         onSelectionChanged = onOptionSelected
     )
 }
@@ -50,7 +50,7 @@ fun themeToggleConfig(
     return ToggleConfig(
         options = ThemeOption.entries,
         selectedOption = selected,
-        state = ToggleState.ENABLED,
+        state = UiState.ENABLED,
         onSelectionChanged = onOptionSelected
     )
 }
