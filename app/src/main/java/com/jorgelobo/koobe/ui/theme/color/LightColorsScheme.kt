@@ -105,5 +105,17 @@ val LightColors = AppColorScheme(
         listSelectorUnselected = White,
         listSelectorSelected = AccentMint,
         listSelectorText = BrandBlue
+    ),
+    textFieldColors = TextFieldColors(
+        textFieldBackground = White,
+        textFieldText = LightThemeGrey4,
+        textFieldPlaceholder = LightThemeGrey2,
+        textFieldWarningMessage = AccentCoral,
+        textFieldCursor = LightThemeGrey2,
+        textFieldIcon = BrandBlue,
+        textFieldDefaultOutline = LightThemeGrey1,
+        textFieldFocusedOutline = AccentMint,
+        textFieldWarningOutline = AccentCoral,
+        textFieldLabel = BrandBlue
     )
 )

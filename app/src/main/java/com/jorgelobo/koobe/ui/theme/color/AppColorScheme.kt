@@ -21,7 +21,8 @@ data class AppColorScheme(
     val keypadColors: KeypadColors,
     val snackBarColors: SnackBarColors,
     val progressBarColors: ProgressBarColors,
-    val listSelectorColors: ListSelectorColors
+    val listSelectorColors: ListSelectorColors,
+    val textFieldColors: TextFieldColors
 )
 
 data class BackgroundColors(
@@ -137,4 +138,17 @@ data class ListSelectorColors(
     val listSelectorUnselected: Color,
     val listSelectorSelected: Color,
     val listSelectorText: Color
+)
+
+data class TextFieldColors(
+    val textFieldBackground: Color,
+    val textFieldText: Color,
+    val textFieldPlaceholder: Color,
+    val textFieldWarningMessage: Color,
+    val textFieldCursor: Color,
+    val textFieldIcon: Color,
+    val textFieldDefaultOutline: Color,
+    val textFieldFocusedOutline: Color,
+    val textFieldWarningOutline: Color,
+    val textFieldLabel: Color
 )
