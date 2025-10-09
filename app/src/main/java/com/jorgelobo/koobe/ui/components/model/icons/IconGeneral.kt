@@ -5,6 +5,7 @@ import com.adamglin.phosphoricons.RegularGroup
 import com.adamglin.phosphoricons.regular.ArrowLeft
 import com.adamglin.phosphoricons.regular.ArrowsLeftRight
 import com.adamglin.phosphoricons.regular.Backspace
+import com.adamglin.phosphoricons.regular.CalendarDots
 import com.adamglin.phosphoricons.regular.CaretDown
 import com.adamglin.phosphoricons.regular.CaretRight
 import com.adamglin.phosphoricons.regular.CaretUp
@@ -34,4 +35,5 @@ enum class IconGeneral(val icon: ImageVector) {
     SETTINGS(RegularGroup.Wrench),
     SORT(RegularGroup.SortAscending),
     BACKSPACE(RegularGroup.Backspace),
+    CALENDAR(RegularGroup.CalendarDots)
 }
