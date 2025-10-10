@@ -22,7 +22,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.jorgelobo.koobe.ui.components.base.Background
 import com.jorgelobo.koobe.ui.components.model.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.InputDateConfig
@@ -30,6 +29,7 @@ import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.icons.getIconFromName
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
+import com.jorgelobo.koobe.ui.theme.dimens.BorderDimens
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.InputSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -41,14 +41,14 @@ fun InputDate(
     modifier: Modifier = Modifier
 ) {
     val colors = AppTheme.colors
-    val shapes = AppTheme.shapes
+    val shape = AppTheme.shapes.medium
 
     Box(
         modifier = modifier
             .height(InputSize.InputHeight)
-            .clip(shapes.medium)
+            .clip(shape)
             .background(colors.containerColors.containerPrimary)
-            .border(1.dp, colors.containerColors.containerOutline, shapes.medium)
+            .border(BorderDimens.Base, colors.containerColors.containerOutline, shape)
             .animateContentSize()
     ) {
         Row(

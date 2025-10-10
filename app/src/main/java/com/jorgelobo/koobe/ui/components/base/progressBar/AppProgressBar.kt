@@ -20,7 +20,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.jorgelobo.koobe.ui.components.base.Background
 import com.jorgelobo.koobe.ui.components.model.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.ProgressBarConfig
@@ -28,6 +27,7 @@ import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
 import com.jorgelobo.koobe.ui.theme.color.AccentMint
+import com.jorgelobo.koobe.ui.theme.dimens.BorderDimens
 import com.jorgelobo.koobe.ui.theme.dimens.ProgressBarSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
@@ -57,14 +57,14 @@ fun AppProgressBar(
             .height(ProgressBarSize.Track)
             .clip(shape = shapes.small)
             .background(colors.progressBarTrack)
-            .border(1.dp, colors.progressBarOutline)
+            .border(BorderDimens.Thin, colors.progressBarOutline)
     ) {
         // Projection
         Box(
             modifier = Modifier
                 .fillMaxWidth(animatedProjection)
                 .fillMaxHeight()
-                .padding(Spacing.Micro)
+                .padding(Spacing.Mini)
                 .clip(shape = shapes.extraSmall)
                 .background(if (animatedProjection < 0.999f) AccentMint else AccentCoral)
                 .animateContentSize()
@@ -75,7 +75,7 @@ fun AppProgressBar(
             modifier = Modifier
                 .fillMaxWidth(animatedProgress)
                 .fillMaxHeight()
-                .padding(Spacing.Micro)
+                .padding(Spacing.Mini)
                 .clip(shape = shapes.extraSmall)
                 .background(colors.progressBarActiveIndicator)
                 .animateContentSize()

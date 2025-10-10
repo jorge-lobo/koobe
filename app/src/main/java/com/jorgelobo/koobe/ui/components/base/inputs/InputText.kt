@@ -34,7 +34,6 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.ui.components.base.Background
 import com.jorgelobo.koobe.ui.components.model.BackgroundType
@@ -43,6 +42,7 @@ import com.jorgelobo.koobe.ui.components.model.InputState
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
+import com.jorgelobo.koobe.ui.theme.dimens.BorderDimens
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.InputSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -54,7 +54,7 @@ fun AppInputText(
     enabled: Boolean = true,
     isWarningShow: Boolean = false,
 ) {
-    val shapes = AppTheme.shapes
+    val shape = AppTheme.shapes.medium
     val colors = AppTheme.colors.textFieldColors
     val typography = AppTheme.typography.text
     val icon = IconGeneral.RESET.icon
@@ -95,8 +95,8 @@ fun AppInputText(
             modifier = modifier
                 .fillMaxWidth()
                 .height(InputSize.InputHeight)
-                .clip(shapes.medium)
-                .border(1.dp, borderColor, shapes.medium)
+                .clip(shape)
+                .border(BorderDimens.Base, borderColor, shape)
                 .background(colors.textFieldBackground)
                 .padding(start = Spacing.Medium)
                 .clickable(

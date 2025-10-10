@@ -16,8 +16,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
 import com.jorgelobo.koobe.ui.theme.AppTheme
+import com.jorgelobo.koobe.ui.theme.dimens.BorderDimens
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
 @Composable
@@ -46,7 +46,7 @@ fun BaseFieldContainer(
             modifier = Modifier
                 .height(height)
                 .clip(shape)
-                .border(1.dp, colors.containerColors.containerOutline, shape)
+                .border(BorderDimens.Base, colors.containerColors.containerOutline, shape)
                 .background(colors.containerColors.containerPrimary)
                 .padding(start = Spacing.Medium),
             contentAlignment = Alignment.Center

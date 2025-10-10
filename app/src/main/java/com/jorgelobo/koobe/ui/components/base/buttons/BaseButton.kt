@@ -16,8 +16,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.jorgelobo.koobe.ui.components.model.ButtonType
 import com.jorgelobo.koobe.ui.theme.AppTheme
+import com.jorgelobo.koobe.ui.theme.dimens.BorderDimens
 import com.jorgelobo.koobe.ui.theme.dimens.ButtonSize
-import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
 @Composable
 fun BaseButton(
@@ -57,7 +57,7 @@ fun BaseButton(
         .background(backgroundColor, shape = shape)
         .then(outlineColor?.let {
             Modifier.border(
-                Spacing.Micro,
+                BorderDimens.Base,
                 it,
                 shape
             )

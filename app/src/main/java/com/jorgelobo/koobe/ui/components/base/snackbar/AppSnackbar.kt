@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
@@ -32,6 +33,7 @@ import com.jorgelobo.koobe.ui.components.model.SnackBarConfig
 import com.jorgelobo.koobe.ui.icons.getIconFromName
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
+import com.jorgelobo.koobe.ui.theme.dimens.Height
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import kotlinx.coroutines.launch
 
@@ -45,6 +47,7 @@ fun AppSnackBar(
 
     Surface(
         modifier = modifier
+            .height(Height.SnackBar)
             .clip(AppTheme.shapes.small),
         color = colors.snackBarContainer,
         tonalElevation = Spacing.Tiny,
