@@ -1,6 +1,9 @@
 package com.jorgelobo.koobe.ui.components.base.inputs
 
 import androidx.compose.animation.animateColorAsState
+import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
@@ -23,7 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.ui.components.base.Background
-import com.jorgelobo.koobe.ui.components.base.text.MoneyText
+import com.jorgelobo.koobe.ui.components.common.MoneyText
 import com.jorgelobo.koobe.ui.components.model.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.InputAmountConfig
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
@@ -49,10 +52,15 @@ fun InputAmount(
         label = "resetIconColor"
     )
 
+    val animatedValue by animateFloatAsState(
+        targetValue = config.value.toFloat(),
+        animationSpec = tween(durationMillis = 300, easing = LinearOutSlowInEasing),
+        label = "amountAnimation"
+    )
+
     Box(
         modifier = modifier
             .height(ValueDisplaySize.Height)
-            .width(ValueDisplaySize.Width)
             .clip(shape)
             .border(BorderDimens.Base, colors.containerColors.containerOutline, shape)
             .background(colors.containerColors.containerPrimary)
@@ -62,14 +70,11 @@ fun InputAmount(
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            horizontalArrangement = Arrangement.End
         ) {
-            Spacer(modifier = Modifier.weight(1f))
-
             MoneyText(
-                amount = config.value,
-                currencySymbol = "€",
-                config = config
+                amount = animatedValue.toDouble(),
+                currencySymbol = config.currencySymbol
             )
 
             Spacer(modifier = Modifier.width(Spacing.Small))
