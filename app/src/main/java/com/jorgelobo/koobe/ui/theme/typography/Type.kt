@@ -58,6 +58,11 @@ val TextTypography = Typography(
 )
 
 val NumberTypography = Typography(
+    titleMedium = TextStyle(
+        fontFamily = Inter,
+        fontWeight = FontWeight.Normal,
+        fontSize = 18.sp
+    ),
     bodyLarge = TextStyle(
         fontFamily = Inter,
         fontWeight = FontWeight.Normal,

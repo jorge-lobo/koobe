@@ -98,7 +98,7 @@ fun AppInputText(
                 .clip(shape)
                 .border(BorderDimens.Base, borderColor, shape)
                 .background(colors.textFieldBackground)
-                .padding(start = Spacing.Medium)
+                .padding(start = Spacing.Medium, end = Spacing.Small)
                 .clickable(
                     indication = null,
                     interactionSource = remember { MutableInteractionSource() }) {
@@ -156,7 +156,8 @@ fun AppInputText(
                 AnimatedVisibility(visible = config.value.isNotEmpty()) {
                     IconButton(
                         onClick = { config.onValueChange("") },
-                        enabled = enabled
+                        enabled = enabled,
+                        modifier = Modifier.size(IconSize.Large)
                     ) {
                         Icon(
                             imageVector = icon,

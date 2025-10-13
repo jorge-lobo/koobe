@@ -49,7 +49,8 @@ data class TextColors(
     val textLabel: Color,
     val textSupportMessage: Color,
     val textActiveLabelText: Color,
-    val textUnselectedLabelText: Color
+    val textUnselectedLabelText: Color,
+    val textDisabled: Color
 )
 
 data class IconColors(
