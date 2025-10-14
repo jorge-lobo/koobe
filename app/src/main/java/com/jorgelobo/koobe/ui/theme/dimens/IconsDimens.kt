@@ -3,6 +3,7 @@ package com.jorgelobo.koobe.ui.theme.dimens
 import androidx.compose.ui.unit.dp
 
 object IconSize {
+    val Micro = 12.dp
     val ExtraSmall = 16.dp
     val Small = 20.dp
     val Medium = 24.dp
