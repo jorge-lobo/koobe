@@ -82,11 +82,11 @@ fun BaseAvatar(
 
 @Composable
 fun Avatar(
+    modifier: Modifier = Modifier,
     type: AvatarType,
     icon: ImageVector,
     color: Color,
-    isSelected: Boolean = false,
-    modifier: Modifier = Modifier
+    isSelected: Boolean = false
 ) {
     BaseAvatar(
         modifier = modifier,
