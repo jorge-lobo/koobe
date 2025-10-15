@@ -1,11 +1,10 @@
 package com.jorgelobo.koobe.ui.components.base.radioButtons
 
-import com.jorgelobo.koobe.domain.model.constants.AppLanguage
-import com.jorgelobo.koobe.domain.model.constants.CurrencyType
-import com.jorgelobo.koobe.domain.model.constants.PaymentMethodType
-import com.jorgelobo.koobe.domain.model.constants.StartOfWeek
-import com.jorgelobo.koobe.domain.model.constants.UiState
-import com.jorgelobo.koobe.ui.components.model.RadioButtonConfig
+import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
+import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
+import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
+import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
+import com.jorgelobo.koobe.ui.components.model.enums.UiState
 import com.jorgelobo.koobe.ui.components.model.icons.IconPayment
 
 fun paymentMethodRadioButtonConfig(

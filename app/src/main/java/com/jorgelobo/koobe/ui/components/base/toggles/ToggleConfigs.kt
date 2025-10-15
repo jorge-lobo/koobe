@@ -1,11 +1,10 @@
 package com.jorgelobo.koobe.ui.components.base.toggles
 
-import com.jorgelobo.koobe.domain.model.constants.MetricType
-import com.jorgelobo.koobe.domain.model.constants.PeriodType
-import com.jorgelobo.koobe.domain.model.constants.ThemeOption
-import com.jorgelobo.koobe.domain.model.constants.TransactionType
-import com.jorgelobo.koobe.domain.model.constants.UiState
-import com.jorgelobo.koobe.ui.components.model.ToggleConfig
+import com.jorgelobo.koobe.domain.model.constants.enums.MetricType
+import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.ui.components.model.enums.UiState
 
 fun transactionToggleConfig(
     selected: TransactionType,

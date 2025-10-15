@@ -13,10 +13,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import com.jorgelobo.koobe.domain.model.constants.UiState
-import com.jorgelobo.koobe.ui.components.base.Background
-import com.jorgelobo.koobe.ui.components.model.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.SwitchConfig
+import com.jorgelobo.koobe.ui.components.base.background.Background
+import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
+import com.jorgelobo.koobe.ui.components.model.enums.UiState
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing

@@ -26,10 +26,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
-import com.jorgelobo.koobe.ui.components.base.Background
-import com.jorgelobo.koobe.ui.components.model.BackgroundType
+import com.jorgelobo.koobe.ui.components.base.background.Background
+import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
-import com.jorgelobo.koobe.ui.components.model.SnackBarConfig
 import com.jorgelobo.koobe.ui.icons.getIconFromName
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme

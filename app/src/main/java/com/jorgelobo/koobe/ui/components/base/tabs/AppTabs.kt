@@ -18,11 +18,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.jorgelobo.koobe.domain.model.constants.ReportsTabs
 import com.jorgelobo.koobe.domain.model.constants.UiLabel
-import com.jorgelobo.koobe.ui.components.base.Background
-import com.jorgelobo.koobe.ui.components.model.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.TabConfig
+import com.jorgelobo.koobe.domain.model.constants.enums.ReportsTabs
+import com.jorgelobo.koobe.ui.components.base.background.Background
+import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
