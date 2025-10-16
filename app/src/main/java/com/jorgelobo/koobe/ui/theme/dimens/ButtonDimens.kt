@@ -28,4 +28,8 @@ object ButtonSize {
     object MainButton {
         val Height = 56.dp
     }
+
+    object ConfirmCancelButtons {
+        val ContainerHeight = 48.dp
+    }
 }

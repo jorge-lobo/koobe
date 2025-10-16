@@ -1,6 +1,6 @@
 package com.jorgelobo.koobe.domain.model.category
 
-import com.jorgelobo.koobe.domain.model.constants.TransactionType
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 
 data class Category(
     val id: Int,

@@ -10,6 +10,7 @@ val AccentMint = Color(0xFF7DD6C9)
 val AccentCoral = Color(0xFFFF6B6B)
 val AccentGold = Color(0xFFF4C95D)
 val AccentBlue = Color(0xFF58A0E3)
+val Transparent = Color(0x00000000)
 
 // Light Theme
 val LightThemeGrey1 = Color(0xFFE0E4E8)

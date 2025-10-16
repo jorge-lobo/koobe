@@ -23,7 +23,10 @@ import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
 @Composable
-fun AppButton(config: ButtonConfig, modifier: Modifier = Modifier) {
+fun AppButton(
+    config: ButtonConfig,
+    modifier: Modifier = Modifier
+) {
     val enabled = config.state == UiState.ENABLED
 
     when (config.type) {
@@ -104,7 +107,7 @@ fun PreviewButtons() {
                 ButtonConfig(
                     text = stringResource(R.string.btn_continue),
                     type = ButtonType.PRIMARY,
-                    state = UiState.ENABLED,
+                    state = UiState.DISABLED,
                     onClick = {}
                 )
             )
@@ -148,6 +151,15 @@ fun PreviewButtons() {
                 ButtonConfig(
                     text = stringResource(R.string.btn_view_all),
                     type = ButtonType.TEXT,
+                    onClick = {}
+                )
+            )
+
+            AppButton(
+                ButtonConfig(
+                    text = stringResource(R.string.btn_view_all),
+                    type = ButtonType.TEXT,
+                    state = UiState.DISABLED,
                     onClick = {}
                 )
             )

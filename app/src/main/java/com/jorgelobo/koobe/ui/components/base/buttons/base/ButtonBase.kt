@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.runtime.Composable
@@ -48,6 +49,7 @@ fun ButtonBase(
         ButtonType.SQUARE -> modifier.size(ButtonSize.SquareButton.Dimension)
         ButtonType.SECONDARY_COMPACT -> modifier.width(ButtonSize.CompactButton.Width)
         ButtonType.ADD_TRANSACTION -> modifier.height(height)
+        ButtonType.TEXT -> modifier.wrapContentWidth()
         else -> modifier
             .fillMaxWidth()
             .height(height)
@@ -69,7 +71,8 @@ fun ButtonBase(
         modifier = buttonModifier,
         shape = shape,
         colors = ButtonDefaults.buttonColors(
-            containerColor = backgroundColor
+            containerColor = backgroundColor,
+            disabledContainerColor = backgroundColor
         ),
         contentPadding = PaddingValues(0.dp)
     ) {

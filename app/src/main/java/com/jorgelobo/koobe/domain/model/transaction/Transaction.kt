@@ -1,8 +1,8 @@
 package com.jorgelobo.koobe.domain.model.transaction
 
-import com.jorgelobo.koobe.domain.model.constants.CurrencyType
-import com.jorgelobo.koobe.domain.model.constants.PaymentMethodType
-import com.jorgelobo.koobe.domain.model.constants.TransactionType
+import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
+import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import java.time.LocalDate
 
 data class Transaction(
