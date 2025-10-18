@@ -111,7 +111,7 @@ fun SelectorPayment(
             width = SelectorWidth.SMALL,
             selectorType = SelectorType.ICON,
             icon = icon,
-            iconTint = AppTheme.colors.iconColors.iconPrimary,
+            iconTint = AppTheme.colors.iconColors.iconPaymentMethod,
             onClick = onClick
         )
     )

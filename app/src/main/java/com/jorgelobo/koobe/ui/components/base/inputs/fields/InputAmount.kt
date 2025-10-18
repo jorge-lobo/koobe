@@ -24,7 +24,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.common.MoneyText
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
@@ -43,6 +45,7 @@ fun InputAmount(
 ) {
     val shape = AppTheme.shapes.medium
     val colors = AppTheme.colors
+    val typography = AppTheme.typography.numbers
     val isEnabled = config.value > 0.0
 
     val iconColor by animateColorAsState(
@@ -73,7 +76,12 @@ fun InputAmount(
         ) {
             MoneyText(
                 amount = animatedValue.toDouble(),
-                currencySymbol = config.currencySymbol
+                currencyType = config.currencyType,
+                wholeFontSize = typography.titleMedium.fontSize,
+                decimalFontSize = typography.labelMedium.fontSize,
+                textColor = colors.textColors.textPrimary,
+                textAlign = TextAlign.End,
+                isEnabled = isEnabled
             )
 
             Spacer(modifier = Modifier.width(Spacing.Small))
@@ -109,7 +117,7 @@ fun PreviewInputAmount() {
             InputAmount(
                 config = InputAmountConfig(
                     value = 1.50,
-                    currencySymbol = "€",
+                    currencyType = CurrencyType.EUR,
                     onResetClick = {},
                 )
             )

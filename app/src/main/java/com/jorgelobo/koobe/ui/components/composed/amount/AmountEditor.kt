@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.inputs.fields.InputAmount
 import com.jorgelobo.koobe.ui.components.base.inputs.fields.SelectorCurrency
@@ -19,6 +20,7 @@ import com.jorgelobo.koobe.ui.components.base.inputs.fields.InputAmountConfig
 import com.jorgelobo.koobe.ui.components.model.icons.IconPayment
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
+import com.jorgelobo.koobe.utils.getCurrencyCode
 
 @Composable
 fun AmountEditor(
@@ -40,13 +42,13 @@ fun AmountEditor(
 
             SelectorCurrency(
                 onClick = config.onCurrencySelectorClick,
-                value = config.currencyCode
+                value = getCurrencyCode(config.currencyType)
             )
 
             InputAmount(
                 config = InputAmountConfig(
                     value = config.value,
-                    currencySymbol = config.currencySymbol,
+                    currencyType = config.currencyType,
                     onResetClick = config.onResetClick,
                 )
             )
@@ -73,9 +75,8 @@ fun PreviewAmountEditor() {
             AmountEditor(
                 config = AmountEditorConfig(
                     paymentIcon = IconPayment.CASH.icon,
-                    currencySymbol = "€",
-                    currencyCode = "EUR",
-                    value = 25.00,
+                    currencyType = CurrencyType.EUR,
+                    value = 120.00,
                     onResetClick = {},
                     onPaymentSelectorClick = {},
                     onCurrencySelectorClick = {},

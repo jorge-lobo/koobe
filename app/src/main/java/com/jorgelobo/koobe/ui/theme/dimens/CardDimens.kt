@@ -4,8 +4,15 @@ import androidx.compose.ui.unit.dp
 
 object CardSize {
     object Balance {
-        val AmountDisplay = 24.dp
-        val Container = 32.dp
+        object Width {
+            val AmountDisplaySmall = 96.dp
+            val AmountDisplayLarge = 156.dp
+        }
+
+        object Height {
+            val AmountDisplay = 24.dp
+            val Container = 32.dp
+        }
     }
 
     object QuickStats {

@@ -28,7 +28,8 @@ val LightColors = AppColorScheme(
         textSupportMessage = LightThemeGrey3,
         textActiveLabelText = BrandBlue,
         textUnselectedLabelText = LightThemeGrey3,
-        textDisabled = LightThemeGrey1
+        textDisabled = LightThemeGrey1,
+        textDisplay = White
     ),
     iconColors = IconColors(
         iconPrimary = BrandBlue,

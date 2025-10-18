@@ -5,29 +5,37 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.unit.TextUnit
+import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.ui.theme.AppTheme
+import com.jorgelobo.koobe.utils.getCurrencySymbol
 import java.util.Locale
 
 @Composable
 fun MoneyText(
     amount: Double,
-    currencySymbol: String,
+    currencyType: CurrencyType,
+    wholeFontSize: TextUnit,
+    decimalFontSize: TextUnit,
+    textColor: Color,
+    textAlign: TextAlign,
+    isEnabled: Boolean,
     modifier: Modifier = Modifier
 ) {
-    val typography = AppTheme.typography.numbers
     val colors = AppTheme.colors
+    val currencySymbol = getCurrencySymbol(currencyType)
 
     val formatted = String.format(Locale.ENGLISH, "%.2f", amount)
     val parts = formatted.split(".")
 
-    val isEnabled = amount > 0.0
-
     val textColor by animateColorAsState(
-        targetValue = if (isEnabled) colors.textColors.textPrimary
-        else colors.textColors.textDisabled
+        targetValue = if (isEnabled) textColor else colors.textColors.textDisabled,
+        label = "MoneyTextColor"
     )
 
     Text(
@@ -35,8 +43,7 @@ fun MoneyText(
             // Whole number
             withStyle(
                 style = SpanStyle(
-                    fontSize = typography.titleMedium.fontSize,
-                    fontWeight = typography.titleMedium.fontWeight,
+                    fontSize = wholeFontSize,
                     color = textColor
                 )
             ) {
@@ -46,14 +53,14 @@ fun MoneyText(
             // Decimal part
             withStyle(
                 style = SpanStyle(
-                    fontSize = typography.labelMedium.fontSize,
-                    fontWeight = typography.labelMedium.fontWeight,
+                    fontSize = decimalFontSize,
                     color = textColor
                 )
             ) {
                 append(".${parts[1]}")
             }
         },
-        modifier = modifier
+        modifier = modifier,
+        textAlign = textAlign
     )
 }
