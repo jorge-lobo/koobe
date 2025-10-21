@@ -12,6 +12,7 @@ import com.jorgelobo.koobe.ui.components.base.buttons.base.IconButtonAppBar
 import com.jorgelobo.koobe.ui.components.base.buttons.base.IconButtonDisclosure
 import com.jorgelobo.koobe.ui.components.base.buttons.base.IconButtonInput
 import com.jorgelobo.koobe.ui.components.base.buttons.base.IconButtonListItem
+import com.jorgelobo.koobe.ui.components.base.buttons.base.IconButtonNavigation
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.icons.getIconFromName
@@ -99,6 +100,30 @@ fun ButtonDeleteItem(
     )
 }
 
+@Composable
+fun ButtonNavLeft(
+    onClick: () -> Unit,
+    enabled: Boolean
+) {
+    IconButtonNavigation(
+        onClick = onClick,
+        iconUrl = getIconFromName(IconGeneral.LEFT),
+        enabled = enabled
+    )
+}
+
+@Composable
+fun ButtonNavRight(
+    onClick: () -> Unit,
+    enabled: Boolean
+) {
+    IconButtonNavigation(
+        onClick = onClick,
+        iconUrl = getIconFromName(IconGeneral.RIGHT),
+        enabled = enabled
+    )
+}
+
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewIconButtons() {
@@ -120,6 +145,14 @@ fun PreviewIconButtons() {
             ButtonResetInput(onClick = {}, enabled = false)
             ButtonEditItem(onClick = {})
             ButtonDeleteItem(onClick = {})
+            ButtonNavLeft(
+                onClick = {},
+                enabled = true
+            )
+            ButtonNavRight(
+                onClick = {},
+                enabled = true
+            )
         }
     }
 }

@@ -28,6 +28,7 @@ fun IconButtonBase(
     val iconSize = when (type) {
         IconButtonType.DISCLOSURE -> IconSize.Small
         IconButtonType.LIST_ITEM -> IconSize.Small
+        IconButtonType.NAVIGATION -> IconSize.Small
         else -> IconSize.Medium
     }
 

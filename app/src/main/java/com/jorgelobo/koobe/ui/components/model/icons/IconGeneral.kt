@@ -7,6 +7,7 @@ import com.adamglin.phosphoricons.regular.ArrowsLeftRight
 import com.adamglin.phosphoricons.regular.Backspace
 import com.adamglin.phosphoricons.regular.CalendarDots
 import com.adamglin.phosphoricons.regular.CaretDown
+import com.adamglin.phosphoricons.regular.CaretLeft
 import com.adamglin.phosphoricons.regular.CaretRight
 import com.adamglin.phosphoricons.regular.CaretUp
 import com.adamglin.phosphoricons.regular.Empty
@@ -39,5 +40,7 @@ enum class IconGeneral(val icon: ImageVector) {
     BACKSPACE(RegularGroup.Backspace),
     CALENDAR(RegularGroup.CalendarDots),
     EMPTY(RegularGroup.Empty),
-    WALLET(RegularGroup.Wallet)
+    WALLET(RegularGroup.Wallet),
+    LEFT(RegularGroup.CaretLeft),
+    RIGHT(RegularGroup.CaretRight)
 }

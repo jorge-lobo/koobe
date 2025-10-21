@@ -59,3 +59,17 @@ fun IconButtonListItem(
         iconUrl = iconUrl
     )
 }
+
+@Composable
+fun IconButtonNavigation(
+    onClick: () -> Unit,
+    iconUrl: ImageVector,
+    enabled: Boolean
+) {
+    IconButtonBase(
+        onClick = onClick,
+        type = IconButtonType.NAVIGATION,
+        isEnabled = enabled,
+        iconUrl = iconUrl
+    )
+}
