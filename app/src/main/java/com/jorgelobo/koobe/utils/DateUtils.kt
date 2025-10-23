@@ -22,6 +22,13 @@ object DateUtils {
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
     }
 
+    fun getMonthShortName(monthIndex: Int): String {
+        val calendar = Calendar.getInstance(locale).apply { set(Calendar.MONTH, monthIndex) }
+        return SimpleDateFormat("MMM", locale)
+            .format(calendar.time)
+            .replaceFirstChar { it.uppercaseChar() }
+    }
+
     fun formatDate(date: Date, dateFormat: DateFormat): String {
         val pattern = when (dateFormat) {
             DateFormat.YEAR -> "yyyy"

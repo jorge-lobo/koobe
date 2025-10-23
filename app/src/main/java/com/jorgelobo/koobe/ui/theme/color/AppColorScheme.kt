@@ -32,6 +32,7 @@ data class BackgroundColors(
 
 data class ContainerColors(
     val containerPrimary: Color,
+    val containerSecondary: Color,
     val containerOutline: Color,
     val containerSelected: Color,
     val containerNeutralAmount: Color,
