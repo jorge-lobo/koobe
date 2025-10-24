@@ -36,7 +36,7 @@ import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.BorderDimens
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.ui.theme.dimens.ValueDisplaySize
+import com.jorgelobo.koobe.ui.theme.dimens.InputAmountSize
 
 @Composable
 fun InputAmount(
@@ -62,7 +62,7 @@ fun InputAmount(
 
     Box(
         modifier = modifier
-            .height(ValueDisplaySize.Height)
+            .height(InputAmountSize.Height)
             .clip(shape)
             .border(BorderDimens.Base, colors.containerColors.containerOutline, shape)
             .background(colors.containerColors.containerPrimary)

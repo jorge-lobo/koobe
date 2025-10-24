@@ -10,7 +10,9 @@ import com.adamglin.phosphoricons.regular.CaretDown
 import com.adamglin.phosphoricons.regular.CaretLeft
 import com.adamglin.phosphoricons.regular.CaretRight
 import com.adamglin.phosphoricons.regular.CaretUp
+import com.adamglin.phosphoricons.regular.Check
 import com.adamglin.phosphoricons.regular.Empty
+import com.adamglin.phosphoricons.regular.ExclamationMark
 import com.adamglin.phosphoricons.regular.Faders
 import com.adamglin.phosphoricons.regular.Minus
 import com.adamglin.phosphoricons.regular.PencilSimple
@@ -42,5 +44,7 @@ enum class IconGeneral(val icon: ImageVector) {
     EMPTY(RegularGroup.Empty),
     WALLET(RegularGroup.Wallet),
     LEFT(RegularGroup.CaretLeft),
-    RIGHT(RegularGroup.CaretRight)
+    RIGHT(RegularGroup.CaretRight),
+    WARNING(RegularGroup.ExclamationMark),
+    CHECK(RegularGroup.Check)
 }
