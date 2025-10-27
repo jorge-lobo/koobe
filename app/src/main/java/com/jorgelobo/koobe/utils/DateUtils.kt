@@ -33,6 +33,7 @@ object DateUtils {
         val pattern = when (dateFormat) {
             DateFormat.YEAR -> "yyyy"
             DateFormat.MONTH_YEAR -> "MMMM yyyy"
+            DateFormat.DAY_MONTH -> "dd MMM"
             DateFormat.DAY_MONTH_YEAR -> "dd MMMM yyyy"
             DateFormat.COMPLETE -> "EEEE, dd MMMM yyyy"
         }
