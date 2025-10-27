@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -25,10 +24,11 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
 import com.jorgelobo.koobe.ui.components.base.background.Background
-import com.jorgelobo.koobe.ui.components.base.info.StatusIndicator
+import com.jorgelobo.koobe.ui.components.base.dividers.AppHorizontalDivider
 import com.jorgelobo.koobe.ui.components.base.progressBar.AppProgressBar
 import com.jorgelobo.koobe.ui.components.base.progressBar.ProgressBarConfig
 import com.jorgelobo.koobe.ui.components.common.MoneyText
+import com.jorgelobo.koobe.ui.components.common.StatusIndicator
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
@@ -37,7 +37,6 @@ import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
 import com.jorgelobo.koobe.ui.theme.dimens.AvatarSize
-import com.jorgelobo.koobe.ui.theme.dimens.BorderDimens
 import com.jorgelobo.koobe.ui.theme.dimens.BudgetItemSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.resolveColor
@@ -140,10 +139,7 @@ fun BudgetSimpleItem(
             }
         }
 
-        HorizontalDivider(
-            thickness = BorderDimens.Base,
-            color = colors.containerColors.divider
-        )
+        AppHorizontalDivider()
     }
 }
 

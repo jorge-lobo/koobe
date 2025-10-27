@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.ui.components.base.info
+package com.jorgelobo.koobe.ui.components.common
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
@@ -17,7 +17,6 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.ui.components.base.background.Background
-import com.jorgelobo.koobe.ui.components.common.MoneyText
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme

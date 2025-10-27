@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.ui.components.base.info
+package com.jorgelobo.koobe.ui.components.common
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
