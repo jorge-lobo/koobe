@@ -40,9 +40,9 @@ import com.jorgelobo.koobe.utils.DateUtils.formatAs
 import com.jorgelobo.koobe.utils.paymentMethodIcon
 
 @Composable
-fun TransactionItem(
+fun ListTransactionItem(
     modifier: Modifier = Modifier,
-    config: TransactionItemConfig
+    config: ListTransactionItemConfig
 ) {
     val colors = AppTheme.colors
     val typography = AppTheme.typography
@@ -126,8 +126,8 @@ fun PreviewTransactionItem() {
                 currency = CurrencyType.EUR
             )
 
-            TransactionItem(
-                config = TransactionItemConfig(
+            ListTransactionItem(
+                config = ListTransactionItemConfig(
                     transaction = transaction,
                     onClick = {}
                 )
