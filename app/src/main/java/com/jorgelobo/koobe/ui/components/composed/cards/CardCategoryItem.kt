@@ -71,7 +71,6 @@ fun CardCategoryItem(
                     .weight(1f)
                     .padding(start = Spacing.Small)
             )
-
         },
         expandedContent = {
             category.subcategories.forEach { subcategory ->
