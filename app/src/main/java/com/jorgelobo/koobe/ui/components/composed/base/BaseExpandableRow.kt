@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.ui.components.composed.cards
+package com.jorgelobo.koobe.ui.components.composed.base
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
@@ -8,18 +8,15 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import com.jorgelobo.koobe.ui.components.base.buttons.types.ButtonExpandCollapse
@@ -28,32 +25,28 @@ import com.jorgelobo.koobe.ui.theme.dimens.ListItemSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
 @Composable
-fun BaseExpandableCard(
+fun BaseExpandableRow(
     modifier: Modifier = Modifier,
     headerContent: @Composable RowScope.() -> Unit,
     expandedContent: @Composable (ColumnScope.() -> Unit)? = null,
-    isInitiallyExpanded: Boolean = false
+    isExpanded: Boolean,
+    onExpandedChange: (Boolean) -> Unit
 ) {
-    val colors = AppTheme.colors
-    val shape = AppTheme.shapes.medium
-    var isExpanded by remember { mutableStateOf(isInitiallyExpanded) }
-
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .defaultMinSize(minHeight = ListItemSize.MainHeight)
-            .background(colors.containerColors.containerPrimary, shape)
-            .padding(Spacing.Small)
+        modifier = modifier.fillMaxWidth()
     ) {
         Row(
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(ListItemSize.MainHeight)
+                .padding(start = Spacing.Medium, top = Spacing.Tiny, end = Spacing.Small),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             headerContent()
 
             ButtonExpandCollapse(
-                onClick = { isExpanded = !isExpanded },
+                onClick = { onExpandedChange(!isExpanded) },
                 isExpanded = isExpanded
             )
         }
@@ -64,13 +57,19 @@ fun BaseExpandableCard(
                 enter = expandVertically(animationSpec = tween(250)) + fadeIn(),
                 exit = shrinkVertically(animationSpec = tween(250)) + fadeOut()
             ) {
-                Column(
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(top = Spacing.Small),
-                    verticalArrangement = Arrangement.SpaceBetween,
-                    content = it
-                )
+                        .background(AppTheme.colors.backgroundColors.screenBackground)
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = Spacing.Medium, end = Spacing.Small, top = Spacing.Small),
+                        verticalArrangement = Arrangement.spacedBy(Spacing.Tiny),
+                        content = it
+                    )
+                }
             }
         }
     }

@@ -62,7 +62,7 @@ fun ListTransactionItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = Spacing.Small, bottom = Spacing.Micro),
+                .padding(bottom = Spacing.Micro),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(

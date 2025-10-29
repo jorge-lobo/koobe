@@ -1,12 +1,17 @@
 package com.jorgelobo.koobe.ui.components.composed.cards
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -18,6 +23,7 @@ import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonConfig
 import com.jorgelobo.koobe.ui.components.base.buttons.types.AppButton
+import com.jorgelobo.koobe.ui.components.composed.base.BaseExpandableCard
 import com.jorgelobo.koobe.ui.components.composed.lists.ListSubcategoryItem
 import com.jorgelobo.koobe.ui.components.composed.lists.ListSubcategoryItemConfig
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
@@ -43,8 +49,12 @@ fun CardCategoryItem(
     val typography = AppTheme.typography.text
     val category = config.category
 
+    var isExpanded by remember { mutableStateOf(false) }
+
     BaseExpandableCard(
         modifier = modifier,
+        isExpanded = isExpanded,
+        onExpandedChange = { isExpanded = it },
         headerContent = {
             Avatar(
                 type = AvatarType.MEDIUM,
@@ -61,21 +71,26 @@ fun CardCategoryItem(
                     .weight(1f)
                     .padding(start = Spacing.Small)
             )
+
         },
         expandedContent = {
             category.subcategories.forEach { subcategory ->
-                ListSubcategoryItem(
-                    config = ListSubcategoryItemConfig(
-                        subcategory = subcategory,
-                        category = category
-                    ),
-                    onEditClick = { onEditSubcategory(subcategory.id) },
-                    onDeleteClick = { onDeleteSubcategory(subcategory.id) }
-                )
+                Box(
+                    modifier = Modifier.padding(horizontal = Spacing.Small)
+                ) {
+                    ListSubcategoryItem(
+                        config = ListSubcategoryItemConfig(
+                            subcategory = subcategory,
+                            category = category
+                        ),
+                        onEditClick = { onEditSubcategory(subcategory.id) },
+                        onDeleteClick = { onDeleteSubcategory(subcategory.id) }
+                    )
+                }
             }
 
             Row(
-                modifier = Modifier.padding(start = Spacing.Small)
+                modifier = Modifier.padding(start = Spacing.Medium, bottom = Spacing.Small)
             ) {
                 AppButton(
                     ButtonConfig(
@@ -86,7 +101,6 @@ fun CardCategoryItem(
                     )
                 )
             }
-
         }
     )
 }
