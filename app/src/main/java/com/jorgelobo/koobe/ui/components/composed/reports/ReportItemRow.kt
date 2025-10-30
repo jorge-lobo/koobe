@@ -33,8 +33,10 @@ import com.jorgelobo.koobe.ui.theme.color.AccentGold
 import com.jorgelobo.koobe.ui.theme.color.AccentMint
 import com.jorgelobo.koobe.ui.theme.dimens.AmountDisplaySize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.resolveColor
+import com.jorgelobo.koobe.utils.resolvedColor
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.ui.components.model.enums.ReportItemType
+import com.jorgelobo.koobe.utils.paymentMethodIcon
 import java.util.Locale
 
 @Composable
@@ -47,23 +49,21 @@ fun ReportItemRow(
 
     val category = config.category
     val paymentMethod = config.paymentMethod
-    val isCategory = config.isCategory
     val defaultIcon = IconCategory.EXTRA.icon
     val defaultColor = colors.containerColors.avatarContainerDefault
 
-    val icon = when {
-        isCategory -> category?.icon ?: defaultIcon
-        else -> paymentMethod?.icon ?: defaultIcon
-    }
+    val (icon, color, name) = when (config.type) {
+        ReportItemType.CATEGORY -> Triple(
+            category?.icon ?: defaultIcon,
+            category?.resolvedColor() ?: defaultColor,
+            category?.name ?: stringResource(R.string.default_category)
+        )
 
-    val color = when {
-        isCategory -> category?.resolveColor() ?: defaultColor
-        else -> paymentMethod?.resolveColor() ?: defaultColor
-    }
-
-    val name = when {
-        isCategory -> category?.name ?: stringResource(R.string.default_category)
-        else -> paymentMethod?.name ?: stringResource(R.string.default_payment_method)
+        ReportItemType.PAYMENT_METHOD -> Triple(
+            paymentMethod?.let { paymentMethodIcon(it.type) } ?: defaultIcon,
+            paymentMethod?.resolvedColor() ?: defaultColor,
+            paymentMethod?.name ?: stringResource(R.string.default_payment_method)
+        )
     }
 
     Row(
@@ -89,7 +89,7 @@ fun ReportItemRow(
         )
 
         Text(
-            text = String.format(Locale.getDefault(),"%.1f%%", config.percentage * 100),
+            text = String.format(Locale.getDefault(), "%.1f%%", config.percentage * 100),
             style = typography.numbers.labelMedium,
             color = AccentGold,
             modifier = Modifier.padding(end = Spacing.Small)
@@ -132,28 +132,28 @@ fun PreviewReportItemRow() {
             val paymentMethod = PaymentMethod(
                 type = PaymentMethodType.CARD,
                 name = "Card",
-                icon = IconPayment.CARD.icon,
+                icon = IconPayment.CASH.icon,
                 color = "#452136"
             )
 
             val config1 = ReportItemRowConfig(
+                type = ReportItemType.CATEGORY,
                 category = category,
                 paymentMethod = null,
                 currencyType = CurrencyType.EUR,
                 transactionType = TransactionType.INCOME,
                 percentage = 0.253,
-                amount = 390.0,
-                isCategory = true
+                amount = 390.0
             )
 
             val config2 = ReportItemRowConfig(
+                type = ReportItemType.PAYMENT_METHOD,
                 category = null,
                 paymentMethod = paymentMethod,
                 currencyType = CurrencyType.EUR,
                 transactionType = TransactionType.EXPENSE,
                 percentage = 0.65,
-                amount = 42353.25,
-                isCategory = false
+                amount = 42353.25
             )
 
             ReportItemRow(
