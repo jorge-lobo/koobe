@@ -211,4 +211,8 @@
     <string name="code_euro">EUR</string>
     <string name="code_dollar">USD</string>
     <string name="code_pound">GBP</string>
+
+    <!-- Default values -->
+    <string name="default_category">Miscellaneous</string>
+    <string name="default_payment_method">Cash</string>
 </resources>

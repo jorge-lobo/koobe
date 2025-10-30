@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.toColorInt
 import com.jorgelobo.koobe.domain.model.category.Category
+import com.jorgelobo.koobe.domain.model.payment.PaymentMethod
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
 import com.jorgelobo.koobe.ui.theme.color.AccentMint
@@ -31,5 +32,10 @@ fun resolveColor(colorString: String?): Color {
 
 @Composable
 fun Category.resolveColor(): Color {
+    return resolveColor(color)
+}
+
+@Composable
+fun PaymentMethod.resolveColor(): Color {
     return resolveColor(color)
 }
