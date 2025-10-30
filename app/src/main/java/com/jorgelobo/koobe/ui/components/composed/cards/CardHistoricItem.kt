@@ -39,7 +39,7 @@ import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
 import com.jorgelobo.koobe.ui.theme.color.AccentMint
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.resolveColor
+import com.jorgelobo.koobe.utils.resolvedColor
 import java.util.Date
 
 @Composable
@@ -62,7 +62,7 @@ fun CardHistoricItem(
             Avatar(
                 type = AvatarType.MEDIUM,
                 icon = category.icon,
-                color = category.resolveColor(),
+                color = category.resolvedColor(),
                 isSelected = false
             )
 
@@ -103,7 +103,7 @@ fun CardHistoricItem(
                         Avatar(
                             type = AvatarType.SMALL,
                             icon = subcategory.subcategory.icon,
-                            color = category.resolveColor(),
+                            color = category.resolvedColor(),
                             isSelected = false
                         )
 

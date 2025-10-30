@@ -35,7 +35,7 @@ import com.jorgelobo.koobe.ui.components.model.icons.IconSubcategory
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.resolveColor
+import com.jorgelobo.koobe.utils.resolvedColor
 
 @Composable
 fun CardCategoryItem(
@@ -59,7 +59,7 @@ fun CardCategoryItem(
             Avatar(
                 type = AvatarType.MEDIUM,
                 icon = category.icon,
-                color = category.resolveColor(),
+                color = category.resolvedColor(),
                 isSelected = false
             )
 

@@ -3,8 +3,7 @@ package com.jorgelobo.koobe.utils
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.Color
 import androidx.core.graphics.toColorInt
-import com.jorgelobo.koobe.domain.model.category.Category
-import com.jorgelobo.koobe.domain.model.payment.PaymentMethod
+import com.jorgelobo.koobe.domain.model.interfaces.HasColor
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
 import com.jorgelobo.koobe.ui.theme.color.AccentMint
@@ -20,7 +19,7 @@ fun getValueColor(
 }
 
 @Composable
-fun resolveColor(colorString: String?): Color {
+fun resolvedColor(colorString: String?): Color {
     if (colorString.isNullOrBlank()) return AppTheme.colors.containerColors.containerNeutralAmount
 
     return try {
@@ -31,11 +30,6 @@ fun resolveColor(colorString: String?): Color {
 }
 
 @Composable
-fun Category.resolveColor(): Color {
-    return resolveColor(color)
-}
-
-@Composable
-fun PaymentMethod.resolveColor(): Color {
-    return resolveColor(color)
+fun HasColor.resolvedColor(): Color {
+    return resolvedColor(color)
 }

@@ -42,7 +42,7 @@ import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.AvatarSize
 import com.jorgelobo.koobe.ui.theme.dimens.BudgetItemSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.resolveColor
+import com.jorgelobo.koobe.utils.resolvedColor
 
 @Composable
 fun BudgetDetailedItem(
@@ -51,7 +51,7 @@ fun BudgetDetailedItem(
 ) {
     val colors = AppTheme.colors
     val typography = AppTheme.typography
-    val categoryColor = config.category.resolveColor()
+    val categoryColor = config.category.resolvedColor()
     val spent = config.budget.spentAmount
     val limit = config.budget.limitAmount
     val projected = config.budget.projectedAmount

@@ -27,7 +27,7 @@ import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.ListItemSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.resolveColor
+import com.jorgelobo.koobe.utils.resolvedColor
 
 @Composable
 fun ListSubcategoryItem(
@@ -52,7 +52,7 @@ fun ListSubcategoryItem(
         Avatar(
             type = AvatarType.SMALL,
             icon = subcategory.icon,
-            color = category.resolveColor(),
+            color = category.resolvedColor(),
             isSelected = false
         )
 
