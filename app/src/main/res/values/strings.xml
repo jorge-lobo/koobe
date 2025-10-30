@@ -163,6 +163,10 @@
     <string name="input_warning_name">This name is already in use!</string>
 
     <!-- Budget Card -->
+    <string name="budget_header_daily">Daily budgets</string>
+    <string name="budget_header_weekly">Weekly budgets</string>
+    <string name="budget_header_monthly">Monthly budgets</string>
+    <string name="budget_header_yearly">Yearly budgets</string>
     <string name="budget_label_daily_average">Daily average:</string>
     <string name="budget_label_budget">Budget:</string>
     <string name="budget_label_projection">Projection:</string>

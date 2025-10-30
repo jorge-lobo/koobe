@@ -28,7 +28,6 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
 import com.jorgelobo.koobe.ui.components.base.background.Background
-import com.jorgelobo.koobe.ui.components.base.dividers.AppHorizontalDivider
 import com.jorgelobo.koobe.ui.components.base.progressBar.AppProgressBar
 import com.jorgelobo.koobe.ui.components.base.progressBar.ProgressBarConfig
 import com.jorgelobo.koobe.ui.components.common.AmountDisplay
@@ -218,8 +217,6 @@ fun BudgetDetailedItem(
                 percentageLabel = "${(spentPercentage * 100).toInt()}%"
             )
         )
-
-        AppHorizontalDivider()
     }
 }
 
