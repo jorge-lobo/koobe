@@ -38,30 +38,45 @@ fun MoneyText(
     decimalFontSize: TextUnit,
     textColor: Color,
     textAlign: TextAlign,
-    isEnabled: Boolean
+    isEnabled: Boolean,
+    showNegativeSign: Boolean = false
 ) {
     val colors = AppTheme.colors
     val currencySymbol = getCurrencySymbol(currencyType)
 
+    val isNegative = amount < 0
     val absoluteAmount = abs(amount)
     val formatted = String.format(Locale.ENGLISH, "%.2f", absoluteAmount)
     val parts = formatted.split(".")
     val wholePart = parts.getOrNull(0) ?: "0"
     val decimalPart = parts.getOrNull(1) ?: "00"
 
-    val textColor by animateColorAsState(
+    val animatedColor by animateColorAsState(
         targetValue = if (isEnabled) textColor else colors.textColors.textDisabled,
         label = "MoneyTextColor"
     )
 
     Text(
         buildAnnotatedString {
+            // Optional negative sign
+            if (showNegativeSign && isNegative) {
+                withStyle(
+                    style = SpanStyle(
+                        fontSize = wholeFontSize,
+                        fontWeight = FontWeight.Bold,
+                        color = animatedColor
+                    )
+                ) {
+                    append("−")
+                }
+            }
+
             // Whole number
             withStyle(
                 style = SpanStyle(
                     fontSize = wholeFontSize,
                     fontWeight = FontWeight.Bold,
-                    color = textColor
+                    color = animatedColor
                 )
             ) {
                 append("$currencySymbol $wholePart")
@@ -72,7 +87,7 @@ fun MoneyText(
                 style = SpanStyle(
                     fontSize = decimalFontSize,
                     fontWeight = FontWeight.Medium,
-                    color = textColor
+                    color = animatedColor
                 )
             ) {
                 append(".$decimalPart")
