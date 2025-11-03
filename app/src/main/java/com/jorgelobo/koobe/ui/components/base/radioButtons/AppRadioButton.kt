@@ -35,6 +35,7 @@ import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
+import com.jorgelobo.koobe.R
 
 @Composable
 fun AppRadioButton(
@@ -69,7 +70,7 @@ fun AppRadioButton(
             Icon(
                 imageVector = icon,
                 modifier = Modifier.size(IconSize.ExtraSmall),
-                contentDescription = null,
+                contentDescription = stringResource(R.string.cd_payment),
                 tint = AppTheme.colors.iconColors.iconPaymentMethod
             )
 

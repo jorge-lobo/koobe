@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
@@ -24,6 +25,7 @@ import com.jorgelobo.koobe.ui.theme.color.AccentGold
 import com.jorgelobo.koobe.ui.theme.color.AccentMint
 import com.jorgelobo.koobe.ui.theme.dimens.Height
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
+import com.jorgelobo.koobe.R
 
 @Composable
 fun StatusIndicator(
@@ -54,7 +56,7 @@ fun StatusIndicator(
     ) {
         Icon(
             imageVector = icon,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_status),
             tint = iconColor
         )
     }

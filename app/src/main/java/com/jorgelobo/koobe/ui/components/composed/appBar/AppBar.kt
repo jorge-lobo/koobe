@@ -84,7 +84,7 @@ fun LogoAppBar() {
                 .fillMaxSize()
                 .padding(vertical = Spacing.MediumSmall),
             painter = painterResource(R.drawable.logo),
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_logo),
             contentScale = ContentScale.Fit
         )
     }

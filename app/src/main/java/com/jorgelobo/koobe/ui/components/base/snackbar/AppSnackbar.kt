@@ -78,7 +78,7 @@ fun AppSnackBar(
                 IconButton(onClick = { config.onIconClick?.invoke() }) {
                     Icon(
                         imageVector = getIconFromName(iconName),
-                        contentDescription = null,
+                        contentDescription = stringResource(R.string.cd_edit),
                         tint = colors.snackBarIcon
                     )
                 }

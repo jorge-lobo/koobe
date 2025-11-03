@@ -10,10 +10,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.AvatarSize
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
+import com.jorgelobo.koobe.R
 
 @Composable
 fun BaseAvatar(
@@ -51,7 +53,7 @@ fun BaseAvatar(
     ) {
         Icon(
             imageVector = config.icon,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_avatar),
             tint = iconTint,
             modifier = Modifier.size(iconSize)
         )

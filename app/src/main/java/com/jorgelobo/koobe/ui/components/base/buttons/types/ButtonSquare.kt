@@ -4,9 +4,11 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonBase
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.theme.AppTheme
+import com.jorgelobo.koobe.R
 
 @Composable
 fun ButtonSquare(
@@ -28,7 +30,7 @@ fun ButtonSquare(
     ) {
         Icon(
             imageVector = iconUrl,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_button_icon),
             tint = if (enabled) iconColor.iconPrimary else iconColor.iconDisabled
         )
     }

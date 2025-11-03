@@ -42,6 +42,10 @@ fun ButtonAddTransaction(
         TransactionType.INCOME -> stringResource(R.string.btn_add_income)
         TransactionType.EXPENSE -> stringResource(R.string.btn_add_expense)
     }
+    val contextDescription = when (type) {
+        TransactionType.INCOME -> stringResource(R.string.cd_add_income)
+        TransactionType.EXPENSE -> stringResource(R.string.cd_add_expense)
+    }
 
     ButtonBase(
         onClick = onClick,
@@ -60,7 +64,7 @@ fun ButtonAddTransaction(
             Icon(
                 imageVector = icon,
                 modifier = Modifier.size(IconSize.ExtraSmall),
-                contentDescription = null,
+                contentDescription = contextDescription,
                 tint = AppTheme.colors.iconColors.iconAvatar
             )
 

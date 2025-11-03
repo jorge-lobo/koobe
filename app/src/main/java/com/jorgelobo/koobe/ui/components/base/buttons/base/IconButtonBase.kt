@@ -6,9 +6,11 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import com.jorgelobo.koobe.ui.components.model.enums.IconButtonType
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
+import com.jorgelobo.koobe.R
 
 @Composable
 fun IconButtonBase(
@@ -42,7 +44,7 @@ fun IconButtonBase(
             imageVector = iconUrl,
             modifier = Modifier
                 .size(iconSize),
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_button_icon),
             tint = if (isEnabled) iconColor.iconPrimary else iconColor.iconDisabled
         )
     }

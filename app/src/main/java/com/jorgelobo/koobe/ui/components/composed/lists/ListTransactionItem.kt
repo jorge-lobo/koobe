@@ -16,6 +16,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
@@ -38,6 +39,7 @@ import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.DateUtils
 import com.jorgelobo.koobe.utils.DateUtils.formatAs
 import com.jorgelobo.koobe.utils.paymentMethodIcon
+import com.jorgelobo.koobe.R
 
 @Composable
 fun ListTransactionItem(
@@ -92,7 +94,7 @@ fun ListTransactionItem(
 
             Icon(
                 imageVector = icon,
-                contentDescription = null,
+                contentDescription = stringResource(R.string.cd_payment),
                 tint = AccentGold,
                 modifier = Modifier.size(IconSize.ExtraSmall)
             )

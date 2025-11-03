@@ -50,7 +50,7 @@ fun InputSelector(
 
         AnimatedIconButton(
             imageVector = icon,
-            contentDescription = null,
+            contentDescription = stringResource(R.string.cd_disclosure),
             onClick = config.onClick
         )
     }

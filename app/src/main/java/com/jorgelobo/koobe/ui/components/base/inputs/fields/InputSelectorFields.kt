@@ -50,6 +50,10 @@ fun BaseSelectorField(
         SelectorWidth.SMALL -> SelectorSize.SmallWidth
         SelectorWidth.MEDIUM -> SelectorSize.MediumWidth
     }
+    val contentDescription = when (config.width) {
+        SelectorWidth.SMALL -> stringResource(R.string.cd_expand)
+        SelectorWidth.MEDIUM -> stringResource(R.string.cd_disclosure)
+    }
 
     BaseFieldContainer(
         label = config.label,
@@ -95,7 +99,7 @@ fun BaseSelectorField(
 
         AnimatedIconButton(
             imageVector = icon,
-            contentDescription = null,
+            contentDescription = contentDescription,
             onClick = config.onClick
         )
     }

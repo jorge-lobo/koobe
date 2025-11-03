@@ -61,7 +61,7 @@ fun BaseNumericKey(
             KeyType.BACKSPACE -> {
                 Icon(
                     imageVector = getIconFromName(IconGeneral.BACKSPACE),
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.cd_backspace),
                     tint = AppTheme.colors.iconColors.iconPrimary
                 )
             }

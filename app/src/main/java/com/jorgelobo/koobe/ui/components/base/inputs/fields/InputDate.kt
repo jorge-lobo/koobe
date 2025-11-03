@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.ui.components.base.background.Background
@@ -33,6 +34,7 @@ import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.InputSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.DateUtils
+import com.jorgelobo.koobe.R
 
 @Composable
 fun InputDate(
@@ -67,7 +69,7 @@ fun InputDate(
             IconButton(onClick = config.onIconClick) {
                 Icon(
                     imageVector = getIconFromName(IconGeneral.CALENDAR),
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.cd_calendar),
                     tint = colors.iconColors.iconPrimary,
                     modifier = Modifier.size(IconSize.Medium)
                 )

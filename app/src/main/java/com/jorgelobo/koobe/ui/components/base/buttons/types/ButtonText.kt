@@ -12,12 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonBase
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.color.Transparent
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
+import com.jorgelobo.koobe.R
 
 @Composable
 fun ButtonText(
@@ -47,7 +49,7 @@ fun ButtonText(
                 Icon(
                     imageVector = iconUrl,
                     modifier = Modifier.size(IconSize.Small),
-                    contentDescription = null,
+                    contentDescription = stringResource(R.string.cd_button_icon),
                     tint = iconColor.iconTextButton
                 )
 

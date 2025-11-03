@@ -14,6 +14,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.ui.components.base.background.Background
@@ -27,6 +28,7 @@ import com.jorgelobo.koobe.ui.theme.dimens.Height
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.DateUtils
+import com.jorgelobo.koobe.R
 
 @Composable
 fun DateSelector(
@@ -66,7 +68,7 @@ fun DateSelector(
             ) {
                 Icon(
                     imageVector = IconGeneral.CALENDAR.icon,
-                    contentDescription = "Date Picker",
+                    contentDescription = stringResource(R.string.cd_calendar),
                     tint = colors.iconColors.iconPrimary,
                     modifier = Modifier.size(IconSize.Medium)
                 )

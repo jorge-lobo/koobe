@@ -143,7 +143,6 @@ fun AppInputText(
                                             color = placeholderColor
                                         )
                                     }
-
                                 )
                             }
                         }
@@ -160,7 +159,7 @@ fun AppInputText(
                     ) {
                         Icon(
                             imageVector = icon,
-                            contentDescription = null,
+                            contentDescription = stringResource(R.string.cd_reset_text),
                             tint = colors.textFieldIcon,
                             modifier = Modifier.size(IconSize.Medium)
                         )

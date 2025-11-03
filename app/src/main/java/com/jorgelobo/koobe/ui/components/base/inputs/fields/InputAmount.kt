@@ -24,6 +24,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
@@ -37,6 +38,7 @@ import com.jorgelobo.koobe.ui.theme.dimens.BorderDimens
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.ui.theme.dimens.InputAmountSize
+import com.jorgelobo.koobe.R
 
 @Composable
 fun InputAmount(
@@ -93,7 +95,7 @@ fun InputAmount(
             ) {
                 Icon(
                     imageVector = IconGeneral.RESET.icon,
-                    contentDescription = "Reset amount",
+                    contentDescription = stringResource(R.string.cd_reset_amount),
                     tint = iconColor,
                     modifier = Modifier.size(IconSize.Medium)
                 )
