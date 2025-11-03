@@ -55,26 +55,26 @@ fun MetricDisplay(
     val parentBackground = colors.containerColors.containerPrimary
     val parentBorder = colors.containerColors.containerOutline
     val parentShape = shapes.medium
-
-    val metricBackground = when (metricType) {
-        MetricType.BALANCE -> if (screenType == ScreenType.REPORTS) colors.containerColors.containerPrimary else getValueColor(
-            value
-        )
-
-        MetricType.INCOME -> AccentMint
-        MetricType.EXPENSE -> AccentCoral
-    }
     val metricShape = shapes.small
 
-    val label = when (metricType) {
-        MetricType.BALANCE -> if (screenType in listOf(
-                ScreenType.DASHBOARD,
-                ScreenType.REPORTS
-            )
-        ) stringResource(R.string.card_finance_stats_balance_overall) else stringResource(R.string.card_finance_stats_balance)
+    val (metricBackground, label) = when (metricType) {
+        MetricType.BALANCE -> Pair(
+            if (screenType == ScreenType.REPORTS) colors.containerColors.containerPrimary else getValueColor(
+                value
+            ),
+            if (screenType in listOf(
+                    ScreenType.DASHBOARD,
+                    ScreenType.REPORTS
+                )
+            ) stringResource(R.string.card_finance_stats_balance_overall) else stringResource(R.string.card_finance_stats_balance)
+        )
 
-        MetricType.INCOME -> stringResource(R.string.card_finance_stats_income)
-        MetricType.EXPENSE -> stringResource(R.string.card_finance_stats_expenses)
+        MetricType.INCOME -> Pair(AccentMint, stringResource(R.string.card_finance_stats_income))
+
+        MetricType.EXPENSE -> Pair(
+            AccentCoral,
+            stringResource(R.string.card_finance_stats_expenses)
+        )
     }
 
     Row(

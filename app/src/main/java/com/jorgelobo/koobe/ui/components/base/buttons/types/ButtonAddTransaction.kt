@@ -11,16 +11,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonBase
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
-import com.jorgelobo.koobe.ui.icons.getIconFromName
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
+import com.jorgelobo.koobe.utils.getTransactionButtonData
 
 @Composable
 fun ButtonAddTransaction(
@@ -30,28 +27,14 @@ fun ButtonAddTransaction(
     type: TransactionType
 ) {
     val colors = AppTheme.colors.buttonColors
-    val icon = when (type) {
-        TransactionType.INCOME -> getIconFromName(IconGeneral.ADD)
-        TransactionType.EXPENSE -> getIconFromName(IconGeneral.MINUS)
-    }
-    val buttonColor = when (type) {
-        TransactionType.INCOME -> colors.buttonAddIncomeContainer
-        TransactionType.EXPENSE -> colors.buttonAddExpenseContainer
-    }
-    val text = when (type) {
-        TransactionType.INCOME -> stringResource(R.string.btn_add_income)
-        TransactionType.EXPENSE -> stringResource(R.string.btn_add_expense)
-    }
-    val contextDescription = when (type) {
-        TransactionType.INCOME -> stringResource(R.string.cd_add_income)
-        TransactionType.EXPENSE -> stringResource(R.string.cd_add_expense)
-    }
+
+    val buttonData = getTransactionButtonData(type)
 
     ButtonBase(
         onClick = onClick,
         modifier = modifier,
-        backgroundColor = buttonColor,
-        outlineColor = buttonColor,
+        backgroundColor = buttonData.color,
+        outlineColor = buttonData.color,
         type = ButtonType.ADD_TRANSACTION,
         isEnabled = enabled
     ) {
@@ -62,16 +45,16 @@ fun ButtonAddTransaction(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = icon,
+                imageVector = buttonData.icon,
                 modifier = Modifier.size(IconSize.ExtraSmall),
-                contentDescription = contextDescription,
+                contentDescription = buttonData.contextDescription,
                 tint = AppTheme.colors.iconColors.iconAvatar
             )
 
             Spacer(modifier = Modifier.padding(Spacing.Small))
 
             Text(
-                text = text,
+                text = buttonData.text,
                 color = colors.buttonPrimaryLabelText,
                 style = AppTheme.typography.text.bodyLarge
             )

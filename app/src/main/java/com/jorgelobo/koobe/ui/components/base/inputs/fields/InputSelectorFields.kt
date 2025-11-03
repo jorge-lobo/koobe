@@ -42,17 +42,18 @@ fun BaseSelectorField(
     val typography = AppTheme.typography.text
     val shape = AppTheme.shapes.small
 
-    val icon = when (config.width) {
-        SelectorWidth.MEDIUM -> IconGeneral.EXPAND.icon
-        SelectorWidth.SMALL -> IconGeneral.DISCLOSURE.icon
-    }
-    val width = when (config.width) {
-        SelectorWidth.SMALL -> SelectorSize.SmallWidth
-        SelectorWidth.MEDIUM -> SelectorSize.MediumWidth
-    }
-    val contentDescription = when (config.width) {
-        SelectorWidth.SMALL -> stringResource(R.string.cd_expand)
-        SelectorWidth.MEDIUM -> stringResource(R.string.cd_disclosure)
+    val (icon, width, contentDescription) = when (config.width) {
+        SelectorWidth.SMALL -> Triple(
+            IconGeneral.DISCLOSURE.icon,
+            SelectorSize.SmallWidth,
+            stringResource(R.string.cd_disclosure)
+        )
+
+        SelectorWidth.MEDIUM -> Triple(
+            IconGeneral.EXPAND.icon,
+            SelectorSize.MediumWidth,
+            stringResource(R.string.cd_expand)
+        )
     }
 
     BaseFieldContainer(
