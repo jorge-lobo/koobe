@@ -7,7 +7,8 @@ val LightColors = AppColorScheme(
     neutralAccent = AccentGold,
     backgroundColors = BackgroundColors(
         splashBackground = BrandBlue,
-        screenBackground = OffWhite
+        screenBackground = OffWhite,
+        scrim = LightThemeGrey4
     ),
     containerColors = ContainerColors(
         containerPrimary = White,
@@ -18,7 +19,6 @@ val LightColors = AppColorScheme(
         outlinePrimary = LightThemeGrey1,
         avatarContainerDefault = LightThemeGrey3,
         bottomSheetDragHandle = LightThemeGrey1,
-        scrim = LightThemeGrey4,
         divider = LightThemeGrey1
     ),
     textColors = TextColors(

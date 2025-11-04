@@ -27,7 +27,8 @@ data class AppColorScheme(
 
 data class BackgroundColors(
     val splashBackground: Color,
-    val screenBackground: Color
+    val screenBackground: Color,
+    val scrim: Color
 )
 
 data class ContainerColors(
@@ -39,7 +40,6 @@ data class ContainerColors(
     val outlinePrimary: Color,
     val avatarContainerDefault: Color,
     val bottomSheetDragHandle: Color,
-    val scrim: Color,
     val divider: Color
 )
 
