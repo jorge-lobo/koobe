@@ -109,6 +109,7 @@
 
     <!-- BottomSheets -->
     <string name="bottom_sheet_headline_payment">Payment</string>
+    <string name="bottom_sheet_headline_period">Period</string>
     <string name="bottom_sheet_headline_period_selector">Select period</string>
 
     <!-- Cards -->

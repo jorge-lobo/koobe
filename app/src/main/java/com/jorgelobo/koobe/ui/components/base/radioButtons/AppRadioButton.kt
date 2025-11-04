@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material3.Icon
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.RadioButtonDefaults
@@ -27,6 +28,7 @@ import com.jorgelobo.koobe.domain.model.constants.UiLabel
 import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
+import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
@@ -35,7 +37,6 @@ import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.R
 
 @Composable
 fun AppRadioButton(
@@ -70,7 +71,7 @@ fun AppRadioButton(
             Icon(
                 imageVector = icon,
                 modifier = Modifier.size(IconSize.ExtraSmall),
-                contentDescription = stringResource(R.string.cd_payment),
+                contentDescription = label,
                 tint = AppTheme.colors.iconColors.iconPaymentMethod
             )
 
@@ -94,7 +95,9 @@ fun <T> RadioGroup(
     var selected by remember { mutableStateOf(config.selectedOption) }
 
     Column(
-        modifier = modifier.fillMaxWidth()
+        modifier = modifier
+            .fillMaxWidth()
+            .selectableGroup()
     ) {
         config.options.forEach { option ->
             AppRadioButton(
@@ -141,6 +144,13 @@ fun LanguageRadioButton(
     RadioGroup(config = config)
 }
 
+@Composable
+fun PeriodRadioButton(
+    config: RadioButtonConfig<PeriodType>
+) {
+    RadioGroup(config = config)
+}
+
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewRadioButtons() {
@@ -157,6 +167,7 @@ fun PreviewRadioButtons() {
             var currencySelected by remember { mutableStateOf(CurrencyType.EUR) }
             var startOfWeekSelected by remember { mutableStateOf(StartOfWeek.SUNDAY) }
             var languageSelected by remember { mutableStateOf(AppLanguage.ENGLISH) }
+            var periodSelected by remember { mutableStateOf(PeriodType.MONTHLY) }
 
             PaymentMethodRadioButton(
                 config = paymentMethodRadioButtonConfig(
@@ -183,6 +194,13 @@ fun PreviewRadioButtons() {
                 config = languageRadioButtonConfig(
                     selected = languageSelected,
                     onOptionSelected = { languageSelected = it }
+                )
+            )
+
+            PeriodRadioButton(
+                config = periodRadioButtonConfig(
+                    selected = periodSelected,
+                    onOptionSelected = { periodSelected = it }
                 )
             )
         }

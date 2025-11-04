@@ -3,6 +3,7 @@ package com.jorgelobo.koobe.ui.components.base.radioButtons
 import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
+import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.ui.components.model.enums.UiState
 import com.jorgelobo.koobe.ui.components.model.icons.IconPayment
@@ -52,6 +53,18 @@ fun languageRadioButtonConfig(
 ): RadioButtonConfig<AppLanguage> {
     return RadioButtonConfig(
         options = AppLanguage.entries,
+        selectedOption = selected,
+        state = UiState.ENABLED,
+        onSelectionChanged = onOptionSelected
+    )
+}
+
+fun periodRadioButtonConfig(
+    selected: PeriodType,
+    onOptionSelected: (PeriodType) -> Unit
+): RadioButtonConfig<PeriodType> {
+    return RadioButtonConfig(
+        options = PeriodType.entries,
         selectedOption = selected,
         state = UiState.ENABLED,
         onSelectionChanged = onOptionSelected
