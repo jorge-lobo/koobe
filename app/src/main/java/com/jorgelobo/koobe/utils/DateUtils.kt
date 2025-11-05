@@ -22,6 +22,12 @@ object DateUtils {
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
     }
 
+    fun getAllMonthsShortNames(): List<String> {
+        return (0..11).map { monthIndex ->
+            getMonthShortName(monthIndex)
+        }
+    }
+
     fun getMonthShortName(monthIndex: Int): String {
         val calendar = Calendar.getInstance(locale).apply { set(Calendar.MONTH, monthIndex) }
         return SimpleDateFormat("MMM", locale)

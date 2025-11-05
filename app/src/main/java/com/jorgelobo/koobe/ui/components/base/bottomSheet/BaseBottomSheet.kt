@@ -30,13 +30,13 @@ fun BaseBottomSheet(
     content: @Composable ColumnScope.() -> Unit
 ) {
     val colors = AppTheme.colors
-    val shape = AppTheme.shapes.giant
+    val shapes = AppTheme.shapes
 
     Surface(
         modifier = modifier
             .fillMaxWidth()
             .then(if (height != null) Modifier.height(height) else Modifier.wrapContentHeight()),
-        shape = shape,
+        shape = shapes.giant,
         color = colors.containerColors.containerPrimary,
         tonalElevation = 4.dp
     ) {
@@ -50,7 +50,7 @@ fun BaseBottomSheet(
                     modifier = Modifier
                         .width(BottomSheetSize.Handle.width)
                         .height(BottomSheetSize.Handle.height)
-                        .background(colors.containerColors.bottomSheetDragHandle)
+                        .background(colors.containerColors.bottomSheetDragHandle, shapes.extraSmall)
                         .align(Alignment.CenterHorizontally)
                 )
                 Spacer(modifier = Modifier.height(Spacing.Small))
