@@ -12,5 +12,4 @@ enum class PeriodType : UiLabel {
         MONTHLY -> R.string.toggle_month
         YEARLY -> R.string.toggle_year
     }
-
 }

@@ -11,12 +11,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.SortingType
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.bottomSheet.BaseBottomSheet
 import com.jorgelobo.koobe.ui.components.base.radioButtons.PaymentMethodRadioButton
 import com.jorgelobo.koobe.ui.components.base.radioButtons.PeriodRadioButton
+import com.jorgelobo.koobe.ui.components.base.radioButtons.SortingRadioButton
 import com.jorgelobo.koobe.ui.components.base.radioButtons.paymentMethodRadioButtonConfig
 import com.jorgelobo.koobe.ui.components.base.radioButtons.periodRadioButtonConfig
+import com.jorgelobo.koobe.ui.components.base.radioButtons.sortingRadioButtonConfig
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.ListType
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
@@ -29,9 +32,47 @@ fun ListSelectorBottomSheet(
     config: ListSelectorBottomSheetConfig,
     onDismiss: () -> Unit
 ) {
-    val title = when (config.type) {
-        ListType.PAYMENT -> stringResource(R.string.bottom_sheet_headline_payment)
-        ListType.PERIOD -> stringResource(R.string.bottom_sheet_headline_period)
+    val commonOnOptionSelected: (Enum<*>) -> Unit = { selected ->
+        config.onItemSelected(selected.name)
+        onDismiss()
+    }
+
+    val (title, content) = when (config.type) {
+        ListType.PAYMENT -> Pair(
+            stringResource(R.string.bottom_sheet_headline_payment),
+            @Composable {
+                PaymentMethodRadioButton(
+                    config = paymentMethodRadioButtonConfig(
+                        selected = config.selectedPaymentMethod ?: PaymentMethodType.CASH,
+                        onOptionSelected = { commonOnOptionSelected(it) }
+                    )
+                )
+            }
+        )
+
+        ListType.PERIOD -> Pair(
+            stringResource(R.string.bottom_sheet_headline_period),
+            @Composable {
+                PeriodRadioButton(
+                    config = periodRadioButtonConfig(
+                        selected = config.selectedPeriod ?: PeriodType.MONTHLY,
+                        onOptionSelected = { commonOnOptionSelected(it) }
+                    )
+                )
+            }
+        )
+
+        ListType.SORTING -> Pair(
+            stringResource(R.string.bottom_sheet_headline_sorting),
+            @Composable {
+                SortingRadioButton(
+                    config = sortingRadioButtonConfig(
+                        selected = config.selectedSortingType ?: SortingType.ALPHABETICAL,
+                        onOptionSelected = { commonOnOptionSelected(it) }
+                    )
+                )
+            }
+        )
     }
 
     BaseBottomSheet(
@@ -39,27 +80,7 @@ fun ListSelectorBottomSheet(
         height = BottomSheetSize.Height.RadioGroup,
         title = title
     ) {
-        if (config.type == ListType.PAYMENT) {
-            PaymentMethodRadioButton(
-                config = paymentMethodRadioButtonConfig(
-                    selected = config.selectedPaymentMethod ?: PaymentMethodType.CASH,
-                    onOptionSelected = { selected ->
-                        config.onItemSelected(selected.name)
-                        onDismiss()
-                    }
-                )
-            )
-        } else {
-            PeriodRadioButton(
-                config = periodRadioButtonConfig(
-                    selected = config.selectedPeriod ?: PeriodType.MONTHLY,
-                    onOptionSelected = { selected ->
-                        config.onItemSelected(selected.name)
-                        onDismiss()
-                    }
-                )
-            )
-        }
+        content()
     }
 }
 
@@ -86,8 +107,8 @@ fun PreviewListSelectorBottomSheet() {
 
             ListSelectorBottomSheet(
                 config = ListSelectorBottomSheetConfig(
-                    type = ListType.PERIOD,
-                    selectedPeriod = PeriodType.WEEKLY,
+                    type = ListType.SORTING,
+                    selectedSortingType = SortingType.ALPHABETICAL,
                     onItemSelected = {}
                 ),
                 onDismiss = {}

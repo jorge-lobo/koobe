@@ -110,6 +110,7 @@
     <!-- BottomSheets -->
     <string name="bottom_sheet_headline_payment">Payment</string>
     <string name="bottom_sheet_headline_period">Period</string>
+    <string name="bottom_sheet_headline_sorting">Sorting</string>
     <string name="bottom_sheet_headline_period_selector">Select period</string>
 
     <!-- Cards -->
@@ -202,6 +203,9 @@
     <string name="radio_pound">GBP</string>
     <string name="radio_english">English</string>
     <string name="radio_portuguese">Portuguese</string>
+    <string name="radio_alphabetical">By name</string>
+    <string name="radio_category">By category</string>
+    <string name="radio_amount">By amount</string>
 
     <!-- Currency Symbols -->
     <string name="currency_euro">€</string>

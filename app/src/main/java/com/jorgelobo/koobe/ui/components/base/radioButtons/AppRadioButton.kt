@@ -29,6 +29,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.SortingType
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
@@ -147,6 +148,13 @@ fun LanguageRadioButton(
 @Composable
 fun PeriodRadioButton(
     config: RadioButtonConfig<PeriodType>
+) {
+    RadioGroup(config = config)
+}
+
+@Composable
+fun SortingRadioButton(
+    config: RadioButtonConfig<SortingType>
 ) {
     RadioGroup(config = config)
 }
