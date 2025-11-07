@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonBase
@@ -26,11 +27,19 @@ fun ButtonText(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     text: String,
+    textColor: Color? = null,
     enabled: Boolean,
     iconUrl: ImageVector? = null
 ) {
     val buttonColors = AppTheme.colors.buttonColors
     val iconColor = AppTheme.colors.iconColors
+
+    /*val textColor = textColor ?: buttonColors.buttonDisabledLabelText*/
+    val resolvedTextColor = when {
+        !enabled -> buttonColors.buttonDisabledLabelText
+        textColor != null -> textColor
+        else -> buttonColors.buttonTextDefault
+    }
 
     ButtonBase(
         onClick = onClick,
@@ -57,7 +66,7 @@ fun ButtonText(
             }
             Text(
                 text = text,
-                color = if (enabled) buttonColors.buttonTextDefault else buttonColors.buttonDisabledLabelText,
+                color = resolvedTextColor,
                 style = AppTheme.typography.text.bodyLarge
             )
         }

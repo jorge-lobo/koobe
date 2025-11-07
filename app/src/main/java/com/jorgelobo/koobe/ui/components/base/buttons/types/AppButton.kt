@@ -65,6 +65,7 @@ fun AppButton(
                 onClick = config.onClick,
                 enabled = enabled,
                 text = config.text,
+                textColor = config.textColor,
                 iconUrl = iconVector
             )
         }

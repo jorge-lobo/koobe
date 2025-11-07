@@ -20,6 +20,7 @@ import com.adamglin.phosphoricons.regular.Plus
 import com.adamglin.phosphoricons.regular.SortAscending
 import com.adamglin.phosphoricons.regular.Trash
 import com.adamglin.phosphoricons.regular.Wallet
+import com.adamglin.phosphoricons.regular.WarningCircle
 import com.adamglin.phosphoricons.regular.Wrench
 import com.adamglin.phosphoricons.regular.X
 import com.adamglin.phosphoricons.regular.XCircle
@@ -28,6 +29,7 @@ enum class IconGeneral(val icon: ImageVector) {
     BACK(RegularGroup.ArrowLeft),
     CLOSE(RegularGroup.X),
     DELETE(RegularGroup.Trash),
+    DISCARD(RegularGroup.WarningCircle),
     EDIT(RegularGroup.PencilSimple),
     DISCLOSURE(RegularGroup.CaretRight),
     EXPAND(RegularGroup.CaretDown),

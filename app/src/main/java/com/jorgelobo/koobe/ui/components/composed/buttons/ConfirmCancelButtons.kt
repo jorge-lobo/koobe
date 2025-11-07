@@ -51,6 +51,7 @@ fun ConfirmCancelButtons(
             ButtonConfig(
                 text = config.confirmText,
                 type = ButtonType.TEXT,
+                textColor = config.confirmTextColor,
                 state = if (config.isConfirmEnabled) UiState.ENABLED else UiState.DISABLED,
                 onClick = config.onConfirmClick
             )

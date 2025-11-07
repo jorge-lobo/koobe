@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalInspectionMode
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.Dp
@@ -29,6 +30,7 @@ fun BaseDialog(
     modifier: Modifier = Modifier,
     height: Dp,
     confirmText: String,
+    confirmTextColor: Color? = null,
     enable: Boolean,
     onDismissRequest: () -> Unit,
     onConfirm: () -> Unit,
@@ -63,6 +65,7 @@ fun BaseDialog(
                     config = ConfirmCancelButtonsConfig(
                         confirmText = confirmText,
                         cancelText = stringResource(R.string.btn_cancel),
+                        confirmTextColor = confirmTextColor,
                         isConfirmEnabled = enable,
                         onConfirmClick = onConfirm,
                         onCancelClick = onCancel
