@@ -72,6 +72,18 @@ fun periodRadioButtonConfig(
     )
 }
 
+fun periodFilterRadioButtonConfig(
+    selected: PeriodType,
+    onOptionSelected: (PeriodType) -> Unit
+): RadioButtonConfig<PeriodType> {
+    return RadioButtonConfig(
+        options = listOf(PeriodType.YEARLY, PeriodType.MONTHLY),
+        selectedOption = selected,
+        state = UiState.ENABLED,
+        onSelectionChanged = onOptionSelected
+    )
+}
+
 fun sortingRadioButtonConfig(
     selected: SortingType,
     onOptionSelected: (SortingType) -> Unit

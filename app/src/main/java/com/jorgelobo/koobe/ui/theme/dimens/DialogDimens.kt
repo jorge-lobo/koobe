@@ -8,6 +8,10 @@ object DialogSize {
         val Delete = 312.dp
     }
 
-    val ActionsContainer = 48.dp
+    object OptionSelector {
+        val PairOptions = 264.dp
+        val TripleOptions = 312.dp
+    }
+
     val AvatarConfigurator = 512.dp
 }

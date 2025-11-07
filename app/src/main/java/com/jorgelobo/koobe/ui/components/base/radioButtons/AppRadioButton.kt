@@ -153,6 +153,13 @@ fun PeriodRadioButton(
 }
 
 @Composable
+fun PeriodFilterRadioButton(
+    config: RadioButtonConfig<PeriodType>
+) {
+    RadioGroup(config = config)
+}
+
+@Composable
 fun SortingRadioButton(
     config: RadioButtonConfig<SortingType>
 ) {
