@@ -58,7 +58,7 @@ fun ConfirmationDialog(
         enable = true,
         onDismissRequest = config.onCancel,
         onConfirm = config.onConfirm,
-        onCancel = config.onCancel,
+        onCancel = config.onCancel
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),

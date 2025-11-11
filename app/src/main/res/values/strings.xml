@@ -243,4 +243,28 @@
     <string name="cd_status">Status icon</string>
     <string name="cd_logo">App logo</string>
 
+    <!-- Icon Themes -->
+    <string name="arrows">Arrows</string>
+    <string name="art">Art</string>
+    <string name="clothing_accessories">Clothing and accessories</string>
+    <string name="family_people">Family and people</string>
+    <string name="finance_shopping">Finance and shopping</string>
+    <string name="food_drink">Food and drink</string>
+    <string name="health">Health</string>
+    <string name="home_life">Home and life</string>
+    <string name="logos">Logos</string>
+    <string name="math_science">Math and science</string>
+    <string name="music_sound">Music and sound</string>
+    <string name="nature_animals">Nature and animals</string>
+    <string name="photo_video">Photo and video</string>
+    <string name="places_building">Places and buildings</string>
+    <string name="shapes">Shapes</string>
+    <string name="sport_leisure">Sport and leisure</string>
+    <string name="symbols">Symbols</string>
+    <string name="technology_communications">Technology and communications</string>
+    <string name="time">Time</string>
+    <string name="tools">Tools</string>
+    <string name="transport_travel">Transport and travel</string>
+    <string name="work_business">Work and business</string>
+
 </resources>

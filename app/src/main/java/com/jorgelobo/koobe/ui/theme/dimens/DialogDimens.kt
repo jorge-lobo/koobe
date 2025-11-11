@@ -13,5 +13,8 @@ object DialogSize {
         val TripleOptions = 312.dp
     }
 
-    val AvatarConfigurator = 512.dp
+    object AvatarConfigurator {
+        val DialogHeight = 512.dp
+        val ContentHeightMax = 344.dp
+    }
 }
