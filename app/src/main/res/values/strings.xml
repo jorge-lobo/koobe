@@ -18,6 +18,7 @@
     <string name="btn_add_expense">Add expense</string>
     <string name="btn_add_subcategory">Add subcategory</string>
     <string name="btn_add_shortcut">Add shortcut</string>
+    <string name="btn_add_budget">Add budget</string>
     <string name="btn_manage_categories">Manage categories</string>
     <string name="btn_manage_shortcuts">Manage shortcuts</string>
     <string name="btn_create_shortcuts">Create shortcuts</string>

@@ -39,6 +39,7 @@ import com.jorgelobo.koobe.ui.components.common.AppBadge
 import com.jorgelobo.koobe.ui.components.common.MoneyText
 import com.jorgelobo.koobe.ui.components.composed.budgets.BudgetDetailedItem
 import com.jorgelobo.koobe.ui.components.composed.budgets.BudgetItemConfig
+import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
 import com.jorgelobo.koobe.ui.components.model.icons.IconSubcategory
@@ -161,11 +162,15 @@ fun CardPeriodicBudgetsItem(
                     val subcategory = subcategoryMap[budget.subcategoryId]
 
                     if (category != null && subcategory != null) {
+                        val model = BudgetUiModel(
+                            budget = budget,
+                            category = category,
+                            subcategory = subcategory
+                        )
+
                         BudgetDetailedItem(
                             config = BudgetItemConfig(
-                                budget = budget,
-                                category = category,
-                                subcategory = subcategory,
+                                model = model,
                                 onClick = onItemClick
                             ),
                             modifier = Modifier.padding(top = Spacing.Medium, bottom = Spacing.Tiny)

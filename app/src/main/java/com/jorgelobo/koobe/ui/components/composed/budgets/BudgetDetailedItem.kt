@@ -33,6 +33,7 @@ import com.jorgelobo.koobe.ui.components.base.progressBar.ProgressBarConfig
 import com.jorgelobo.koobe.ui.components.common.AmountDisplay
 import com.jorgelobo.koobe.ui.components.common.MoneyText
 import com.jorgelobo.koobe.ui.components.common.StatusIndicator
+import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
@@ -51,13 +52,13 @@ fun BudgetDetailedItem(
 ) {
     val colors = AppTheme.colors
     val typography = AppTheme.typography
-    val categoryColor = config.category.resolvedColor()
-    val spent = config.budget.spentAmount
-    val limit = config.budget.limitAmount
-    val projected = config.budget.projectedAmount
+    val categoryColor = config.model.category.resolvedColor()
+    val spent = config.model.budget.spentAmount
+    val limit = config.model.budget.limitAmount
+    val projected = config.model.budget.projectedAmount
     val spentPercentage = if (limit > 0) (spent / limit) else 0.0
     val projectedPercentage = if (limit > 0) (projected / limit) else 0.0
-    val dailyAverage = config.budget.dailyAverage
+    val dailyAverage = config.model.budget.dailyAverage
     val balance = limit - spent
 
     Column(
@@ -75,7 +76,7 @@ fun BudgetDetailedItem(
         ) {
             Avatar(
                 type = AvatarType.EXTRA_LARGE,
-                icon = config.subcategory.icon,
+                icon = config.model.subcategory.icon,
                 color = categoryColor,
                 isSelected = false
             )
@@ -90,14 +91,14 @@ fun BudgetDetailedItem(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = config.subcategory.name,
+                        text = config.model.subcategory.name,
                         style = typography.text.titleMedium,
                         color = colors.textColors.textPrimary
                     )
 
                     AmountDisplay(
                         amount = balance,
-                        currencyType = config.budget.currency
+                        currencyType = config.model.budget.currency
                     )
                 }
 
@@ -140,7 +141,7 @@ fun BudgetDetailedItem(
                     ) {
                         MoneyText(
                             amount = dailyAverage,
-                            currencyType = config.budget.currency,
+                            currencyType = config.model.budget.currency,
                             wholeFontSize = typography.numbers.labelLarge.fontSize,
                             decimalFontSize = typography.numbers.labelSmall.fontSize,
                             textColor = colors.textColors.textSupportMessage,
@@ -150,7 +151,7 @@ fun BudgetDetailedItem(
 
                         MoneyText(
                             amount = projected,
-                            currencyType = config.budget.currency,
+                            currencyType = config.model.budget.currency,
                             wholeFontSize = typography.numbers.labelLarge.fontSize,
                             decimalFontSize = typography.numbers.labelSmall.fontSize,
                             textColor = colors.textColors.textSupportMessage,
@@ -188,7 +189,7 @@ fun BudgetDetailedItem(
                     ) {
                         MoneyText(
                             amount = limit,
-                            currencyType = config.budget.currency,
+                            currencyType = config.model.budget.currency,
                             wholeFontSize = typography.numbers.labelLarge.fontSize,
                             decimalFontSize = typography.numbers.labelSmall.fontSize,
                             textColor = colors.textColors.textSupportMessage,
@@ -198,7 +199,7 @@ fun BudgetDetailedItem(
 
                         MoneyText(
                             amount = spent,
-                            currencyType = config.budget.currency,
+                            currencyType = config.model.budget.currency,
                             wholeFontSize = typography.numbers.labelLarge.fontSize,
                             decimalFontSize = typography.numbers.labelSmall.fontSize,
                             textColor = colors.textColors.textSupportMessage,
@@ -261,11 +262,15 @@ fun PreviewBudgetDetailedItem() {
                 type = TransactionType.EXPENSE
             )
 
+            val model = BudgetUiModel(
+                budget = budget,
+                category = category,
+                subcategory = subcategory
+            )
+
             BudgetDetailedItem(
                 config = BudgetItemConfig(
-                    budget = budget,
-                    category = category,
-                    subcategory = subcategory,
+                    model = model,
                     onClick = {}
                 )
             )
