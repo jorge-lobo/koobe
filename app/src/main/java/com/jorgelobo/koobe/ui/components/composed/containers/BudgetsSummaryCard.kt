@@ -34,7 +34,6 @@ fun BudgetsSummaryCard(
     modifier: Modifier = Modifier,
     config: BudgetsSummaryCardConfig
 ) {
-
     BaseDashboardCard(
         modifier = modifier,
         type = DashboardCardType.BUDGETS,
