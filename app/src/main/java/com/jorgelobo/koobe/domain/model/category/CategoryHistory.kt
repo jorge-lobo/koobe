@@ -4,5 +4,5 @@ data class CategoryHistory(
     val category: Category,
     val transactionCount: Int,
     val totalAmount: Double,
-    val subcategories: List<SubcategorySummary>
+    val subcategories: List<SubcategoryHistory>
 )

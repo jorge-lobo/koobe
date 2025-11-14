@@ -102,7 +102,7 @@ dependencies {
     // Lazy Grid
     implementation(libs.androidx.foundation)
 
-    implementation(libs.accompanist.systemuicontroller.v0301)
+    implementation(libs.accompanist.systemuicontroller)
 
     // Hilt
     implementation(libs.hilt.android)
@@ -113,6 +113,9 @@ dependencies {
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
+
+    // Phosphor Icons for Compose Multiplatform
+    implementation(libs.phosphor.icon)
 }
 
 kapt {

@@ -7,17 +7,18 @@ val LightColors = AppColorScheme(
     neutralAccent = AccentGold,
     backgroundColors = BackgroundColors(
         splashBackground = BrandBlue,
-        screenBackground = OffWhite
+        screenBackground = OffWhite,
+        scrim = LightThemeGrey4
     ),
     containerColors = ContainerColors(
         containerPrimary = White,
+        containerSecondary = LightThemeGrey1,
         containerOutline = LightThemeGrey1,
         containerSelected = AccentMint,
         containerNeutralAmount = LightThemeGrey1,
         outlinePrimary = LightThemeGrey1,
         avatarContainerDefault = LightThemeGrey3,
         bottomSheetDragHandle = LightThemeGrey1,
-        scrim = LightThemeGrey4,
         divider = LightThemeGrey1
     ),
     textColors = TextColors(
@@ -27,13 +28,18 @@ val LightColors = AppColorScheme(
         textLabel = BrandBlue,
         textSupportMessage = LightThemeGrey3,
         textActiveLabelText = BrandBlue,
-        textUnselectedLabelText = LightThemeGrey3
+        textUnselectedLabelText = LightThemeGrey3,
+        textDisabled = LightThemeGrey1,
+        textDisplay = White
     ),
     iconColors = IconColors(
         iconPrimary = BrandBlue,
         iconAvatar = White,
         iconSelected = BrandBlue,
-        iconDisabled = LightThemeGrey2
+        iconDisabled = LightThemeGrey2,
+        iconWarning = AccentCoral,
+        iconTextButton = AccentBlue,
+        iconPaymentMethod = AccentGold
     ),
     navigationColors = NavigationColors(
         navigationActiveIndicator = AccentMint,
@@ -52,11 +58,14 @@ val LightColors = AppColorScheme(
         buttonDisabledContainer = LightThemeGrey1,
         buttonDisabledOutline = LightThemeGrey1,
         buttonDisabledLabelText = LightThemeGrey2,
-        buttonTextDefault = AccentBlue
+        buttonTextDefault = AccentBlue,
+        buttonAddIncomeContainer = AccentMint,
+        buttonAddExpenseContainer = AccentCoral
     ),
     switchButtonColors = SwitchButtonColors(
         switchPrimary = BrandBlue,
-        switchSecondary = White
+        switchSecondary = White,
+        switchOutline = LightThemeGrey1
     ),
     toggleButtonColors = ToggleButtonColors(
         toggleContainer = LightThemeGrey1,
@@ -70,7 +79,10 @@ val LightColors = AppColorScheme(
         radioButtonUnselectedIcon = LightThemeGrey3
     ),
     tabColors = TabColors(
-        tabActiveIndicator = BrandBlue
+        tabContainer = White,
+        tabActive = BrandBlue,
+        tabInactive = LightThemeGrey3,
+        tabDisabled = LightThemeGrey2
     ),
     keypadColors = KeypadColors(
         keypadContainer = LightThemeGrey1,
@@ -96,5 +108,17 @@ val LightColors = AppColorScheme(
         listSelectorUnselected = White,
         listSelectorSelected = AccentMint,
         listSelectorText = BrandBlue
+    ),
+    textFieldColors = TextFieldColors(
+        textFieldBackground = White,
+        textFieldText = LightThemeGrey4,
+        textFieldPlaceholder = LightThemeGrey2,
+        textFieldWarningMessage = AccentCoral,
+        textFieldCursor = LightThemeGrey2,
+        textFieldIcon = BrandBlue,
+        textFieldDefaultOutline = LightThemeGrey1,
+        textFieldFocusedOutline = AccentMint,
+        textFieldWarningOutline = AccentCoral,
+        textFieldLabel = BrandBlue
     )
 )

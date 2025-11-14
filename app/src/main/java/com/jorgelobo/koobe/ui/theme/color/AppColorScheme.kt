@@ -21,23 +21,25 @@ data class AppColorScheme(
     val keypadColors: KeypadColors,
     val snackBarColors: SnackBarColors,
     val progressBarColors: ProgressBarColors,
-    val listSelectorColors: ListSelectorColors
+    val listSelectorColors: ListSelectorColors,
+    val textFieldColors: TextFieldColors
 )
 
 data class BackgroundColors(
     val splashBackground: Color,
-    val screenBackground: Color
+    val screenBackground: Color,
+    val scrim: Color
 )
 
 data class ContainerColors(
     val containerPrimary: Color,
+    val containerSecondary: Color,
     val containerOutline: Color,
     val containerSelected: Color,
     val containerNeutralAmount: Color,
     val outlinePrimary: Color,
     val avatarContainerDefault: Color,
     val bottomSheetDragHandle: Color,
-    val scrim: Color,
     val divider: Color
 )
 
@@ -48,14 +50,19 @@ data class TextColors(
     val textLabel: Color,
     val textSupportMessage: Color,
     val textActiveLabelText: Color,
-    val textUnselectedLabelText: Color
+    val textUnselectedLabelText: Color,
+    val textDisabled: Color,
+    val textDisplay: Color
 )
 
 data class IconColors(
     val iconPrimary: Color,
     val iconAvatar: Color,
     val iconSelected: Color,
-    val iconDisabled: Color
+    val iconDisabled: Color,
+    val iconWarning: Color,
+    val iconTextButton: Color,
+    val iconPaymentMethod: Color
 )
 
 data class NavigationColors(
@@ -76,12 +83,15 @@ data class ButtonColors(
     val buttonDisabledOutline: Color,
     val buttonDisabledLabelText: Color,
     val buttonSquareIcon: Color,
-    val buttonTextDefault: Color
+    val buttonTextDefault: Color,
+    val buttonAddIncomeContainer: Color,
+    val buttonAddExpenseContainer: Color
 )
 
 data class SwitchButtonColors(
     val switchPrimary: Color,
-    val switchSecondary: Color
+    val switchSecondary: Color,
+    val switchOutline: Color
 )
 
 data class ToggleButtonColors(
@@ -98,7 +108,10 @@ data class RadioButtonColors(
 )
 
 data class TabColors(
-    val tabActiveIndicator: Color
+    val tabContainer: Color,
+    val tabActive: Color,
+    val tabInactive: Color,
+    val tabDisabled: Color
 )
 
 data class KeypadColors(
@@ -128,4 +141,17 @@ data class ListSelectorColors(
     val listSelectorUnselected: Color,
     val listSelectorSelected: Color,
     val listSelectorText: Color
+)
+
+data class TextFieldColors(
+    val textFieldBackground: Color,
+    val textFieldText: Color,
+    val textFieldPlaceholder: Color,
+    val textFieldWarningMessage: Color,
+    val textFieldCursor: Color,
+    val textFieldIcon: Color,
+    val textFieldDefaultOutline: Color,
+    val textFieldFocusedOutline: Color,
+    val textFieldWarningOutline: Color,
+    val textFieldLabel: Color
 )

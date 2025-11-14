@@ -8,6 +8,7 @@ object Height {
         val List = 182.dp
     }
 
+    val StatusIndicator = 12.dp
     val Badge = 16.dp
     val DateRow = 24.dp
     val CardListCollapsed = 40.dp
