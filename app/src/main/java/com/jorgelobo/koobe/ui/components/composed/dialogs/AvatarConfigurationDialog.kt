@@ -44,7 +44,7 @@ fun AvatarConfigurationDialog(
         confirmText = stringResource(R.string.btn_apply),
         enable = enable,
         onDismissRequest = config.onCancel,
-        onConfirm = config.onConfirm,
+        onConfirm = config.onApply,
         onCancel = config.onCancel
     ) {
         Column(
@@ -85,7 +85,8 @@ fun PreviewAvatarConfigurationDialog() {
             AvatarConfigurationDialog(
                 config = AvatarConfigurationDialogConfig(
                     type = AvatarConfigurationType.COLOR,
-                    onConfirm = {},
+                    onSelection = {},
+                    onApply = {},
                     onCancel = {}
                 ),
                 content = {}
