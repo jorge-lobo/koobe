@@ -32,8 +32,7 @@ import com.jorgelobo.koobe.ui.components.composed.lists.ListTransactionItem
 import com.jorgelobo.koobe.ui.components.composed.lists.ListTransactionItemConfig
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
-import com.jorgelobo.koobe.ui.components.model.icons.IconSubcategory
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
@@ -202,14 +201,14 @@ fun PreviewCardHistoricItem() {
                 id = 1,
                 categoryId = 1,
                 name = "Restaurants",
-                icon = IconSubcategory.RESTAURANT.icon
+                icon = IconPack.RESTAURANT.icon
             )
 
             val subcategoryGroceries = Subcategory(
                 id = 2,
                 categoryId = 1,
                 name = "Groceries",
-                icon = IconSubcategory.FOOD_ITEMS.icon
+                icon = IconPack.FOOD_ITEMS.icon
             )
 
             // Mock SubcategoryHistory
@@ -231,7 +230,7 @@ fun PreviewCardHistoricItem() {
             val categoryFood = Category(
                 id = 1,
                 name = "Food & Dining",
-                icon = IconCategory.DINING.icon,
+                icon = IconPack.DINING.icon,
                 color = "#FF7043",
                 type = TransactionType.EXPENSE,
                 subcategories = listOf(subcategoryFood, subcategoryGroceries)

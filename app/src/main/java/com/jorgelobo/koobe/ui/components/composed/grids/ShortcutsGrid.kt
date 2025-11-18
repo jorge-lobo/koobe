@@ -21,8 +21,7 @@ import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.grid.GridItemUiModel
-import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
-import com.jorgelobo.koobe.ui.components.model.icons.IconSubcategory
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.components.model.shortcut.ShortcutUiModel
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -67,7 +66,7 @@ fun PreviewShortcutsGrid() {
                 Shortcut(
                     id = 1,
                     name = "Electricity",
-                    icon = IconSubcategory.ELECTRICITY.icon,
+                    icon = IconPack.ELECTRICITY.icon,
                     categoryId = 1,
                     transactionType = TransactionType.EXPENSE,
                     paymentMethod = PaymentMethodType.CASH,
@@ -78,7 +77,7 @@ fun PreviewShortcutsGrid() {
                 Shortcut(
                     id = 2,
                     name = "Internet & TV",
-                    icon = IconSubcategory.INTERNET_TV.icon,
+                    icon = IconPack.INTERNET_TV.icon,
                     categoryId = 1,
                     transactionType = TransactionType.EXPENSE,
                     paymentMethod = PaymentMethodType.CASH,
@@ -89,7 +88,7 @@ fun PreviewShortcutsGrid() {
                 Shortcut(
                     id = 3,
                     name = "Restaurant",
-                    icon = IconSubcategory.RESTAURANT.icon,
+                    icon = IconPack.RESTAURANT.icon,
                     categoryId = 2,
                     transactionType = TransactionType.EXPENSE,
                     paymentMethod = PaymentMethodType.CASH,
@@ -100,7 +99,7 @@ fun PreviewShortcutsGrid() {
                 Shortcut(
                     id = 4,
                     name = "Canteen",
-                    icon = IconSubcategory.CANTEEN.icon,
+                    icon = IconPack.CANTEEN.icon,
                     categoryId = 2,
                     transactionType = TransactionType.EXPENSE,
                     paymentMethod = PaymentMethodType.CASH,
@@ -111,7 +110,7 @@ fun PreviewShortcutsGrid() {
             )
 
             val category =
-                Category(1, "Home", IconCategory.HOME.icon, "#FFB74D", TransactionType.EXPENSE)
+                Category(1, "Home", IconPack.HOME.icon, "#FFB74D", TransactionType.EXPENSE)
 
             ShortcutsGrid(
                 config = ShortcutsGridConfig(

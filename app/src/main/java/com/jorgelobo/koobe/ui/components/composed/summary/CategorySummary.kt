@@ -21,8 +21,8 @@ import com.jorgelobo.koobe.ui.components.base.buttons.types.AppButton
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
-import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentGold
@@ -107,7 +107,7 @@ fun PreviewCategorySummary() {
         ) {
             CategorySummary(
                 config = CategorySummaryConfig(
-                    icon = IconCategory.HOME.icon,
+                    icon = IconPack.HOME.icon,
                     color = AccentGold,
                     categoryName = "Home",
                     subcategoryName = "Water",

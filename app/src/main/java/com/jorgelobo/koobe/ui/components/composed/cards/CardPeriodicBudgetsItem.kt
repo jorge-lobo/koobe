@@ -20,9 +20,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import com.jorgelobo.koobe.ui.components.composed.base.BaseExpandableCard
-import com.jorgelobo.koobe.ui.theme.AppTheme
-import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.budget.Budget
 import com.jorgelobo.koobe.domain.model.category.Category
@@ -37,15 +34,17 @@ import com.jorgelobo.koobe.ui.components.base.progressBar.ProgressBarConfig
 import com.jorgelobo.koobe.ui.components.common.AmountDisplay
 import com.jorgelobo.koobe.ui.components.common.AppBadge
 import com.jorgelobo.koobe.ui.components.common.MoneyText
+import com.jorgelobo.koobe.ui.components.composed.base.BaseExpandableCard
 import com.jorgelobo.koobe.ui.components.composed.budgets.BudgetDetailedItem
 import com.jorgelobo.koobe.ui.components.composed.budgets.BudgetItemConfig
 import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
-import com.jorgelobo.koobe.ui.components.model.icons.IconSubcategory
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
 import com.jorgelobo.koobe.ui.theme.color.AccentGold
+import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
 @Composable
 fun CardPeriodicBudgetsItem(
@@ -228,12 +227,12 @@ fun PreviewCardPeriodicBudgetsItem() {
             )
 
             val categories = listOf(
-                Category(1, "Home", IconCategory.HOME.icon, "#FF5722", TransactionType.EXPENSE)
+                Category(1, "Home", IconPack.HOME.icon, "#FF5722", TransactionType.EXPENSE)
             )
 
             val subcategories = listOf(
-                Subcategory(1, 1, "Internet", IconSubcategory.INTERNET_TV.icon),
-                Subcategory(2, 1, "Electricity", IconSubcategory.ELECTRICITY.icon)
+                Subcategory(1, 1, "Internet", IconPack.INTERNET_TV.icon),
+                Subcategory(2, 1, "Electricity", IconPack.ELECTRICITY.icon)
             )
 
             val config = CardPeriodicBudgetsConfig(

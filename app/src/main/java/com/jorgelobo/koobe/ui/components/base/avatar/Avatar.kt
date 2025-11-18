@@ -12,7 +12,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentBlue
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -50,7 +50,7 @@ fun PreviewAvatar() {
         ) {
             Avatar(
                 type = AvatarType.MEDIUM,
-                icon = IconCategory.TRANSPORTATION.icon,
+                icon = IconPack.TRANSPORTATION.icon,
                 color = AccentBlue,
                 isSelected = false
             )

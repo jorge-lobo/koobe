@@ -22,7 +22,7 @@ import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentGold
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -74,7 +74,7 @@ fun PreviewASelectableAvatar() {
         ) {
             SelectableAvatar(
                 type = AvatarType.LARGE,
-                icon = IconCategory.APPAREL.icon,
+                icon = IconPack.APPAREL.icon,
                 color = AccentGold,
                 onSelected = { }
             )

@@ -24,8 +24,7 @@ import com.jorgelobo.koobe.ui.components.composed.budgets.BudgetSimpleItem
 import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.DashboardCardType
-import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
-import com.jorgelobo.koobe.ui.components.model.icons.IconSubcategory
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
@@ -89,7 +88,7 @@ private fun sampleBudgetUiModels(): List<BudgetUiModel> {
     val categoryFood = Category(
         id = 1,
         name = "Dining",
-        icon = IconCategory.DINING.icon,
+        icon = IconPack.DINING.icon,
         color = "#FFB74D",
         type = TransactionType.EXPENSE
     )
@@ -98,7 +97,7 @@ private fun sampleBudgetUiModels(): List<BudgetUiModel> {
         id = 11,
         categoryId = 1,
         name = "Restaurant",
-        icon = IconSubcategory.RESTAURANT.icon
+        icon = IconPack.RESTAURANT.icon
     )
 
     val budget1 = Budget(
