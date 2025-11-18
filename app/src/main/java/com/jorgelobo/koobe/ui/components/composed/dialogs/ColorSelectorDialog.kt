@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.common.extensions.toHexString
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.colors.AvatarColorPalette
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarConfigurationType
@@ -52,7 +53,14 @@ fun ColorSelectorDialog(
         modifier = modifier,
         config = config.copy(
             type = AvatarConfigurationType.COLOR,
-            onConfirm = { config.onConfirm() }
+            onSelection = config.onSelection,
+            onApply = {
+                selectedColor?.let { color ->
+                    val hex = color.toHexString()
+                    config.onSelection(hex)
+                }
+            },
+            onCancel = config.onCancel
         ),
         enable = enable
     ) {
@@ -107,7 +115,8 @@ fun PreviewColorSelectorDialog() {
                 ColorSelectorDialog(
                     config = AvatarConfigurationDialogConfig(
                         type = AvatarConfigurationType.COLOR,
-                        onConfirm = { showDialog = false },
+                        onSelection = {},
+                        onApply = { showDialog = false },
                         onCancel = { showDialog = false }
                     )
                 )

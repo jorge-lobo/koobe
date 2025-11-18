@@ -19,8 +19,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.grid.GridItemUiModel
-import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
-import com.jorgelobo.koobe.ui.components.model.icons.IconSubcategory
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.components.model.subcategory.SubcategoryUiModel
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -66,66 +65,66 @@ fun PreviewSubcategoriesGrid() {
                     id = 1,
                     categoryId = 1,
                     name = "Rent",
-                    icon = IconSubcategory.RENT.icon
+                    icon = IconPack.RENT.icon
                 ),
                 Subcategory(
                     id = 2,
                     categoryId = 1,
                     name = "Internet & TV",
-                    icon = IconSubcategory.INTERNET_TV.icon
+                    icon = IconPack.INTERNET_TV.icon
                 ),
                 Subcategory(
                     id = 3,
                     categoryId = 1,
                     name = "Electricity",
-                    icon = IconSubcategory.ELECTRICITY.icon
+                    icon = IconPack.ELECTRICITY.icon
                 ),
                 Subcategory(
                     id = 4,
                     categoryId = 1,
                     name = "Appliances",
-                    icon = IconSubcategory.APPLIANCES.icon
+                    icon = IconPack.APPLIANCES.icon
                 ),
                 Subcategory(
                     id = 5,
                     categoryId = 1,
                     name = "Water",
-                    icon = IconSubcategory.WATER.icon
+                    icon = IconPack.WATER.icon
                 ),
                 Subcategory(
                     id = 6,
                     categoryId = 1,
                     name = "Gas",
-                    icon = IconSubcategory.GAS.icon
+                    icon = IconPack.GAS.icon
                 ),
                 Subcategory(
                     id = 7,
                     categoryId = 1,
                     name = "Maintenance",
-                    icon = IconSubcategory.HOUSE_MAINTENANCE.icon
+                    icon = IconPack.HOUSE_MAINTENANCE.icon
                 ),
                 Subcategory(
                     id = 8,
                     categoryId = 1,
                     name = "Condominium",
-                    icon = IconSubcategory.CONDOMINIUM.icon
+                    icon = IconPack.CONDOMINIUM.icon
                 ),
                 Subcategory(
                     id = 9,
                     categoryId = 1,
                     name = "Mortgage",
-                    icon = IconSubcategory.MORTGAGE.icon
+                    icon = IconPack.MORTGAGE.icon
                 ),
                 Subcategory(
                     id = 10,
                     categoryId = 1,
                     name = "Furniture",
-                    icon = IconSubcategory.FURNITURE.icon
+                    icon = IconPack.FURNITURE.icon
                 )
             )
 
             val category =
-                Category(1, "Home", IconCategory.HOME.icon, "#FFB74D", TransactionType.EXPENSE)
+                Category(1, "Home", IconPack.HOME.icon, "#FFB74D", TransactionType.EXPENSE)
 
             SubcategoriesGrid(
                 config = SubcategoriesGridConfig(

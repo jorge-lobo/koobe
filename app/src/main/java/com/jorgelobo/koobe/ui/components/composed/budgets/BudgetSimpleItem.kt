@@ -32,8 +32,7 @@ import com.jorgelobo.koobe.ui.components.common.StatusIndicator
 import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
-import com.jorgelobo.koobe.ui.components.model.icons.IconSubcategory
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
@@ -174,13 +173,13 @@ fun PreviewBudgetSimpleItem() {
                 id = 1,
                 categoryId = 1,
                 name = "Water",
-                icon = IconSubcategory.WATER.icon
+                icon = IconPack.WATER.icon
             )
 
             val category = Category(
                 id = 1,
                 name = "Home",
-                icon = IconCategory.HOME.icon,
+                icon = IconPack.HOME.icon,
                 color = "#FF5722",
                 type = TransactionType.EXPENSE
             )

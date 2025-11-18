@@ -22,8 +22,7 @@ import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
-import com.jorgelobo.koobe.ui.components.model.icons.IconSubcategory
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.components.model.shortcut.ShortcutUiModel
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
@@ -78,7 +77,7 @@ fun PreviewShortcutSimpleItem() {
             val shortcut = Shortcut(
                 id = 1,
                 name = "Electricity",
-                icon = IconSubcategory.ELECTRICITY.icon,
+                icon = IconPack.ELECTRICITY.icon,
                 categoryId = 1,
                 transactionType = TransactionType.EXPENSE,
                 paymentMethod = PaymentMethodType.CASH,
@@ -90,7 +89,7 @@ fun PreviewShortcutSimpleItem() {
             val category = Category(
                 id = 1,
                 name = "Home",
-                icon = IconCategory.HOME.icon,
+                icon = IconPack.HOME.icon,
                 color = "#FF5722",
                 type = TransactionType.EXPENSE
             )

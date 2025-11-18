@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
@@ -24,7 +25,8 @@ import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.common.MoneyText
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
+import com.jorgelobo.koobe.ui.components.model.enums.ReportItemType
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.components.model.icons.IconPayment
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
@@ -33,10 +35,8 @@ import com.jorgelobo.koobe.ui.theme.color.AccentGold
 import com.jorgelobo.koobe.ui.theme.color.AccentMint
 import com.jorgelobo.koobe.ui.theme.dimens.AmountDisplaySize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.resolvedColor
-import com.jorgelobo.koobe.R
-import com.jorgelobo.koobe.ui.components.model.enums.ReportItemType
 import com.jorgelobo.koobe.utils.paymentMethodIcon
+import com.jorgelobo.koobe.utils.resolvedColor
 import java.util.Locale
 
 @Composable
@@ -49,7 +49,7 @@ fun ReportItemRow(
 
     val category = config.category
     val paymentMethod = config.paymentMethod
-    val defaultIcon = IconCategory.EXTRA.icon
+    val defaultIcon = IconPack.EXTRA.icon
     val defaultColor = colors.containerColors.avatarContainerDefault
 
     val (icon, color, name) = when (config.type) {
@@ -123,7 +123,7 @@ fun PreviewReportItemRow() {
             val category = Category(
                 id = 1,
                 name = "Home",
-                icon = IconCategory.HOME.icon,
+                icon = IconPack.HOME.icon,
                 color = "#FF5722",
                 type = TransactionType.EXPENSE,
                 subcategories = emptyList()

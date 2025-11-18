@@ -22,6 +22,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.data.local.icon.IconResolver
 import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.mappers.iconThemesMap
@@ -51,9 +52,14 @@ fun IconSelectorDialog(
         modifier = modifier,
         config = config.copy(
             type = AvatarConfigurationType.ICON,
-            onConfirm = {
-                selectedIcon?.let { config.onConfirm() }
-            }
+            onSelection = config.onSelection,
+            onApply = {
+                selectedIcon?.let { icon ->
+                    val iconName = IconResolver.findIconPackByVector(icon)?.name ?: ""
+                    config.onSelection(iconName)
+                }
+            },
+            onCancel = config.onCancel
         ),
         enable = enable
     ) {
@@ -120,7 +126,8 @@ fun PreviewIconSelectorDialog() {
                 IconSelectorDialog(
                     config = AvatarConfigurationDialogConfig(
                         type = AvatarConfigurationType.ICON,
-                        onConfirm = { showDialog = false },
+                        onSelection = {},
+                        onApply = { showDialog = false },
                         onCancel = { showDialog = false }
                     )
                 )

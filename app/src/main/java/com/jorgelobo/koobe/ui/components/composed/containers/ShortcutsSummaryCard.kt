@@ -22,8 +22,7 @@ import com.jorgelobo.koobe.ui.components.composed.shortcuts.ShortcutSimpleItem
 import com.jorgelobo.koobe.ui.components.composed.shortcuts.ShortcutSimpleItemConfig
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.DashboardCardType
-import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
-import com.jorgelobo.koobe.ui.components.model.icons.IconSubcategory
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.components.model.shortcut.ShortcutUiModel
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -87,7 +86,7 @@ private fun sampleShortcutUiModels(): List<ShortcutUiModel> {
     val shortcutElectricity = Shortcut(
         id = 1,
         name = "Electricity",
-        icon = IconSubcategory.ELECTRICITY.icon,
+        icon = IconPack.ELECTRICITY.icon,
         categoryId = 1,
         transactionType = TransactionType.EXPENSE,
         paymentMethod = PaymentMethodType.CASH,
@@ -99,7 +98,7 @@ private fun sampleShortcutUiModels(): List<ShortcutUiModel> {
     val shortcutInternetTv = Shortcut(
         id = 2,
         name = "Internet & TV",
-        icon = IconSubcategory.INTERNET_TV.icon,
+        icon = IconPack.INTERNET_TV.icon,
         categoryId = 1,
         transactionType = TransactionType.EXPENSE,
         paymentMethod = PaymentMethodType.CASH,
@@ -111,7 +110,7 @@ private fun sampleShortcutUiModels(): List<ShortcutUiModel> {
     val shortcutRestaurant = Shortcut(
         id = 3,
         name = "Restaurant",
-        icon = IconSubcategory.RESTAURANT.icon,
+        icon = IconPack.RESTAURANT.icon,
         categoryId = 2,
         transactionType = TransactionType.EXPENSE,
         paymentMethod = PaymentMethodType.CASH,
@@ -123,7 +122,7 @@ private fun sampleShortcutUiModels(): List<ShortcutUiModel> {
     val shortcutCanteen = Shortcut(
         id = 4,
         name = "Canteen",
-        icon = IconSubcategory.CANTEEN.icon,
+        icon = IconPack.CANTEEN.icon,
         categoryId = 2,
         transactionType = TransactionType.EXPENSE,
         paymentMethod = PaymentMethodType.CASH,
@@ -135,7 +134,7 @@ private fun sampleShortcutUiModels(): List<ShortcutUiModel> {
     val categoryHome = Category(
         id = 1,
         name = "Home",
-        icon = IconCategory.HOME.icon,
+        icon = IconPack.HOME.icon,
         color = "#FF5722",
         type = TransactionType.EXPENSE
     )
@@ -143,7 +142,7 @@ private fun sampleShortcutUiModels(): List<ShortcutUiModel> {
     val categoryDining = Category(
         id = 2,
         name = "Dining",
-        icon = IconCategory.DINING.icon,
+        icon = IconPack.DINING.icon,
         color = "#FF5722",
         type = TransactionType.EXPENSE
     )

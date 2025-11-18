@@ -22,7 +22,7 @@ import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.grid.BaseGridItem
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -74,22 +74,22 @@ fun PreviewCategoriesGrid() {
             var selectedCategoryId by remember { mutableStateOf<Int?>(null) }
 
             val mockCategories = listOf(
-                Category(1, "Home", IconCategory.HOME.icon, "#FFB74D", TransactionType.EXPENSE),
-                Category(2, "Grocery", IconCategory.GROCERY.icon, "#DAE067", TransactionType.EXPENSE),
-                Category(3, "Dining", IconCategory.DINING.icon, "#FFA58A", TransactionType.EXPENSE),
-                Category(4, "Transportation", IconCategory.TRANSPORTATION.icon, "#3EB5A9", TransactionType.EXPENSE),
-                Category(5, "Health", IconCategory.HEALTH.icon, "#BD5555", TransactionType.EXPENSE),
-                Category(6, "Apparel", IconCategory.APPAREL.icon, "#BA68C8", TransactionType.EXPENSE),
-                Category(7, "Technology", IconCategory.TECHNOLOGY.icon, "#6476D1", TransactionType.EXPENSE),
-                Category(8, "Entertainment", IconCategory.ENTERTAINMENT.icon, "#FFD54F", TransactionType.EXPENSE),
-                Category(9, "Education", IconCategory.EDUCATION.icon, "#59BD5E", TransactionType.EXPENSE),
-                Category(10, "Travel", IconCategory.TRAVEL.icon, "#5A9BE0", TransactionType.EXPENSE),
-                Category(11, "Essentials", IconCategory.ESSENTIALS.icon, "#A1887F", TransactionType.EXPENSE),
-                Category(12, "Pets", IconCategory.PETS.icon, "#F06292", TransactionType.EXPENSE),
-                Category(13, "Body Care", IconCategory.BODY_CARE.icon, "#E5A8F0", TransactionType.EXPENSE),
-                Category(14, "Sports", IconCategory.SPORTS.icon, "#B0E86F", TransactionType.EXPENSE),
-                Category(15, "Family", IconCategory.FAMILY.icon, "#7DC3E3", TransactionType.EXPENSE),
-                Category(16, "Miscellaneous", IconCategory.MISCELLANEOUS.icon, "#B0BEC5", TransactionType.EXPENSE),
+                Category(1, "Home", IconPack.HOME.icon, "#FFB74D", TransactionType.EXPENSE),
+                Category(2, "Grocery", IconPack.GROCERY.icon, "#DAE067", TransactionType.EXPENSE),
+                Category(3, "Dining", IconPack.DINING.icon, "#FFA58A", TransactionType.EXPENSE),
+                Category(4, "Transportation", IconPack.TRANSPORTATION.icon, "#3EB5A9", TransactionType.EXPENSE),
+                Category(5, "Health", IconPack.HEALTH.icon, "#BD5555", TransactionType.EXPENSE),
+                Category(6, "Apparel", IconPack.APPAREL.icon, "#BA68C8", TransactionType.EXPENSE),
+                Category(7, "Technology", IconPack.TECHNOLOGY.icon, "#6476D1", TransactionType.EXPENSE),
+                Category(8, "Entertainment", IconPack.ENTERTAINMENT.icon, "#FFD54F", TransactionType.EXPENSE),
+                Category(9, "Education", IconPack.EDUCATION.icon, "#59BD5E", TransactionType.EXPENSE),
+                Category(10, "Travel", IconPack.TRAVEL.icon, "#5A9BE0", TransactionType.EXPENSE),
+                Category(11, "Essentials", IconPack.ESSENTIALS.icon, "#A1887F", TransactionType.EXPENSE),
+                Category(12, "Pets", IconPack.PETS.icon, "#F06292", TransactionType.EXPENSE),
+                Category(13, "Body Care", IconPack.BODY_CARE.icon, "#E5A8F0", TransactionType.EXPENSE),
+                Category(14, "Sports", IconPack.SPORTS.icon, "#B0E86F", TransactionType.EXPENSE),
+                Category(15, "Family", IconPack.FAMILY.icon, "#7DC3E3", TransactionType.EXPENSE),
+                Category(16, "Miscellaneous", IconPack.MISCELLANEOUS.icon, "#B0BEC5", TransactionType.EXPENSE),
             )
 
             CategoriesGrid(

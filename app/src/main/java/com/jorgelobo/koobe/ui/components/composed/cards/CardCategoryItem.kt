@@ -29,9 +29,8 @@ import com.jorgelobo.koobe.ui.components.composed.lists.ListSubcategoryItemConfi
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
-import com.jorgelobo.koobe.ui.components.model.icons.IconCategory
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
-import com.jorgelobo.koobe.ui.components.model.icons.IconSubcategory
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -120,27 +119,27 @@ fun PreviewCardCategoryItem() {
                 id = 1,
                 categoryId = 1,
                 name = "Water",
-                icon = IconSubcategory.WATER.icon
+                icon = IconPack.WATER.icon
             )
 
             val subcategory2 = Subcategory(
                 id = 2,
                 categoryId = 1,
                 name = "Internet & TV",
-                icon = IconSubcategory.INTERNET_TV.icon
+                icon = IconPack.INTERNET_TV.icon
             )
 
             val subcategory3 = Subcategory(
                 id = 3,
                 categoryId = 1,
                 name = "Appliances",
-                icon = IconSubcategory.APPLIANCES.icon
+                icon = IconPack.APPLIANCES.icon
             )
 
             val category = Category(
                 id = 1,
                 name = "Home",
-                icon = IconCategory.HOME.icon,
+                icon = IconPack.HOME.icon,
                 color = "#FF5722",
                 type = TransactionType.EXPENSE,
                 subcategories = listOf(subcategory1, subcategory2, subcategory3)

@@ -35,5 +35,6 @@ data class BudgetEntity(
     val currency: CurrencyType,
     val limitAmount: Double,
     val spentAmount: Double,
-    val projectedAmount: Double
+    val projectedAmount: Double,
+    val dailyAverage: Double
 )
