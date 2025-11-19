@@ -35,6 +35,10 @@ class SubcategoryRepositoryImpl @Inject constructor(
         dao.insertAll(list.map { it.toEntity() })
     }
 
+    override suspend fun updateSubcategory(subcategory: Subcategory) {
+        dao.update(subcategory.toEntity())
+    }
+
     override suspend fun deleteSubcategory(subcategory: Subcategory) {
         dao.delete(subcategory.toEntity())
     }

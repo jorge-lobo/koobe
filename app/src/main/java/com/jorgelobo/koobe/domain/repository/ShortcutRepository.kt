@@ -8,5 +8,6 @@ interface ShortcutRepository {
     fun getShortcutsByCategory(categoryId: Int): Flow<List<Shortcut>>
     suspend fun getShortcutById(shortcutId: Int): Shortcut?
     suspend fun insertShortcut(shortcut: Shortcut)
+    suspend fun updateShortcut(shortcut: Shortcut)
     suspend fun deleteShortcut(shortcut: Shortcut)
 }

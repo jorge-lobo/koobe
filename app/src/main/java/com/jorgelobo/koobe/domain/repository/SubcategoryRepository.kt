@@ -9,5 +9,6 @@ interface SubcategoryRepository {
     suspend fun getSubcategoryById(subcategoryId: Int): Subcategory?
     suspend fun insertSubcategory(subcategory: Subcategory)
     suspend fun insertSubcategories(list: List<Subcategory>)
+    suspend fun updateSubcategory(subcategory: Subcategory)
     suspend fun deleteSubcategory(subcategory: Subcategory)
 }
