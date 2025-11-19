@@ -34,5 +34,5 @@ interface ShortcutDao {
     suspend fun getById(id: Int): ShortcutEntity?
 
     @Query("SELECT * FROM shortcuts WHERE categoryId = :categoryId")
-    suspend fun getByCategoryId(categoryId: Int): List<ShortcutEntity>
+    fun getByCategoryId(categoryId: Int): Flow<List<ShortcutEntity>>
 }

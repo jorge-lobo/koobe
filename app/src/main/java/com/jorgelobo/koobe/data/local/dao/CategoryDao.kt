@@ -32,5 +32,5 @@ interface CategoryDao {
     suspend fun getById(id: Int): CategoryEntity?
 
     @Query("SELECT * FROM categories WHERE type = :type")
-    suspend fun getByTransactionType(type: TransactionType): List<CategoryEntity>
+    fun getByTransactionType(type: TransactionType): Flow<List<CategoryEntity>>
 }
