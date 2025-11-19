@@ -31,5 +31,5 @@ interface TransactionDao {
     suspend fun getById(id: Int): TransactionEntity?
 
     @Query("SELECT * FROM transactions WHERE subcategoryId = :subcategoryId")
-    suspend fun getBySubcategoryId(subcategoryId: Int): List<TransactionEntity>
+    fun getBySubcategoryId(subcategoryId: Int): Flow<List<TransactionEntity>>
 }

@@ -32,11 +32,11 @@ interface BudgetDao {
     suspend fun getById(id: Int): BudgetEntity?
 
     @Query("SELECT * FROM budgets WHERE categoryId = :categoryId")
-    suspend fun getByCategoryId(categoryId: Int): List<BudgetEntity>
+    fun getByCategoryId(categoryId: Int): Flow<List<BudgetEntity>>
 
     @Query("SELECT * FROM budgets WHERE subcategoryId = :subcategoryId")
-    suspend fun getBySubcategoryId(subcategoryId: Int): List<BudgetEntity>
+    fun getBySubcategoryId(subcategoryId: Int): Flow<List<BudgetEntity>>
 
     @Query("SELECT * FROM budgets WHERE period = :period")
-    suspend fun getByPeriod(period: PeriodType): List<BudgetEntity>
+    fun getByPeriod(period: PeriodType): Flow<List<BudgetEntity>>
 }

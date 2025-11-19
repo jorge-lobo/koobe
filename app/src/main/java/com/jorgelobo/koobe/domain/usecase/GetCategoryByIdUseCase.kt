@@ -6,7 +6,6 @@ import com.jorgelobo.koobe.domain.repository.CategoryRepository
 class GetCategoryByIdUseCase(
     private val categoryRepository: CategoryRepository
 ) {
-    suspend operator fun invoke(categoryId: Int): Category? {
-        return categoryRepository.getCategoryById(categoryId)
-    }
+    suspend operator fun invoke(categoryId: Int): Category? =
+        categoryRepository.getCategoryById(categoryId)
 }

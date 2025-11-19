@@ -1,0 +1,36 @@
+package com.jorgelobo.koobe.data.repository
+
+import com.jorgelobo.koobe.data.local.dao.TransactionDao
+import com.jorgelobo.koobe.data.mapper.toDomain
+import com.jorgelobo.koobe.data.mapper.toEntity
+import com.jorgelobo.koobe.domain.model.transaction.Transaction
+import com.jorgelobo.koobe.domain.repository.TransactionRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import javax.inject.Inject
+
+class TransactionRepositoryImpl @Inject constructor(
+    private val dao: TransactionDao
+) : TransactionRepository {
+
+    override fun getAllTransactions(): Flow<List<Transaction>> =
+        dao.getAll().map { list ->
+            list.map { it.toDomain() }
+        }
+
+    override fun getTransactionBySubcategory(subcategoryId: Int): Flow<List<Transaction>> =
+        dao.getBySubcategoryId(subcategoryId).map { list ->
+            list.map { it.toDomain() }
+        }
+
+    override suspend fun getTransactionById(id: Int): Transaction? =
+        dao.getById(id)?.toDomain()
+
+    override suspend fun insertTransaction(transaction: Transaction) {
+        dao.insert(transaction.toEntity())
+    }
+
+    override suspend fun deleteTransaction(transaction: Transaction) {
+        dao.delete(transaction.toEntity())
+    }
+}
