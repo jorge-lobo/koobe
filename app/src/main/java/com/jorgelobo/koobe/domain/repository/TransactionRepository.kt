@@ -8,5 +8,6 @@ interface TransactionRepository {
     fun getTransactionBySubcategory(subcategoryId: Int): Flow<List<Transaction>>
     suspend fun getTransactionById(id: Int): Transaction?
     suspend fun insertTransaction(transaction: Transaction)
+    suspend fun updateTransaction(transaction: Transaction)
     suspend fun deleteTransaction(transaction: Transaction)
 }

@@ -30,6 +30,10 @@ class ShortcutRepositoryImpl @Inject constructor(
         dao.insert(shortcut.toEntity())
     }
 
+    override suspend fun updateShortcut(shortcut: Shortcut) {
+        dao.update(shortcut.toEntity())
+    }
+
     override suspend fun deleteShortcut(shortcut: Shortcut) {
         dao.delete(shortcut.toEntity())
     }

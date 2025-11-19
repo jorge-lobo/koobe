@@ -11,5 +11,6 @@ interface BudgetRepository {
     fun getBudgetsByPeriod(period: PeriodType): Flow<List<Budget>>
     suspend fun getBudgetById(budgetId: Int): Budget?
     suspend fun insertBudget(budget: Budget)
+    suspend fun updateBudget(budget: Budget)
     suspend fun deleteBudget(budget: Budget)
 }

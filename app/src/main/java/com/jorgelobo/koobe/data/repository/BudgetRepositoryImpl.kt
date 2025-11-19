@@ -41,6 +41,10 @@ class BudgetRepositoryImpl @Inject constructor(
         dao.insert(budget.toEntity())
     }
 
+    override suspend fun updateBudget(budget: Budget) {
+        dao.update(budget.toEntity())
+    }
+
     override suspend fun deleteBudget(budget: Budget) {
         dao.delete(budget.toEntity())
     }
