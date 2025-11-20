@@ -18,7 +18,7 @@ class TransactionRepositoryImpl @Inject constructor(
             list.map { it.toDomain() }
         }
 
-    override fun getTransactionBySubcategory(subcategoryId: Int): Flow<List<Transaction>> =
+    override fun getTransactionsBySubcategoryId(subcategoryId: Int): Flow<List<Transaction>> =
         dao.getBySubcategoryId(subcategoryId).map { list ->
             list.map { it.toDomain() }
         }

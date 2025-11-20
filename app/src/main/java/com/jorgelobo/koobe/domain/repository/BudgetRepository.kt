@@ -6,8 +6,8 @@ import kotlinx.coroutines.flow.Flow
 
 interface BudgetRepository {
     fun getAllBudgets(): Flow<List<Budget>>
-    fun getBudgetsByCategory(categoryId: Int): Flow<List<Budget>>
-    fun getBudgetsBySubcategory(subcategoryId: Int): Flow<List<Budget>>
+    fun getBudgetsByCategoryId(categoryId: Int): Flow<List<Budget>>
+    fun getBudgetsBySubcategoryId(subcategoryId: Int): Flow<List<Budget>>
     fun getBudgetsByPeriod(period: PeriodType): Flow<List<Budget>>
     suspend fun getBudgetById(budgetId: Int): Budget?
     suspend fun insertBudget(budget: Budget)

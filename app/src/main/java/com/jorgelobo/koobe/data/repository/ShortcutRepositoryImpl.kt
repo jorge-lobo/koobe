@@ -18,7 +18,7 @@ class ShortcutRepositoryImpl @Inject constructor(
             list.map { it.toDomain() }
         }
 
-    override fun getShortcutsByCategory(categoryId: Int): Flow<List<Shortcut>> =
+    override fun getShortcutsByCategoryId(categoryId: Int): Flow<List<Shortcut>> =
         dao.getByCategoryId(categoryId).map { list ->
             list.map { it.toDomain() }
         }
