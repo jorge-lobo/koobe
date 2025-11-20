@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface SubcategoryRepository {
     fun getAllSubcategories(): Flow<List<Subcategory>>
-    fun getSubcategoriesByCategory(categoryId: Int): Flow<List<Subcategory>>
+    fun getSubcategoriesByCategoryId(categoryId: Int): Flow<List<Subcategory>>
     suspend fun getSubcategoryById(subcategoryId: Int): Subcategory?
     suspend fun insertSubcategory(subcategory: Subcategory)
     suspend fun insertSubcategories(list: List<Subcategory>)

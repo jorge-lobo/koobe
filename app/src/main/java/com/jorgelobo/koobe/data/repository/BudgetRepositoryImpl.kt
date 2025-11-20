@@ -19,12 +19,12 @@ class BudgetRepositoryImpl @Inject constructor(
             list.map { it.toDomain() }
         }
 
-    override fun getBudgetsByCategory(categoryId: Int): Flow<List<Budget>> =
+    override fun getBudgetsByCategoryId(categoryId: Int): Flow<List<Budget>> =
         dao.getByCategoryId(categoryId).map { list ->
             list.map { it.toDomain() }
         }
 
-    override fun getBudgetsBySubcategory(subcategoryId: Int): Flow<List<Budget>> =
+    override fun getBudgetsBySubcategoryId(subcategoryId: Int): Flow<List<Budget>> =
         dao.getBySubcategoryId(subcategoryId).map { list ->
             list.map { it.toDomain() }
         }
