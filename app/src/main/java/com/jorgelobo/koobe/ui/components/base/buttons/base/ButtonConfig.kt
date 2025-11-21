@@ -7,7 +7,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.components.model.enums.UiState
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
-import com.jorgelobo.koobe.ui.icons.getIconFromName
+import com.jorgelobo.koobe.ui.mappers.getIconFromName
 
 @Stable
 data class ButtonConfig(
