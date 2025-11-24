@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.ui.icons
+package com.jorgelobo.koobe.ui.mappers
 
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral

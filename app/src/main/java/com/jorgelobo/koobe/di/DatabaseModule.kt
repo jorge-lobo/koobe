@@ -19,15 +19,29 @@ object DatabaseModule {
     @Singleton
     fun provideDatabase(
         @ApplicationContext context: Context
-    ): KoobeDatabase = Room.databaseBuilder(
-        context,
-        KoobeDatabase::class.java,
-        "koobe_db"
-    ).build()
+    ): KoobeDatabase {
+        val database = Room.databaseBuilder(
+            context,
+            KoobeDatabase::class.java,
+            "koobe_db"
+        )
+            .build()
 
-    @Provides fun provideBudgetDao(db: KoobeDatabase): BudgetDao = db.budgetDao()
-    @Provides fun provideCategoryDao(db: KoobeDatabase): CategoryDao = db.categoryDao()
-    @Provides fun provideShortcutDao(db: KoobeDatabase): ShortcutDao = db.shortcutDao()
-    @Provides fun provideSubcategoryDao(db: KoobeDatabase): SubcategoryDao = db.subcategoryDao()
-    @Provides fun provideTransactionDao(db: KoobeDatabase): TransactionDao = db.transactionDao()
+        return database
+    }
+
+    @Provides
+    fun provideBudgetDao(db: KoobeDatabase): BudgetDao = db.budgetDao()
+
+    @Provides
+    fun provideCategoryDao(db: KoobeDatabase): CategoryDao = db.categoryDao()
+
+    @Provides
+    fun provideShortcutDao(db: KoobeDatabase): ShortcutDao = db.shortcutDao()
+
+    @Provides
+    fun provideSubcategoryDao(db: KoobeDatabase): SubcategoryDao = db.subcategoryDao()
+
+    @Provides
+    fun provideTransactionDao(db: KoobeDatabase): TransactionDao = db.transactionDao()
 }

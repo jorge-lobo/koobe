@@ -6,7 +6,7 @@ import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.model.button.TransactionButtonData
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
-import com.jorgelobo.koobe.ui.icons.getIconFromName
+import com.jorgelobo.koobe.ui.mappers.getIconFromName
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
 @Composable

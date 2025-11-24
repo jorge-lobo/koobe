@@ -26,7 +26,7 @@ import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.buttons.base.IconButtonAppBar
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
-import com.jorgelobo.koobe.ui.icons.getIconFromName
+import com.jorgelobo.koobe.ui.mappers.getIconFromName
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.AppBarSize
