@@ -2,7 +2,6 @@ package com.jorgelobo.koobe.di
 
 import android.content.Context
 import androidx.room.Room
-import com.jorgelobo.koobe.data.local.DatabaseInitializer
 import com.jorgelobo.koobe.data.local.KoobeDatabase
 import com.jorgelobo.koobe.data.local.dao.*
 import dagger.Module
@@ -21,19 +20,11 @@ object DatabaseModule {
     fun provideDatabase(
         @ApplicationContext context: Context
     ): KoobeDatabase {
-        lateinit var database: KoobeDatabase
-
-        database = Room.databaseBuilder(
+        val database = Room.databaseBuilder(
             context,
             KoobeDatabase::class.java,
             "koobe_db"
         )
-            .addCallback(
-                DatabaseInitializer(
-                    categoryDaoProvider = { database.categoryDao() },
-                    subcategoryDaoProvider = { database.subcategoryDao() }
-                )
-            )
             .build()
 
         return database
