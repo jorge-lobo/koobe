@@ -5,7 +5,8 @@ import androidx.navigation.NavController
 
 @Composable
 fun TransactionEditorScreen(
-    navController: NavController
+    navController: NavController,
+    id: Int
 ) {
 
 }

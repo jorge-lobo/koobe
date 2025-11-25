@@ -5,7 +5,8 @@ import androidx.navigation.NavController
 
 @Composable
 fun SubcategoryEditorScreen(
-    navController: NavController
+    navController: NavController,
+    id: Int
 ) {
 
 }
