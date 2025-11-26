@@ -31,7 +31,17 @@ fun NavGraph(
         startDestination = Route.Splash.route
     ) {
         // Splash
-        composable(Route.Splash.route) { SplashScreen(navController) }
+        composable(Route.Splash.route) {
+            SplashScreen(
+                onFinished = {
+                    navController.navigate(Route.Dashboard.route) {
+                        popUpTo(Route.Splash.route) {
+                            inclusive = true
+                        }
+                    }
+                }
+            )
+        }
 
         // Main views
         composable(Route.Dashboard.route) { DashboardScreen(navController) }

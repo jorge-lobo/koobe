@@ -21,7 +21,7 @@ interface LocalDataSource {
 
     // Subcategories
     fun getSubcategories(): Flow<List<SubcategoryEntity>>
-    suspend fun getSubcategoriesByCategoryId(categoryId: Int): List<SubcategoryEntity>
+    suspend fun getSubcategoriesByCategoryId(categoryId: Int): Flow<List<SubcategoryEntity>>
 
     // Transactions
     fun getTransactions(): Flow<List<TransactionEntity>>
