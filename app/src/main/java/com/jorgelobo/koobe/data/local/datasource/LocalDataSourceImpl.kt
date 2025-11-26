@@ -45,7 +45,7 @@ class LocalDataSourceImpl @Inject constructor(
     // Subcategories
     override fun getSubcategories(): Flow<List<SubcategoryEntity>> = subcategoryDao.getAll()
 
-    override suspend fun getSubcategoriesByCategoryId(categoryId: Int): List<SubcategoryEntity> =
+    override suspend fun getSubcategoriesByCategoryId(categoryId: Int): Flow<List<SubcategoryEntity>> =
         subcategoryDao.getByCategoryId(categoryId)
 
     // Transactions
