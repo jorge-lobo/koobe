@@ -83,7 +83,7 @@ fun MetricDisplay(
             .height(height.Container)
             .clip(parentShape)
             .background(parentBackground, parentShape)
-            .border(BorderDimens.Base, parentBorder)
+            .border(BorderDimens.Base, parentBorder, parentShape)
             .padding(
                 start = Spacing.Small,
                 end = Spacing.Tiny,
