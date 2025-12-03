@@ -1,23 +1,26 @@
 package com.jorgelobo.koobe.ui.screen.dashboard
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.navigation.NavController
-import androidx.navigation.compose.currentBackStackEntryAsState
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.ui.navigation.Route
+import com.jorgelobo.koobe.ui.navigation.handleBottomNavigation
+import com.jorgelobo.koobe.ui.navigation.rememberBottomNavState
 
 @Composable
 fun DashboardScreen(
     navController: NavController
 ) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute = navBackStackEntry?.destination?.route ?: "home"
+    val currentRoute = rememberBottomNavState(navController)
 
     DashboardScreenUI(
         state = DashboardUiState(),
         currentRoute = currentRoute,
-        onRouteSelected = { route -> navController.navigate(route) },
-        onAddIncomeClick = {},
-        onAddExpenseClick = {},
+        onRouteSelected = { route ->
+            navController.handleBottomNavigation(route)
+        },
+        onAddIncomeClick = { navController.navigate(Route.CategorySelector.create(TransactionType.INCOME.name)) },
+        onAddExpenseClick = { navController.navigate(Route.CategorySelector.create(TransactionType.EXPENSE.name)) },
         onBudgetItemClick = {},
         onBudgetActionClick = {},
         onShortcutItemClick = {},
