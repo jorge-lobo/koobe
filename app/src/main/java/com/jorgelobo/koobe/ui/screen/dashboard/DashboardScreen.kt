@@ -1,6 +1,9 @@
 package com.jorgelobo.koobe.ui.screen.dashboard
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.navigation.Route
@@ -9,12 +12,14 @@ import com.jorgelobo.koobe.ui.navigation.rememberBottomNavState
 
 @Composable
 fun DashboardScreen(
-    navController: NavController
+    navController: NavController,
+    viewModel: DashboardViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsState()
     val currentRoute = rememberBottomNavState(navController)
 
     DashboardScreenUI(
-        state = DashboardUiState(),
+        state = uiState,
         currentRoute = currentRoute,
         onRouteSelected = { route ->
             navController.handleBottomNavigation(route)

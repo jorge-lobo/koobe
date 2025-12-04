@@ -173,7 +173,7 @@ private fun sampleBudgetUiModels(): List<BudgetUiModel> {
     )
 }
 
-private fun sampleShortcutUiModels(): List<ShortcutUiModel> {
+fun sampleShortcutUiModels(): List<ShortcutUiModel> {
     val shortcutElectricity = Shortcut(
         id = 1,
         name = "Electricity",

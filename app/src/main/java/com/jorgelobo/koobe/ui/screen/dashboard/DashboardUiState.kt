@@ -18,4 +18,6 @@ data class DashboardUiState(
     val weeklyIncome: Double = 0.0,
     val budgetItems: List<BudgetUiModel> = emptyList(),
     val shortcutItems: List<ShortcutUiModel> = emptyList(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null
 )

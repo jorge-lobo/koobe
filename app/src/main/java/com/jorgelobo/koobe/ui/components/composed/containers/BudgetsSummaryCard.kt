@@ -84,7 +84,7 @@ fun BudgetsSummaryCardPreview() {
     }
 }
 
-private fun sampleBudgetUiModels(): List<BudgetUiModel> {
+fun sampleBudgetUiModels(): List<BudgetUiModel> {
     val categoryFood = Category(
         id = 1,
         name = "Dining",
