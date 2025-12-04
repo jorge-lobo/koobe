@@ -22,8 +22,8 @@ fun DashboardScreen(
         onAddIncomeClick = { navController.navigate(Route.CategorySelector.create(TransactionType.INCOME.name)) },
         onAddExpenseClick = { navController.navigate(Route.CategorySelector.create(TransactionType.EXPENSE.name)) },
         onBudgetItemClick = {},
-        onBudgetActionClick = {},
+        onBudgetActionClick = { navController.navigate(Route.BudgetEditor.create(0)) },
         onShortcutItemClick = {},
-        onShortcutActionClick = {}
+        onShortcutActionClick = { navController.navigate(Route.ShortcutEditor.create(0)) }
     )
 }

@@ -10,7 +10,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
-import com.jorgelobo.koobe.ui.components.composed.appBar.LogoAppBar
 import com.jorgelobo.koobe.ui.components.composed.containers.BalanceContainer
 import com.jorgelobo.koobe.ui.components.composed.containers.BalanceContainerConfig
 import com.jorgelobo.koobe.ui.components.composed.date.DateDisplay
@@ -50,7 +49,5 @@ fun DashboardTopSection(
             ),
             modifier = Modifier.padding(horizontal = Spacing.Medium)
         )
-
-        Spacer(modifier = Modifier.height(Spacing.Medium))
     }
 }

@@ -7,27 +7,27 @@ import com.jorgelobo.koobe.ui.components.model.icons.IconBottomNavigation
 object BottomNavigationDefaults {
     val items = listOf(
         BottomNavItem(
-            BottomNavigationRoutes.HOME.name,
+            BottomNavigationRoutes.HOME.route,
             R.string.nav_home,
             IconBottomNavigation.HOME.icon
         ),
         BottomNavItem(
-            BottomNavigationRoutes.HISTORIC.name,
+            BottomNavigationRoutes.HISTORIC.route,
             R.string.nav_historic,
             IconBottomNavigation.HISTORIC.icon
         ),
         BottomNavItem(
-            BottomNavigationRoutes.REPORTS.name,
+            BottomNavigationRoutes.REPORTS.route,
             R.string.nav_reports,
             IconBottomNavigation.REPORTS.icon
         ),
         BottomNavItem(
-            BottomNavigationRoutes.BUDGET_MANAGER.name,
+            BottomNavigationRoutes.BUDGET_MANAGER.route,
             R.string.nav_budgets,
             IconBottomNavigation.BUDGETS.icon
         ),
         BottomNavItem(
-            BottomNavigationRoutes.SETTINGS.name,
+            BottomNavigationRoutes.SETTINGS.route,
             R.string.nav_settings,
             IconBottomNavigation.SETTINGS.icon
         ),
