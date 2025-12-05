@@ -26,9 +26,16 @@ fun DashboardScreen(
         },
         onAddIncomeClick = { navController.navigate(Route.CategorySelector.create(TransactionType.INCOME.name)) },
         onAddExpenseClick = { navController.navigate(Route.CategorySelector.create(TransactionType.EXPENSE.name)) },
-        onBudgetItemClick = {},
-        onBudgetActionClick = { navController.navigate(Route.BudgetEditor.create(0)) },
-        onShortcutItemClick = {},
-        onShortcutActionClick = { navController.navigate(Route.ShortcutEditor.create(0)) }
+        onBudgetItemClick = { navController.navigate(Route.BudgetEditor.create(it.budget.id)) },
+        onBudgetActionClick = {
+            if (uiState.budgetItems.isEmpty()) navController.navigate(Route.BudgetEditor.create(0))
+            else navController.navigate(Route.BudgetManager.route)
+        },
+        onShortcutItemClick = { navController.navigate(Route.ShortcutEditor.create(it.shortcut.id)) },
+        onShortcutActionClick = {
+            if (uiState.shortcutItems.isEmpty()) navController.navigate(
+                Route.ShortcutEditor.create(0)
+            ) else navController.navigate(Route.ShortcutManager.route)
+        }
     )
 }

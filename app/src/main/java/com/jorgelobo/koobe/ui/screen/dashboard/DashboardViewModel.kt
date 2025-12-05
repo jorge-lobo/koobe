@@ -36,7 +36,7 @@ class DashboardViewModel @Inject constructor(
             try {
                 _uiState.update { it.copy(isLoading = true) }
 
-                val budgets= budgetRepository.getAllBudgets().first()
+                val budgets = budgetRepository.getAllBudgets().first()
                 val shortcuts = shortcutRepository.getAllShortcuts().first()
                 val categories = categoryRepository.getAllCategories().first()
                 val subcategories = subcategoryRepository.getAllSubcategories().first()
