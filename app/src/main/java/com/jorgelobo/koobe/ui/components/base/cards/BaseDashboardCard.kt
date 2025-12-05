@@ -83,7 +83,7 @@ fun BaseDashboardCard(
                     config = EmptyStateContentConfig(
                         message = message,
                         icon = icon,
-                        iconTint = colors.textColors.textSecondary,
+                        iconTint = colors.iconColors.iconDisabled,
                         iconType = EmptyStateIconType.CARD
                     )
                 )

@@ -5,7 +5,8 @@ import androidx.navigation.NavController
 
 @Composable
 fun CategorySelectorScreen(
-    navController: NavController
+    navController: NavController,
+    type: String
 ) {
 
 }

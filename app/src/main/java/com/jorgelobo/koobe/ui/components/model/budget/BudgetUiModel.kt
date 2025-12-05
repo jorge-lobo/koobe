@@ -8,4 +8,14 @@ data class BudgetUiModel(
     val budget: Budget,
     val category: Category,
     val subcategory: Subcategory
-)
+) {
+    companion object {
+        fun from(budget: Budget, category: Category, subcategory: Subcategory): BudgetUiModel {
+            return BudgetUiModel(
+                budget = budget,
+                category = category,
+                subcategory = subcategory
+            )
+        }
+    }
+}

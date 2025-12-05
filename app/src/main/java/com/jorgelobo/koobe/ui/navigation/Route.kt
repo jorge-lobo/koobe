@@ -14,8 +14,10 @@ sealed class Route(val route: String) {
     }
 
     // Categories
-    data object CategorySelector : Route("category_selector")
     data object CategoryManager : Route("category_manager")
+    data object CategorySelector : Route("category_selector/{type}") {
+        fun create(type: String) = "category_selector/$type"
+    }
     data object CategoryEditor : Route("category_editor/{id}") {
         fun create(id: Int) = "category_editor/$id"
     }

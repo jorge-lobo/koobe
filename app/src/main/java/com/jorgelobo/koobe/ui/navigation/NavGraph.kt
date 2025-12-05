@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.screen.budgets.BudgetEditorScreen
 import com.jorgelobo.koobe.ui.screen.budgets.BudgetManagerScreen
 import com.jorgelobo.koobe.ui.screen.categories.CategoryEditorScreen
@@ -61,8 +62,15 @@ fun NavGraph(
         }
 
         // Categories
-        composable(Route.CategorySelector.route) { CategorySelectorScreen(navController) }
         composable(Route.CategoryManager.route) { CategoryManagerScreen(navController) }
+
+        composable(
+            Route.CategorySelector.route,
+            arguments = listOf(navArgument("type") { type = NavType.StringType })
+        ) { backStackEntry ->
+            val type = backStackEntry.arguments?.getString("type") ?: TransactionType.EXPENSE.name
+            CategorySelectorScreen(navController, type)
+        }
 
         composable(
             Route.CategoryEditor.route,
