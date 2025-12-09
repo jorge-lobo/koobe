@@ -1,12 +1,12 @@
-package com.jorgelobo.koobe.ui.screen.shortcuts
+package com.jorgelobo.koobe.ui.screen.categories.selector
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
 @Composable
-fun ShortcutEditorScreen(
+fun CategorySelectorScreen(
     navController: NavController,
-    id: Int
+    type: String
 ) {
 
 }

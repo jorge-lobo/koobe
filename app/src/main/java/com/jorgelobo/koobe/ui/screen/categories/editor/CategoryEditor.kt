@@ -1,10 +1,10 @@
-package com.jorgelobo.koobe.ui.screen.budgets
+package com.jorgelobo.koobe.ui.screen.categories.editor
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
 @Composable
-fun BudgetEditorScreen(
+fun CategoryEditorScreen(
     navController: NavController,
     id: Int
 ) {
