@@ -9,6 +9,8 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.navigation.handleBottomNavigation
 import com.jorgelobo.koobe.ui.navigation.rememberBottomNavState
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 
 @Composable
 fun DashboardScreen(
@@ -24,8 +26,24 @@ fun DashboardScreen(
         onRouteSelected = { route ->
             navController.handleBottomNavigation(route)
         },
-        onAddIncomeClick = { navController.navigate(Route.CategorySelector.create(TransactionType.INCOME.name)) },
-        onAddExpenseClick = { navController.navigate(Route.CategorySelector.create(TransactionType.EXPENSE.name)) },
+        onAddIncomeClick = {
+            navController.navigate(
+                Route.CategorySelector.create(
+                    mode = CategorySelectorMode.CREATE_TRANSACTION,
+                    target = CategorySelectorTarget.TRANSACTION_EDITOR,
+                    transactionType = TransactionType.INCOME
+                )
+            )
+        },
+        onAddExpenseClick = {
+            navController.navigate(
+                Route.CategorySelector.create(
+                    mode = CategorySelectorMode.CREATE_TRANSACTION,
+                    target = CategorySelectorTarget.TRANSACTION_EDITOR,
+                    transactionType = TransactionType.EXPENSE
+                )
+            )
+        },
         onBudgetItemClick = { navController.navigate(Route.BudgetEditor.create(it.budget.id)) },
         onBudgetActionClick = {
             if (uiState.budgetItems.isEmpty()) navController.navigate(Route.BudgetEditor.create(0))
