@@ -1,8 +1,8 @@
 package com.jorgelobo.koobe.ui.navigation
 
-import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
-import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
-import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
+import android.net.Uri
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
+import kotlinx.serialization.json.Json
 
 sealed class Route(val route: String) {
     data object Splash : Route("splash")
@@ -19,13 +19,13 @@ sealed class Route(val route: String) {
 
     // Categories
     data object CategoryManager : Route("category_manager")
-    data object CategorySelector : Route("category_selector/{mode}/{target}/{transactionType}") {
-        fun create(
-            mode: CategorySelectorMode,
-            target: CategorySelectorTarget,
-            transactionType: TransactionType
-        ) = "category_selector/${mode.name}/${target.name}/${transactionType.name}"
+    data object CategorySelector : Route("category_selector/{config}") {
+        fun create(config: CategorySelectorConfig): String {
+            val json = Json.encodeToString(config)
+            return "${route}/${Uri.encode(json)}"
+        }
     }
+
     data object CategoryEditor : Route("category_editor/{id}") {
         fun create(id: Int) = "category_editor/$id"
     }

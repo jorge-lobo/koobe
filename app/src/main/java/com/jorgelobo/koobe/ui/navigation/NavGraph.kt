@@ -12,6 +12,7 @@ import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorScreen
 import com.jorgelobo.koobe.ui.screen.budgets.manager.BudgetManagerScreen
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorScreen
 import com.jorgelobo.koobe.ui.screen.categories.manager.CategoryManagerScreen
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorScreen
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
@@ -24,6 +25,7 @@ import com.jorgelobo.koobe.ui.screen.shortcuts.manager.ShortcutManagerScreen
 import com.jorgelobo.koobe.ui.screen.splash.SplashScreen
 import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorScreen
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorScreen
+import kotlinx.serialization.json.Json
 
 @Composable
 fun NavGraph(
@@ -67,28 +69,19 @@ fun NavGraph(
         composable(Route.CategoryManager.route) { CategoryManagerScreen(navController) }
 
         composable(
-            Route.CategorySelector.route,
+            route = "${Route.CategorySelector.route}/{config}",
             arguments = listOf(
-                navArgument("mode") {
-                    type = NavType.EnumType(CategorySelectorMode::class.java)
-                },
-                navArgument("target") {
-                    type = NavType.EnumType(CategorySelectorTarget::class.java)
-                },
-                navArgument("transactionType") {
-                    type = NavType.EnumType(TransactionType::class.java)
+                navArgument("config") {
+                    type = NavType.StringType
                 }
             )
-        ) { backStackEntry ->
-            val mode = backStackEntry.savedStateHandle.get<CategorySelectorMode>("mode")!!
-            val target = backStackEntry.savedStateHandle.get<CategorySelectorTarget>("target")!!
-            val transactionType = backStackEntry.savedStateHandle.get<TransactionType>("transactionType")!!
+        ) { backstackEntry ->
+            val json = backstackEntry.arguments?.getString("config")!!
+            val config = Json.decodeFromString<CategorySelectorConfig>(json)
 
             CategorySelectorScreen(
                 navController = navController,
-                mode = mode,
-                target = target,
-                transactionType = transactionType
+                config = config
             )
         }
 

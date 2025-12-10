@@ -1,5 +1,8 @@
 package com.jorgelobo.koobe.ui.screen.categories.selector
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 enum class CategorySelectorMode {
     CREATE_TRANSACTION,
     EDIT_TRANSACTION,

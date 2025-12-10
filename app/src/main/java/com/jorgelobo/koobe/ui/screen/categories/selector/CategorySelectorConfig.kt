@@ -1,0 +1,14 @@
+package com.jorgelobo.koobe.ui.screen.categories.selector
+
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import kotlinx.serialization.Serializable
+
+@Serializable
+data class CategorySelectorConfig(
+    val mode: CategorySelectorMode,
+    val target: CategorySelectorTarget,
+    val initialTransactionType: TransactionType,
+    val selectedCategoryId: Int? = null,
+    val selectedSubcategoryId: Int? = null,
+    val selectedShortcutId: Int? = null
+)

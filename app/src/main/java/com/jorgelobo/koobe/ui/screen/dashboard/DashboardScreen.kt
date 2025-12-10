@@ -9,6 +9,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.navigation.handleBottomNavigation
 import com.jorgelobo.koobe.ui.navigation.rememberBottomNavState
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 
@@ -29,18 +30,22 @@ fun DashboardScreen(
         onAddIncomeClick = {
             navController.navigate(
                 Route.CategorySelector.create(
-                    mode = CategorySelectorMode.CREATE_TRANSACTION,
-                    target = CategorySelectorTarget.TRANSACTION_EDITOR,
-                    transactionType = TransactionType.INCOME
+                    CategorySelectorConfig(
+                        mode = CategorySelectorMode.CREATE_TRANSACTION,
+                        target = CategorySelectorTarget.TRANSACTION_EDITOR,
+                        initialTransactionType = TransactionType.INCOME
+                    )
                 )
             )
         },
         onAddExpenseClick = {
             navController.navigate(
                 Route.CategorySelector.create(
-                    mode = CategorySelectorMode.CREATE_TRANSACTION,
-                    target = CategorySelectorTarget.TRANSACTION_EDITOR,
-                    transactionType = TransactionType.EXPENSE
+                    CategorySelectorConfig(
+                        mode = CategorySelectorMode.CREATE_TRANSACTION,
+                        target = CategorySelectorTarget.TRANSACTION_EDITOR,
+                        initialTransactionType = TransactionType.EXPENSE
+                    )
                 )
             )
         },
