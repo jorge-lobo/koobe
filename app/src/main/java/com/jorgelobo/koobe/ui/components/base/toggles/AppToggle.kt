@@ -157,7 +157,8 @@ fun PreviewToggleButtons() {
                 config = transactionToggleConfig(
                     selected = transactionSelected,
                     onOptionSelected = { transactionSelected = it }
-                ))
+                )
+            )
 
             PeriodToggle(
                 config = periodToggleConfig(

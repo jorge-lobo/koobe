@@ -9,11 +9,10 @@ fun CategorySelectorScreen(
     config: CategorySelectorConfig
 ) {
 
-    /*CategorySelectorScreenUI(
-        mode = config.mode,
-        target = config.target,
-        transactionType = config.initialTransactionType,
-        onCategorySelected = { },
-        onBackClick = {}
-    )*/
+    CategorySelectorScreenUI(
+        config = config,
+        onBackClick = {},
+        categories = emptyList(),
+        onProceedToNext = {}
+    )
 }

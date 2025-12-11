@@ -1,13 +1,80 @@
 package com.jorgelobo.koobe.ui.screen.categories.selector
 
+import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.R
 import kotlinx.serialization.Serializable
 
 @Serializable
-enum class CategorySelectorMode {
-    CREATE_TRANSACTION,
-    EDIT_TRANSACTION,
-    EDIT_SUBCATEGORY,
-    CREATE_SHORTCUT,
-    EDIT_SHORTCUT,
-    EDIT_BUDGET
+enum class CategorySelectorMode(
+    val headlineRes: Int,
+    val leadingIcon: IconGeneral,
+    val showSettings: Boolean,
+    val showToggle: Boolean,
+    val requiresSubcategorySelection: Boolean,
+    val showActionButton: Boolean,
+    val actionButtonLabelRes: Int? = null
+) {
+    CREATE_TRANSACTION(
+        headlineRes = R.string.headline_category_selector,
+        leadingIcon = IconGeneral.CLOSE,
+        showSettings = true,
+        showToggle = false,
+        requiresSubcategorySelection = true,
+        showActionButton = false,
+        actionButtonLabelRes = null
+    ),
+    EDIT_TRANSACTION(
+        headlineRes = R.string.headline_category_changer,
+        leadingIcon = IconGeneral.BACK,
+        showSettings = false,
+        showToggle = true,
+        requiresSubcategorySelection = true,
+        showActionButton = false,
+        actionButtonLabelRes = null
+    ),
+    EDIT_SUBCATEGORY(
+        headlineRes = R.string.headline_category_changer,
+        leadingIcon = IconGeneral.BACK,
+        showSettings = false,
+        showToggle = true,
+        requiresSubcategorySelection = false,
+        showActionButton = true,
+        actionButtonLabelRes = R.string.btn_change
+    ),
+    CREATE_SHORTCUT(
+        headlineRes = R.string.headline_category_selector,
+        leadingIcon = IconGeneral.CLOSE,
+        showSettings = true,
+        showToggle = true,
+        requiresSubcategorySelection = false,
+        showActionButton = true,
+        actionButtonLabelRes = R.string.btn_continue
+    ),
+    EDIT_SHORTCUT(
+        headlineRes = R.string.headline_category_changer,
+        leadingIcon = IconGeneral.BACK,
+        showSettings = false,
+        showToggle = true,
+        requiresSubcategorySelection = false,
+        showActionButton = true,
+        actionButtonLabelRes = R.string.btn_change
+    ),
+    CREATE_BUDGET(
+        headlineRes = R.string.headline_category_selector,
+        leadingIcon = IconGeneral.CLOSE,
+        showSettings = true,
+        showToggle = true,
+        requiresSubcategorySelection = true,
+        showActionButton = false,
+        actionButtonLabelRes = null
+    ),
+    EDIT_BUDGET(
+        headlineRes = R.string.headline_category_changer,
+        leadingIcon = IconGeneral.BACK,
+        showSettings = false,
+        showToggle = true,
+        requiresSubcategorySelection = true,
+        showActionButton = false,
+        actionButtonLabelRes = null
+    )
 }
