@@ -25,6 +25,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.jorgelobo.koobe.domain.model.constants.UiLabel
+import com.jorgelobo.koobe.domain.model.constants.enums.CategoryDetailType
 import com.jorgelobo.koobe.domain.model.constants.enums.MetricType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
@@ -136,6 +137,13 @@ fun MetricToggle(
     AppToggle(config = config)
 }
 
+@Composable
+fun CategoryDetailToggle(
+    config: ToggleConfig<CategoryDetailType>
+) {
+    AppToggle(config = config)
+}
+
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewToggleButtons() {
@@ -152,6 +160,7 @@ fun PreviewToggleButtons() {
             var periodSelected by remember { mutableStateOf(PeriodType.MONTHLY) }
             var themeSelected by remember { mutableStateOf(ThemeOption.LIGHT) }
             var metricSelected by remember { mutableStateOf(MetricType.BALANCE) }
+            var categoryDetailSelected by remember { mutableStateOf(CategoryDetailType.SUBCATEGORIES) }
 
             TransactionToggle(
                 config = transactionToggleConfig(
@@ -178,6 +187,13 @@ fun PreviewToggleButtons() {
                 config = metricToggleConfig(
                     selected = metricSelected,
                     onOptionSelected = { metricSelected = it }
+                )
+            )
+
+            CategoryDetailToggle(
+                config = categoryDetailToggleConfig(
+                    selected = categoryDetailSelected,
+                    onOptionSelected = { categoryDetailSelected = it }
                 )
             )
         }
