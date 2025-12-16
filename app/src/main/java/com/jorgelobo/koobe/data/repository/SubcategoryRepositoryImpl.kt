@@ -1,6 +1,7 @@
 package com.jorgelobo.koobe.data.repository
 
 import com.jorgelobo.koobe.data.local.dao.SubcategoryDao
+import com.jorgelobo.koobe.data.local.entity.SubcategoryEntity
 import com.jorgelobo.koobe.data.mapper.toDomain
 import com.jorgelobo.koobe.data.mapper.toEntity
 import com.jorgelobo.koobe.domain.model.category.Subcategory
@@ -41,5 +42,9 @@ class SubcategoryRepositoryImpl @Inject constructor(
 
     override suspend fun deleteSubcategory(subcategory: Subcategory) {
         dao.delete(subcategory.toEntity())
+    }
+
+    override suspend fun insertSubcategoryEntities(list: List<SubcategoryEntity>) {
+        dao.insertAll(list)
     }
 }

@@ -1,6 +1,7 @@
 package com.jorgelobo.koobe.data.repository
 
 import com.jorgelobo.koobe.data.local.dao.CategoryDao
+import com.jorgelobo.koobe.data.local.entity.CategoryEntity
 import com.jorgelobo.koobe.data.mapper.toDomain
 import com.jorgelobo.koobe.data.mapper.toEntity
 import com.jorgelobo.koobe.domain.model.category.Category
@@ -41,5 +42,9 @@ class CategoryRepositoryImpl @Inject constructor(
 
     override suspend fun deleteCategory(category: Category) {
         dao.delete(category.toEntity())
+    }
+
+    override suspend fun insertCategoryEntities(list: List<CategoryEntity>) {
+        dao.insertAll(list)
     }
 }
