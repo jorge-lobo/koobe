@@ -8,7 +8,7 @@ data class CategorySelectorConfig(
     val mode: CategorySelectorMode,
     val target: CategorySelectorTarget,
     val initialTransactionType: TransactionType,
-    val selectedCategoryId: Int? = null,
-    val selectedSubcategoryId: Int? = null,
-    val selectedShortcutId: Int? = null
+    val initialCategoryId: Int? = null,
+    val initialSubcategoryId: Int? = null,
+    val initialShortcutId: Int? = null
 )
