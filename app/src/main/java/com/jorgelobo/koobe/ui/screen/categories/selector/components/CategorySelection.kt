@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,10 +31,9 @@ fun CategorySelection(
     transactionSelected: TransactionType,
     onTransactionTypeChange: (TransactionType) -> Unit,
     selectedCategoryId: Int?,
-    onCategoryIdChange: (Int?) -> Unit,
+    onCategoryIdChange: (Int) -> Unit,
     onActionButtonClick: () -> Unit
 ) {
-
     Column(
         modifier = Modifier
             .fillMaxSize()
