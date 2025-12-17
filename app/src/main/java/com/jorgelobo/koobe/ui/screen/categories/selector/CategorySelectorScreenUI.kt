@@ -6,15 +6,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.category.Category
+import com.jorgelobo.koobe.domain.model.constants.enums.CategoryDetailType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
@@ -28,15 +25,17 @@ import com.jorgelobo.koobe.ui.theme.KoobeTheme
 @Composable
 fun CategorySelectorScreenUI(
     config: CategorySelectorConfig,
-    categories: List<Category>,
+    state: CategorySelectorUiState,
     onBackClick: () -> Unit,
-    onProceedToNext: (Int) -> Unit
+    onSettingsClick: () -> Unit,
+    onTransactionTypeChange: (TransactionType) -> Unit,
+    onCategorySelected: (Int) -> Unit,
+    onSubcategorySelected: (Int) -> Unit,
+    onShortcutSelected: (Int) -> Unit,
+    onCategoryDetailSelected: (CategoryDetailType) -> Unit,
+    onProceed: () -> Unit
 ) {
     val mode = config.mode
-
-    var transactionType by remember { mutableStateOf(config.initialTransactionType) }
-    var selectedCategoryId by remember { mutableStateOf(config.selectedCategoryId) }
-    var stepSelected by remember { mutableStateOf(SelectorStep.SelectCategory) }
 
     Scaffold(
         topBar = {
@@ -46,7 +45,7 @@ fun CategorySelectorScreenUI(
                     leadingAction = AppBarAction(mode.leadingIcon) { onBackClick() },
                     trailingActions = if (mode.showSettings) {
                         listOf(
-                            AppBarAction(IconGeneral.SETTINGS) {}
+                            AppBarAction(IconGeneral.SETTINGS) { onSettingsClick() }
                         )
                     } else emptyList()
                 )
@@ -61,21 +60,17 @@ fun CategorySelectorScreenUI(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            when (stepSelected) {
+            when (state.step) {
                 SelectorStep.SelectCategory -> CategorySelection(
                     showToggle = mode.showToggle,
                     showActionButton = mode.showActionButton,
                     actionButtonLabelRes = mode.actionButtonLabelRes,
-                    categories = categories,
-                    transactionSelected = transactionType,
-                    onTransactionTypeChange = { transactionType = it },
-                    selectedCategoryId = selectedCategoryId,
-                    onCategoryIdChange = { selectedCategoryId = it },
-                    onActionButtonClick = {
-                        if (selectedCategoryId != null) {
-                            onProceedToNext(selectedCategoryId!!)
-                        }
-                    }
+                    categories = state.categories,
+                    transactionSelected = state.transactionType,
+                    onTransactionTypeChange = onTransactionTypeChange,
+                    selectedCategoryId = state.selectedCategoryId,
+                    onCategoryIdChange = onCategorySelected,
+                    onActionButtonClick = onProceed
                 )
 
                 SelectorStep.SelectSubcategory -> {}
@@ -136,13 +131,29 @@ fun PreviewCategorySelectorScreen() {
                 mode = CategorySelectorMode.CREATE_TRANSACTION,
                 target = CategorySelectorTarget.TRANSACTION_EDITOR,
                 initialTransactionType = TransactionType.EXPENSE,
+                initialCategoryId = null,
+                initialSubcategoryId = null,
+                initialShortcutId = null
+            ),
+            state = CategorySelectorUiState(
+                step = SelectorStep.SelectCategory,
+                transactionType = TransactionType.EXPENSE,
+                categories = mockCategories,
+                subcategories = emptyList(),
+                shortcuts = emptyList(),
                 selectedCategoryId = null,
                 selectedSubcategoryId = null,
-                selectedShortcutId = null
+                selectedShortcutId = null,
+                categoryDetailSelected = CategoryDetailType.SUBCATEGORIES
             ),
-            categories = mockCategories,
             onBackClick = {},
-            onProceedToNext = {}
+            onSettingsClick = {},
+            onTransactionTypeChange = {},
+            onCategorySelected = {},
+            onSubcategorySelected = {},
+            onShortcutSelected = {},
+            onCategoryDetailSelected = {},
+            onProceed = {}
         )
     }
 }
