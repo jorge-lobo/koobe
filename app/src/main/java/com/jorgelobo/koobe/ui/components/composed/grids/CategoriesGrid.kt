@@ -23,6 +23,7 @@ import com.jorgelobo.koobe.ui.components.base.grid.BaseGridItem
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -50,7 +51,7 @@ fun CategoriesGrid(
                 avatarType = AvatarType.EXTRA_LARGE,
                 color = category.resolvedColor(),
                 icon = category.icon,
-                name = category.name,
+                name = category.localizedName(),
                 textStyle = typography.bodyMedium,
                 isSelected = isSelected,
                 onClick = { config.onCategoryClick(category.id) }
