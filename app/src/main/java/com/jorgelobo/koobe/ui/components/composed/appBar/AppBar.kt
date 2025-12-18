@@ -5,15 +5,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -39,35 +40,59 @@ fun CommonAppBar(
     config: AppBarConfig
 ) {
     val colors = AppTheme.colors
-    TopAppBar(
-        modifier = modifier.height(AppBarSize.Height),
-        title = {
-            Text(
-                text = config.headline,
-                style = AppTheme.typography.text.titleLarge
-            )
-        },
-        navigationIcon = {
-            IconButtonAppBar(
-                onClick = config.leadingAction.onClick,
-                iconUrl = getIconFromName(config.leadingAction.icon),
-                enabled = true
-            )
-        },
-        actions = {
-            config.trailingActions.forEach { action ->
+
+    Box(
+        modifier = modifier
+            .fillMaxWidth()
+            .background(colors.containerColors.containerPrimary)
+            .height(AppBarSize.Height)
+    ) {
+        Row(
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            // Leading
+            Box(
+                modifier = Modifier.size(AppBarSize.Height),
+                contentAlignment = Alignment.Center
+            ) {
                 IconButtonAppBar(
-                    onClick = action.onClick,
-                    iconUrl = getIconFromName(action.icon),
+                    onClick = config.leadingAction.onClick,
+                    iconUrl = getIconFromName(config.leadingAction.icon),
                     enabled = true
                 )
             }
-        },
-        colors = TopAppBarDefaults.topAppBarColors(
-            containerColor = colors.containerColors.containerPrimary,
-            titleContentColor = colors.textColors.textSecondary
-        )
-    )
+
+            // Headline
+            Box(
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
+                contentAlignment = Alignment.CenterStart
+            ) {
+                Text(
+                    text = config.headline,
+                    style = AppTheme.typography.text.titleLarge,
+                    color = colors.textColors.textSecondary
+                )
+            }
+
+            // Trailing
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.End
+            ) {
+                config.trailingActions.forEach { action ->
+                    IconButtonAppBar(
+                        onClick = action.onClick,
+                        iconUrl = getIconFromName(action.icon),
+                        enabled = true
+                    )
+                }
+            }
+        }
+
+    }
 }
 
 @Composable
