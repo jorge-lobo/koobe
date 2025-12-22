@@ -29,7 +29,7 @@ fun CategorySelectorScreen(
         onSubcategorySelected = viewModel::onSubcategorySelected,
         onShortcutSelected = viewModel::onShortcutSelected,
         onCategoryDetailSelected = viewModel::onCategoryDetailSelected,
-        onChangeClick = {},
+        onChangeClick = viewModel::onChangeCategoryClick,
         onSubcategoryButtonClick = {},
         onShortcutButtonClick = {},
         onProceed = {}

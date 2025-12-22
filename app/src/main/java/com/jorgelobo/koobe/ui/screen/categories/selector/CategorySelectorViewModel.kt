@@ -59,6 +59,10 @@ class CategorySelectorViewModel @Inject constructor(
         loadCategories()
     }
 
+    fun onChangeCategoryClick() {
+        _uiState.update { it.copy(step = SelectorStep.SelectCategory) }
+    }
+
     fun onCategorySelected(categoryId: Int) {
         _uiState.update {
             it.copy(
