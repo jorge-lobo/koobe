@@ -26,9 +26,12 @@ fun CategorySelectorScreen(
         onSettingsClick = {},
         onTransactionTypeChange = viewModel::onTransactionTypeChanged,
         onCategorySelected = viewModel::onCategorySelected,
-        onSubcategorySelected = {},
-        onShortcutSelected = {},
-        onCategoryDetailSelected = {},
+        onSubcategorySelected = viewModel::onSubcategorySelected,
+        onShortcutSelected = viewModel::onShortcutSelected,
+        onCategoryDetailSelected = viewModel::onCategoryDetailSelected,
+        onChangeClick = {},
+        onSubcategoryButtonClick = {},
+        onShortcutButtonClick = {},
         onProceed = {}
     )
 }

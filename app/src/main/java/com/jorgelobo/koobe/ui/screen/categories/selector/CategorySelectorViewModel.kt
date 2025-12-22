@@ -76,6 +76,21 @@ class CategorySelectorViewModel @Inject constructor(
         }
     }
 
+    fun onSubcategorySelected(subcategoryId: Int) {
+        _uiState.update { it.copy(selectedSubcategoryId = subcategoryId) }
+        updatePrimaryActionState()
+    }
+
+    fun onShortcutSelected(shortcutId: Int) {
+        _uiState.update { it.copy(selectedShortcutId = shortcutId) }
+        updatePrimaryActionState()
+    }
+
+    fun onCategoryDetailSelected(type: CategoryDetailType) {
+        _uiState.update { it.copy(categoryDetailSelected = type) }
+        updatePrimaryActionState()
+    }
+
     // Data loading
 
     private fun loadCategories() {

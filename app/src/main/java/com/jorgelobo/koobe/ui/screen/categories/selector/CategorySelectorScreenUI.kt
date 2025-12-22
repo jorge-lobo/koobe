@@ -19,6 +19,7 @@ import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.categories.selector.components.CategorySelection
+import com.jorgelobo.koobe.ui.screen.categories.selector.components.SubcategorySelection
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 
@@ -33,6 +34,9 @@ fun CategorySelectorScreenUI(
     onSubcategorySelected: (Int) -> Unit,
     onShortcutSelected: (Int) -> Unit,
     onCategoryDetailSelected: (CategoryDetailType) -> Unit,
+    onChangeClick: () -> Unit,
+    onSubcategoryButtonClick: () -> Unit,
+    onShortcutButtonClick: () -> Unit,
     onProceed: () -> Unit
 ) {
     val mode = config.mode
@@ -73,7 +77,21 @@ fun CategorySelectorScreenUI(
                     onActionButtonClick = onProceed
                 )
 
-                SelectorStep.SelectSubcategory -> {}
+                SelectorStep.SelectSubcategory -> SubcategorySelection(
+                    category = state.categories.first { it.id == state.selectedCategoryId },
+                    subcategories = state.subcategories,
+                    shortcuts = state.shortcuts,
+                    selectedSubcategoryId = state.selectedSubcategoryId,
+                    selectedShortcutId = state.selectedShortcutId,
+                    categoryDetailSelected = state.categoryDetailSelected,
+                    onCategoryDetailSelected = onCategoryDetailSelected,
+                    onSubcategorySelected = onSubcategorySelected,
+                    onShortcutSelected = onShortcutSelected,
+                    onChangeClick = onChangeClick,
+                    onContinueClick = onProceed,
+                    onSubcategoryButtonClick = onSubcategoryButtonClick,
+                    onShortcutButtonClick = onShortcutButtonClick
+                )
             }
         }
     }
@@ -153,6 +171,9 @@ fun PreviewCategorySelectorScreen() {
             onSubcategorySelected = {},
             onShortcutSelected = {},
             onCategoryDetailSelected = {},
+            onChangeClick = {},
+            onSubcategoryButtonClick = {},
+            onShortcutButtonClick = {},
             onProceed = {}
         )
     }

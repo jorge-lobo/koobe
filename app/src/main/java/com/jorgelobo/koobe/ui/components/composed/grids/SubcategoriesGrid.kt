@@ -21,6 +21,7 @@ import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.grid.GridItemUiModel
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.components.model.subcategory.SubcategoryUiModel
+import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.resolvedColor
@@ -36,7 +37,7 @@ fun SubcategoriesGrid(
         items = config.list.map {
             GridItemUiModel(
                 id = it.subcategory.id,
-                name = it.subcategory.name,
+                name = it.subcategory.localizedName(),
                 icon = it.subcategory.icon,
                 color = it.category.resolvedColor()
             )
