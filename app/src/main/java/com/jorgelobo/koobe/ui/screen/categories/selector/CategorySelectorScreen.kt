@@ -6,6 +6,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.jorgelobo.koobe.ui.navigation.Route
 
 @Composable
 fun CategorySelectorScreen(
@@ -22,16 +23,16 @@ fun CategorySelectorScreen(
     CategorySelectorScreenUI(
         config = config,
         state = uiState,
-        onBackClick = {},
-        onSettingsClick = {},
+        onBackClick = { navController.popBackStack() },
+        onSettingsClick = { navController.navigate(Route.Settings.route) },
         onTransactionTypeChange = viewModel::onTransactionTypeChanged,
         onCategorySelected = viewModel::onCategorySelected,
         onSubcategorySelected = viewModel::onSubcategorySelected,
         onShortcutSelected = viewModel::onShortcutSelected,
         onCategoryDetailSelected = viewModel::onCategoryDetailSelected,
         onChangeClick = viewModel::onChangeCategoryClick,
-        onSubcategoryButtonClick = {},
-        onShortcutButtonClick = {},
+        onSubcategoryButtonClick = { navController.navigate(Route.SubcategoryEditor.create(0)) },
+        onShortcutButtonClick = { navController.navigate(Route.ShortcutEditor.create(0)) },
         onProceed = {}
     )
 }
