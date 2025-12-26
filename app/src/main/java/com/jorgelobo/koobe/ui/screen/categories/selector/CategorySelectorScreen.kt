@@ -14,11 +14,13 @@ fun CategorySelectorScreen(
     config: CategorySelectorConfig,
     viewModel: CategorySelectorViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(config) {
+    LaunchedEffect(Unit) {
         viewModel.init(config)
     }
 
     val uiState by viewModel.uiState.collectAsState()
+
+    val route = config.target.toRoute()
 
     CategorySelectorScreenUI(
         config = config,
@@ -33,6 +35,13 @@ fun CategorySelectorScreen(
         onChangeClick = viewModel::onChangeCategoryClick,
         onSubcategoryButtonClick = { navController.navigate(Route.SubcategoryEditor.create(0)) },
         onShortcutButtonClick = { navController.navigate(Route.ShortcutEditor.create(0)) },
-        onProceed = {}
+        onProceed = { navController.navigate(route) }
     )
+}
+
+fun CategorySelectorTarget.toRoute(): String = when (this) {
+    CategorySelectorTarget.TRANSACTION_EDITOR -> Route.TransactionEditor.create(0)
+    CategorySelectorTarget.SHORTCUT_EDITOR -> Route.ShortcutEditor.create(0)
+    CategorySelectorTarget.SUBCATEGORY_EDITOR -> Route.SubcategoryEditor.create(0)
+    CategorySelectorTarget.BUDGET_EDITOR -> Route.BudgetEditor.create(0)
 }
