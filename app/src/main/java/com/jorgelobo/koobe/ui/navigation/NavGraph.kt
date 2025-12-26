@@ -7,15 +7,12 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorScreen
 import com.jorgelobo.koobe.ui.screen.budgets.manager.BudgetManagerScreen
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorScreen
 import com.jorgelobo.koobe.ui.screen.categories.manager.CategoryManagerScreen
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
-import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorScreen
-import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import com.jorgelobo.koobe.ui.screen.dashboard.DashboardScreen
 import com.jorgelobo.koobe.ui.screen.historic.HistoricScreen
 import com.jorgelobo.koobe.ui.screen.reports.ReportsScreen
@@ -70,10 +67,7 @@ fun NavGraph(
 
         composable(
             route = "${Route.CategorySelector.route}/{config}",
-            arguments = listOf(
-                navArgument("config") {
-                    type = NavType.StringType
-                }
+            arguments = listOf(navArgument("config") { type = NavType.StringType }
             )
         ) { backstackEntry ->
             val json = backstackEntry.arguments?.getString("config")!!
@@ -125,4 +119,6 @@ fun NavGraph(
 }
 
 fun NavBackStackEntry.intArg(key: String): Int =
-    arguments!!.getInt(key)
+    requireNotNull(arguments?.getInt(key)) {
+        "Argument $key is missing"
+    }

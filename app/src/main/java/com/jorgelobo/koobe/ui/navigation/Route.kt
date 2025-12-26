@@ -19,10 +19,10 @@ sealed class Route(val route: String) {
 
     // Categories
     data object CategoryManager : Route("category_manager")
-    data object CategorySelector : Route("category_selector/{config}") {
+    data object CategorySelector : Route("category_selector") {
         fun create(config: CategorySelectorConfig): String {
             val json = Json.encodeToString(config)
-            return "${route}/${Uri.encode(json)}"
+            return "$route/${Uri.encode(json)}"
         }
     }
 
