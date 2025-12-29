@@ -162,7 +162,17 @@ fun PreviewCategorySelectorScreen() {
                 selectedCategoryId = null,
                 selectedSubcategoryId = null,
                 selectedShortcutId = null,
-                categoryDetailSelected = CategoryDetailType.SUBCATEGORIES
+                categoryDetailSelected = CategoryDetailType.SUBCATEGORIES,
+                isPrimaryActionEnabled = false,
+                isLoading = false,
+                errorMessage = null,
+                initialSnapshot = InitialSnapshot(
+                    transactionType = TransactionType.EXPENSE,
+                    categoryId = null,
+                    subcategoryId = null,
+                    shortcutId = null
+                ),
+                showDiscardDialog = false
             ),
             onBackClick = {},
             onSettingsClick = {},

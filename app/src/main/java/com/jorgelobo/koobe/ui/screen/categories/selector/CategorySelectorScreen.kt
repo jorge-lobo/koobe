@@ -2,10 +2,11 @@ package com.jorgelobo.koobe.ui.screen.categories.selector
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.jorgelobo.koobe.ui.components.composed.dialogs.DiscardDialog
 import com.jorgelobo.koobe.ui.navigation.Route
 
 @Composable
@@ -14,18 +15,33 @@ fun CategorySelectorScreen(
     config: CategorySelectorConfig,
     viewModel: CategorySelectorViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(Unit) {
+    LaunchedEffect(viewModel) {
         viewModel.init(config)
     }
 
-    val uiState by viewModel.uiState.collectAsState()
+    LaunchedEffect(viewModel.events) {
+        viewModel.events.collect { event ->
+            when (event) {
+                UiEvent.NavigateBack -> navController.popBackStack()
+            }
+        }
+    }
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     val route = config.target.toRoute()
+
+    if (uiState.showDiscardDialog) {
+        DiscardDialog(
+            onConfirm = viewModel::onDiscardConfirmed,
+            onCancel = viewModel::onDiscardDialogDismiss
+        )
+    }
 
     CategorySelectorScreenUI(
         config = config,
         state = uiState,
-        onBackClick = { navController.popBackStack() },
+        onBackClick = viewModel::onBackRequested,
         onSettingsClick = { navController.navigate(Route.Settings.route) },
         onTransactionTypeChange = viewModel::onTransactionTypeChanged,
         onCategorySelected = viewModel::onCategorySelected,

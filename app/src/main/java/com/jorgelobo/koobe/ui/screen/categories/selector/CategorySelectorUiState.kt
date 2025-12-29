@@ -18,5 +18,48 @@ data class CategorySelectorUiState(
     val categoryDetailSelected: CategoryDetailType = CategoryDetailType.SUBCATEGORIES,
     val isPrimaryActionEnabled: Boolean = false,
     val isLoading: Boolean = false,
-    val errorMessage: String? = null
+    val errorMessage: String? = null,
+    val initialSnapshot: InitialSnapshot,
+    val showDiscardDialog: Boolean = false
+) {
+    val hasUnsavedChanges: Boolean
+        get() = transactionType != initialSnapshot.transactionType ||
+                selectedCategoryId != initialSnapshot.categoryId ||
+                selectedSubcategoryId != initialSnapshot.subcategoryId ||
+                selectedShortcutId != initialSnapshot.shortcutId
+
+    companion object {
+        fun initialEmpty() = CategorySelectorUiState(
+            transactionType = TransactionType.EXPENSE,
+            selectedCategoryId = null,
+            selectedSubcategoryId = null,
+            selectedShortcutId = null,
+            initialSnapshot = InitialSnapshot(
+                transactionType = TransactionType.EXPENSE,
+                categoryId = null,
+                subcategoryId = null,
+                shortcutId = null
+            )
+        )
+
+        fun initial(config: CategorySelectorConfig) = CategorySelectorUiState(
+            transactionType = config.initialTransactionType,
+            selectedCategoryId = config.initialCategoryId,
+            selectedSubcategoryId = config.initialSubcategoryId,
+            selectedShortcutId = config.initialShortcutId,
+            initialSnapshot = InitialSnapshot(
+                transactionType = config.initialTransactionType,
+                categoryId = config.initialCategoryId,
+                subcategoryId = config.initialSubcategoryId,
+                shortcutId = config.initialShortcutId
+            )
+        )
+    }
+}
+
+data class InitialSnapshot(
+    val transactionType: TransactionType,
+    val categoryId: Int?,
+    val subcategoryId: Int?,
+    val shortcutId: Int?
 )

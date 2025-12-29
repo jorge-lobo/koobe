@@ -8,8 +8,10 @@ import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -22,8 +24,11 @@ class CategorySelectorViewModel @Inject constructor(
     private val shortcutRepository: ShortcutRepository
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(CategorySelectorUiState())
+    private val _uiState = MutableStateFlow(CategorySelectorUiState.initialEmpty())
     val uiState: StateFlow<CategorySelectorUiState> = _uiState
+
+    private val _events = MutableSharedFlow<UiEvent>()
+    val events = _events.asSharedFlow()
 
     private lateinit var config: CategorySelectorConfig
 
@@ -31,14 +36,7 @@ class CategorySelectorViewModel @Inject constructor(
         if (this::config.isInitialized) return
         this.config = config
 
-        _uiState.update {
-            it.copy(
-                transactionType = config.initialTransactionType,
-                selectedCategoryId = config.initialCategoryId,
-                selectedSubcategoryId = config.initialSubcategoryId,
-                selectedShortcutId = config.initialShortcutId
-            )
-        }
+        _uiState.value = CategorySelectorUiState.initial(config)
 
         loadCategories()
     }
@@ -93,6 +91,30 @@ class CategorySelectorViewModel @Inject constructor(
     fun onCategoryDetailSelected(type: CategoryDetailType) {
         _uiState.update { it.copy(categoryDetailSelected = type) }
         updatePrimaryActionState()
+    }
+
+    fun onBackRequested() {
+        val state = _uiState.value
+
+        if (state.hasUnsavedChanges) {
+            _uiState.update { it.copy(showDiscardDialog = true) }
+        } else {
+            viewModelScope.launch {
+                _events.emit(UiEvent.NavigateBack)
+            }
+        }
+    }
+
+    fun onDiscardDialogDismiss() {
+        _uiState.update { it.copy(showDiscardDialog = false) }
+    }
+
+    fun onDiscardConfirmed() {
+        _uiState.update { it.copy(showDiscardDialog = false) }
+
+        viewModelScope.launch {
+            _events.emit(UiEvent.NavigateBack)
+        }
     }
 
     // Data loading
@@ -158,4 +180,8 @@ class CategorySelectorViewModel @Inject constructor(
 
         _uiState.update { it.copy(isPrimaryActionEnabled = enabled) }
     }
+}
+
+sealed class UiEvent {
+    object NavigateBack : UiEvent()
 }
