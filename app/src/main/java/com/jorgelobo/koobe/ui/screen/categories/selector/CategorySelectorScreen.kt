@@ -1,5 +1,6 @@
 package com.jorgelobo.koobe.ui.screen.categories.selector
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -15,6 +16,10 @@ fun CategorySelectorScreen(
     config: CategorySelectorConfig,
     viewModel: CategorySelectorViewModel = hiltViewModel()
 ) {
+    BackHandler {
+        viewModel.onBackRequested()
+    }
+
     LaunchedEffect(viewModel) {
         viewModel.init(config)
     }
