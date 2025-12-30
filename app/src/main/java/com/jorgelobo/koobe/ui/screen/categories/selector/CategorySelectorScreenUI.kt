@@ -44,7 +44,7 @@ fun CategorySelectorScreenUI(
         topBar = {
             CommonAppBar(
                 config = AppBarConfig(
-                    headline = stringResource(mode.headlineRes),
+                    headline = stringResource(state.headlineRes),
                     leadingAction = AppBarAction(mode.leadingIcon) { onBackClick() },
                     trailingActions = emptyList()
                 )
@@ -168,7 +168,8 @@ fun PreviewCategorySelectorScreen() {
                     subcategoryId = null,
                     shortcutId = null
                 ),
-                showDiscardDialog = false
+                showDiscardDialog = false,
+                mode = CategorySelectorMode.CREATE_TRANSACTION
             ),
             onBackClick = {},
             onTransactionTypeChange = {},

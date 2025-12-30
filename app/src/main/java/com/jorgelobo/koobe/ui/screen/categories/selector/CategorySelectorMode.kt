@@ -68,5 +68,13 @@ enum class CategorySelectorMode(
         requiresSubcategorySelection = true,
         showActionButton = false,
         actionButtonLabelRes = null
+    ),
+    DEFAULT(
+        headlineRes = R.string.headline_category_selector,
+        leadingIcon = IconGeneral.BACK,
+        showToggle = false,
+        requiresSubcategorySelection = false,
+        showActionButton = false,
+        actionButtonLabelRes = null
     )
 }

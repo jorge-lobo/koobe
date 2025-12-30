@@ -5,8 +5,10 @@ import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.CategoryDetailType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
+import com.jorgelobo.koobe.R
 
 data class CategorySelectorUiState(
+    val mode: CategorySelectorMode,
     val step: SelectorStep = SelectorStep.SelectCategory,
     val transactionType: TransactionType = TransactionType.EXPENSE,
     val categories: List<Category> = emptyList(),
@@ -28,8 +30,18 @@ data class CategorySelectorUiState(
                 selectedSubcategoryId != initialSnapshot.subcategoryId ||
                 selectedShortcutId != initialSnapshot.shortcutId
 
+    val headlineRes: Int
+        get() = when (step) {
+            SelectorStep.SelectCategory -> mode.headlineRes
+            SelectorStep.SelectSubcategory -> when (categoryDetailSelected) {
+                CategoryDetailType.SUBCATEGORIES -> R.string.headline_subcategory_selector
+                CategoryDetailType.SHORTCUTS -> R.string.headline_shortcut_selector
+            }
+        }
+
     companion object {
         fun initialEmpty() = CategorySelectorUiState(
+            mode = CategorySelectorMode.DEFAULT,
             transactionType = TransactionType.EXPENSE,
             selectedCategoryId = null,
             selectedSubcategoryId = null,
@@ -43,6 +55,7 @@ data class CategorySelectorUiState(
         )
 
         fun initial(config: CategorySelectorConfig) = CategorySelectorUiState(
+            mode = config.mode,
             transactionType = config.initialTransactionType,
             selectedCategoryId = config.initialCategoryId,
             selectedSubcategoryId = config.initialSubcategoryId,
