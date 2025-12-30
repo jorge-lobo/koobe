@@ -10,6 +10,7 @@ import androidx.navigation.navArgument
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorConfig
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorScreen
 import com.jorgelobo.koobe.ui.screen.budgets.manager.BudgetManagerScreen
+import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorScreen
 import com.jorgelobo.koobe.ui.screen.categories.manager.CategoryManagerScreen
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
@@ -82,11 +83,11 @@ fun NavGraph(
         }
 
         composable(
-            Route.CategoryEditor.route,
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+            route = "category_editor/{config}"  ,
+            arguments = listOf(navArgument("config") { type = NavType.StringType })
         ) { backStackEntry ->
-            val id = backStackEntry.intArg("id")
-            CategoryEditorScreen(navController, id)
+            val config = backStackEntry.decodeConfig<CategoryEditorConfig>()
+            CategoryEditorScreen(navController, config)
         }
 
         // Subcategories
@@ -119,11 +120,6 @@ fun NavGraph(
         }
     }
 }
-
-fun NavBackStackEntry.intArg(key: String): Int =
-    requireNotNull(arguments?.getInt(key)) {
-        "Argument $key is missing"
-    }
 
 inline fun <reified T> NavBackStackEntry.decodeConfig(): T {
     val json = requireNotNull(arguments?.getString("config")) {

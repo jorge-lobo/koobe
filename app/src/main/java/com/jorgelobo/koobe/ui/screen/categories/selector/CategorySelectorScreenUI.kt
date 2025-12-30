@@ -16,7 +16,6 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.categories.selector.components.CategorySelection
 import com.jorgelobo.koobe.ui.screen.categories.selector.components.SubcategorySelection
@@ -28,7 +27,6 @@ fun CategorySelectorScreenUI(
     config: CategorySelectorConfig,
     state: CategorySelectorUiState,
     onBackClick: () -> Unit,
-    onSettingsClick: () -> Unit,
     onTransactionTypeChange: (TransactionType) -> Unit,
     onCategorySelected: (Int) -> Unit,
     onSubcategorySelected: (Int) -> Unit,
@@ -37,7 +35,8 @@ fun CategorySelectorScreenUI(
     onChangeClick: () -> Unit,
     onSubcategoryButtonClick: () -> Unit,
     onShortcutButtonClick: () -> Unit,
-    onProceed: () -> Unit
+    onProceed: () -> Unit,
+    onCreateCategoryClick: () -> Unit
 ) {
     val mode = config.mode
 
@@ -47,11 +46,7 @@ fun CategorySelectorScreenUI(
                 config = AppBarConfig(
                     headline = stringResource(mode.headlineRes),
                     leadingAction = AppBarAction(mode.leadingIcon) { onBackClick() },
-                    trailingActions = if (mode.showSettings) {
-                        listOf(
-                            AppBarAction(IconGeneral.SETTINGS) { onSettingsClick() }
-                        )
-                    } else emptyList()
+                    trailingActions = emptyList()
                 )
             )
         },
@@ -74,7 +69,8 @@ fun CategorySelectorScreenUI(
                     onTransactionTypeChange = onTransactionTypeChange,
                     selectedCategoryId = state.selectedCategoryId,
                     onCategoryIdChange = onCategorySelected,
-                    onActionButtonClick = onProceed
+                    onActionButtonClick = onProceed,
+                    onCreateCategoryClick = onCreateCategoryClick
                 )
 
                 SelectorStep.SelectSubcategory -> SubcategorySelection(
@@ -175,7 +171,6 @@ fun PreviewCategorySelectorScreen() {
                 showDiscardDialog = false
             ),
             onBackClick = {},
-            onSettingsClick = {},
             onTransactionTypeChange = {},
             onCategorySelected = {},
             onSubcategorySelected = {},
@@ -184,7 +179,8 @@ fun PreviewCategorySelectorScreen() {
             onChangeClick = {},
             onSubcategoryButtonClick = {},
             onShortcutButtonClick = {},
-            onProceed = {}
+            onProceed = {},
+            onCreateCategoryClick = {}
         )
     }
 }

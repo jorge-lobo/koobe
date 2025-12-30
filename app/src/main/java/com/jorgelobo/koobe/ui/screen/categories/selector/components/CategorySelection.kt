@@ -1,9 +1,12 @@
 package com.jorgelobo.koobe.ui.screen.categories.selector.components
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -14,12 +17,15 @@ import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonConfig
 import com.jorgelobo.koobe.ui.components.base.buttons.types.AppButton
+import com.jorgelobo.koobe.ui.components.base.buttons.types.ButtonText
 import com.jorgelobo.koobe.ui.components.base.toggles.TransactionToggle
 import com.jorgelobo.koobe.ui.components.base.toggles.transactionToggleConfig
 import com.jorgelobo.koobe.ui.components.composed.grids.CategoriesGrid
 import com.jorgelobo.koobe.ui.components.composed.grids.CategoriesGridConfig
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.components.model.enums.UiState
+import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
 @Composable
@@ -32,7 +38,8 @@ fun CategorySelection(
     onTransactionTypeChange: (TransactionType) -> Unit,
     selectedCategoryId: Int?,
     onCategoryIdChange: (Int) -> Unit,
-    onActionButtonClick: () -> Unit
+    onActionButtonClick: () -> Unit,
+    onCreateCategoryClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -57,6 +64,19 @@ fun CategorySelection(
                 onCategoryClick = onCategoryIdChange
             )
         )
+
+        Row(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.Start
+        ) {
+            ButtonText(
+                onClick = onCreateCategoryClick,
+                enabled = true,
+                text = stringResource(R.string.btn_create_category),
+                textColor = AppTheme.colors.buttonColors.buttonTextDefault,
+                iconUrl = IconGeneral.ADD.icon
+            )
+        }
 
         Spacer(modifier = Modifier.weight(1f))
 

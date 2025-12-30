@@ -23,6 +23,7 @@
     <string name="btn_manage_shortcuts">Manage shortcuts</string>
     <string name="btn_create_shortcuts">Create shortcuts</string>
     <string name="btn_create_subcategories">Create subcategories</string>
+    <string name="btn_create_category">Create category</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_apply">Apply</string>
     <string name="btn_delete">Delete</string>

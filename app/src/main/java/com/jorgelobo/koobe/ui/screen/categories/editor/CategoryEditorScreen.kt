@@ -6,7 +6,7 @@ import androidx.navigation.NavController
 @Composable
 fun CategoryEditorScreen(
     navController: NavController,
-    id: Int
+    config: CategoryEditorConfig
 ) {
 
 }

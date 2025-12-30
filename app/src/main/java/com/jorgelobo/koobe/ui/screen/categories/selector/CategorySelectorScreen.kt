@@ -10,6 +10,7 @@ import androidx.navigation.NavController
 import com.jorgelobo.koobe.ui.components.composed.dialogs.DiscardDialog
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorConfig
+import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
 import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
@@ -49,7 +50,6 @@ fun CategorySelectorScreen(
         config = config,
         state = uiState,
         onBackClick = viewModel::onBackRequested,
-        onSettingsClick = { navController.navigate(Route.Settings.route) },
         onTransactionTypeChange = viewModel::onTransactionTypeChanged,
         onCategorySelected = viewModel::onCategorySelected,
         onSubcategorySelected = viewModel::onSubcategorySelected,
@@ -83,6 +83,11 @@ fun CategorySelectorScreen(
                 }
                 launchSingleTop = true
             }
+        },
+        onCreateCategoryClick = {
+            navController.navigate(
+                Route.CategoryEditor.create(CategoryEditorConfig(categoryId = null))
+            )
         }
     )
 }

@@ -2,6 +2,7 @@ package com.jorgelobo.koobe.ui.navigation
 
 import android.net.Uri
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorConfig
+import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
 import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorConfig
@@ -33,8 +34,11 @@ sealed class Route(val route: String) {
         }
     }
 
-    data object CategoryEditor : Route("category_editor/{id}") {
-        fun create(id: Int) = "category_editor/$id"
+    data object CategoryEditor : Route("category_editor") {
+        fun create(config: CategoryEditorConfig): String {
+            val json = Json.encodeToString(config)
+            return "$route/${Uri.encode(json)}"
+        }
     }
 
     // Subcategories

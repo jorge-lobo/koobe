@@ -8,7 +8,6 @@ import kotlinx.serialization.Serializable
 enum class CategorySelectorMode(
     val headlineRes: Int,
     val leadingIcon: IconGeneral,
-    val showSettings: Boolean,
     val showToggle: Boolean,
     val requiresSubcategorySelection: Boolean,
     val showActionButton: Boolean,
@@ -17,7 +16,6 @@ enum class CategorySelectorMode(
     CREATE_TRANSACTION(
         headlineRes = R.string.headline_category_selector,
         leadingIcon = IconGeneral.CLOSE,
-        showSettings = true,
         showToggle = false,
         requiresSubcategorySelection = true,
         showActionButton = false,
@@ -26,7 +24,6 @@ enum class CategorySelectorMode(
     EDIT_TRANSACTION(
         headlineRes = R.string.headline_category_changer,
         leadingIcon = IconGeneral.BACK,
-        showSettings = false,
         showToggle = true,
         requiresSubcategorySelection = true,
         showActionButton = false,
@@ -35,7 +32,6 @@ enum class CategorySelectorMode(
     EDIT_SUBCATEGORY(
         headlineRes = R.string.headline_category_changer,
         leadingIcon = IconGeneral.BACK,
-        showSettings = false,
         showToggle = true,
         requiresSubcategorySelection = false,
         showActionButton = true,
@@ -44,7 +40,6 @@ enum class CategorySelectorMode(
     CREATE_SHORTCUT(
         headlineRes = R.string.headline_category_selector,
         leadingIcon = IconGeneral.CLOSE,
-        showSettings = true,
         showToggle = true,
         requiresSubcategorySelection = false,
         showActionButton = true,
@@ -53,7 +48,6 @@ enum class CategorySelectorMode(
     EDIT_SHORTCUT(
         headlineRes = R.string.headline_category_changer,
         leadingIcon = IconGeneral.BACK,
-        showSettings = false,
         showToggle = true,
         requiresSubcategorySelection = false,
         showActionButton = true,
@@ -62,7 +56,6 @@ enum class CategorySelectorMode(
     CREATE_BUDGET(
         headlineRes = R.string.headline_category_selector,
         leadingIcon = IconGeneral.CLOSE,
-        showSettings = true,
         showToggle = true,
         requiresSubcategorySelection = true,
         showActionButton = false,
@@ -71,7 +64,6 @@ enum class CategorySelectorMode(
     EDIT_BUDGET(
         headlineRes = R.string.headline_category_changer,
         leadingIcon = IconGeneral.BACK,
-        showSettings = false,
         showToggle = true,
         requiresSubcategorySelection = true,
         showActionButton = false,
