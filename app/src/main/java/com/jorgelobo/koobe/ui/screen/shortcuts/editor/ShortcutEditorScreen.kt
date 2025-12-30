@@ -6,7 +6,7 @@ import androidx.navigation.NavController
 @Composable
 fun ShortcutEditorScreen(
     navController: NavController,
-    id: Int
+    config: ShortcutEditorConfig
 ) {
 
 }

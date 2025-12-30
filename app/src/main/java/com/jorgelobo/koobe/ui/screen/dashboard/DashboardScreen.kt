@@ -9,9 +9,11 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.navigation.handleBottomNavigation
 import com.jorgelobo.koobe.ui.navigation.rememberBottomNavState
+import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
+import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
 
 @Composable
 fun DashboardScreen(
@@ -49,15 +51,41 @@ fun DashboardScreen(
                 )
             )
         },
-        onBudgetItemClick = { navController.navigate(Route.BudgetEditor.create(it.budget.id)) },
+        onBudgetItemClick = {
+            navController.navigate(
+                Route.BudgetEditor.create(
+                    config = BudgetEditorConfig(
+                        budgetId = it.budget.id
+                    )
+                )
+            )
+        },
         onBudgetActionClick = {
-            if (uiState.budgetItems.isEmpty()) navController.navigate(Route.BudgetEditor.create(0))
+            if (uiState.budgetItems.isEmpty()) navController.navigate(
+                Route.BudgetEditor.create(
+                    config = BudgetEditorConfig(
+                        budgetId = null
+                    )
+                )
+            )
             else navController.navigate(Route.BudgetManager.route)
         },
-        onShortcutItemClick = { navController.navigate(Route.ShortcutEditor.create(it.shortcut.id)) },
+        onShortcutItemClick = {
+            navController.navigate(
+                Route.ShortcutEditor.create(
+                    config = ShortcutEditorConfig(
+                        shortcutId = it.shortcut.id
+                    )
+                )
+            )
+        },
         onShortcutActionClick = {
             if (uiState.shortcutItems.isEmpty()) navController.navigate(
-                Route.ShortcutEditor.create(0)
+                Route.ShortcutEditor.create(
+                    config = ShortcutEditorConfig(
+                        shortcutId = null
+                    )
+                )
             ) else navController.navigate(Route.ShortcutManager.route)
         }
     )

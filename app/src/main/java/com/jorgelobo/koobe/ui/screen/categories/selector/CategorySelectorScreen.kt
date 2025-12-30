@@ -9,6 +9,10 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.jorgelobo.koobe.ui.components.composed.dialogs.DiscardDialog
 import com.jorgelobo.koobe.ui.navigation.Route
+import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorConfig
+import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
+import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorConfig
+import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
 
 @Composable
 fun CategorySelectorScreen(
@@ -20,7 +24,7 @@ fun CategorySelectorScreen(
         viewModel.onBackRequested()
     }
 
-    LaunchedEffect(viewModel) {
+    LaunchedEffect(config) {
         viewModel.init(config)
     }
 
@@ -33,8 +37,6 @@ fun CategorySelectorScreen(
     }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-
-    val route = config.target.toRoute()
 
     if (uiState.showDiscardDialog) {
         DiscardDialog(
@@ -54,15 +56,69 @@ fun CategorySelectorScreen(
         onShortcutSelected = viewModel::onShortcutSelected,
         onCategoryDetailSelected = viewModel::onCategoryDetailSelected,
         onChangeClick = viewModel::onChangeCategoryClick,
-        onSubcategoryButtonClick = { navController.navigate(Route.SubcategoryEditor.create(0)) },
-        onShortcutButtonClick = { navController.navigate(Route.ShortcutEditor.create(0)) },
-        onProceed = { navController.navigate(route) }
+        onSubcategoryButtonClick = {
+            navController.navigate(
+                Route.SubcategoryEditor.create(
+                    SubcategoryEditorConfig(
+                        subcategoryId = uiState.selectedSubcategoryId,
+                        categoryId = uiState.selectedCategoryId
+                    )
+                )
+            )
+        },
+        onShortcutButtonClick = {
+            navController.navigate(
+                Route.ShortcutEditor.create(
+                    ShortcutEditorConfig(
+                        shortcutId = uiState.selectedShortcutId,
+                        categoryId = uiState.selectedCategoryId
+                    )
+                )
+            )
+        },
+        onProceed = {
+            navController.navigate(config.target.toRoute(config, uiState)) {
+                popUpTo(Route.CategorySelector.route) {
+                    inclusive = true
+                }
+                launchSingleTop = true
+            }
+        }
     )
 }
 
-fun CategorySelectorTarget.toRoute(): String = when (this) {
-    CategorySelectorTarget.TRANSACTION_EDITOR -> Route.TransactionEditor.create(0)
-    CategorySelectorTarget.SHORTCUT_EDITOR -> Route.ShortcutEditor.create(0)
-    CategorySelectorTarget.SUBCATEGORY_EDITOR -> Route.SubcategoryEditor.create(0)
-    CategorySelectorTarget.BUDGET_EDITOR -> Route.BudgetEditor.create(0)
+fun CategorySelectorTarget.toRoute(
+    config: CategorySelectorConfig,
+    uiState: CategorySelectorUiState
+): String = when (this) {
+    CategorySelectorTarget.TRANSACTION_EDITOR -> Route.TransactionEditor.create(
+        TransactionEditorConfig(
+            transactionId = config.transactionId,
+            categoryId = uiState.selectedCategoryId,
+            subcategoryId = uiState.selectedSubcategoryId,
+            shortcutId = uiState.selectedShortcutId
+        )
+    )
+
+    CategorySelectorTarget.SHORTCUT_EDITOR -> Route.ShortcutEditor.create(
+        ShortcutEditorConfig(
+            shortcutId = config.shortcutId,
+            categoryId = uiState.selectedCategoryId
+        )
+    )
+
+    CategorySelectorTarget.SUBCATEGORY_EDITOR -> Route.SubcategoryEditor.create(
+        SubcategoryEditorConfig(
+            subcategoryId = config.subcategoryId,
+            categoryId = uiState.selectedCategoryId
+        )
+    )
+
+    CategorySelectorTarget.BUDGET_EDITOR -> Route.BudgetEditor.create(
+        BudgetEditorConfig(
+            budgetId = config.budgetId,
+            categoryId = uiState.selectedCategoryId,
+            subcategoryId = uiState.selectedSubcategoryId
+        )
+    )
 }
