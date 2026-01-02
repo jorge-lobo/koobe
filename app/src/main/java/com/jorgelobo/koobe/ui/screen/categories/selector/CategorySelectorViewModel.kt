@@ -89,7 +89,13 @@ class CategorySelectorViewModel @Inject constructor(
     }
 
     fun onCategoryDetailSelected(type: CategoryDetailType) {
-        _uiState.update { it.copy(categoryDetailSelected = type) }
+        _uiState.update {
+            it.copy(
+                categoryDetailSelected = type,
+                selectedSubcategoryId = null,
+                selectedShortcutId = null
+            )
+        }
         updatePrimaryActionState()
     }
 
