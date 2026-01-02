@@ -2,12 +2,8 @@ package com.jorgelobo.koobe.ui.screen.categories.selector.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -15,8 +11,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
@@ -26,30 +20,19 @@ import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
-import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonConfig
-import com.jorgelobo.koobe.ui.components.base.buttons.types.AppButton
-import com.jorgelobo.koobe.ui.components.base.buttons.types.ButtonText
 import com.jorgelobo.koobe.ui.components.base.toggles.CategoryDetailToggle
 import com.jorgelobo.koobe.ui.components.base.toggles.categoryDetailToggleConfig
-import com.jorgelobo.koobe.ui.components.composed.emptyState.EmptyStateContent
-import com.jorgelobo.koobe.ui.components.composed.emptyState.EmptyStateContentConfig
 import com.jorgelobo.koobe.ui.components.composed.grids.ShortcutsGrid
 import com.jorgelobo.koobe.ui.components.composed.grids.ShortcutsGridConfig
 import com.jorgelobo.koobe.ui.components.composed.grids.SubcategoriesGrid
 import com.jorgelobo.koobe.ui.components.composed.grids.SubcategoriesGridConfig
 import com.jorgelobo.koobe.ui.components.composed.summary.CategorySummary
 import com.jorgelobo.koobe.ui.components.composed.summary.CategorySummaryConfig
-import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
-import com.jorgelobo.koobe.ui.components.model.enums.EmptyStateIconType
-import com.jorgelobo.koobe.ui.components.model.enums.UiState
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.components.model.shortcut.ShortcutUiModel
 import com.jorgelobo.koobe.ui.components.model.subcategory.SubcategoryUiModel
 import com.jorgelobo.koobe.ui.mappers.localizedName
-import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
-import com.jorgelobo.koobe.ui.theme.color.LightThemeGrey2
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.resolvedColor
 
@@ -76,15 +59,28 @@ fun SubcategorySelection(
         verticalArrangement = Arrangement.spacedBy(Spacing.MediumLarge),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        val textColor = AppTheme.colors.textColors
-        val typography = AppTheme.typography.text
-
-        val canContinue = when (categoryDetailSelected) {
-            CategoryDetailType.SUBCATEGORIES -> selectedSubcategoryId != null
-            CategoryDetailType.SHORTCUTS -> selectedShortcutId != null
-        }
-
+        val isSubcategory = categoryDetailSelected == CategoryDetailType.SUBCATEGORIES
         val selectedSubcategory = subcategories.firstOrNull { it.id == selectedSubcategoryId }
+
+        val detailUi = if (isSubcategory) {
+            CategoryDetailUi(
+                isEmpty = subcategories.isEmpty(),
+                canContinue = selectedSubcategoryId != null,
+                emptyHeadline = R.string.empty_headline_subcategories,
+                emptyHint = R.string.empty_hint_subcategories,
+                createButton = R.string.btn_create_subcategory,
+                onCreate = onCreateSubcategoryClick
+            )
+        } else {
+            CategoryDetailUi(
+                isEmpty = shortcuts.isEmpty(),
+                canContinue = selectedShortcutId != null,
+                emptyHeadline = R.string.empty_headline_shortcuts,
+                emptyHint = R.string.empty_hint_shortcuts,
+                createButton = R.string.btn_create_shortcut,
+                onCreate = onCreateShortcutClick
+            )
+        }
 
         CategorySummary(
             config = CategorySummaryConfig(
@@ -103,134 +99,44 @@ fun SubcategorySelection(
             )
         )
 
-        when (categoryDetailSelected) {
-            CategoryDetailType.SUBCATEGORIES -> {
-                if (subcategories.isEmpty()) {
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    EmptyStateContent(
-                        config = EmptyStateContentConfig(
-                            message = stringResource(R.string.empty_headline_subcategories),
-                            icon = IconGeneral.EMPTY.icon,
-                            iconTint = LightThemeGrey2,
-                            iconType = EmptyStateIconType.BACKGROUND
-                        )
+        CategoryDetailContent(
+            isEmpty = detailUi.isEmpty,
+            isContinueEnabled = detailUi.canContinue,
+            emptyHeadlineRes = detailUi.emptyHeadline,
+            emptyHintRes = detailUi.emptyHint,
+            createButtonRes = detailUi.createButton,
+            onCreateClick = detailUi.onCreate,
+            onContinueClick = onContinueClick
+        ) {
+            if (isSubcategory) {
+                SubcategoriesGrid(
+                    config = SubcategoriesGridConfig(
+                        list = subcategories.map { SubcategoryUiModel(it, category) },
+                        selectedSubcategoryId = selectedSubcategoryId,
+                        onSubcategoryClick = onSubcategorySelected
                     )
-                } else {
-                    SubcategoriesGrid(
-                        config = SubcategoriesGridConfig(
-                            list = subcategories.map { SubcategoryUiModel(it, category) },
-                            selectedSubcategoryId = selectedSubcategoryId,
-                            onSubcategoryClick = onSubcategorySelected
-                        )
+                )
+            } else {
+                ShortcutsGrid(
+                    config = ShortcutsGridConfig(
+                        list = shortcuts.map { ShortcutUiModel(it, category) },
+                        selectedShortcutId = selectedShortcutId,
+                        onShortcutClick = onShortcutSelected
                     )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        ButtonText(
-                            onClick = onCreateSubcategoryClick,
-                            enabled = true,
-                            text = stringResource(R.string.btn_create_subcategory),
-                            textColor = AppTheme.colors.buttonColors.buttonTextDefault,
-                            iconUrl = IconGeneral.ADD.icon
-                        )
-                    }
-                }
-            }
-
-            CategoryDetailType.SHORTCUTS -> {
-                if (shortcuts.isEmpty()) {
-                    Spacer(modifier = Modifier.weight(1f))
-
-                    EmptyStateContent(
-                        config = EmptyStateContentConfig(
-                            message = stringResource(R.string.empty_headline_shortcuts),
-                            icon = IconGeneral.EMPTY.icon,
-                            iconTint = LightThemeGrey2,
-                            iconType = EmptyStateIconType.BACKGROUND
-                        )
-                    )
-                } else {
-                    ShortcutsGrid(
-                        config = ShortcutsGridConfig(
-                            list = shortcuts.map { ShortcutUiModel(it, category) },
-                            selectedShortcutId = selectedShortcutId,
-                            onShortcutClick = onShortcutSelected
-                        )
-                    )
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Start
-                    ) {
-                        ButtonText(
-                            onClick = onCreateShortcutClick,
-                            enabled = true,
-                            text = stringResource(R.string.btn_create_shortcut),
-                            textColor = AppTheme.colors.buttonColors.buttonTextDefault,
-                            iconUrl = IconGeneral.ADD.icon
-                        )
-                    }
-                }
+                )
             }
         }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        when (categoryDetailSelected) {
-            CategoryDetailType.SUBCATEGORIES -> {
-                if (subcategories.isEmpty()) {
-                    Text(
-                        text = stringResource(R.string.empty_hint_subcategories),
-                        style = typography.bodySmall,
-                        color = textColor.textSupportMessage,
-                        textAlign = TextAlign.Center
-                    )
-
-                    AppButton(
-                        ButtonConfig(
-                            text = stringResource(R.string.btn_create_subcategory),
-                            type = ButtonType.SECONDARY,
-                            state = UiState.ENABLED,
-                            onClick = onCreateSubcategoryClick
-                        )
-                    )
-                }
-            }
-
-            CategoryDetailType.SHORTCUTS -> {
-                if (shortcuts.isEmpty()) {
-                    Text(
-                        text = stringResource(R.string.empty_hint_shortcuts),
-                        style = typography.bodySmall,
-                        color = textColor.textSupportMessage,
-                        textAlign = TextAlign.Center
-                    )
-
-                    AppButton(
-                        ButtonConfig(
-                            text = stringResource(R.string.btn_create_shortcut),
-                            type = ButtonType.SECONDARY,
-                            state = UiState.ENABLED,
-                            onClick = onCreateShortcutClick
-                        )
-                    )
-                }
-            }
-        }
-
-        AppButton(
-            ButtonConfig(
-                text = stringResource(R.string.btn_continue),
-                type = ButtonType.PRIMARY,
-                state = if (canContinue) UiState.ENABLED else UiState.DISABLED,
-                onClick = onContinueClick
-            )
-        )
     }
 }
+
+data class CategoryDetailUi(
+    val isEmpty: Boolean,
+    val canContinue: Boolean,
+    val emptyHeadline: Int,
+    val emptyHint: Int,
+    val createButton: Int,
+    val onCreate: () -> Unit
+)
 
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
