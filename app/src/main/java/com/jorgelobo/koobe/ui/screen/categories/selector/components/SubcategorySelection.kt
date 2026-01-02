@@ -2,8 +2,10 @@ package com.jorgelobo.koobe.ui.screen.categories.selector.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -26,6 +28,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonConfig
 import com.jorgelobo.koobe.ui.components.base.buttons.types.AppButton
+import com.jorgelobo.koobe.ui.components.base.buttons.types.ButtonText
 import com.jorgelobo.koobe.ui.components.base.toggles.CategoryDetailToggle
 import com.jorgelobo.koobe.ui.components.base.toggles.categoryDetailToggleConfig
 import com.jorgelobo.koobe.ui.components.composed.emptyState.EmptyStateContent
@@ -63,8 +66,8 @@ fun SubcategorySelection(
     onShortcutSelected: (Int) -> Unit,
     onChangeClick: () -> Unit,
     onContinueClick: () -> Unit,
-    onSubcategoryButtonClick: () -> Unit,
-    onShortcutButtonClick: () -> Unit
+    onCreateSubcategoryClick: () -> Unit,
+    onCreateShortcutClick: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -121,6 +124,19 @@ fun SubcategorySelection(
                             onSubcategoryClick = onSubcategorySelected
                         )
                     )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        ButtonText(
+                            onClick = onCreateSubcategoryClick,
+                            enabled = true,
+                            text = stringResource(R.string.btn_create_subcategory),
+                            textColor = AppTheme.colors.buttonColors.buttonTextDefault,
+                            iconUrl = IconGeneral.ADD.icon
+                        )
+                    }
                 }
             }
 
@@ -144,6 +160,19 @@ fun SubcategorySelection(
                             onShortcutClick = onShortcutSelected
                         )
                     )
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Start
+                    ) {
+                        ButtonText(
+                            onClick = onCreateShortcutClick,
+                            enabled = true,
+                            text = stringResource(R.string.btn_create_shortcut),
+                            textColor = AppTheme.colors.buttonColors.buttonTextDefault,
+                            iconUrl = IconGeneral.ADD.icon
+                        )
+                    }
                 }
             }
         }
@@ -162,36 +191,33 @@ fun SubcategorySelection(
 
                     AppButton(
                         ButtonConfig(
-                            text = stringResource(R.string.btn_create_subcategories),
+                            text = stringResource(R.string.btn_create_subcategory),
                             type = ButtonType.SECONDARY,
                             state = UiState.ENABLED,
-                            onClick = onSubcategoryButtonClick
+                            onClick = onCreateSubcategoryClick
                         )
                     )
                 }
             }
 
             CategoryDetailType.SHORTCUTS -> {
-                val textRes =
-                    if (shortcuts.isEmpty()) R.string.btn_create_shortcuts
-                    else R.string.btn_manage_shortcuts
-
                 if (shortcuts.isEmpty()) {
                     Text(
                         text = stringResource(R.string.empty_hint_shortcuts),
                         style = typography.bodySmall,
-                        color = textColor.textSupportMessage
+                        color = textColor.textSupportMessage,
+                        textAlign = TextAlign.Center
+                    )
+
+                    AppButton(
+                        ButtonConfig(
+                            text = stringResource(R.string.btn_create_shortcut),
+                            type = ButtonType.SECONDARY,
+                            state = UiState.ENABLED,
+                            onClick = onCreateShortcutClick
+                        )
                     )
                 }
-
-                AppButton(
-                    ButtonConfig(
-                        text = stringResource(textRes),
-                        type = ButtonType.SECONDARY,
-                        state = UiState.ENABLED,
-                        onClick = onShortcutButtonClick
-                    )
-                )
             }
         }
 
@@ -339,8 +365,8 @@ fun PreviewSubcategorySelection() {
             onShortcutSelected = { selectedShortcutId = it },
             onChangeClick = {},
             onContinueClick = {},
-            onSubcategoryButtonClick = {},
-            onShortcutButtonClick = {}
+            onCreateSubcategoryClick = {},
+            onCreateShortcutClick = {}
         )
     }
 }

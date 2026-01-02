@@ -85,8 +85,8 @@ fun CategorySelectorScreenUI(
                     onShortcutSelected = onShortcutSelected,
                     onChangeClick = onChangeClick,
                     onContinueClick = onProceed,
-                    onSubcategoryButtonClick = onSubcategoryButtonClick,
-                    onShortcutButtonClick = onShortcutButtonClick
+                    onCreateSubcategoryClick = onSubcategoryButtonClick,
+                    onCreateShortcutClick = onShortcutButtonClick
                 )
             }
         }
