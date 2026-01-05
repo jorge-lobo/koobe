@@ -9,6 +9,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.jorgelobo.koobe.ui.components.composed.dialogs.DiscardDialog
 import com.jorgelobo.koobe.ui.navigation.Route
+import com.jorgelobo.koobe.ui.navigation.navigateClearingCurrent
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorConfig
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
@@ -77,12 +78,9 @@ fun CategorySelectorScreen(
             )
         },
         onProceed = {
-            navController.navigate(config.target.toRoute(config, uiState)) {
-                popUpTo(Route.CategorySelector.route) {
-                    inclusive = true
-                }
-                launchSingleTop = true
-            }
+            navController.navigateClearingCurrent(
+                config.target.toRoute(config, uiState)
+            )
         },
         onCreateCategoryClick = {
             navController.navigate(
