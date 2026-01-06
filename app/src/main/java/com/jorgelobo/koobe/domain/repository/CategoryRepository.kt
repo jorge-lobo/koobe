@@ -1,5 +1,6 @@
 package com.jorgelobo.koobe.domain.repository
 
+import com.jorgelobo.koobe.data.local.entity.CategoryEntity
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import kotlinx.coroutines.flow.Flow
@@ -12,4 +13,5 @@ interface CategoryRepository {
     suspend fun insertCategories(list: List<Category>)
     suspend fun updateCategory(category: Category)
     suspend fun deleteCategory(category: Category)
+    suspend fun insertCategoryEntities(list: List<CategoryEntity>)
 }

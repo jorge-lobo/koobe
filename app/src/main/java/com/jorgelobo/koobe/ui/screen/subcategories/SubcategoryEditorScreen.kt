@@ -1,12 +1,12 @@
-package com.jorgelobo.koobe.ui.screen.categories
+package com.jorgelobo.koobe.ui.screen.subcategories
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
 @Composable
-fun CategoryEditorScreen(
+fun SubcategoryEditorScreen(
     navController: NavController,
-    id: Int
+    config: SubcategoryEditorConfig
 ) {
 
 }

@@ -2,7 +2,9 @@ package com.jorgelobo.koobe.domain.model.constants.enums
 
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.UiLabel
+import kotlinx.serialization.Serializable
 
+@Serializable
 enum class TransactionType : UiLabel {
     EXPENSE, INCOME;
 

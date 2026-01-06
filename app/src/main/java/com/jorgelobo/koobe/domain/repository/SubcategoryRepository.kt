@@ -1,5 +1,6 @@
 package com.jorgelobo.koobe.domain.repository
 
+import com.jorgelobo.koobe.data.local.entity.SubcategoryEntity
 import com.jorgelobo.koobe.domain.model.category.Subcategory
 import kotlinx.coroutines.flow.Flow
 
@@ -11,4 +12,5 @@ interface SubcategoryRepository {
     suspend fun insertSubcategories(list: List<Subcategory>)
     suspend fun updateSubcategory(subcategory: Subcategory)
     suspend fun deleteSubcategory(subcategory: Subcategory)
+    suspend fun insertSubcategoryEntities(list: List<SubcategoryEntity>)
 }

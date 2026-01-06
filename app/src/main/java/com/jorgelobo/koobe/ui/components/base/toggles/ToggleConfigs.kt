@@ -1,5 +1,6 @@
 package com.jorgelobo.koobe.ui.components.base.toggles
 
+import com.jorgelobo.koobe.domain.model.constants.enums.CategoryDetailType
 import com.jorgelobo.koobe.domain.model.constants.enums.MetricType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
@@ -9,7 +10,7 @@ import com.jorgelobo.koobe.ui.components.model.enums.UiState
 fun transactionToggleConfig(
     selected: TransactionType,
     onOptionSelected: (TransactionType) -> Unit
-) : ToggleConfig<TransactionType> {
+): ToggleConfig<TransactionType> {
     return ToggleConfig(
         options = TransactionType.entries,
         selectedOption = selected,
@@ -48,6 +49,18 @@ fun themeToggleConfig(
 ): ToggleConfig<ThemeOption> {
     return ToggleConfig(
         options = ThemeOption.entries,
+        selectedOption = selected,
+        state = UiState.ENABLED,
+        onSelectionChanged = onOptionSelected
+    )
+}
+
+fun categoryDetailToggleConfig(
+    selected: CategoryDetailType,
+    onOptionSelected: (CategoryDetailType) -> Unit
+): ToggleConfig<CategoryDetailType> {
+    return ToggleConfig(
+        options = CategoryDetailType.entries,
         selectedOption = selected,
         state = UiState.ENABLED,
         onSelectionChanged = onOptionSelected

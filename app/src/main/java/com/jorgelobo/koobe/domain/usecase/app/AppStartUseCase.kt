@@ -3,7 +3,6 @@ package com.jorgelobo.koobe.domain.usecase.app
 import com.jorgelobo.koobe.data.local.defaults.CategoryDefaults
 import com.jorgelobo.koobe.data.local.defaults.SubcategoryDefaults
 import com.jorgelobo.koobe.data.local.preferences.AppPreferences
-import com.jorgelobo.koobe.data.mapper.toDomain
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import kotlinx.coroutines.flow.first
@@ -21,11 +20,11 @@ class AppStartUseCase(
         val subcategoriesExist = subcategoryRepository.getAllSubcategories().first().isNotEmpty()
 
         if (!categoriesExist) {
-            categoryRepository.insertCategories(CategoryDefaults.categories.map { it.toDomain() })
+            categoryRepository.insertCategoryEntities(CategoryDefaults.categories)
         }
 
         if (!subcategoriesExist) {
-            subcategoryRepository.insertSubcategories(SubcategoryDefaults.subcategories.map { it.toDomain() })
+            subcategoryRepository.insertSubcategoryEntities(SubcategoryDefaults.subcategories)
         }
 
         preferences.setDefaultsInserted()

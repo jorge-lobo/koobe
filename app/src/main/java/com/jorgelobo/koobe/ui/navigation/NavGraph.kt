@@ -7,21 +7,27 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
-import com.jorgelobo.koobe.ui.screen.budgets.BudgetEditorScreen
-import com.jorgelobo.koobe.ui.screen.budgets.BudgetManagerScreen
-import com.jorgelobo.koobe.ui.screen.categories.CategoryEditorScreen
-import com.jorgelobo.koobe.ui.screen.categories.CategoryManagerScreen
-import com.jorgelobo.koobe.ui.screen.categories.CategorySelectorScreen
+import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorConfig
+import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorScreen
+import com.jorgelobo.koobe.ui.screen.budgets.manager.BudgetManagerScreen
+import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorConfig
+import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorScreen
+import com.jorgelobo.koobe.ui.screen.categories.manager.CategoryManagerScreen
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorScreen
 import com.jorgelobo.koobe.ui.screen.dashboard.DashboardScreen
 import com.jorgelobo.koobe.ui.screen.historic.HistoricScreen
 import com.jorgelobo.koobe.ui.screen.reports.ReportsScreen
 import com.jorgelobo.koobe.ui.screen.settings.SettingsScreen
-import com.jorgelobo.koobe.ui.screen.shortcuts.ShortcutEditorScreen
-import com.jorgelobo.koobe.ui.screen.shortcuts.ShortcutManagerScreen
+import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
+import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorScreen
+import com.jorgelobo.koobe.ui.screen.shortcuts.manager.ShortcutManagerScreen
 import com.jorgelobo.koobe.ui.screen.splash.SplashScreen
+import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorScreen
+import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorScreen
+import kotlinx.serialization.json.Json
 
 @Composable
 fun NavGraph(
@@ -54,62 +60,70 @@ fun NavGraph(
         composable(Route.BudgetManager.route) { BudgetManagerScreen(navController) }
 
         composable(
-            Route.BudgetEditor.route,
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+            route = "budget_editor/{config}",
+            arguments = listOf(navArgument("config") { type = NavType.StringType })
         ) { backStackEntry ->
-            val id = backStackEntry.intArg("id")
-            BudgetEditorScreen(navController, id)
+            val config = backStackEntry.decodeConfig<BudgetEditorConfig>()
+            BudgetEditorScreen(navController, config)
         }
 
         // Categories
         composable(Route.CategoryManager.route) { CategoryManagerScreen(navController) }
 
         composable(
-            Route.CategorySelector.route,
-            arguments = listOf(navArgument("type") { type = NavType.StringType })
-        ) { backStackEntry ->
-            val type = backStackEntry.arguments?.getString("type") ?: TransactionType.EXPENSE.name
-            CategorySelectorScreen(navController, type)
+            route = "${Route.CategorySelector.route}/{config}",
+            arguments = listOf(navArgument("config") { type = NavType.StringType }
+            )
+        ) { backstackEntry ->
+            val config = backstackEntry.decodeConfig<CategorySelectorConfig>()
+            CategorySelectorScreen(
+                navController = navController,
+                config = config
+            )
         }
 
         composable(
-            Route.CategoryEditor.route,
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+            route = "category_editor/{config}"  ,
+            arguments = listOf(navArgument("config") { type = NavType.StringType })
         ) { backStackEntry ->
-            val id = backStackEntry.intArg("id")
-            CategoryEditorScreen(navController, id)
+            val config = backStackEntry.decodeConfig<CategoryEditorConfig>()
+            CategoryEditorScreen(navController, config)
         }
 
         // Subcategories
         composable(
-            Route.SubcategoryEditor.route,
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+            route = "subcategory_editor/{config}",
+            arguments = listOf(navArgument("config") { type = NavType.StringType })
         ) { backStackEntry ->
-            val id = backStackEntry.intArg("id")
-            SubcategoryEditorScreen(navController, id)
+            val config = backStackEntry.decodeConfig<SubcategoryEditorConfig>()
+            SubcategoryEditorScreen(navController, config)
         }
 
         // Shortcuts
         composable(Route.ShortcutManager.route) { ShortcutManagerScreen(navController) }
 
         composable(
-            Route.ShortcutEditor.route,
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+            route = "shortcut_editor/{config}",
+            arguments = listOf(navArgument("config") { type = NavType.StringType })
         ) { backStackEntry ->
-            val id = backStackEntry.intArg("id")
-            ShortcutEditorScreen(navController, id)
+            val config = backStackEntry.decodeConfig<ShortcutEditorConfig>()
+            ShortcutEditorScreen(navController, config)
         }
 
         // Transactions
         composable(
-            Route.TransactionEditor.route,
-            arguments = listOf(navArgument("id") { type = NavType.IntType })
+            route = "transaction_editor/{config}",
+            arguments = listOf(navArgument("config") { type = NavType.StringType })
         ) { backStackEntry ->
-            val id = backStackEntry.intArg("id")
-            TransactionEditorScreen(navController, id)
+            val config = backStackEntry.decodeConfig<TransactionEditorConfig>()
+            TransactionEditorScreen(navController, config)
         }
     }
 }
 
-fun NavBackStackEntry.intArg(key: String): Int =
-    arguments!!.getInt(key)
+inline fun <reified T> NavBackStackEntry.decodeConfig(): T {
+    val json = requireNotNull(arguments?.getString("config")) {
+        "Argument config is missing"
+    }
+    return Json.decodeFromString(json)
+}

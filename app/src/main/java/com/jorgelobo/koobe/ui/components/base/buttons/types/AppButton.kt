@@ -115,7 +115,7 @@ fun PreviewButtons() {
 
             AppButton(
                 ButtonConfig(
-                    text = stringResource(R.string.btn_create_shortcuts),
+                    text = stringResource(R.string.btn_create_shortcut),
                     type = ButtonType.SECONDARY,
                     state = UiState.ENABLED,
                     onClick = {}

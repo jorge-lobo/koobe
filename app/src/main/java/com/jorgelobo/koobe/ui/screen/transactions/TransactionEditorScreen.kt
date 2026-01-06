@@ -1,12 +1,12 @@
-package com.jorgelobo.koobe.ui.screen.subcategories
+package com.jorgelobo.koobe.ui.screen.transactions
 
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
 
 @Composable
-fun SubcategoryEditorScreen(
+fun TransactionEditorScreen(
     navController: NavController,
-    id: Int
+    config: TransactionEditorConfig
 ) {
 
 }
