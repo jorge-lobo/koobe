@@ -7,6 +7,19 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.R
 
+/**
+ * Represents the full UI state of the Category Selector screen.
+ *
+ * This data class is used by the ViewModel to expose the current state to the composable UI.
+ * It contains:
+ * - the current step of the selection flow ([step])
+ * - all selectable items ([categories], [subcategories], [shortcuts])
+ * - the currently selected IDs
+ * - derived UI state like [isPrimaryActionEnabled] or [headlineRes]
+ * - dialog visibility ([showDiscardDialog])
+ *
+ * The state is immutable; all updates produce a new copy via the ViewModel.
+ */
 data class CategorySelectorUiState(
     val mode: CategorySelectorMode,
     val step: SelectorStep = SelectorStep.SelectCategory,
@@ -24,12 +37,25 @@ data class CategorySelectorUiState(
     val initialSnapshot: InitialSnapshot,
     val showDiscardDialog: Boolean = false
 ) {
+    /**
+     * Determines if the current selection differs from the initial snapshot.
+     *
+     * Used to prompt the user with a discard dialog when navigating back
+     * if there are unsaved changes.
+     */
     val hasUnsavedChanges: Boolean
         get() = transactionType != initialSnapshot.transactionType ||
                 selectedCategoryId != initialSnapshot.categoryId ||
                 selectedSubcategoryId != initialSnapshot.subcategoryId ||
                 selectedShortcutId != initialSnapshot.shortcutId
 
+    /**
+     * Returns the string resource for the current screen headline based on the current step
+     * and selected category detail type.
+     *
+     * This allows the UI to dynamically update the title as the user progresses through
+     * the selector flow.
+     */
     val headlineRes: Int
         get() = when (step) {
             SelectorStep.SelectCategory -> mode.headlineRes
@@ -40,6 +66,10 @@ data class CategorySelectorUiState(
         }
 
     companion object {
+        /**
+         * Returns an empty initial state with default mode and empty selections.
+         * Useful for previews or initializing the ViewModel before config is applied.
+         */
         fun initialEmpty() = CategorySelectorUiState(
             mode = CategorySelectorMode.DEFAULT,
             transactionType = TransactionType.EXPENSE,
@@ -54,6 +84,10 @@ data class CategorySelectorUiState(
             )
         )
 
+        /**
+         * Returns the initial state based on the provided [CategorySelectorConfig],
+         * pre-selecting any IDs and transaction type supplied in the config.
+         */
         fun initial(config: CategorySelectorConfig) = CategorySelectorUiState(
             mode = config.mode,
             transactionType = config.initialTransactionType,
@@ -70,6 +104,11 @@ data class CategorySelectorUiState(
     }
 }
 
+/**
+ * Captures the initial state of selections when the screen is first opened.
+ *
+ * Used by [CategorySelectorUiState.hasUnsavedChanges] to detect modifications made by the user.
+ */
 data class InitialSnapshot(
     val transactionType: TransactionType,
     val categoryId: Int?,

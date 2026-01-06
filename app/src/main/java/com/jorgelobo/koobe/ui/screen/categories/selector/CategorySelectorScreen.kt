@@ -16,20 +16,36 @@ import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
 import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
 
+/**
+ * Entry point composable for the Category Selector feature.
+ *
+ * This screen is responsible for:
+ * - Initializing the [CategorySelectorViewModel] with the provided [CategorySelectorConfig]
+ * - Collecting UI state and one-off events from the ViewModel
+ * - Handling system back navigation
+ * - Delegating all user interactions to the ViewModel
+ * - Performing navigation based on emitted [UiEvent]s and user actions
+ *
+ * The composable itself contains no business logic and acts purely as a state-to-UI and
+ * event-to-navigation bridge.
+ */
 @Composable
 fun CategorySelectorScreen(
     navController: NavController,
     config: CategorySelectorConfig,
     viewModel: CategorySelectorViewModel = hiltViewModel()
 ) {
+    // Intercepts system back presses and delegates handling to the ViewModel.
     BackHandler {
         viewModel.onBackRequested()
     }
 
+    // Initializes the ViewModel once with the provided configuration.
     LaunchedEffect(config) {
         viewModel.init(config)
     }
 
+    // Collects one-off UI events (such as navigation) emitted by the ViewModel.
     LaunchedEffect(viewModel.events) {
         viewModel.events.collect { event ->
             when (event) {
@@ -90,6 +106,13 @@ fun CategorySelectorScreen(
     )
 }
 
+/**
+ * Resolves the navigation route for the given [CategorySelectorTarget] using the current
+ * selector configuration and UI state.
+ *
+ * This function centralizes the mapping between selection results and their corresponding
+ * destination routes.
+ */
 fun CategorySelectorTarget.toRoute(
     config: CategorySelectorConfig,
     uiState: CategorySelectorUiState

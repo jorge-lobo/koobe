@@ -17,6 +17,13 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the state and user interactions
+ * of the category selection flow.
+ *
+ * It coordinates category, subcategory, and shortcut selection
+ * according to the provided [CategorySelectorConfig].
+ */
 @HiltViewModel
 class CategorySelectorViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
@@ -32,6 +39,16 @@ class CategorySelectorViewModel @Inject constructor(
 
     private lateinit var config: CategorySelectorConfig
 
+    /**
+     * Initializes the ViewModel with the required configuration.
+     *
+     * This function must be called before any user interaction methods.
+     * It should be invoked only once when the screen is created.
+     * Subsequent calls are ignored.
+     *
+     * @param config The configuration object containing initial settings
+     * for the category selector.
+     */
     fun init(config: CategorySelectorConfig) {
         if (this::config.isInitialized) return
         this.config = config
@@ -43,6 +60,16 @@ class CategorySelectorViewModel @Inject constructor(
 
     // User actions
 
+    /**
+     * Handles the user action of changing the transaction type (e.g., from Expense to Income).
+     *
+     * This function updates the UI state to reflect the new transaction type. It also resets
+     * any previous selections for category, subcategory, and shortcut, and returns the user to the
+     * initial category selection step. After updating the state, it triggers a reload of the
+     * categories list to display only those relevant to the newly selected transaction type.
+     *
+     * @param type The new [TransactionType] selected by the user.
+     */
     fun onTransactionTypeChanged(type: TransactionType) {
         _uiState.update {
             it.copy(
@@ -57,10 +84,26 @@ class CategorySelectorViewModel @Inject constructor(
         loadCategories()
     }
 
+    /**
+     * Resets the selection flow back to the category selection step,
+     * allowing the user to choose a different category.
+     */
     fun onChangeCategoryClick() {
         _uiState.update { it.copy(step = SelectorStep.SelectCategory) }
     }
 
+    /**
+     * Handles the user action of selecting a category.
+     *
+     * This function updates the UI state with the selected category ID and resets any previously
+     * selected subcategory or shortcut.
+     *
+     * If the current configuration requires subcategory selection, the selector advances to
+     * [SelectorStep.SelectSubcategory]. Otherwise, the selection is considered complete at the
+     * category level.
+     *
+     * @param categoryId The ID of the category that was selected.
+     */
     fun onCategorySelected(categoryId: Int) {
         _uiState.update {
             it.copy(
@@ -78,16 +121,34 @@ class CategorySelectorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Updates the UI state when a subcategory is selected and refreshes
+     * the primary action button state.
+     */
     fun onSubcategorySelected(subcategoryId: Int) {
         _uiState.update { it.copy(selectedSubcategoryId = subcategoryId) }
         updatePrimaryActionState()
     }
 
+    /**
+     * Updates the UI state when a shortcut is selected and refreshes
+     * the primary action button state.
+     */
     fun onShortcutSelected(shortcutId: Int) {
         _uiState.update { it.copy(selectedShortcutId = shortcutId) }
         updatePrimaryActionState()
     }
 
+    /**
+     * Handles the selection of a category detail type (e.g., Subcategories or Shortcuts).
+     *
+     * This action updates the UI state to reflect the chosen detail type and resets any previously
+     * selected subcategory or shortcut to ensure a clean state for the new selection context. It then
+     * updates the state of the primary action button based on the new conditions.
+     *
+     * @param type The type of category detail selected by the user, which can be either
+     *             [CategoryDetailType.SUBCATEGORIES] or [CategoryDetailType.SHORTCUTS].
+     */
     fun onCategoryDetailSelected(type: CategoryDetailType) {
         _uiState.update {
             it.copy(
@@ -99,6 +160,13 @@ class CategorySelectorViewModel @Inject constructor(
         updatePrimaryActionState()
     }
 
+    /**
+     * Handles the user's request to go back.
+     *
+     * If there are unsaved changes in the current state, it triggers the display
+     * of a confirmation dialog to prevent accidental data loss. Otherwise, it emits
+     * a [UiEvent.NavigateBack] event to signal that navigation should proceed.
+     */
     fun onBackRequested() {
         val state = _uiState.value
 
@@ -111,10 +179,18 @@ class CategorySelectorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles the dismissal of the "discard changes" confirmation dialog.
+     */
     fun onDiscardDialogDismiss() {
         _uiState.update { it.copy(showDiscardDialog = false) }
     }
 
+    /**
+     * Handles the user action of confirming the discard of unsaved changes.
+     * This function is called when the user taps the "confirm" button in the discard dialog.
+     * It dismisses the dialog and emits a [UiEvent.NavigateBack] event to navigate back from the current screen.
+     */
     fun onDiscardConfirmed() {
         _uiState.update { it.copy(showDiscardDialog = false) }
 
@@ -125,6 +201,12 @@ class CategorySelectorViewModel @Inject constructor(
 
     // Data loading
 
+    /**
+     * Loads and filters categories according to the currently selected [TransactionType].
+     *
+     * Updates the UI state with a loading indicator, applies filtering and sorting,
+     * and refreshes the primary action state. Errors are reflected in the UI state.
+     */
     private fun loadCategories() {
         viewModelScope.launch {
             try {
@@ -155,6 +237,16 @@ class CategorySelectorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Loads the subcategories and shortcuts associated with a given category ID from their respective
+     * repositories. This is typically called after a user selects a primary category.
+     * The fetched lists of subcategories and shortcuts are then used to update the UI state,
+     * allowing the user to make further selections if required by the current mode.
+     *
+     * This operation is performed asynchronously within a `viewModelScope` coroutine.
+     *
+     * @param categoryId The unique identifier of the category for which to load details.
+     */
     private fun loadCategoryDetails(categoryId: Int) {
         viewModelScope.launch {
             val subcategories =
@@ -172,6 +264,15 @@ class CategorySelectorViewModel @Inject constructor(
 
     // State helpers
 
+    /**
+     * Updates the enabled state of the primary action button based on the current selection state.
+     *
+     * The button is enabled if a valid selection has been made according to the current step and configuration.
+     * - In [SelectorStep.SelectCategory] step, it's enabled if a category is selected and the configuration
+     *   doesn't require a subcategory selection.
+     * - In [SelectorStep.SelectSubcategory] step, it's enabled if a subcategory or a shortcut is selected,
+     *   depending on which detail type is currently active.
+     */
     private fun updatePrimaryActionState() {
         val state = _uiState.value
 
@@ -188,6 +289,10 @@ class CategorySelectorViewModel @Inject constructor(
     }
 }
 
+/**
+ * Represents events that are sent from the ViewModel to the UI.
+ * These are typically one-off events that trigger navigation or show transient UI elements.
+ */
 sealed class UiEvent {
     object NavigateBack : UiEvent()
 }

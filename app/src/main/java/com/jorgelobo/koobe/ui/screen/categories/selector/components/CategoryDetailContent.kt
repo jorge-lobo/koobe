@@ -27,6 +27,24 @@ import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.color.LightThemeGrey2
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
+/**
+ * Displays the detailed content for a category, either subcategories or shortcuts.
+ *
+ * This composable handles:
+ * - Empty state UI when there are no items
+ * - Action buttons for creating new items
+ * - The main continue button
+ * - A slot for the actual content list passed via [content]
+ *
+ * @param isEmpty Whether the detail list is empty
+ * @param isContinueEnabled Whether the main continue button should be enabled
+ * @param emptyHeadlineRes String resource for the empty state headline
+ * @param emptyHintRes String resource for the empty state hint message
+ * @param createButtonRes String resource for the create button
+ * @param onCreateClick Callback when the create button is clicked
+ * @param onContinueClick Callback when the continue button is clicked
+ * @param content Composable slot to render the actual list of subcategories or shortcuts
+ */
 @Composable
 fun CategoryDetailContent(
     isEmpty: Boolean,

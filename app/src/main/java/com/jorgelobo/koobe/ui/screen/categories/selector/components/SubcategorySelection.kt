@@ -36,6 +36,31 @@ import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.resolvedColor
 
+/**
+ * UI composable for selecting a subcategory or shortcut for a given category.
+ *
+ * This composable displays:
+ * - A summary of the selected category and subcategory (or shortcut)
+ * - A toggle to switch between subcategory and shortcut selection
+ * - A grid of selectable subcategories or shortcuts
+ * - Action buttons for creating a new subcategory/shortcut or continuing
+ *
+ * All user interactions are delegated via callback parameters.
+ *
+ * @param category The parent category for which subcategories/shortcuts are displayed
+ * @param subcategories List of subcategories associated with [category]
+ * @param shortcuts List of shortcuts associated with [category]
+ * @param selectedSubcategoryId Currently selected subcategory ID, if any
+ * @param selectedShortcutId Currently selected shortcut ID, if any
+ * @param categoryDetailSelected Determines whether subcategories or shortcuts are displayed
+ * @param onCategoryDetailSelected Callback when the user switches between subcategory/shortcut view
+ * @param onSubcategorySelected Callback when a subcategory is selected
+ * @param onShortcutSelected Callback when a shortcut is selected
+ * @param onChangeClick Callback when the user clicks the “change category” button
+ * @param onContinueClick Callback when the user clicks the continue button
+ * @param onCreateSubcategoryClick Callback when the user wants to create a new subcategory
+ * @param onCreateShortcutClick Callback when the user wants to create a new shortcut
+ */
 @Composable
 fun SubcategorySelection(
     category: Category,
@@ -129,6 +154,16 @@ fun SubcategorySelection(
     }
 }
 
+/**
+ * Encapsulates the UI state for the category detail section
+ * (either subcategories or shortcuts).
+ *
+ * This class is used internally by [SubcategorySelection] to configure:
+ * - Whether the list is empty
+ * - Whether the continue button should be enabled
+ * - Strings for empty state UI
+ * - The create button action
+ */
 data class CategoryDetailUi(
     val isEmpty: Boolean,
     val canContinue: Boolean,

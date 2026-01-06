@@ -1,7 +1,6 @@
 package com.jorgelobo.koobe.ui.screen.categories.selector.components
 
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,6 +27,29 @@ import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
+/**
+ * UI composable for displaying a list of categories and optional controls.
+ *
+ * This composable provides:
+ * - An optional transaction type toggle (Expense/Income)
+ * - A grid of selectable categories
+ * - A button to create a new category
+ * - An optional primary action button to proceed with the selection
+ *
+ * All user interactions are delegated via callback parameters.
+ *
+ * @param showToggle Whether to display the transaction type toggle
+ * @param showActionButton Whether to display the primary action button
+ * @param actionButtonLabelRes Optional string resource for the primary action button.
+ *        Defaults to [R.string.btn_continue] if null.
+ * @param categories List of categories to display
+ * @param transactionSelected Currently selected transaction type
+ * @param onTransactionTypeChange Callback when the transaction type is changed
+ * @param selectedCategoryId Currently selected category ID, if any
+ * @param onCategoryIdChange Callback when a category is selected
+ * @param onActionButtonClick Callback when the primary action button is clicked
+ * @param onCreateCategoryClick Callback when the create category button is clicked
+ */
 @Composable
 fun CategorySelection(
     showToggle: Boolean,

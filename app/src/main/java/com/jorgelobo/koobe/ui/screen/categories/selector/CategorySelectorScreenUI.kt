@@ -22,6 +22,12 @@ import com.jorgelobo.koobe.ui.screen.categories.selector.components.SubcategoryS
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 
+/**
+ * Stateless UI composable for the Category Selector flow.
+ *
+ * Renders the appropriate selection UI based on the current state and delegates all user
+ * interactions via callback parameters.
+ */
 @Composable
 fun CategorySelectorScreenUI(
     config: CategorySelectorConfig,
@@ -59,6 +65,7 @@ fun CategorySelectorScreenUI(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            // Renders the UI corresponding to the current selector step
             when (state.step) {
                 SelectorStep.SelectCategory -> CategorySelection(
                     showToggle = mode.showToggle,
