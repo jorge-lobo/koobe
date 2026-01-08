@@ -23,8 +23,8 @@ import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
 @Composable
 fun NumericKeypad(
-    onKeyClick: (KeypadKey) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    onKeyClick: (KeypadKey) -> Unit
 ) {
     val colors = AppTheme.colors.keypadColors
 
@@ -48,14 +48,12 @@ fun NumericKeypad(
                         modifier = Modifier
                             .weight(1f)
                             .height(NumericKeypadSize.KeyHeight),
+                        key = key,
                         onClick = { onKeyClick(key) },
-                        type = key.type,
-                        labelRes = key.labelRes
                     )
                 }
             }
         }
-
     }
 }
 

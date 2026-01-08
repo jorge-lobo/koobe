@@ -1,6 +1,5 @@
 package com.jorgelobo.koobe.ui.components.base.numericKeypad
 
-import androidx.annotation.StringRes
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.material3.Button
@@ -13,7 +12,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.jorgelobo.koobe.R
-import com.jorgelobo.koobe.ui.components.model.enums.KeyType
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.mappers.getIconFromName
 import com.jorgelobo.koobe.ui.theme.AppTheme
@@ -21,19 +19,19 @@ import com.jorgelobo.koobe.ui.theme.AppTheme
 @Composable
 fun BaseNumericKey(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit,
-    type: KeyType,
-    @StringRes labelRes: Int? = null
+    key: KeypadKey,
+    onClick: () -> Unit
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val isPressed by interactionSource.collectIsPressedAsState()
 
     val colors = AppTheme.colors.keypadColors
-    val backgroundColor = if (type == KeyType.BACKSPACE) {
-        colors.keypadKeySecondaryContainer
-    } else {
-        if (labelRes == R.string.keypad__) colors.keypadKeySecondaryContainer
-        else colors.keypadKeyPrimaryContainer
+
+    val backgroundColor = when (key) {
+        is KeypadKey.Backspace,
+        is KeypadKey.Decimal -> colors.keypadKeySecondaryContainer
+
+        is KeypadKey.Digit -> colors.keypadKeyPrimaryContainer
     }
     val pressedColor = colors.keypadKeyPressedContainer
 
@@ -47,24 +45,27 @@ fun BaseNumericKey(
         enabled = true,
         onClick = onClick,
     ) {
-        when (type) {
-            KeyType.NUMERIC -> {
-                labelRes?.let { res ->
-                    Text(
-                        text = stringResource(id = res),
-                        color = colors.keypadKeySymbol,
-                        style = AppTheme.typography.text.displaySmall
-                    )
-                }
-            }
+        when (key) {
+            is KeypadKey.Digit ->
+                Text(
+                    text = key.value.toString(),
+                    style = AppTheme.typography.text.displaySmall,
+                    color = colors.keypadKeySymbol
+                )
 
-            KeyType.BACKSPACE -> {
+            KeypadKey.Decimal ->
+                Text(
+                    text = ".",
+                    style = AppTheme.typography.text.displaySmall,
+                    color = colors.keypadKeySymbol
+                )
+
+            KeypadKey.Backspace ->
                 Icon(
                     imageVector = getIconFromName(IconGeneral.BACKSPACE),
                     contentDescription = stringResource(R.string.cd_backspace),
                     tint = AppTheme.colors.iconColors.iconPrimary
                 )
-            }
         }
     }
 }
