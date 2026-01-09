@@ -12,7 +12,6 @@ import com.jorgelobo.koobe.utils.DateUtils
 import java.util.Date
 
 data class TransactionEditorUiState(
-    val transactionType: TransactionType = TransactionType.EXPENSE,
     val category: Category,
     val subcategory: Subcategory? = null,
     val shortcut: Shortcut? = null,
@@ -33,14 +32,13 @@ data class TransactionEditorUiState(
         get() = category.id != initialSnapshot.category.id ||
                 subcategory?.id != initialSnapshot.subcategory?.id ||
                 shortcut?.id != initialSnapshot.shortcut?.id ||
-                transactionType != initialSnapshot.transactionType ||
                 description != initialSnapshot.description ||
                 date != initialSnapshot.date ||
                 paymentMethodType != initialSnapshot.paymentMethodType ||
                 currencyType != initialSnapshot.currencyType ||
                 amount != initialSnapshot.amount
 
-    fun headlineRes(isEditMode: Boolean): Int =
+    fun headlineRes(isEditMode: Boolean, transactionType: TransactionType): Int =
         if (isEditMode) {
             when (transactionType) {
                 TransactionType.EXPENSE -> R.string.headline_expense_editor
@@ -52,6 +50,57 @@ data class TransactionEditorUiState(
                 TransactionType.INCOME -> R.string.headline_income_creator
             }
         }
+
+    companion object {
+
+        fun initialEmpty(): TransactionEditorUiState {
+            val emptyCategory = Category.empty()
+
+            return TransactionEditorUiState(
+                category = emptyCategory,
+                inputState = InputState.DEFAULT,
+                isLoading = true,
+                initialSnapshot = InitialSnapshot(
+                    category = emptyCategory,
+                    subcategory = null,
+                    shortcut = null,
+                    transactionType = TransactionType.EXPENSE,
+                    description = "",
+                    date = DateUtils.currentDate,
+                    paymentMethodType = PaymentMethodType.CASH,
+                    currencyType = CurrencyType.EUR,
+                    amount = 0.0
+                )
+            )
+        }
+
+        fun initial(
+            config: TransactionEditorConfig,
+            category: Category,
+            subcategory: Subcategory?,
+            shortcut: Shortcut?
+        ): TransactionEditorUiState {
+
+            return TransactionEditorUiState(
+                category = category,
+                subcategory = subcategory,
+                shortcut = shortcut,
+                description = "",
+                inputState = InputState.DEFAULT,
+                initialSnapshot = InitialSnapshot(
+                    category = category,
+                    subcategory = subcategory,
+                    shortcut = shortcut,
+                    transactionType = config.transactionType,
+                    description = "",
+                    date = DateUtils.currentDate,
+                    paymentMethodType = PaymentMethodType.CASH,
+                    currencyType = CurrencyType.EUR,
+                    amount = 0.0
+                )
+            )
+        }
+    }
 }
 
 data class InitialSnapshot(

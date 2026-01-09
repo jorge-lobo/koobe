@@ -70,7 +70,7 @@ fun TransactionEditorScreenUI(
         topBar = {
             CommonAppBar(
                 config = AppBarConfig(
-                    headline = stringResource(state.headlineRes(isEditMode)),
+                    headline = stringResource(state.headlineRes(isEditMode, config.transactionType)),
                     leadingAction = AppBarAction(
                         icon = IconGeneral.CLOSE,
                         onClick = onCloseClick
@@ -98,7 +98,7 @@ fun TransactionEditorScreenUI(
                     icon = state.category.icon,
                     color = state.category.resolvedColor(),
                     categoryName = state.category.localizedName(),
-                    subcategoryName = state.subcategory?.name ?: state.shortcut?.name,
+                    subcategoryName = state.subcategory?.localizedName() ?: state.shortcut?.name,
                     onChangeClick = onChangeClick
                 )
             )
@@ -229,8 +229,7 @@ fun PreviewTransactionEditorScreen() {
                     amount = 0.0
                 ),
                 showSnackBar = false,
-                showConfirmationDialog = false,
-                transactionType = TransactionType.EXPENSE
+                showConfirmationDialog = false
             ),
             onCloseClick = {},
             onDeleteClick = {},

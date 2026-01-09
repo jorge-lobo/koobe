@@ -120,9 +120,10 @@ fun CategorySelectorTarget.toRoute(
     CategorySelectorTarget.TRANSACTION_EDITOR -> Route.TransactionEditor.create(
         TransactionEditorConfig(
             transactionId = config.transactionId,
-            categoryId = uiState.selectedCategoryId,
+            categoryId = uiState.selectedCategoryId!!,
             subcategoryId = uiState.selectedSubcategoryId,
-            shortcutId = uiState.selectedShortcutId
+            shortcutId = uiState.selectedShortcutId,
+            transactionType = config.initialTransactionType
         )
     )
 

@@ -3,6 +3,7 @@ package com.jorgelobo.koobe.domain.model.category
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.interfaces.HasColor
+import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 
 data class Category(
     val id: Int,
@@ -11,4 +12,16 @@ data class Category(
     override val color: String,
     val type: TransactionType,
     val subcategories: List<Subcategory> = emptyList()
-) : HasColor
+) : HasColor {
+
+    companion object {
+        fun empty(): Category = Category(
+            id = -1,
+            name = "",
+            icon = IconGeneral.EMPTY.icon,
+            color = "",
+            type = TransactionType.EXPENSE,
+            subcategories = emptyList()
+        )
+    }
+}
