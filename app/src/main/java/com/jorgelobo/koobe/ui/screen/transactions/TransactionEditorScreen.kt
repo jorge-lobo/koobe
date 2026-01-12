@@ -6,6 +6,10 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.jorgelobo.koobe.ui.navigation.Route
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 
 @Composable
 fun TransactionEditorScreen(
@@ -25,7 +29,17 @@ fun TransactionEditorScreen(
         state = uiState,
         onCloseClick = {},
         onDeleteClick = {},
-        onChangeClick = {},
+        onChangeClick = {
+            navController.navigate(
+                Route.CategorySelector.create(
+                    CategorySelectorConfig(
+                        mode = CategorySelectorMode.EDIT_TRANSACTION,
+                        target = CategorySelectorTarget.TRANSACTION_EDITOR,
+                        initialTransactionType = config.transactionType
+                    )
+                )
+            )
+        },
         onTodayClick = {},
         onDatePickClick = {},
         onDescriptionChange = {},
