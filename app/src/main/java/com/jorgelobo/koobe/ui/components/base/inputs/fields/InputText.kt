@@ -153,7 +153,7 @@ fun AppInputText(
                 // Trailing icon
                 AnimatedVisibility(visible = config.value.isNotEmpty()) {
                     IconButton(
-                        onClick = { config.onValueChange("") },
+                        onClick = config.onResetClick,
                         enabled = enabled,
                         modifier = Modifier.size(IconSize.Large)
                     ) {
@@ -194,7 +194,8 @@ fun PreviewInputText() {
                     label = label,
                     placeholder = placeHolder,
                     state = InputState.DEFAULT,
-                    onValueChange = { text1 = it }
+                    onValueChange = { text1 = it },
+                    onResetClick = {}
                 )
             )
 
@@ -204,7 +205,8 @@ fun PreviewInputText() {
                     label = label,
                     placeholder = placeHolder,
                     state = InputState.ERROR,
-                    onValueChange = { text1 = it }
+                    onValueChange = { text1 = it },
+                    onResetClick = {}
                 )
             )
 
@@ -214,7 +216,8 @@ fun PreviewInputText() {
                     label = label,
                     placeholder = placeHolder,
                     state = InputState.DEFAULT,
-                    onValueChange = { text2 = it }
+                    onValueChange = { text2 = it },
+                    onResetClick = {}
                 )
             )
         }
