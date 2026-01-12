@@ -58,7 +58,8 @@ fun TransactionEditorScreenUI(
     onTodayClick: () -> Unit,
     onDatePickClick: () -> Unit,
     onDescriptionChange: (String) -> Unit,
-    onResetClick: () -> Unit,
+    onResetDescriptionClick: () -> Unit,
+    onResetAmountClick: () -> Unit,
     onPaymentSelectorClick: () -> Unit,
     onCurrencySelectorClick: () -> Unit,
     onKeyClick: (KeypadKey) -> Unit,
@@ -133,7 +134,8 @@ fun TransactionEditorScreenUI(
                     label = stringResource(R.string.label_description),
                     placeholder = stringResource(R.string.input_hint_description),
                     state = state.inputState,
-                    onValueChange = onDescriptionChange
+                    onValueChange = onDescriptionChange,
+                    onResetClick = onResetDescriptionClick
                 )
             )
 
@@ -144,7 +146,7 @@ fun TransactionEditorScreenUI(
                     paymentIcon = state.paymentMethodType.toIcon(),
                     currencyType = state.currencyType,
                     value = state.amount,
-                    onResetClick = onResetClick,
+                    onResetClick = onResetAmountClick,
                     onPaymentSelectorClick = onPaymentSelectorClick,
                     onCurrencySelectorClick = onCurrencySelectorClick,
                     onKeyClick = onKeyClick
@@ -237,7 +239,8 @@ fun PreviewTransactionEditorScreen() {
             onTodayClick = {},
             onDatePickClick = {},
             onDescriptionChange = {},
-            onResetClick = {},
+            onResetDescriptionClick = {},
+            onResetAmountClick = {},
             onPaymentSelectorClick = {},
             onCurrencySelectorClick = {},
             onKeyClick = {},

@@ -42,11 +42,12 @@ fun TransactionEditorScreen(
         },
         onTodayClick = {},
         onDatePickClick = {},
-        onDescriptionChange = {},
-        onResetClick = {},
+        onDescriptionChange = { viewModel.onDescriptionChanged(it) },
+        onResetDescriptionClick = { viewModel.onResetDescription() },
+        onResetAmountClick = { viewModel.onResetAmount() },
         onPaymentSelectorClick = {},
         onCurrencySelectorClick = {},
-        onKeyClick = {},
+        onKeyClick = { viewModel.onKeyClicked(it) },
         onSaveClick = {}
     )
 }
