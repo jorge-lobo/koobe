@@ -20,6 +20,7 @@ data class TransactionEditorUiState(
     val date: Date = DateUtils.currentDate,
     val paymentMethodType: PaymentMethodType = PaymentMethodType.CASH,
     val currencyType: CurrencyType = CurrencyType.EUR,
+    val amountInput: String = "0",
     val amount: Double = 0.0,
     val isSaveButtonEnabled: Boolean = false,
     val isLoading: Boolean = false,
