@@ -9,9 +9,15 @@ import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
+import com.jorgelobo.koobe.ui.screen.common.UiEvent
+import com.jorgelobo.koobe.ui.screen.common.dialog.ConfirmationDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.ConfirmationDialogEffect
+import com.jorgelobo.koobe.ui.screen.common.dialog.reduceConfirmationDialog
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -25,6 +31,10 @@ class TransactionEditorViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(TransactionEditorUiState.initialEmpty())
     val uiState: StateFlow<TransactionEditorUiState> = _uiState
+
+    private val _events = MutableSharedFlow<UiEvent>()
+    val events = _events.asSharedFlow()
+
 
     private lateinit var config: TransactionEditorConfig
 
@@ -47,8 +57,10 @@ class TransactionEditorViewModel @Inject constructor(
         }
     }
 
+    // User actions
+
     fun onDescriptionChanged(description: String) {
-        _uiState.value = _uiState.value.copy(description = description)
+        _uiState.update { it.copy(description = description) }
     }
 
     fun onResetDescription() {
@@ -56,7 +68,6 @@ class TransactionEditorViewModel @Inject constructor(
             state.copy(description = "")
         }
     }
-
 
     fun onKeyClicked(key: KeypadKey) {
         val action = key.toAmountAction()
@@ -80,6 +91,28 @@ class TransactionEditorViewModel @Inject constructor(
                 amountInput = "0",
                 amount = 0.0
             )
+        }
+    }
+
+    // Discard Dialog
+
+    fun onDialogAction(action: ConfirmationDialogAction) {
+        val (dialogState, effect) = reduceConfirmationDialog(
+            state = uiState.value.discardDialog,
+            action = action
+        )
+
+        _uiState.update { it.copy(discardDialog = dialogState) }
+
+        when (effect) {
+            ConfirmationDialogEffect.Confirmed -> sendNavigateBack()
+            null -> Unit
+        }
+    }
+
+    private fun sendNavigateBack() {
+        viewModelScope.launch {
+            _events.emit(UiEvent.NavigateBack)
         }
     }
 }

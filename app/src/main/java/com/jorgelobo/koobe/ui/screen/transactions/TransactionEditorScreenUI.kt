@@ -42,6 +42,7 @@ import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.mappers.toIcon
+import com.jorgelobo.koobe.ui.screen.common.dialog.ConfirmationDialogState
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -231,7 +232,7 @@ fun PreviewTransactionEditorScreen() {
                     amount = 0.0
                 ),
                 showSnackBar = false,
-                showConfirmationDialog = false
+                discardDialog = ConfirmationDialogState(visible = false)
             ),
             onCloseClick = {},
             onDeleteClick = {},

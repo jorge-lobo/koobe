@@ -8,6 +8,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
+import com.jorgelobo.koobe.ui.screen.common.dialog.ConfirmationDialogState
 import com.jorgelobo.koobe.utils.DateUtils
 import java.util.Date
 
@@ -27,7 +28,7 @@ data class TransactionEditorUiState(
     val errorMessage: String? = null,
     val initialSnapshot: InitialSnapshot,
     val showSnackBar: Boolean = false,
-    val showConfirmationDialog: Boolean = false
+    val discardDialog: ConfirmationDialogState = ConfirmationDialogState()
 ) {
     val hasUnsavedChanges: Boolean
         get() = category.id != initialSnapshot.category.id ||
