@@ -7,6 +7,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
+import com.jorgelobo.koobe.ui.screen.common.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -287,12 +288,4 @@ class CategorySelectorViewModel @Inject constructor(
 
         _uiState.update { it.copy(isPrimaryActionEnabled = enabled) }
     }
-}
-
-/**
- * Represents events that are sent from the ViewModel to the UI.
- * These are typically one-off events that trigger navigation or show transient UI elements.
- */
-sealed class UiEvent {
-    object NavigateBack : UiEvent()
 }
