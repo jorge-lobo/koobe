@@ -126,6 +126,7 @@ fun PreviewButtons() {
                 ButtonConfig(
                     text = stringResource(R.string.btn_today),
                     type = ButtonType.SECONDARY_COMPACT,
+                    state = UiState.DISABLED,
                     onClick = {}
                 )
             )

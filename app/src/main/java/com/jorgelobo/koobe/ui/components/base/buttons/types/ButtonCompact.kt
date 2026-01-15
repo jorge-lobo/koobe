@@ -21,6 +21,7 @@ fun ButtonCompact(
     text: String
 ) {
     val colors = AppTheme.colors.buttonColors
+    val disabledColor = colors.buttonDisabledContainer
     val shape = AppTheme.shapes.medium
 
     Surface(
@@ -28,10 +29,10 @@ fun ButtonCompact(
             .width(ButtonSize.CompactButton.Width)
             .height(ButtonSize.CompactButton.Height),
         shape = shape,
-        color = colors.buttonSecondaryContainer,
+        color = if (enabled) colors.buttonSecondaryContainer else disabledColor,
         border = BorderStroke(
             BorderDimens.Base,
-            colors.buttonSecondaryOutline
+            if (enabled) colors.buttonSecondaryOutline else disabledColor
         ),
         enabled = enabled,
         onClick = onClick
@@ -42,7 +43,7 @@ fun ButtonCompact(
             Text(
                 text = text,
                 style = AppTheme.typography.text.bodyLarge,
-                color = colors.buttonSecondaryLabelText
+                color = if (enabled) colors.buttonSecondaryLabelText else colors.buttonDisabledLabelText
             )
         }
     }
