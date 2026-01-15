@@ -35,7 +35,7 @@ data class TransactionEditorUiState(
                 subcategory?.id != initialSnapshot.subcategory?.id ||
                 shortcut?.id != initialSnapshot.shortcut?.id ||
                 description != initialSnapshot.description ||
-                date != initialSnapshot.date ||
+                !DateUtils.isSameDay(date, initialSnapshot.date) ||
                 paymentMethodType != initialSnapshot.paymentMethodType ||
                 currencyType != initialSnapshot.currencyType ||
                 amount != initialSnapshot.amount

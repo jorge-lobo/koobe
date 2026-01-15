@@ -72,7 +72,12 @@ fun TransactionEditorScreenUI(
         topBar = {
             CommonAppBar(
                 config = AppBarConfig(
-                    headline = stringResource(state.headlineRes(isEditMode, config.transactionType)),
+                    headline = stringResource(
+                        state.headlineRes(
+                            isEditMode,
+                            config.transactionType
+                        )
+                    ),
                     leadingAction = AppBarAction(
                         icon = IconGeneral.CLOSE,
                         onClick = onCloseClick
@@ -115,6 +120,11 @@ fun TransactionEditorScreenUI(
                     ButtonConfig(
                         text = stringResource(R.string.btn_today),
                         type = ButtonType.SECONDARY_COMPACT,
+                        state = if (DateUtils.isSameDay(
+                                state.date,
+                                DateUtils.currentDate
+                            )
+                        ) UiState.DISABLED else UiState.ENABLED,
                         onClick = onTodayClick
                     )
                 )
