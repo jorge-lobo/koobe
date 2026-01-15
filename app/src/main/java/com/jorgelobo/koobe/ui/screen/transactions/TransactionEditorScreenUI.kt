@@ -1,5 +1,6 @@
 package com.jorgelobo.koobe.ui.screen.transactions
 
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,6 +13,8 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
@@ -67,113 +70,125 @@ fun TransactionEditorScreenUI(
     onSaveClick: () -> Unit
 ) {
     val isEditMode = config.isEditMode
+    val focusManager = LocalFocusManager.current
 
-    Scaffold(
-        topBar = {
-            CommonAppBar(
-                config = AppBarConfig(
-                    headline = stringResource(
-                        state.headlineRes(
-                            isEditMode,
-                            config.transactionType
-                        )
-                    ),
-                    leadingAction = AppBarAction(
-                        icon = IconGeneral.CLOSE,
-                        onClick = onCloseClick
-                    ),
-                    trailingActions = if (isEditMode) listOf(
-                        AppBarAction(IconGeneral.DELETE, onDeleteClick)
-                    ) else emptyList()
-                )
-            )
-        },
-        containerColor = AppTheme.colors.backgroundColors.screenBackground
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(horizontal = Spacing.Medium, vertical = Spacing.MediumLarge),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            Spacer(modifier = Modifier.height(Spacing.Small))
-
-            CategorySummary(
-                config = CategorySummaryConfig(
-                    icon = state.category.icon,
-                    color = state.category.resolvedColor(),
-                    categoryName = state.category.localizedName(),
-                    subcategoryName = state.subcategory?.localizedName() ?: state.shortcut?.name,
-                    onChangeClick = onChangeClick
-                )
-            )
-
-            Spacer(modifier = Modifier.height(Spacing.Large))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.Medium)
-            ) {
-                AppButton(
-                    ButtonConfig(
-                        text = stringResource(R.string.btn_today),
-                        type = ButtonType.SECONDARY_COMPACT,
-                        state = if (DateUtils.isSameDay(
-                                state.date,
-                                DateUtils.currentDate
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .pointerInput(Unit) {
+                detectTapGestures(onTap = {
+                    focusManager.clearFocus()
+                })
+            }
+    ) {
+        Scaffold(
+            topBar = {
+                CommonAppBar(
+                    config = AppBarConfig(
+                        headline = stringResource(
+                            state.headlineRes(
+                                isEditMode,
+                                config.transactionType
                             )
-                        ) UiState.DISABLED else UiState.ENABLED,
-                        onClick = onTodayClick
+                        ),
+                        leadingAction = AppBarAction(
+                            icon = IconGeneral.CLOSE,
+                            onClick = onCloseClick
+                        ),
+                        trailingActions = if (isEditMode) listOf(
+                            AppBarAction(IconGeneral.DELETE, onDeleteClick)
+                        ) else emptyList()
+                    )
+                )
+            },
+            containerColor = AppTheme.colors.backgroundColors.screenBackground
+        ) { innerPadding ->
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(horizontal = Spacing.Medium, vertical = Spacing.MediumLarge),
+                verticalArrangement = Arrangement.Center,
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Spacer(modifier = Modifier.height(Spacing.Small))
+
+                CategorySummary(
+                    config = CategorySummaryConfig(
+                        icon = state.category.icon,
+                        color = state.category.resolvedColor(),
+                        categoryName = state.category.localizedName(),
+                        subcategoryName = state.subcategory?.localizedName()
+                            ?: state.shortcut?.name,
+                        onChangeClick = onChangeClick
                     )
                 )
 
-                InputDate(
-                    config = InputDateConfig(
-                        date = state.date,
-                        onIconClick = onDatePickClick
+                Spacer(modifier = Modifier.height(Spacing.Large))
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(Spacing.Medium)
+                ) {
+                    AppButton(
+                        ButtonConfig(
+                            text = stringResource(R.string.btn_today),
+                            type = ButtonType.SECONDARY_COMPACT,
+                            state = if (DateUtils.isSameDay(
+                                    state.date,
+                                    DateUtils.currentDate
+                                )
+                            ) UiState.DISABLED else UiState.ENABLED,
+                            onClick = onTodayClick
+                        )
+                    )
+
+                    InputDate(
+                        config = InputDateConfig(
+                            date = state.date,
+                            onIconClick = onDatePickClick
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.weight(1f))
+
+                AppInputText(
+                    config = InputFieldConfig(
+                        value = state.description.orEmpty(),
+                        label = stringResource(R.string.label_description),
+                        placeholder = stringResource(R.string.input_hint_description),
+                        state = state.inputState,
+                        onValueChange = onDescriptionChange,
+                        onResetClick = onResetDescriptionClick
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(Spacing.Large))
+
+                AmountEditor(
+                    config = AmountEditorConfig(
+                        paymentIcon = state.paymentMethodType.toIcon(),
+                        currencyType = state.currencyType,
+                        value = state.amount,
+                        onResetClick = onResetAmountClick,
+                        onPaymentSelectorClick = onPaymentSelectorClick,
+                        onCurrencySelectorClick = onCurrencySelectorClick,
+                        onKeyClick = onKeyClick
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(Spacing.Large))
+
+                AppButton(
+                    ButtonConfig(
+                        text = stringResource(R.string.btn_save),
+                        type = ButtonType.PRIMARY,
+                        state = if (state.isSaveButtonEnabled) UiState.ENABLED else UiState.DISABLED,
+                        onClick = onSaveClick
                     )
                 )
             }
-
-            Spacer(modifier = Modifier.weight(1f))
-
-            AppInputText(
-                config = InputFieldConfig(
-                    value = state.description.orEmpty(),
-                    label = stringResource(R.string.label_description),
-                    placeholder = stringResource(R.string.input_hint_description),
-                    state = state.inputState,
-                    onValueChange = onDescriptionChange,
-                    onResetClick = onResetDescriptionClick
-                )
-            )
-
-            Spacer(modifier = Modifier.height(Spacing.Large))
-
-            AmountEditor(
-                config = AmountEditorConfig(
-                    paymentIcon = state.paymentMethodType.toIcon(),
-                    currencyType = state.currencyType,
-                    value = state.amount,
-                    onResetClick = onResetAmountClick,
-                    onPaymentSelectorClick = onPaymentSelectorClick,
-                    onCurrencySelectorClick = onCurrencySelectorClick,
-                    onKeyClick = onKeyClick
-                )
-            )
-
-            Spacer(modifier = Modifier.height(Spacing.Large))
-
-            AppButton(
-                ButtonConfig(
-                    text = stringResource(R.string.btn_save),
-                    type = ButtonType.PRIMARY,
-                    state = if (state.isSaveButtonEnabled) UiState.ENABLED else UiState.DISABLED,
-                    onClick = onSaveClick
-                )
-            )
         }
     }
 }

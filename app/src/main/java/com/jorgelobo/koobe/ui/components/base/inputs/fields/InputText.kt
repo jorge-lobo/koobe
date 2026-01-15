@@ -4,8 +4,8 @@ import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,11 +27,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.focus.FocusRequester
-import androidx.compose.ui.focus.focusRequester
-import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
@@ -58,9 +54,8 @@ fun AppInputText(
     val typography = AppTheme.typography.text
     val icon = IconGeneral.RESET.icon
 
-    var isFocused by remember { mutableStateOf(false) }
-    val focusRequester = remember { FocusRequester() }
-    val focusManager = LocalFocusManager.current
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
 
     val borderColor by animateColorAsState(
         targetValue = when {
@@ -97,12 +92,7 @@ fun AppInputText(
                 .clip(shape)
                 .border(BorderDimens.Base, borderColor, shape)
                 .background(colors.textFieldBackground)
-                .padding(start = Spacing.Medium, end = Spacing.Small)
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }) {
-                    focusManager.clearFocus()
-                },
+                .padding(start = Spacing.Medium, end = Spacing.Small),
             contentAlignment = Alignment.Center
         ) {
             Row(
@@ -114,14 +104,12 @@ fun AppInputText(
                     onValueChange = config.onValueChange,
                     enabled = enabled,
                     singleLine = true,
+                    interactionSource = interactionSource,
                     textStyle = typography.bodyLarge.copy(
                         color = colors.textFieldText
                     ),
                     cursorBrush = SolidColor(colors.textFieldCursor),
-                    modifier = Modifier
-                        .weight(1f)
-                        .onFocusChanged { isFocused = it.isFocused }
-                        .focusRequester(focusRequester)
+                    modifier = Modifier.weight(1f)
                 ) { innerTextField ->
                     Box(
                         modifier = Modifier.fillMaxWidth(),
