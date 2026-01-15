@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.ui.screen.common.dialog
+package com.jorgelobo.koobe.ui.screen.common.dialog.confirmation
 
 sealed interface ConfirmationDialogEffect {
     object Confirmed : ConfirmationDialogEffect

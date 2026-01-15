@@ -13,7 +13,7 @@ import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import com.jorgelobo.koobe.ui.screen.common.UiEvent
 import com.jorgelobo.koobe.ui.components.composed.dialogs.DiscardDialog
-import com.jorgelobo.koobe.ui.screen.common.dialog.ConfirmationDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 
 @Composable
 fun TransactionEditorScreen(

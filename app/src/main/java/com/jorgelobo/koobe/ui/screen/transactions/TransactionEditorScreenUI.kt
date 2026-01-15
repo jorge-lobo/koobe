@@ -45,7 +45,7 @@ import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.mappers.toIcon
-import com.jorgelobo.koobe.ui.screen.common.dialog.ConfirmationDialogState
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing

@@ -10,9 +10,9 @@ import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
 import com.jorgelobo.koobe.ui.screen.common.UiEvent
-import com.jorgelobo.koobe.ui.screen.common.dialog.ConfirmationDialogAction
-import com.jorgelobo.koobe.ui.screen.common.dialog.ConfirmationDialogEffect
-import com.jorgelobo.koobe.ui.screen.common.dialog.reduceConfirmationDialog
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
