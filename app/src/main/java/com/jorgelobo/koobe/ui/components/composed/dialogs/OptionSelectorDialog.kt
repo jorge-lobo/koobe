@@ -17,7 +17,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
-import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.ui.components.base.background.Background
@@ -53,7 +52,7 @@ fun OptionSelectorDialog(
             @Composable {
                 CurrencyRadioButton(
                     config = currencyRadioButtonConfig(
-                        selected = config.selectedCurrency ?: CurrencyType.EUR,
+                        selected = requireNotNull(config.selectedCurrency),
                         onOptionSelected = {
                             config.onCurrencySelected(it)
                             enable = true
