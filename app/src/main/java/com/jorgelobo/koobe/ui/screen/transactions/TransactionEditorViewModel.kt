@@ -6,11 +6,14 @@ import com.jorgelobo.koobe.domain.amount.reduceAmountInput
 import com.jorgelobo.koobe.ui.mappers.toAmountAction
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
+import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
 import com.jorgelobo.koobe.ui.screen.common.UiEvent
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.reduceSelectorSheet
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
@@ -38,7 +41,6 @@ class TransactionEditorViewModel @Inject constructor(
 
     private val _events = MutableSharedFlow<UiEvent>()
     val events = _events.asSharedFlow()
-
 
     private lateinit var config: TransactionEditorConfig
 
@@ -131,6 +133,24 @@ class TransactionEditorViewModel @Inject constructor(
                 }
 
             null -> Unit
+        }
+    }
+
+    // Payment Selector BottomSheet
+
+    fun onPaymentSelectorAction(
+        action: SelectorSheetAction<PaymentMethodType>
+    ) {
+        val newState = reduceSelectorSheet(
+            state = uiState.value.paymentMethodSelector,
+            action = action
+        )
+
+        _uiState.update {
+            it.copy(
+                paymentMethodSelector = newState,
+                paymentMethodType = newState.selected
+            )
         }
     }
 

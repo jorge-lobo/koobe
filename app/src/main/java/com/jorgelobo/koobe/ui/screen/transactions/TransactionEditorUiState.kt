@@ -8,6 +8,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetState
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
 import com.jorgelobo.koobe.utils.DateUtils
@@ -30,7 +31,8 @@ data class TransactionEditorUiState(
     val initialSnapshot: InitialSnapshot,
     val showSnackBar: Boolean = false,
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
-    val currencyDialog: SelectorDialogState<CurrencyType> = SelectorDialogState(initial = CurrencyType.EUR)
+    val currencyDialog: SelectorDialogState<CurrencyType> = SelectorDialogState(initial = CurrencyType.EUR),
+    val paymentMethodSelector: SelectorSheetState<PaymentMethodType>
 ) {
     val hasUnsavedChanges: Boolean
         get() = category.id != initialSnapshot.category.id ||
@@ -74,6 +76,10 @@ data class TransactionEditorUiState(
                     paymentMethodType = PaymentMethodType.CASH,
                     currencyType = CurrencyType.EUR,
                     amount = 0.0
+                ),
+                paymentMethodSelector = SelectorSheetState(
+                    visible = false,
+                    selected = PaymentMethodType.CASH
                 )
             )
         }
@@ -101,6 +107,10 @@ data class TransactionEditorUiState(
                     paymentMethodType = PaymentMethodType.CASH,
                     currencyType = CurrencyType.EUR,
                     amount = 0.0
+                ),
+                paymentMethodSelector = SelectorSheetState(
+                    visible = false,
+                    selected = PaymentMethodType.CASH
                 )
             )
         }

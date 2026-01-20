@@ -1,6 +1,9 @@
 package com.jorgelobo.koobe.ui.screen.transactions
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -8,19 +11,23 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.ui.components.composed.dialogs.DiscardDialog
+import com.jorgelobo.koobe.ui.components.composed.dialogs.OptionSelectorDialog
+import com.jorgelobo.koobe.ui.components.composed.dialogs.OptionSelectorDialogConfig
+import com.jorgelobo.koobe.ui.components.composed.sheets.ListSelectorBottomSheet
+import com.jorgelobo.koobe.ui.components.composed.sheets.ListSelectorBottomSheetConfig
+import com.jorgelobo.koobe.ui.components.model.enums.OptionSelectorType
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import com.jorgelobo.koobe.ui.screen.common.UiEvent
-import com.jorgelobo.koobe.ui.components.composed.dialogs.DiscardDialog
-import com.jorgelobo.koobe.ui.components.composed.dialogs.OptionSelectorDialog
-import com.jorgelobo.koobe.ui.components.composed.dialogs.OptionSelectorDialogConfig
-import com.jorgelobo.koobe.ui.components.model.enums.OptionSelectorType
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
-import com.jorgelobo.koobe.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionEditorScreen(
     navController: NavController,
@@ -44,6 +51,10 @@ fun TransactionEditorScreen(
     }
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val sheetState = rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+
 
     if (uiState.discardDialog.visible) {
         DiscardDialog(
@@ -72,6 +83,27 @@ fun TransactionEditorScreen(
         )
     }
 
+    if (uiState.paymentMethodSelector.visible) {
+        ModalBottomSheet(
+            onDismissRequest = { viewModel.onPaymentSelectorAction(SelectorSheetAction.Dismiss) }
+        ) {
+            ListSelectorBottomSheet(
+                sheetState = sheetState,
+                config = ListSelectorBottomSheetConfig.Payment(
+                    selected = uiState.paymentMethodSelector.selected,
+                    onItemSelected = {
+                        viewModel.onPaymentSelectorAction(
+                            SelectorSheetAction.Select(
+                                it
+                            )
+                        )
+                    }
+                ),
+                onDismiss = { viewModel.onPaymentSelectorAction(SelectorSheetAction.Dismiss) }
+            )
+        }
+    }
+
     TransactionEditorScreenUI(
         config = config,
         state = uiState,
@@ -93,7 +125,7 @@ fun TransactionEditorScreen(
         onDescriptionChange = { viewModel.onDescriptionChanged(it) },
         onResetDescriptionClick = { viewModel.onResetDescription() },
         onResetAmountClick = { viewModel.onResetAmount() },
-        onPaymentSelectorClick = {},
+        onPaymentSelectorClick = { viewModel.onPaymentSelectorAction(SelectorSheetAction.Open) },
         onCurrencySelectorClick = { viewModel.onCurrencySelectorDialogAction(SelectorDialogAction.Open) },
         onKeyClick = { viewModel.onKeyClicked(it) },
         onSaveClick = {}
