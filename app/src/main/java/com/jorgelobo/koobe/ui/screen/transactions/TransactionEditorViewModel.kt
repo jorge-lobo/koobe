@@ -3,7 +3,6 @@ package com.jorgelobo.koobe.ui.screen.transactions
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.domain.amount.reduceAmountInput
-import com.jorgelobo.koobe.ui.mappers.toAmountAction
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
@@ -11,7 +10,7 @@ import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
-import com.jorgelobo.koobe.ui.screen.common.UiEvent
+import com.jorgelobo.koobe.ui.mappers.toAmountAction
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.reduceSelectorSheet
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
@@ -39,7 +38,7 @@ class TransactionEditorViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(TransactionEditorUiState.initialEmpty())
     val uiState: StateFlow<TransactionEditorUiState> = _uiState
 
-    private val _events = MutableSharedFlow<UiEvent>()
+    private val _events = MutableSharedFlow<TransactionEditorEvent>()
     val events = _events.asSharedFlow()
 
     private lateinit var config: TransactionEditorConfig
@@ -156,7 +155,7 @@ class TransactionEditorViewModel @Inject constructor(
 
     private fun sendNavigateBack() {
         viewModelScope.launch {
-            _events.emit(UiEvent.NavigateBack)
+            _events.emit(TransactionEditorEvent.ExitToOrigin)
         }
     }
 }

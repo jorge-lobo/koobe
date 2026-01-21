@@ -22,7 +22,6 @@ import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
-import com.jorgelobo.koobe.ui.screen.common.UiEvent
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
@@ -42,10 +41,17 @@ fun TransactionEditorScreen(
         viewModel.init(config)
     }
 
-    LaunchedEffect(viewModel.events) {
+    LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
-                UiEvent.NavigateBack -> navController.popBackStack()
+                is TransactionEditorEvent.ExitToOrigin -> {
+                    navController.navigate(config.originRoute) {
+                        popUpTo(config.originRoute) {
+                            inclusive = true
+                        }
+                        launchSingleTop = true
+                    }
+                }
             }
         }
     }

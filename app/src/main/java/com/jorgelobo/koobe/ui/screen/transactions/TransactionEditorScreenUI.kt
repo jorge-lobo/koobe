@@ -231,7 +231,8 @@ fun PreviewTransactionEditorScreen() {
                 transactionId = null,
                 categoryId = category.id,
                 subcategoryId = subcategory.id,
-                shortcutId = shortcut.id
+                shortcutId = shortcut.id,
+                originRoute = "dashboard"
             ),
             state = TransactionEditorUiState(
                 category = category,

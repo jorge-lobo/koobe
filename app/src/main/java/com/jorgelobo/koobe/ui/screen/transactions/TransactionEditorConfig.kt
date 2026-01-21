@@ -9,7 +9,8 @@ data class TransactionEditorConfig(
     val categoryId: Int,
     val subcategoryId: Int? = null,
     val shortcutId: Int? = null,
-    val transactionType: TransactionType = TransactionType.EXPENSE
+    val transactionType: TransactionType = TransactionType.EXPENSE,
+    val originRoute: String
 ) {
     val isEditMode: Boolean
         get() = transactionId != null

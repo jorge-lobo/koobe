@@ -124,7 +124,8 @@ fun CategorySelectorTarget.toRoute(
             categoryId = uiState.selectedCategoryId!!,
             subcategoryId = uiState.selectedSubcategoryId,
             shortcutId = uiState.selectedShortcutId,
-            transactionType = config.initialTransactionType
+            transactionType = config.initialTransactionType,
+            originRoute = Route.Dashboard.route
         )
     )
 
