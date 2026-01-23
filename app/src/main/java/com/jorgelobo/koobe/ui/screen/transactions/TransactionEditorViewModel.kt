@@ -16,6 +16,9 @@ import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.reduceSelectorS
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
+import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogEffect
+import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.reduceDatePickerDialog
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
@@ -129,6 +132,26 @@ class TransactionEditorViewModel @Inject constructor(
             is SelectorDialogEffect.Applied ->
                 _uiState.update {
                     it.copy(currencyType = effect.value)
+                }
+
+            null -> Unit
+        }
+    }
+
+    // Date Picker Dialog
+
+    fun onDatePickerDialogAction(action: DatePickerDialogAction) {
+        val (dialogState, effect) = reduceDatePickerDialog(
+            state = uiState.value.datePickerDialog,
+            action = action
+        )
+
+        _uiState.update { it.copy(datePickerDialog = dialogState) }
+
+        when (effect) {
+            is DatePickerDialogEffect.Confirmed ->
+                _uiState.update {
+                    it.copy(date = effect.date)
                 }
 
             null -> Unit

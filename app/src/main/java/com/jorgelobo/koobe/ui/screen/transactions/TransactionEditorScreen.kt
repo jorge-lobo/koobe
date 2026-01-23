@@ -12,6 +12,8 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.ui.components.base.dialogs.AppDatePickerDialog
+import com.jorgelobo.koobe.ui.components.base.dialogs.AppDatePickerDialogConfig
 import com.jorgelobo.koobe.ui.components.composed.dialogs.DiscardDialog
 import com.jorgelobo.koobe.ui.components.composed.dialogs.OptionSelectorDialog
 import com.jorgelobo.koobe.ui.components.composed.dialogs.OptionSelectorDialogConfig
@@ -24,6 +26,7 @@ import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -89,9 +92,37 @@ fun TransactionEditorScreen(
         )
     }
 
+    if (uiState.datePickerDialog.visible) {
+        AppDatePickerDialog(
+            config = AppDatePickerDialogConfig(
+                visible = uiState.datePickerDialog.visible,
+                selectedDate = uiState.datePickerDialog.selectedDate,
+                onDateSelected = {
+                    viewModel.onDatePickerDialogAction(
+                        DatePickerDialogAction.Select(it)
+                    )
+                },
+                onConfirm = {
+                    viewModel.onDatePickerDialogAction(
+                        DatePickerDialogAction.Confirm
+                    )
+                },
+                onDismiss = {
+                    viewModel.onDatePickerDialogAction(
+                        DatePickerDialogAction.Dismiss
+                    )
+                }
+            )
+        )
+    }
+
     if (uiState.paymentMethodSelector.visible) {
         ModalBottomSheet(
-            onDismissRequest = { viewModel.onPaymentSelectorAction(SelectorSheetAction.Dismiss) }
+            onDismissRequest = {
+                viewModel.onPaymentSelectorAction(
+                    SelectorSheetAction.Dismiss
+                )
+            }
         ) {
             ListSelectorBottomSheet(
                 sheetState = sheetState,
@@ -127,12 +158,24 @@ fun TransactionEditorScreen(
             )
         },
         onTodayClick = {},
-        onDatePickClick = {},
+        onDatePickClick = {
+            viewModel.onDatePickerDialogAction(
+                DatePickerDialogAction.Open
+            )
+        },
         onDescriptionChange = { viewModel.onDescriptionChanged(it) },
         onResetDescriptionClick = { viewModel.onResetDescription() },
         onResetAmountClick = { viewModel.onResetAmount() },
-        onPaymentSelectorClick = { viewModel.onPaymentSelectorAction(SelectorSheetAction.Open) },
-        onCurrencySelectorClick = { viewModel.onCurrencySelectorDialogAction(SelectorDialogAction.Open) },
+        onPaymentSelectorClick = {
+            viewModel.onPaymentSelectorAction(
+                SelectorSheetAction.Open
+            )
+        },
+        onCurrencySelectorClick = {
+            viewModel.onCurrencySelectorDialogAction(
+                SelectorDialogAction.Open
+            )
+        },
         onKeyClick = { viewModel.onKeyClicked(it) },
         onSaveClick = {}
     )

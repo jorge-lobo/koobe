@@ -10,6 +10,7 @@ import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetState
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
+import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
 import com.jorgelobo.koobe.utils.DateUtils
 import java.util.Date
@@ -32,7 +33,11 @@ data class TransactionEditorUiState(
     val showSnackBar: Boolean = false,
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val currencyDialog: SelectorDialogState<CurrencyType> = SelectorDialogState(initial = CurrencyType.EUR),
-    val paymentMethodSelector: SelectorSheetState<PaymentMethodType>
+    val paymentMethodSelector: SelectorSheetState<PaymentMethodType>,
+    val datePickerDialog: DatePickerDialogState = DatePickerDialogState(
+        visible = false,
+        selectedDate = DateUtils.currentDate
+    )
 ) {
     val hasUnsavedChanges: Boolean
         get() = category.id != initialSnapshot.category.id ||
