@@ -157,7 +157,7 @@ fun TransactionEditorScreen(
                 )
             )
         },
-        onTodayClick = {},
+        onTodayClick = { viewModel.onTodayClick() },
         onDatePickClick = {
             viewModel.onDatePickerDialogAction(
                 DatePickerDialogAction.Open

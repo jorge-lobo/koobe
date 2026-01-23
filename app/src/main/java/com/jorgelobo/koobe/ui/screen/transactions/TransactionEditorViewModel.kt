@@ -22,6 +22,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.reduceDatePickerDi
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
+import com.jorgelobo.koobe.utils.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -66,6 +67,10 @@ class TransactionEditorViewModel @Inject constructor(
     }
 
     // User actions
+
+    fun onTodayClick() {
+        _uiState.update { it.copy(date = DateUtils.currentDate) }
+    }
 
     fun onDescriptionChanged(description: String) {
         _uiState.update { it.copy(description = description) }
