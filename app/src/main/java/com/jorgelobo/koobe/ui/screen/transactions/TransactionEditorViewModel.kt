@@ -3,6 +3,7 @@ package com.jorgelobo.koobe.ui.screen.transactions
 import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.amount.reduceAmountInput
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
@@ -10,9 +11,11 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
+import com.jorgelobo.koobe.domain.usecase.transaction.SaveTransactionUseCase
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.mappers.toAmountAction
+import com.jorgelobo.koobe.ui.mappers.toTransaction
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.reduceSelectorSheet
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
@@ -25,7 +28,6 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
 import com.jorgelobo.koobe.utils.DateUtils
-import com.jorgelobo.koobe.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -39,7 +41,8 @@ import javax.inject.Inject
 class TransactionEditorViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val subcategoryRepository: SubcategoryRepository,
-    private val shortcutRepository: ShortcutRepository
+    private val shortcutRepository: ShortcutRepository,
+    private val saveTransactionUseCase: SaveTransactionUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TransactionEditorUiState.initialEmpty())
@@ -126,7 +129,13 @@ class TransactionEditorViewModel @Inject constructor(
             )
             return
         } else {
-            saveTransaction()
+            viewModelScope.launch {
+                saveTransactionUseCase(
+                    transaction = state.toTransaction(config),
+                    isEditorMode = config.isEditMode
+                )
+                sendNavigateBack()
+            }
         }
     }
 
@@ -226,10 +235,6 @@ class TransactionEditorViewModel @Inject constructor(
                 )
             )
         }
-    }
-
-    private fun saveTransaction() {
-
     }
 
     private fun sendNavigateBack() {
