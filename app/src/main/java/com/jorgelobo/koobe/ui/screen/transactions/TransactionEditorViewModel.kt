@@ -1,5 +1,6 @@
 package com.jorgelobo.koobe.ui.screen.transactions
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.domain.amount.reduceAmountInput
@@ -10,6 +11,7 @@ import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
+import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.mappers.toAmountAction
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.reduceSelectorSheet
@@ -23,6 +25,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
 import com.jorgelobo.koobe.utils.DateUtils
+import com.jorgelobo.koobe.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -70,16 +73,19 @@ class TransactionEditorViewModel @Inject constructor(
 
     fun onTodayClick() {
         _uiState.update { it.copy(date = DateUtils.currentDate) }
+        updateSaveButtonState()
     }
 
     fun onDescriptionChanged(description: String) {
         _uiState.update { it.copy(description = description) }
+        updateSaveButtonState()
     }
 
     fun onResetDescription() {
         _uiState.update { state ->
             state.copy(description = "")
         }
+        updateSaveButtonState()
     }
 
     fun onKeyClicked(key: KeypadKey) {
@@ -96,6 +102,7 @@ class TransactionEditorViewModel @Inject constructor(
                 amount = newInput.toDoubleOrNull() ?: 0.0
             )
         }
+        updateSaveButtonState()
     }
 
     fun onResetAmount() {
@@ -104,6 +111,22 @@ class TransactionEditorViewModel @Inject constructor(
                 amountInput = "0",
                 amount = 0.0
             )
+        }
+        updateSaveButtonState()
+    }
+
+    fun onSaveClick() {
+        val state = _uiState.value
+
+        if (state.description.isNullOrBlank()) {
+            sendSnackBar(
+                messageRes = R.string.snackBar_message,
+                actionLabelRes = R.string.snackBar_action,
+                icon = IconGeneral.EDIT
+            )
+            return
+        } else {
+            saveTransaction()
         }
     }
 
@@ -121,6 +144,8 @@ class TransactionEditorViewModel @Inject constructor(
             ConfirmationDialogEffect.Confirmed -> sendNavigateBack()
             null -> Unit
         }
+
+        updateSaveButtonState()
     }
 
     // Selector Dialog
@@ -141,6 +166,8 @@ class TransactionEditorViewModel @Inject constructor(
 
             null -> Unit
         }
+
+        updateSaveButtonState()
     }
 
     // Date Picker Dialog
@@ -161,6 +188,8 @@ class TransactionEditorViewModel @Inject constructor(
 
             null -> Unit
         }
+
+        updateSaveButtonState()
     }
 
     // Payment Selector BottomSheet
@@ -179,11 +208,47 @@ class TransactionEditorViewModel @Inject constructor(
                 paymentMethodType = newState.selected
             )
         }
+
+        updateSaveButtonState()
+    }
+
+    private fun sendSnackBar(
+        @StringRes messageRes: Int,
+        @StringRes actionLabelRes: Int? = null,
+        icon: IconGeneral? = null
+    ) {
+        viewModelScope.launch {
+            _events.emit(
+                TransactionEditorEvent.ShowSnackBar(
+                    messageRes = messageRes,
+                    actionLabelRes = actionLabelRes,
+                    icon = icon
+                )
+            )
+        }
+    }
+
+    private fun saveTransaction() {
+
     }
 
     private fun sendNavigateBack() {
         viewModelScope.launch {
             _events.emit(TransactionEditorEvent.ExitToOrigin)
         }
+    }
+
+    // State helpers
+
+    private fun updateSaveButtonState() {
+        val state = _uiState.value
+
+        val enabled = when (config.isEditMode) {
+            true -> state.hasUnsavedChanges
+
+            false -> state.amount > 0.0
+        }
+
+        _uiState.update { it.copy(isSaveButtonEnabled = enabled) }
     }
 }

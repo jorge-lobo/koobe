@@ -1,12 +1,24 @@
 package com.jorgelobo.koobe.ui.screen.transactions
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -14,6 +26,8 @@ import androidx.navigation.NavController
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.ui.components.base.dialogs.AppDatePickerDialog
 import com.jorgelobo.koobe.ui.components.base.dialogs.AppDatePickerDialogConfig
+import com.jorgelobo.koobe.ui.components.base.snackbar.AppSnackBar
+import com.jorgelobo.koobe.ui.components.base.snackbar.SnackBarConfig
 import com.jorgelobo.koobe.ui.components.composed.dialogs.DiscardDialog
 import com.jorgelobo.koobe.ui.components.composed.dialogs.OptionSelectorDialog
 import com.jorgelobo.koobe.ui.components.composed.dialogs.OptionSelectorDialogConfig
@@ -28,6 +42,8 @@ import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAc
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
+import com.jorgelobo.koobe.ui.theme.dimens.Spacing
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,6 +52,10 @@ fun TransactionEditorScreen(
     config: TransactionEditorConfig,
     viewModel: TransactionEditorViewModel = hiltViewModel()
 ) {
+    val snackBarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    var currentSnackBarConfig by remember { mutableStateOf<SnackBarConfig?>(null) }
+
     BackHandler {
         viewModel.onDialogAction(ConfirmationDialogAction.RequestClose)
     }
@@ -47,13 +67,33 @@ fun TransactionEditorScreen(
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
             when (event) {
+
                 is TransactionEditorEvent.ExitToOrigin -> {
                     navController.navigate(config.originRoute) {
-                        popUpTo(config.originRoute) {
-                            inclusive = true
-                        }
+                        popUpTo(config.originRoute) { inclusive = true }
                         launchSingleTop = true
                     }
+                }
+
+                is TransactionEditorEvent.ShowSnackBar -> {
+                    currentSnackBarConfig = SnackBarConfig(
+                        messageRes = event.messageRes,
+                        actionLabelRes = event.actionLabelRes,
+                        icon = event.icon,
+                        onActionClick = { snackBarHostState.currentSnackbarData?.performAction() },
+                        onIconClick = {
+                            scope.launch {
+                                snackBarHostState.currentSnackbarData?.dismiss()
+                                currentSnackBarConfig = null
+                            }
+                        }
+                    )
+
+                    snackBarHostState.showSnackbar(
+                        message = "",
+                        actionLabel = null,
+                        duration = SnackbarDuration.Indefinite
+                    )
                 }
             }
         }
@@ -141,42 +181,60 @@ fun TransactionEditorScreen(
         }
     }
 
-    TransactionEditorScreenUI(
-        config = config,
-        state = uiState,
-        onCloseClick = { viewModel.onDialogAction(ConfirmationDialogAction.RequestClose) },
-        onDeleteClick = {},
-        onChangeClick = {
-            navController.navigate(
-                Route.CategorySelector.create(
-                    CategorySelectorConfig(
-                        mode = CategorySelectorMode.EDIT_TRANSACTION,
-                        target = CategorySelectorTarget.TRANSACTION_EDITOR,
-                        initialTransactionType = config.transactionType
+    Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState) {
+                currentSnackBarConfig?.let { config ->
+                    Box(
+                        modifier = Modifier.padding(Spacing.Medium)
+                    ) {
+                        AppSnackBar(
+                            config = config,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            }
+        }
+    ) { padding ->
+        TransactionEditorScreenUI(
+            config = config,
+            state = uiState,
+            modifier = Modifier.padding(padding),
+            onCloseClick = { viewModel.onDialogAction(ConfirmationDialogAction.RequestClose) },
+            onDeleteClick = {},
+            onChangeClick = {
+                navController.navigate(
+                    Route.CategorySelector.create(
+                        CategorySelectorConfig(
+                            mode = CategorySelectorMode.EDIT_TRANSACTION,
+                            target = CategorySelectorTarget.TRANSACTION_EDITOR,
+                            initialTransactionType = config.transactionType
+                        )
                     )
                 )
-            )
-        },
-        onTodayClick = { viewModel.onTodayClick() },
-        onDatePickClick = {
-            viewModel.onDatePickerDialogAction(
-                DatePickerDialogAction.Open
-            )
-        },
-        onDescriptionChange = { viewModel.onDescriptionChanged(it) },
-        onResetDescriptionClick = { viewModel.onResetDescription() },
-        onResetAmountClick = { viewModel.onResetAmount() },
-        onPaymentSelectorClick = {
-            viewModel.onPaymentSelectorAction(
-                SelectorSheetAction.Open
-            )
-        },
-        onCurrencySelectorClick = {
-            viewModel.onCurrencySelectorDialogAction(
-                SelectorDialogAction.Open
-            )
-        },
-        onKeyClick = { viewModel.onKeyClicked(it) },
-        onSaveClick = {}
-    )
+            },
+            onTodayClick = { viewModel.onTodayClick() },
+            onDatePickClick = {
+                viewModel.onDatePickerDialogAction(
+                    DatePickerDialogAction.Open
+                )
+            },
+            onDescriptionChange = { viewModel.onDescriptionChanged(it) },
+            onResetDescriptionClick = { viewModel.onResetDescription() },
+            onResetAmountClick = { viewModel.onResetAmount() },
+            onPaymentSelectorClick = {
+                viewModel.onPaymentSelectorAction(
+                    SelectorSheetAction.Open
+                )
+            },
+            onCurrencySelectorClick = {
+                viewModel.onCurrencySelectorDialogAction(
+                    SelectorDialogAction.Open
+                )
+            },
+            onKeyClick = { viewModel.onKeyClicked(it) },
+            onSaveClick = { viewModel.onSaveClick() }
+        )
+    }
 }

@@ -57,6 +57,7 @@ import com.jorgelobo.koobe.utils.resolvedColor
 fun TransactionEditorScreenUI(
     config: TransactionEditorConfig,
     state: TransactionEditorUiState,
+    modifier: Modifier = Modifier,
     onCloseClick: () -> Unit,
     onDeleteClick: () -> Unit,
     onChangeClick: () -> Unit,
