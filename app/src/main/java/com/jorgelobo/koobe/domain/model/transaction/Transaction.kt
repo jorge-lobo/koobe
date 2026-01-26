@@ -6,7 +6,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import java.util.Date
 
 data class Transaction(
-    val id: Int,
+    val id: Int? = null,
     val date: Date,
     val description: String,
     val type: TransactionType,
