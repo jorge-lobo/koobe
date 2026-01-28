@@ -23,6 +23,7 @@ import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.domain.model.transaction.DescriptionSource
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonConfig
 import com.jorgelobo.koobe.ui.components.base.buttons.types.AppButton
@@ -43,6 +44,7 @@ import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.components.model.enums.UiState
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.mappers.asText
 import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.mappers.toIcon
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetState
@@ -157,7 +159,7 @@ fun TransactionEditorScreenUI(
 
                 AppInputText(
                     config = InputFieldConfig(
-                        value = state.description.orEmpty(),
+                        value = state.descriptionSource.asText(),
                         label = stringResource(R.string.label_description),
                         placeholder = stringResource(R.string.input_hint_description),
                         state = state.inputState,
@@ -239,7 +241,7 @@ fun PreviewTransactionEditorScreen() {
                 category = category,
                 subcategory = subcategory,
                 shortcut = shortcut,
-                description = "Ticket",
+                descriptionSource = DescriptionSource.TextDescription("Ticket"),
                 inputState = InputState.DEFAULT,
                 date = DateUtils.currentDate,
                 paymentMethodType = PaymentMethodType.CASH,
@@ -253,7 +255,7 @@ fun PreviewTransactionEditorScreen() {
                     subcategory = subcategory,
                     shortcut = shortcut,
                     transactionType = TransactionType.EXPENSE,
-                    description = "",
+                    descriptionSource = DescriptionSource.Empty,
                     date = DateUtils.currentDate,
                     paymentMethodType = PaymentMethodType.CASH,
                     currencyType = CurrencyType.EUR,
@@ -261,7 +263,10 @@ fun PreviewTransactionEditorScreen() {
                 ),
                 showSnackBar = false,
                 discardDialog = ConfirmationDialogState(visible = false),
-                paymentMethodSelector = SelectorSheetState(visible = false, selected = PaymentMethodType.CASH),
+                paymentMethodSelector = SelectorSheetState(
+                    visible = false,
+                    selected = PaymentMethodType.CASH
+                ),
             ),
             onCloseClick = {},
             onDeleteClick = {},

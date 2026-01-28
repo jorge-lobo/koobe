@@ -17,6 +17,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -34,6 +35,7 @@ import com.jorgelobo.koobe.ui.components.composed.dialogs.OptionSelectorDialogCo
 import com.jorgelobo.koobe.ui.components.composed.sheets.ListSelectorBottomSheet
 import com.jorgelobo.koobe.ui.components.composed.sheets.ListSelectorBottomSheetConfig
 import com.jorgelobo.koobe.ui.components.model.enums.OptionSelectorType
+import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
@@ -55,6 +57,10 @@ fun TransactionEditorScreen(
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var currentSnackBarConfig by remember { mutableStateOf<SnackBarConfig?>(null) }
+
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val autoFillDescriptionState =
+        rememberUpdatedState(uiState.subcategory?.localizedName() ?: uiState.shortcut?.name)
 
     BackHandler {
         viewModel.onDialogAction(ConfirmationDialogAction.RequestClose)
@@ -80,7 +86,15 @@ fun TransactionEditorScreen(
                         messageRes = event.messageRes,
                         actionLabelRes = event.actionLabelRes,
                         icon = event.icon,
-                        onActionClick = { snackBarHostState.currentSnackbarData?.performAction() },
+                        onActionClick = {
+                            autoFillDescriptionState.value?.let {
+                                viewModel.onSnackBarActionClick(it)
+                            }
+                            scope.launch {
+                                snackBarHostState.currentSnackbarData?.dismiss()
+                                currentSnackBarConfig = null
+                            }
+                        },
                         onIconClick = {
                             scope.launch {
                                 snackBarHostState.currentSnackbarData?.dismiss()
@@ -99,11 +113,9 @@ fun TransactionEditorScreen(
         }
     }
 
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val sheetState = rememberModalBottomSheetState(
         skipPartiallyExpanded = true
     )
-
 
     if (uiState.discardDialog.visible) {
         DiscardDialog(
@@ -234,7 +246,9 @@ fun TransactionEditorScreen(
                 )
             },
             onKeyClick = { viewModel.onKeyClicked(it) },
-            onSaveClick = { viewModel.onSaveClick() }
+            onSaveClick = {
+                viewModel.onSaveClick()
+            }
         )
     }
 }

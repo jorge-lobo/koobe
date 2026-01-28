@@ -8,6 +8,7 @@ import com.jorgelobo.koobe.domain.amount.reduceAmountInput
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
+import com.jorgelobo.koobe.domain.model.transaction.DescriptionSource
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
@@ -79,14 +80,14 @@ class TransactionEditorViewModel @Inject constructor(
         updateSaveButtonState()
     }
 
-    fun onDescriptionChanged(description: String) {
-        _uiState.update { it.copy(description = description) }
+    fun onDescriptionChanged(text: String) {
+        _uiState.update { it.copy(descriptionSource = DescriptionSource.TextDescription(text)) }
         updateSaveButtonState()
     }
 
     fun onResetDescription() {
         _uiState.update { state ->
-            state.copy(description = "")
+            state.copy(descriptionSource = DescriptionSource.Empty)
         }
         updateSaveButtonState()
     }
@@ -121,21 +122,46 @@ class TransactionEditorViewModel @Inject constructor(
     fun onSaveClick() {
         val state = _uiState.value
 
-        if (state.description.isNullOrBlank()) {
-            sendSnackBar(
-                messageRes = R.string.snackBar_message,
-                actionLabelRes = R.string.snackBar_action,
-                icon = IconGeneral.EDIT
-            )
-            return
-        } else {
-            viewModelScope.launch {
-                saveTransactionUseCase(
-                    transaction = state.toTransaction(config),
-                    isEditorMode = config.isEditMode
-                )
-                sendNavigateBack()
+        when (val description = state.descriptionSource) {
+
+            null,
+            DescriptionSource.Empty -> {
+                val hasAutoFillCandidate = state.subcategory != null || state.shortcut != null
+                if (!hasAutoFillCandidate) return
+
+                sendSnackBar()
             }
+
+            is DescriptionSource.TextDescription -> {
+                saveTransaction(description.text)
+            }
+        }
+    }
+
+    fun onSnackBarActionClick(resolvedDescription: String) {
+        autoFillDescription(resolvedDescription)
+    }
+
+    private fun autoFillDescription(text: String) {
+        _uiState.update {
+            it.copy(descriptionSource = DescriptionSource.TextDescription(text))
+        }
+
+        saveTransaction(text)
+    }
+
+    private fun saveTransaction(description: String) {
+        val state = _uiState.value
+
+        viewModelScope.launch {
+            saveTransactionUseCase(
+                transaction = state.toTransaction(
+                    config = config,
+                    resolvedDescription = description
+                ),
+                isEditorMode = config.isEditMode
+            )
+            sendNavigateBack()
         }
     }
 
@@ -221,17 +247,13 @@ class TransactionEditorViewModel @Inject constructor(
         updateSaveButtonState()
     }
 
-    private fun sendSnackBar(
-        @StringRes messageRes: Int,
-        @StringRes actionLabelRes: Int? = null,
-        icon: IconGeneral? = null
-    ) {
+    private fun sendSnackBar() {
         viewModelScope.launch {
             _events.emit(
                 TransactionEditorEvent.ShowSnackBar(
-                    messageRes = messageRes,
-                    actionLabelRes = actionLabelRes,
-                    icon = icon
+                    messageRes = R.string.snackBar_message,
+                    actionLabelRes = R.string.snackBar_action,
+                    icon = IconGeneral.EDIT
                 )
             )
         }

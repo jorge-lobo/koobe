@@ -6,6 +6,7 @@ import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.domain.model.transaction.DescriptionSource
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetState
@@ -19,7 +20,7 @@ data class TransactionEditorUiState(
     val category: Category,
     val subcategory: Subcategory? = null,
     val shortcut: Shortcut? = null,
-    val description: String? = "",
+    val descriptionSource: DescriptionSource? = null,
     val inputState: InputState,
     val date: Date = DateUtils.currentDate,
     val paymentMethodType: PaymentMethodType = PaymentMethodType.CASH,
@@ -43,7 +44,7 @@ data class TransactionEditorUiState(
         get() = category.id != initialSnapshot.category.id ||
                 subcategory?.id != initialSnapshot.subcategory?.id ||
                 shortcut?.id != initialSnapshot.shortcut?.id ||
-                description != initialSnapshot.description ||
+                descriptionSource != initialSnapshot.descriptionSource ||
                 !DateUtils.isSameDay(date, initialSnapshot.date) ||
                 paymentMethodType != initialSnapshot.paymentMethodType ||
                 currencyType != initialSnapshot.currencyType ||
@@ -76,7 +77,7 @@ data class TransactionEditorUiState(
                     subcategory = null,
                     shortcut = null,
                     transactionType = TransactionType.EXPENSE,
-                    description = "",
+                    descriptionSource = DescriptionSource.Empty,
                     date = DateUtils.currentDate,
                     paymentMethodType = PaymentMethodType.CASH,
                     currencyType = CurrencyType.EUR,
@@ -100,14 +101,14 @@ data class TransactionEditorUiState(
                 category = category,
                 subcategory = subcategory,
                 shortcut = shortcut,
-                description = "",
+                descriptionSource = DescriptionSource.Empty,
                 inputState = InputState.DEFAULT,
                 initialSnapshot = InitialSnapshot(
                     category = category,
                     subcategory = subcategory,
                     shortcut = shortcut,
                     transactionType = config.transactionType,
-                    description = "",
+                    descriptionSource = DescriptionSource.Empty,
                     date = DateUtils.currentDate,
                     paymentMethodType = PaymentMethodType.CASH,
                     currencyType = CurrencyType.EUR,
@@ -127,7 +128,7 @@ data class InitialSnapshot(
     val subcategory: Subcategory?,
     val shortcut: Shortcut?,
     val transactionType: TransactionType,
-    val description: String?,
+    val descriptionSource: DescriptionSource,
     val date: Date,
     val paymentMethodType: PaymentMethodType,
     val currencyType: CurrencyType,

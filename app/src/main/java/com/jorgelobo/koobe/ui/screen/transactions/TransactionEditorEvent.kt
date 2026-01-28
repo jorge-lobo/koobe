@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 
 sealed interface TransactionEditorEvent {
-    object ExitToOrigin : TransactionEditorEvent
+    data object ExitToOrigin : TransactionEditorEvent
 
     data class ShowSnackBar(
         @field:StringRes val messageRes: Int,
