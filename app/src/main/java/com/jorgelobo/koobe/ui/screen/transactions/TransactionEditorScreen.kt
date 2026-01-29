@@ -29,12 +29,16 @@ import com.jorgelobo.koobe.ui.components.base.dialogs.AppDatePickerDialog
 import com.jorgelobo.koobe.ui.components.base.dialogs.AppDatePickerDialogConfig
 import com.jorgelobo.koobe.ui.components.base.snackbar.AppSnackBar
 import com.jorgelobo.koobe.ui.components.base.snackbar.SnackBarConfig
+import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
+import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
+import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.components.composed.dialogs.DiscardDialog
 import com.jorgelobo.koobe.ui.components.composed.dialogs.OptionSelectorDialog
 import com.jorgelobo.koobe.ui.components.composed.dialogs.OptionSelectorDialogConfig
 import com.jorgelobo.koobe.ui.components.composed.sheets.ListSelectorBottomSheet
 import com.jorgelobo.koobe.ui.components.composed.sheets.ListSelectorBottomSheetConfig
 import com.jorgelobo.koobe.ui.components.model.enums.OptionSelectorType
+import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
@@ -44,6 +48,7 @@ import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAc
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
+import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import kotlinx.coroutines.launch
 
@@ -207,14 +212,31 @@ fun TransactionEditorScreen(
                     }
                 }
             }
-        }
+        },
+        topBar = {
+            CommonAppBar(
+                config = AppBarConfig(
+                    headline = stringResource(
+                        uiState.headlineRes(
+                            config.isEditMode,
+                            config.transactionType
+                        )
+                    ),
+                    leadingAction = AppBarAction(
+                        icon = IconGeneral.CLOSE,
+                        onClick = { viewModel.onDialogAction(ConfirmationDialogAction.RequestClose) }
+                    ),
+                    trailingActions = if (config.isEditMode) listOf(
+                        AppBarAction(IconGeneral.DELETE, onClick = {})
+                    ) else emptyList()
+                )
+            )
+        },
+        containerColor = AppTheme.colors.backgroundColors.screenBackground
     ) { padding ->
         TransactionEditorScreenUI(
-            config = config,
             state = uiState,
             modifier = Modifier.padding(padding),
-            onCloseClick = { viewModel.onDialogAction(ConfirmationDialogAction.RequestClose) },
-            onDeleteClick = {},
             onChangeClick = {
                 navController.navigate(
                     Route.CategorySelector.create(
