@@ -5,14 +5,11 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -24,20 +21,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.jorgelobo.koobe.R
-import com.jorgelobo.koobe.ui.components.base.dialogs.AppDatePickerDialog
-import com.jorgelobo.koobe.ui.components.base.dialogs.AppDatePickerDialogConfig
 import com.jorgelobo.koobe.ui.components.base.snackbar.AppSnackBar
 import com.jorgelobo.koobe.ui.components.base.snackbar.SnackBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
-import com.jorgelobo.koobe.ui.components.composed.dialogs.DiscardDialog
-import com.jorgelobo.koobe.ui.components.composed.dialogs.OptionSelectorDialog
-import com.jorgelobo.koobe.ui.components.composed.dialogs.OptionSelectorDialogConfig
-import com.jorgelobo.koobe.ui.components.composed.sheets.ListSelectorBottomSheet
-import com.jorgelobo.koobe.ui.components.composed.sheets.ListSelectorBottomSheetConfig
-import com.jorgelobo.koobe.ui.components.model.enums.OptionSelectorType
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.navigation.Route
@@ -50,7 +38,6 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogAc
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -62,6 +49,7 @@ fun TransactionEditorScreen(
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     var currentSnackBarConfig by remember { mutableStateOf<SnackBarConfig?>(null) }
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val autoFillDescriptionState =
@@ -71,140 +59,30 @@ fun TransactionEditorScreen(
         viewModel.onDialogAction(ConfirmationDialogAction.RequestClose)
     }
 
-    LaunchedEffect(config) {
-        viewModel.init(config)
-    }
-
-    LaunchedEffect(Unit) {
-        viewModel.events.collect { event ->
-            when (event) {
-
-                is TransactionEditorEvent.ExitToOrigin -> {
-                    navController.navigate(config.originRoute) {
-                        popUpTo(config.originRoute) { inclusive = true }
-                        launchSingleTop = true
-                    }
-                }
-
-                is TransactionEditorEvent.ShowSnackBar -> {
-                    currentSnackBarConfig = SnackBarConfig(
-                        messageRes = event.messageRes,
-                        actionLabelRes = event.actionLabelRes,
-                        icon = event.icon,
-                        onActionClick = {
-                            autoFillDescriptionState.value?.let {
-                                viewModel.onSnackBarActionClick(it)
-                            }
-                            scope.launch {
-                                snackBarHostState.currentSnackbarData?.dismiss()
-                                currentSnackBarConfig = null
-                            }
-                        },
-                        onIconClick = {
-                            scope.launch {
-                                snackBarHostState.currentSnackbarData?.dismiss()
-                                currentSnackBarConfig = null
-                            }
-                        }
-                    )
-
-                    snackBarHostState.showSnackbar(
-                        message = "",
-                        actionLabel = null,
-                        duration = SnackbarDuration.Indefinite
-                    )
-                }
-            }
-        }
-    }
-
-    val sheetState = rememberModalBottomSheetState(
-        skipPartiallyExpanded = true
+    TransactionEditorEffects(
+        navController = navController,
+        config = config,
+        viewModel = viewModel,
+        snackBarHostState = snackBarHostState,
+        scope = scope,
+        autoFillDescriptionState = autoFillDescriptionState,
+        onSnackBarConfigChange = { currentSnackBarConfig = it }
     )
 
-    if (uiState.discardDialog.visible) {
-        DiscardDialog(
-            onConfirm = { viewModel.onDialogAction(ConfirmationDialogAction.Confirm) },
-            onCancel = { viewModel.onDialogAction(ConfirmationDialogAction.Dismiss) }
-        )
-    }
-
-    if (uiState.currencyDialog.visible) {
-        OptionSelectorDialog(
-            config = OptionSelectorDialogConfig(
-                type = OptionSelectorType.CURRENCY,
-                title = stringResource(R.string.dialog_headline_currency_selector),
-                selectedCurrency = uiState.currencyDialog.selected
-                    ?: uiState.currencyDialog.initial,
-                onConfirm = { viewModel.onCurrencySelectorDialogAction(SelectorDialogAction.Apply) },
-                onCancel = { viewModel.onCurrencySelectorDialogAction(SelectorDialogAction.Cancel) },
-                onCurrencySelected = {
-                    viewModel.onCurrencySelectorDialogAction(
-                        SelectorDialogAction.Select(
-                            it
-                        )
-                    )
-                }
-            )
-        )
-    }
-
-    if (uiState.datePickerDialog.visible) {
-        AppDatePickerDialog(
-            config = AppDatePickerDialogConfig(
-                visible = uiState.datePickerDialog.visible,
-                selectedDate = uiState.datePickerDialog.selectedDate,
-                onDateSelected = {
-                    viewModel.onDatePickerDialogAction(
-                        DatePickerDialogAction.Select(it)
-                    )
-                },
-                onConfirm = {
-                    viewModel.onDatePickerDialogAction(
-                        DatePickerDialogAction.Confirm
-                    )
-                },
-                onDismiss = {
-                    viewModel.onDatePickerDialogAction(
-                        DatePickerDialogAction.Dismiss
-                    )
-                }
-            )
-        )
-    }
-
-    if (uiState.paymentMethodSelector.visible) {
-        ModalBottomSheet(
-            onDismissRequest = {
-                viewModel.onPaymentSelectorAction(
-                    SelectorSheetAction.Dismiss
-                )
-            }
-        ) {
-            ListSelectorBottomSheet(
-                sheetState = sheetState,
-                config = ListSelectorBottomSheetConfig.Payment(
-                    selected = uiState.paymentMethodSelector.selected,
-                    onItemSelected = {
-                        viewModel.onPaymentSelectorAction(
-                            SelectorSheetAction.Select(
-                                it
-                            )
-                        )
-                    }
-                ),
-                onDismiss = { viewModel.onPaymentSelectorAction(SelectorSheetAction.Dismiss) }
-            )
-        }
-    }
+    TransactionEditorDialogs(
+        state = uiState,
+        sheetState = sheetState,
+        onDialogAction = { viewModel.onDialogAction(it) },
+        onCurrencySelectorDialogAction = { viewModel.onCurrencySelectorDialogAction(it) },
+        onDatePickerDialogAction = { viewModel.onDatePickerDialogAction(it) },
+        onPaymentSelectorAction = { viewModel.onPaymentSelectorAction(it) }
+    )
 
     Scaffold(
         snackbarHost = {
             SnackbarHost(hostState = snackBarHostState) {
                 currentSnackBarConfig?.let { config ->
-                    Box(
-                        modifier = Modifier.padding(Spacing.Medium)
-                    ) {
+                    Box(modifier = Modifier.padding(Spacing.Medium)) {
                         AppSnackBar(
                             config = config,
                             modifier = Modifier.fillMaxWidth()
@@ -249,28 +127,16 @@ fun TransactionEditorScreen(
                 )
             },
             onTodayClick = { viewModel.onTodayClick() },
-            onDatePickClick = {
-                viewModel.onDatePickerDialogAction(
-                    DatePickerDialogAction.Open
-                )
-            },
+            onDatePickClick = { viewModel.onDatePickerDialogAction(DatePickerDialogAction.Open) },
             onDescriptionChange = { viewModel.onDescriptionChanged(it) },
             onResetDescriptionClick = { viewModel.onResetDescription() },
             onResetAmountClick = { viewModel.onResetAmount() },
-            onPaymentSelectorClick = {
-                viewModel.onPaymentSelectorAction(
-                    SelectorSheetAction.Open
-                )
-            },
+            onPaymentSelectorClick = { viewModel.onPaymentSelectorAction(SelectorSheetAction.Open) },
             onCurrencySelectorClick = {
-                viewModel.onCurrencySelectorDialogAction(
-                    SelectorDialogAction.Open
-                )
+                viewModel.onCurrencySelectorDialogAction(SelectorDialogAction.Open)
             },
             onKeyClick = { viewModel.onKeyClicked(it) },
-            onSaveClick = {
-                viewModel.onSaveClick()
-            }
+            onSaveClick = { viewModel.onSaveClick() }
         )
     }
 }
