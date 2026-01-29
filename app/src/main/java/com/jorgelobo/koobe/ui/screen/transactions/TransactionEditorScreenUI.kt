@@ -69,91 +69,153 @@ fun TransactionEditorScreenUI(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .pointerInput(Unit) {
-                detectTapGestures(onTap = { focusManager.clearFocus() })
-            }
+            .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) }
             .padding(horizontal = Spacing.Medium, vertical = Spacing.MediumLarge),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = Modifier.height(Spacing.Small))
 
-        CategorySummary(
-            config = CategorySummaryConfig(
-                icon = state.category.icon,
-                color = state.category.resolvedColor(),
-                categoryName = state.category.localizedName(),
-                subcategoryName = state.subcategory?.localizedName()
-                    ?: state.shortcut?.name,
-                onChangeClick = onChangeClick
-            )
+        TransactionCategorySection(
+            state = state,
+            onChangeClick = onChangeClick
         )
 
         Spacer(modifier = Modifier.height(Spacing.Large))
 
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(Spacing.Medium)
-        ) {
-            AppButton(
-                ButtonConfig(
-                    text = stringResource(R.string.btn_today),
-                    type = ButtonType.SECONDARY_COMPACT,
-                    state = if (DateUtils.isSameDay(
-                            state.date,
-                            DateUtils.currentDate
-                        )
-                    ) UiState.DISABLED else UiState.ENABLED,
-                    onClick = onTodayClick
-                )
-            )
-
-            InputDate(
-                config = InputDateConfig(
-                    date = state.date,
-                    onIconClick = onDatePickClick
-                )
-            )
-        }
+        TransactionDateSection(
+            state = state,
+            onTodayClick = onTodayClick,
+            onDatePickClick = onDatePickClick
+        )
 
         Spacer(modifier = Modifier.weight(1f))
 
-        AppInputText(
-            config = InputFieldConfig(
-                value = state.descriptionSource.asText(),
-                label = stringResource(R.string.label_description),
-                placeholder = stringResource(R.string.input_hint_description),
-                state = state.inputState,
-                onValueChange = onDescriptionChange,
-                onResetClick = onResetDescriptionClick
-            )
+        TransactionDescriptionSection(
+            state = state,
+            onDescriptionChange = onDescriptionChange,
+            onResetDescriptionClick = onResetDescriptionClick
         )
 
         Spacer(modifier = Modifier.height(Spacing.Large))
 
-        AmountEditor(
-            config = AmountEditorConfig(
-                paymentIcon = state.paymentMethodType.toIcon(),
-                currencyType = state.currencyType,
-                value = state.amount,
-                onResetClick = onResetAmountClick,
-                onPaymentSelectorClick = onPaymentSelectorClick,
-                onCurrencySelectorClick = onCurrencySelectorClick,
-                onKeyClick = onKeyClick
-            )
+        TransactionAmountSection(
+            state = state,
+            onResetAmountClick = onResetAmountClick,
+            onPaymentSelectorClick = onPaymentSelectorClick,
+            onCurrencySelectorClick = onCurrencySelectorClick,
+            onKeyClick = onKeyClick
         )
 
         Spacer(modifier = Modifier.height(Spacing.Large))
 
+        TransactionSaveButton(
+            state = state,
+            onSaveClick = onSaveClick
+        )
+    }
+}
+
+@Composable
+private fun TransactionCategorySection(
+    state: TransactionEditorUiState,
+    onChangeClick: () -> Unit
+) {
+    CategorySummary(
+        config = CategorySummaryConfig(
+            icon = state.category.icon,
+            color = state.category.resolvedColor(),
+            categoryName = state.category.localizedName(),
+            subcategoryName = state.subcategory?.localizedName() ?: state.shortcut?.name,
+            onChangeClick = onChangeClick
+        )
+    )
+}
+
+@Composable
+private fun TransactionDateSection(
+    state: TransactionEditorUiState,
+    onTodayClick: () -> Unit,
+    onDatePickClick: () -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.spacedBy(Spacing.Medium)
+    ) {
         AppButton(
             ButtonConfig(
-                text = stringResource(R.string.btn_save),
-                type = ButtonType.PRIMARY,
-                state = if (state.isSaveButtonEnabled) UiState.ENABLED else UiState.DISABLED,
-                onClick = onSaveClick
+                text = stringResource(R.string.btn_today),
+                type = ButtonType.SECONDARY_COMPACT,
+                state = if (DateUtils.isSameDay(
+                        state.date,
+                        DateUtils.currentDate
+                    )
+                ) UiState.DISABLED else UiState.ENABLED,
+                onClick = onTodayClick
+            )
+        )
+
+        InputDate(
+            config = InputDateConfig(
+                date = state.date,
+                onIconClick = onDatePickClick
             )
         )
     }
+}
+
+@Composable
+private fun TransactionDescriptionSection(
+    state: TransactionEditorUiState,
+    onDescriptionChange: (String) -> Unit,
+    onResetDescriptionClick: () -> Unit
+) {
+    AppInputText(
+        config = InputFieldConfig(
+            value = state.descriptionSource.asText(),
+            label = stringResource(R.string.label_description),
+            placeholder = stringResource(R.string.input_hint_description),
+            state = state.inputState,
+            onValueChange = onDescriptionChange,
+            onResetClick = onResetDescriptionClick
+        )
+    )
+}
+
+@Composable
+private fun TransactionAmountSection(
+    state: TransactionEditorUiState,
+    onResetAmountClick: () -> Unit,
+    onPaymentSelectorClick: () -> Unit,
+    onCurrencySelectorClick: () -> Unit,
+    onKeyClick: (KeypadKey) -> Unit
+) {
+    AmountEditor(
+        config = AmountEditorConfig(
+            paymentIcon = state.paymentMethodType.toIcon(),
+            currencyType = state.currencyType,
+            value = state.amount,
+            onResetClick = onResetAmountClick,
+            onPaymentSelectorClick = onPaymentSelectorClick,
+            onCurrencySelectorClick = onCurrencySelectorClick,
+            onKeyClick = onKeyClick
+        )
+    )
+}
+
+@Composable
+private fun TransactionSaveButton(
+    state: TransactionEditorUiState,
+    onSaveClick: () -> Unit
+) {
+    AppButton(
+        ButtonConfig(
+            text = stringResource(R.string.btn_save),
+            type = ButtonType.PRIMARY,
+            state = if (state.isSaveButtonEnabled) UiState.ENABLED else UiState.DISABLED,
+            onClick = onSaveClick
+        )
+    )
 }
 
 @Preview(apiLevel = 34, showBackground = true)
