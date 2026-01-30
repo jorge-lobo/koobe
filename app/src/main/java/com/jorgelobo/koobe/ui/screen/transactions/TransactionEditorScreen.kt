@@ -135,7 +135,7 @@ fun TransactionEditorScreen(
             onCurrencySelectorClick = {
                 viewModel.onCurrencySelectorDialogAction(SelectorDialogAction.Open)
             },
-            onKeyClick = { viewModel.onKeyClicked(it) },
+            onKeyClick = { viewModel.onAmountKeyPressed(it) },
             onSaveClick = { viewModel.onSaveClick() }
         )
     }

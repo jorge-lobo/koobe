@@ -92,7 +92,7 @@ class TransactionEditorViewModel @Inject constructor(
         }
     }
 
-    fun onKeyClicked(key: KeypadKey) {
+    fun onAmountKeyPressed(key: KeypadKey) {
         val action = key.toAmountAction()
 
         updateState { state ->
@@ -244,21 +244,21 @@ class TransactionEditorViewModel @Inject constructor(
     }
 
     private fun sendSnackBar() {
-        viewModelScope.launch {
-            _events.emit(
-                TransactionEditorEvent.ShowSnackBar(
-                    messageRes = R.string.snackBar_message,
-                    actionLabelRes = R.string.snackBar_action,
-                    icon = IconGeneral.EDIT
-                )
+        emitEvent(
+            TransactionEditorEvent.ShowSnackBar(
+                messageRes = R.string.snackBar_message,
+                actionLabelRes = R.string.snackBar_action,
+                icon = IconGeneral.EDIT
             )
-        }
+        )
     }
 
     private fun sendNavigateBack() {
-        viewModelScope.launch {
-            _events.emit(TransactionEditorEvent.ExitToOrigin)
-        }
+        emitEvent(TransactionEditorEvent.ExitToOrigin)
+    }
+
+    private fun emitEvent(event: TransactionEditorEvent) {
+        viewModelScope.launch { _events.emit(event) }
     }
 
     // State helpers
