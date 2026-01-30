@@ -1,6 +1,5 @@
 package com.jorgelobo.koobe.ui.screen.transactions
 
-import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.R
@@ -76,26 +75,27 @@ class TransactionEditorViewModel @Inject constructor(
     // User actions
 
     fun onTodayClick() {
-        _uiState.update { it.copy(date = DateUtils.currentDate) }
-        updateSaveButtonState()
+        updateState { state ->
+            state.copy(date = DateUtils.currentDate)
+        }
     }
 
     fun onDescriptionChanged(text: String) {
-        _uiState.update { it.copy(descriptionSource = DescriptionSource.TextDescription(text)) }
-        updateSaveButtonState()
+        updateState { state ->
+            state.copy(descriptionSource = DescriptionSource.TextDescription(text))
+        }
     }
 
     fun onResetDescription() {
-        _uiState.update { state ->
+        updateState { state ->
             state.copy(descriptionSource = DescriptionSource.Empty)
         }
-        updateSaveButtonState()
     }
 
     fun onKeyClicked(key: KeypadKey) {
         val action = key.toAmountAction()
 
-        _uiState.update { state ->
+        updateState { state ->
             val newInput = reduceAmountInput(
                 current = state.amountInput,
                 action = action
@@ -106,17 +106,15 @@ class TransactionEditorViewModel @Inject constructor(
                 amount = newInput.toDoubleOrNull() ?: 0.0
             )
         }
-        updateSaveButtonState()
     }
 
     fun onResetAmount() {
-        _uiState.update { state ->
+        updateState { state ->
             state.copy(
                 amountInput = "0",
                 amount = 0.0
             )
         }
-        updateSaveButtonState()
     }
 
     fun onSaveClick() {
@@ -143,8 +141,8 @@ class TransactionEditorViewModel @Inject constructor(
     }
 
     private fun autoFillDescription(text: String) {
-        _uiState.update {
-            it.copy(descriptionSource = DescriptionSource.TextDescription(text))
+        updateState { state ->
+            state.copy(descriptionSource = DescriptionSource.TextDescription(text))
         }
 
         saveTransaction(text)
@@ -173,14 +171,14 @@ class TransactionEditorViewModel @Inject constructor(
             action = action
         )
 
-        _uiState.update { it.copy(discardDialog = dialogState) }
+        updateState { state ->
+            state.copy(discardDialog = dialogState)
+        }
 
         when (effect) {
             ConfirmationDialogEffect.Confirmed -> sendNavigateBack()
             null -> Unit
         }
-
-        updateSaveButtonState()
     }
 
     // Selector Dialog
@@ -191,7 +189,9 @@ class TransactionEditorViewModel @Inject constructor(
             action = action
         )
 
-        _uiState.update { it.copy(currencyDialog = dialogState) }
+        updateState { state ->
+            state.copy(currencyDialog = dialogState)
+        }
 
         when (effect) {
             is SelectorDialogEffect.Applied ->
@@ -201,8 +201,6 @@ class TransactionEditorViewModel @Inject constructor(
 
             null -> Unit
         }
-
-        updateSaveButtonState()
     }
 
     // Date Picker Dialog
@@ -213,7 +211,9 @@ class TransactionEditorViewModel @Inject constructor(
             action = action
         )
 
-        _uiState.update { it.copy(datePickerDialog = dialogState) }
+        updateState { state ->
+            state.copy(datePickerDialog = dialogState)
+        }
 
         when (effect) {
             is DatePickerDialogEffect.Confirmed ->
@@ -223,8 +223,6 @@ class TransactionEditorViewModel @Inject constructor(
 
             null -> Unit
         }
-
-        updateSaveButtonState()
     }
 
     // Payment Selector BottomSheet
@@ -237,14 +235,12 @@ class TransactionEditorViewModel @Inject constructor(
             action = action
         )
 
-        _uiState.update {
-            it.copy(
+        updateState { state ->
+            state.copy(
                 paymentMethodSelector = newState,
                 paymentMethodType = newState.selected
             )
         }
-
-        updateSaveButtonState()
     }
 
     private fun sendSnackBar() {
@@ -267,15 +263,17 @@ class TransactionEditorViewModel @Inject constructor(
 
     // State helpers
 
-    private fun updateSaveButtonState() {
-        val state = _uiState.value
+    private fun updateState(reducer: (TransactionEditorUiState) -> TransactionEditorUiState) {
+        _uiState.update { state ->
+            val newState = reducer(state)
 
-        val enabled = when (config.isEditMode) {
-            true -> state.hasUnsavedChanges
+            val enabled = if (config.isEditMode) {
+                newState.hasUnsavedChanges
+            } else {
+                newState.amount > 0.0
+            }
 
-            false -> state.amount > 0.0
+            newState.copy(isSaveButtonEnabled = enabled)
         }
-
-        _uiState.update { it.copy(isSaveButtonEnabled = enabled) }
     }
 }

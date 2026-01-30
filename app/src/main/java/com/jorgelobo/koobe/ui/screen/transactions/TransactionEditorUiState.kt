@@ -17,6 +17,7 @@ import com.jorgelobo.koobe.utils.DateUtils
 import java.util.Date
 
 data class TransactionEditorUiState(
+    val config: TransactionEditorConfig? = null,
     val category: Category,
     val subcategory: Subcategory? = null,
     val shortcut: Shortcut? = null,
