@@ -1,6 +1,5 @@
 package com.jorgelobo.koobe.ui.screen.transactions
 
-import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,8 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.pointer.pointerInput
-import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
@@ -42,6 +39,7 @@ import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.mappers.asText
 import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.mappers.toIcon
+import com.jorgelobo.koobe.ui.common.modifiers.clearFocusOnTap
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetState
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
@@ -64,12 +62,10 @@ fun TransactionEditorScreenUI(
     onKeyClick: (KeypadKey) -> Unit,
     onSaveClick: () -> Unit
 ) {
-    val focusManager = LocalFocusManager.current
-
     Column(
         modifier = modifier
             .fillMaxSize()
-            .pointerInput(Unit) { detectTapGestures(onTap = { focusManager.clearFocus() }) }
+            .clearFocusOnTap()
             .padding(horizontal = Spacing.Medium, vertical = Spacing.MediumLarge),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
