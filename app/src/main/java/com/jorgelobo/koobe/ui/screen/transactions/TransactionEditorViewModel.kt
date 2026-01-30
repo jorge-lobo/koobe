@@ -72,13 +72,39 @@ class TransactionEditorViewModel @Inject constructor(
         }
     }
 
-    // User actions
+    // ─────────────────────────────
+    // User actions – Date
+    // ─────────────────────────────
 
     fun onTodayClick() {
         updateState { state ->
             state.copy(date = DateUtils.currentDate)
         }
     }
+
+    fun onDatePickerDialogAction(action: DatePickerDialogAction) {
+        val (dialogState, effect) = reduceDatePickerDialog(
+            state = uiState.value.datePickerDialog,
+            action = action
+        )
+
+        updateState { state ->
+            state.copy(datePickerDialog = dialogState)
+        }
+
+        when (effect) {
+            is DatePickerDialogEffect.Confirmed ->
+                updateState {
+                    it.copy(date = effect.date)
+                }
+
+            null -> Unit
+        }
+    }
+
+    // ─────────────────────────────
+    // User actions – Description
+    // ─────────────────────────────
 
     fun onDescriptionChanged(text: String) {
         updateState { state ->
@@ -91,6 +117,14 @@ class TransactionEditorViewModel @Inject constructor(
             state.copy(descriptionSource = DescriptionSource.Empty)
         }
     }
+
+    fun onSnackBarActionClick(resolvedDescription: String) {
+        autoFillDescription(resolvedDescription)
+    }
+
+    // ─────────────────────────────
+    // User actions – Amount
+    // ─────────────────────────────
 
     fun onAmountKeyPressed(key: KeypadKey) {
         val action = key.toAmountAction()
@@ -117,6 +151,10 @@ class TransactionEditorViewModel @Inject constructor(
         }
     }
 
+    // ─────────────────────────────
+    // User actions – Save
+    // ─────────────────────────────
+
     fun onSaveClick() {
         val state = _uiState.value
 
@@ -136,9 +174,65 @@ class TransactionEditorViewModel @Inject constructor(
         }
     }
 
-    fun onSnackBarActionClick(resolvedDescription: String) {
-        autoFillDescription(resolvedDescription)
+    // ─────────────────────────────
+    // User actions – Dialogs / Sheets
+    // ─────────────────────────────
+
+    fun onDialogAction(action: ConfirmationDialogAction) {
+        val (dialogState, effect) = reduceConfirmationDialog(
+            state = uiState.value.discardDialog,
+            action = action
+        )
+
+        updateState { state ->
+            state.copy(discardDialog = dialogState)
+        }
+
+        when (effect) {
+            ConfirmationDialogEffect.Confirmed -> sendNavigateBack()
+            null -> Unit
+        }
     }
+
+    fun onCurrencySelectorDialogAction(action: SelectorDialogAction<CurrencyType>) {
+        val (dialogState, effect) = reduceSelectorDialog(
+            state = uiState.value.currencyDialog,
+            action = action
+        )
+
+        updateState { state ->
+            state.copy(currencyDialog = dialogState)
+        }
+
+        when (effect) {
+            is SelectorDialogEffect.Applied ->
+                updateState {
+                    it.copy(currencyType = effect.value)
+                }
+
+            null -> Unit
+        }
+    }
+
+    fun onPaymentSelectorAction(
+        action: SelectorSheetAction<PaymentMethodType>
+    ) {
+        val newState = reduceSelectorSheet(
+            state = uiState.value.paymentMethodSelector,
+            action = action
+        )
+
+        updateState { state ->
+            state.copy(
+                paymentMethodSelector = newState,
+                paymentMethodType = newState.selected
+            )
+        }
+    }
+
+    // ─────────────────────────────
+    // Internal business logic
+    // ─────────────────────────────
 
     private fun autoFillDescription(text: String) {
         updateState { state ->
@@ -163,85 +257,9 @@ class TransactionEditorViewModel @Inject constructor(
         }
     }
 
-    // Discard Dialog
-
-    fun onDialogAction(action: ConfirmationDialogAction) {
-        val (dialogState, effect) = reduceConfirmationDialog(
-            state = uiState.value.discardDialog,
-            action = action
-        )
-
-        updateState { state ->
-            state.copy(discardDialog = dialogState)
-        }
-
-        when (effect) {
-            ConfirmationDialogEffect.Confirmed -> sendNavigateBack()
-            null -> Unit
-        }
-    }
-
-    // Selector Dialog
-
-    fun onCurrencySelectorDialogAction(action: SelectorDialogAction<CurrencyType>) {
-        val (dialogState, effect) = reduceSelectorDialog(
-            state = uiState.value.currencyDialog,
-            action = action
-        )
-
-        updateState { state ->
-            state.copy(currencyDialog = dialogState)
-        }
-
-        when (effect) {
-            is SelectorDialogEffect.Applied ->
-                _uiState.update {
-                    it.copy(currencyType = effect.value)
-                }
-
-            null -> Unit
-        }
-    }
-
-    // Date Picker Dialog
-
-    fun onDatePickerDialogAction(action: DatePickerDialogAction) {
-        val (dialogState, effect) = reduceDatePickerDialog(
-            state = uiState.value.datePickerDialog,
-            action = action
-        )
-
-        updateState { state ->
-            state.copy(datePickerDialog = dialogState)
-        }
-
-        when (effect) {
-            is DatePickerDialogEffect.Confirmed ->
-                _uiState.update {
-                    it.copy(date = effect.date)
-                }
-
-            null -> Unit
-        }
-    }
-
-    // Payment Selector BottomSheet
-
-    fun onPaymentSelectorAction(
-        action: SelectorSheetAction<PaymentMethodType>
-    ) {
-        val newState = reduceSelectorSheet(
-            state = uiState.value.paymentMethodSelector,
-            action = action
-        )
-
-        updateState { state ->
-            state.copy(
-                paymentMethodSelector = newState,
-                paymentMethodType = newState.selected
-            )
-        }
-    }
+    // ─────────────────────────────
+    // Side effects / Events
+    // ─────────────────────────────
 
     private fun sendSnackBar() {
         emitEvent(
@@ -261,7 +279,9 @@ class TransactionEditorViewModel @Inject constructor(
         viewModelScope.launch { _events.emit(event) }
     }
 
-    // State helpers
+    // ─────────────────────────────
+    // State reducer
+    // ─────────────────────────────
 
     private fun updateState(reducer: (TransactionEditorUiState) -> TransactionEditorUiState) {
         _uiState.update { state ->
