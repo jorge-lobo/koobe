@@ -33,12 +33,27 @@ import com.jorgelobo.koobe.utils.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the state and business logic of the Transaction Editor screen.
+ *
+ * This ViewModel handles:
+ * - Loading initial category, subcategory and shortcut data
+ * - Managing transaction form state (date, description, amount, currency, payment method)
+ * - Resolving transaction descriptions automatically when possible
+ * - Validating and enabling/disabling the save action
+ * - Persisting transactions via [SaveTransactionUseCase]
+ * - Emitting one-off UI events such as navigation and snackBars
+ *
+ * State is exposed via [uiState] as a [StateFlow], while UI side-effects are emitted through
+ * [events] as a [SharedFlow].
+ */
 @HiltViewModel
 class TransactionEditorViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
@@ -56,6 +71,13 @@ class TransactionEditorViewModel @Inject constructor(
 
     private lateinit var config: TransactionEditorConfig
 
+    /**
+     * Initializes the ViewModel with the provided [TransactionEditorConfig].
+     *
+     * This method is safe to call multiple times and will only execute once.
+     * It loads the initial category, subcategory and shortcut (if provided)
+     * and builds the initial UI state accordingly.
+     */
     fun init(config: TransactionEditorConfig) {
         if (this::config.isInitialized) return
         this.config = config
@@ -158,6 +180,15 @@ class TransactionEditorViewModel @Inject constructor(
     // User actions – Save
     // ─────────────────────────────
 
+    /**
+     * Handles the save action.
+     *
+     * Attempts to resolve the transaction description automatically based on the
+     * current state (subcategory or shortcut). Depending on the resolution result:
+     * - Saves the transaction immediately
+     * - Requests user confirmation via snackBar
+     * - Or aborts if the description is missing
+     */
     fun onSaveClick() {
         val state = _uiState.value
 
@@ -234,6 +265,7 @@ class TransactionEditorViewModel @Inject constructor(
     // Internal business logic
     // ─────────────────────────────
 
+    // Automatically fills the description and proceeds with saving the transaction
     private fun autoFillDescription(text: String) {
         updateState { state ->
             state.copy(descriptionSource = DescriptionSource.TextDescription(text))
@@ -283,6 +315,14 @@ class TransactionEditorViewModel @Inject constructor(
     // State reducer
     // ─────────────────────────────
 
+    /**
+     * Centralized state reducer.
+     *
+     * Applies the given [reducer] to the current state and recalculates
+     * whether the save button should be enabled based on the editor mode:
+     * - Edit mode: enabled only if there are unsaved changes
+     * - Create mode: enabled only if the amount is greater than zero
+     */
     private fun updateState(reducer: (TransactionEditorUiState) -> TransactionEditorUiState) {
         _uiState.update { state ->
             val newState = reducer(state)

@@ -39,6 +39,23 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
+/**
+ * The main Composable for the Transaction Editor screen.
+ *
+ * It handles:
+ * - Initialization of the [TransactionEditorViewModel] with the provided [config].
+ * - Collection of UI state and events from the ViewModel.
+ * - Display of dialogs: discard, currency selector, date picker, and payment selector.
+ * - SnackBar messages and auto-fill actions.
+ * - Top app bar with close and optional delete actions.
+ * - Scaffold layout including padding and snackBar host.
+ * - Delegates the main content to [TransactionEditorScreenUI], wiring all user interactions
+ *   to corresponding ViewModel actions or navigation events.
+ *
+ * @param navController Navigation controller for navigating between screens.
+ * @param config Configuration of the editor, including IDs, transaction type, and origin route.
+ * @param viewModel Optional ViewModel instance; defaults to [hiltViewModel].
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TransactionEditorScreen(
@@ -105,7 +122,12 @@ fun TransactionEditorScreen(
                         onClick = { viewModel.onDialogAction(ConfirmationDialogAction.RequestClose) }
                     ),
                     trailingActions = if (config.isEditMode) listOf(
-                        AppBarAction(IconGeneral.DELETE, onClick = {})
+                        AppBarAction(
+                            IconGeneral.DELETE,
+                            onClick = {
+                                // TODO(HistoricScreen):
+                                // Implement delete transaction when editor is accessible from HistoricScreen.
+                            })
                     ) else emptyList()
                 )
             )

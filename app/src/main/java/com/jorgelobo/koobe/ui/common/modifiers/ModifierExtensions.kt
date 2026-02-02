@@ -6,6 +6,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalFocusManager
 
+/**
+ * Clears focus on tap, typically to dismiss the on-screen keyboard.
+ */
 @Composable
 fun Modifier.clearFocusOnTap(): Modifier {
     val focusManager = LocalFocusManager.current
