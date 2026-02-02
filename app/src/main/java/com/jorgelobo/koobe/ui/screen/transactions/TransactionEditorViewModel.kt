@@ -7,10 +7,12 @@ import com.jorgelobo.koobe.domain.amount.reduceAmountInput
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
+import com.jorgelobo.koobe.domain.model.transaction.DescriptionResolution
 import com.jorgelobo.koobe.domain.model.transaction.DescriptionSource
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
+import com.jorgelobo.koobe.domain.usecase.transaction.ResolveTransactionDescriptionUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.SaveTransactionUseCase
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
@@ -42,7 +44,8 @@ class TransactionEditorViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val subcategoryRepository: SubcategoryRepository,
     private val shortcutRepository: ShortcutRepository,
-    private val saveTransactionUseCase: SaveTransactionUseCase
+    private val saveTransactionUseCase: SaveTransactionUseCase,
+    private val resolveTransactionDescriptionUseCase: ResolveTransactionDescriptionUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TransactionEditorUiState.initialEmpty())
@@ -158,19 +161,16 @@ class TransactionEditorViewModel @Inject constructor(
     fun onSaveClick() {
         val state = _uiState.value
 
-        when (val description = state.descriptionSource) {
+        when (val result = resolveTransactionDescriptionUseCase.resolve(
+            state.descriptionSource,
+            state.subcategory,
+            state.shortcut
+        )) {
+            is DescriptionResolution.Resolved -> saveTransaction(result.text)
 
-            null,
-            DescriptionSource.Empty -> {
-                val hasAutoFillCandidate = state.subcategory != null || state.shortcut != null
-                if (!hasAutoFillCandidate) return
+            is DescriptionResolution.RequireUserChoice -> sendSnackBar()
 
-                sendSnackBar()
-            }
-
-            is DescriptionSource.TextDescription -> {
-                saveTransaction(description.text)
-            }
+            DescriptionResolution.Missing -> Unit
         }
     }
 
