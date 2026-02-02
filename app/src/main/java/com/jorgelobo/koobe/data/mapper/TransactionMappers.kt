@@ -17,7 +17,7 @@ fun TransactionEntity.toDomain() = Transaction(
 )
 
 fun Transaction.toEntity() = TransactionEntity(
-    id = id,
+    id = id ?: 0,
     date = date.time,
     description = description,
     type = type,

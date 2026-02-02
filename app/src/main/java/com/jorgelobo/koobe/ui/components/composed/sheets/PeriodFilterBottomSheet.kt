@@ -8,7 +8,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -18,11 +22,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.jorgelobo.koobe.ui.components.base.bottomSheet.BaseBottomSheet
-import com.jorgelobo.koobe.ui.theme.dimens.BottomSheetSize
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.ui.components.base.background.Background
+import com.jorgelobo.koobe.ui.components.base.bottomSheet.AppModalBottomSheet
+import com.jorgelobo.koobe.ui.components.base.bottomSheet.BaseBottomSheetContent
 import com.jorgelobo.koobe.ui.components.base.toggles.PeriodToggle
 import com.jorgelobo.koobe.ui.components.base.toggles.periodToggleConfig
 import com.jorgelobo.koobe.ui.components.composed.buttons.ConfirmCancelButtons
@@ -37,77 +41,85 @@ import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.DateUtils
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PeriodFilterBottomSheet(
     modifier: Modifier = Modifier,
+    sheetState: SheetState,
     config: PeriodFilterBottomSheetConfig,
     onDismiss: () -> Unit
 ) {
     val months = remember { DateUtils.getAllMonthsShortNames() }
     var isEnabled by remember { mutableStateOf(false) }
 
-    BaseBottomSheet(
+    AppModalBottomSheet(
         modifier = modifier,
-        height = BottomSheetSize.Height.PeriodFilter,
-        title = stringResource(R.string.bottom_sheet_headline_period_selector)
+        sheetState = sheetState,
+        onDismissRequest = onDismiss
     ) {
-        PeriodToggle(
-            config = periodToggleConfig(
-                selected = config.selectedType,
-                onOptionSelected = { selected ->
-                    config.onTypeSelected(selected)
-                    isEnabled = true
-                }
-            )
-        )
-
-        Spacer(modifier = Modifier.height(Spacing.ExtraLarge))
-
-        DateSelector(
-            config = DateSelectorConfig(
-                periodType = config.selectedType,
-                date = config.date,
-                onLeftClick = {
-                    config.onLeftClick()
-                    isEnabled = true
-                },
-                onRightClick = {
-                    config.onRightClick()
-                    isEnabled = true
-                },
-                onPickerClick = {
-                    config.onPickerClick()
-                    isEnabled = true
-                }
-            ),
-            modifier = Modifier
-        )
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        Box(
-            modifier = Modifier.fillMaxWidth(),
-            contentAlignment = Alignment.Center
+        BaseBottomSheetContent(
+            modifier = modifier,
+            title = stringResource(R.string.bottom_sheet_headline_period_selector),
+            showHandle = true
         ) {
-            PeriodListContent(
-                periodType = config.selectedType,
-                months = months,
-                config = config,
-                onItemSelected = { isEnabled = true }
+            PeriodToggle(
+                config = periodToggleConfig(
+                    selected = config.selectedType,
+                    onOptionSelected = { selected ->
+                        config.onTypeSelected(selected)
+                        isEnabled = true
+                    }
+                )
+            )
+
+            Spacer(modifier = Modifier.height(Spacing.ExtraLarge))
+
+            DateSelector(
+                config = DateSelectorConfig(
+                    periodType = config.selectedType,
+                    date = config.date,
+                    onLeftClick = {
+                        config.onLeftClick()
+                        isEnabled = true
+                    },
+                    onRightClick = {
+                        config.onRightClick()
+                        isEnabled = true
+                    },
+                    onPickerClick = {
+                        config.onPickerClick()
+                        isEnabled = true
+                    }
+                ),
+                modifier = Modifier
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            Box(
+                modifier = Modifier.fillMaxWidth(),
+                contentAlignment = Alignment.Center
+            ) {
+                PeriodListContent(
+                    periodType = config.selectedType,
+                    months = months,
+                    config = config,
+                    onItemSelected = { isEnabled = true }
+                )
+            }
+
+            Spacer(modifier = Modifier.height(Spacing.MediumLarge))
+
+            ConfirmCancelButtons(
+                config = ConfirmCancelButtonsConfig(
+                    confirmText = stringResource(R.string.btn_apply),
+                    cancelText = stringResource(R.string.btn_cancel),
+                    isConfirmEnabled = isEnabled,
+                    onConfirmClick = config.onConfirmClick,
+                    onCancelClick = onDismiss
+                )
             )
         }
-
-        Spacer(modifier = Modifier.height(Spacing.MediumLarge))
-
-        ConfirmCancelButtons(
-            config = ConfirmCancelButtonsConfig(
-                confirmText = stringResource(R.string.btn_apply),
-                cancelText = stringResource(R.string.btn_cancel),
-                isConfirmEnabled = isEnabled,
-                onConfirmClick = config.onConfirmClick,
-                onCancelClick = onDismiss
-            )
-        )
     }
 }
 
@@ -173,11 +185,25 @@ private fun PeriodListContent(
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun rememberPreviewSheetState(): SheetState =
+    rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewPeriodFilterBottomSheet() {
     KoobeTheme {
         Background(BackgroundType.SCREEN)
+
+        val sheetState = rememberPreviewSheetState()
+
+        LaunchedEffect(Unit) {
+            sheetState.show()
+        }
 
         Column(
             modifier = Modifier
@@ -195,6 +221,7 @@ fun PreviewPeriodFilterBottomSheet() {
             val yearlyItems = (2015..2025).map { it.toString() }
 
             PeriodFilterBottomSheet(
+                sheetState = sheetState,
                 config = PeriodFilterBottomSheetConfig(
                     type = PeriodType.WEEKLY,
                     selectedType = periodSelected,

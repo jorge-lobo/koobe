@@ -76,7 +76,7 @@ fun <T> AppToggle(
 ) where T : Enum<T>, T : UiLabel {
     val enabled = config.state == UiState.ENABLED
     val colors = AppTheme.colors.toggleButtonColors
-    var selected by remember { mutableStateOf(config.selectedOption) }
+    val selected = config.selectedOption
 
     Box(
         modifier = modifier
@@ -99,7 +99,6 @@ fun <T> AppToggle(
                     enabled = enabled,
                     onClick = {
                         if (enabled) {
-                            selected = option
                             config.onSelectionChanged(option)
                         }
                     }

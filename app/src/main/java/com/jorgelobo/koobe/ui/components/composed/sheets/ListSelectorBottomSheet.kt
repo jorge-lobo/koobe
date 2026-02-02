@@ -4,16 +4,19 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.SheetState
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
-import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.SortingType
 import com.jorgelobo.koobe.ui.components.base.background.Background
-import com.jorgelobo.koobe.ui.components.base.bottomSheet.BaseBottomSheet
+import com.jorgelobo.koobe.ui.components.base.bottomSheet.AppModalBottomSheet
+import com.jorgelobo.koobe.ui.components.base.bottomSheet.BaseBottomSheetContent
 import com.jorgelobo.koobe.ui.components.base.radioButtons.PaymentMethodRadioButton
 import com.jorgelobo.koobe.ui.components.base.radioButtons.PeriodRadioButton
 import com.jorgelobo.koobe.ui.components.base.radioButtons.SortingRadioButton
@@ -21,74 +24,85 @@ import com.jorgelobo.koobe.ui.components.base.radioButtons.paymentMethodRadioBut
 import com.jorgelobo.koobe.ui.components.base.radioButtons.periodRadioButtonConfig
 import com.jorgelobo.koobe.ui.components.base.radioButtons.sortingRadioButtonConfig
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.enums.ListType
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
-import com.jorgelobo.koobe.ui.theme.dimens.BottomSheetSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListSelectorBottomSheet(
-    modifier: Modifier = Modifier,
+    sheetState: SheetState,
     config: ListSelectorBottomSheetConfig,
     onDismiss: () -> Unit
 ) {
-    val commonOnOptionSelected: (Enum<*>) -> Unit = { selected ->
-        config.onItemSelected(selected.name)
-        onDismiss()
-    }
-
-    val (title, content) = when (config.type) {
-        ListType.PAYMENT -> Pair(
-            stringResource(R.string.bottom_sheet_headline_payment),
-            @Composable {
-                PaymentMethodRadioButton(
-                    config = paymentMethodRadioButtonConfig(
-                        selected = config.selectedPaymentMethod ?: PaymentMethodType.CASH,
-                        onOptionSelected = { commonOnOptionSelected(it) }
-                    )
-                )
-            }
-        )
-
-        ListType.PERIOD -> Pair(
-            stringResource(R.string.bottom_sheet_headline_period),
-            @Composable {
-                PeriodRadioButton(
-                    config = periodRadioButtonConfig(
-                        selected = config.selectedPeriod ?: PeriodType.MONTHLY,
-                        onOptionSelected = { commonOnOptionSelected(it) }
-                    )
-                )
-            }
-        )
-
-        ListType.SORTING -> Pair(
-            stringResource(R.string.bottom_sheet_headline_sorting),
-            @Composable {
-                SortingRadioButton(
-                    config = sortingRadioButtonConfig(
-                        selected = config.selectedSortingType ?: SortingType.ALPHABETICAL,
-                        onOptionSelected = { commonOnOptionSelected(it) }
-                    )
-                )
-            }
-        )
-    }
-
-    BaseBottomSheet(
-        modifier = modifier,
-        height = BottomSheetSize.Height.RadioGroup,
-        title = title
+    AppModalBottomSheet(
+        sheetState = sheetState,
+        onDismissRequest = onDismiss
     ) {
-        content()
+        BaseBottomSheetContent(
+            title = stringResource(config.titleRes),
+            showHandle = true
+        ) {
+            when (config) {
+
+                is ListSelectorBottomSheetConfig.Payment -> {
+                    PaymentMethodRadioButton(
+                        config = paymentMethodRadioButtonConfig(
+                            selected = config.selected,
+                            onOptionSelected = {
+                                config.onItemSelected(it)
+                                onDismiss()
+                            }
+                        )
+                    )
+                }
+
+                is ListSelectorBottomSheetConfig.Period -> {
+                    PeriodRadioButton(
+                        config = periodRadioButtonConfig(
+                            selected = config.selected,
+                            onOptionSelected = {
+                                config.onItemSelected(it)
+                                onDismiss()
+                            }
+                        )
+                    )
+                }
+
+                is ListSelectorBottomSheetConfig.Sorting -> {
+                    SortingRadioButton(
+                        config = sortingRadioButtonConfig(
+                            selected = config.selected,
+                            onOptionSelected = {
+                                config.onItemSelected(it)
+                                onDismiss()
+                            }
+                        )
+                    )
+                }
+            }
+        }
     }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun rememberPreviewSheetState(): SheetState =
+    rememberModalBottomSheetState(
+        skipPartiallyExpanded = true
+    )
+
+@OptIn(ExperimentalMaterial3Api::class)
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewListSelectorBottomSheet() {
     KoobeTheme {
         Background(BackgroundType.SCREEN)
+
+        val sheetState = rememberPreviewSheetState()
+
+        LaunchedEffect(Unit) {
+            sheetState.show()
+        }
 
         Column(
             modifier = Modifier
@@ -97,18 +111,18 @@ fun PreviewListSelectorBottomSheet() {
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
             ListSelectorBottomSheet(
-                config = ListSelectorBottomSheetConfig(
-                    type = ListType.PAYMENT,
-                    selectedPaymentMethod = PaymentMethodType.CARD,
+                sheetState = sheetState,
+                config = ListSelectorBottomSheetConfig.Payment(
+                    selected = PaymentMethodType.CARD,
                     onItemSelected = {}
                 ),
                 onDismiss = {}
             )
 
             ListSelectorBottomSheet(
-                config = ListSelectorBottomSheetConfig(
-                    type = ListType.SORTING,
-                    selectedSortingType = SortingType.ALPHABETICAL,
+                sheetState = sheetState,
+                config = ListSelectorBottomSheetConfig.Sorting(
+                    selected = SortingType.ALPHABETICAL,
                     onItemSelected = {}
                 ),
                 onDismiss = {}

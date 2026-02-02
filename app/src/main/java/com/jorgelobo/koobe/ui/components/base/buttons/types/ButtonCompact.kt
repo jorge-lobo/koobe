@@ -1,11 +1,17 @@
 package com.jorgelobo.koobe.ui.components.base.buttons.types
 
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonBase
-import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.theme.AppTheme
+import com.jorgelobo.koobe.ui.theme.dimens.BorderDimens
+import com.jorgelobo.koobe.ui.theme.dimens.ButtonSize
 
 @Composable
 fun ButtonCompact(
@@ -14,20 +20,31 @@ fun ButtonCompact(
     enabled: Boolean,
     text: String
 ) {
-    val buttonColors = AppTheme.colors.buttonColors
+    val colors = AppTheme.colors.buttonColors
+    val disabledColor = colors.buttonDisabledContainer
+    val shape = AppTheme.shapes.medium
 
-    ButtonBase(
-        onClick = onClick,
-        modifier = modifier,
-        backgroundColor = buttonColors.buttonSecondaryContainer,
-        outlineColor = buttonColors.buttonSecondaryOutline,
-        type = ButtonType.SECONDARY_COMPACT,
-        isEnabled = enabled
+    Surface(
+        modifier = modifier
+            .width(ButtonSize.CompactButton.Width)
+            .height(ButtonSize.CompactButton.Height),
+        shape = shape,
+        color = if (enabled) colors.buttonSecondaryContainer else disabledColor,
+        border = BorderStroke(
+            BorderDimens.Base,
+            if (enabled) colors.buttonSecondaryOutline else disabledColor
+        ),
+        enabled = enabled,
+        onClick = onClick
     ) {
-        Text(
-            text = text,
-            color = buttonColors.buttonSecondaryLabelText,
-            style = AppTheme.typography.text.bodyLarge
-        )
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = text,
+                style = AppTheme.typography.text.bodyLarge,
+                color = if (enabled) colors.buttonSecondaryLabelText else colors.buttonDisabledLabelText
+            )
+        }
     }
 }

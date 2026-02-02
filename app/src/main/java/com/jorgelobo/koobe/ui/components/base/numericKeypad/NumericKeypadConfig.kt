@@ -1,33 +1,30 @@
 package com.jorgelobo.koobe.ui.components.base.numericKeypad
 
-import androidx.annotation.StringRes
-import com.jorgelobo.koobe.R
-import com.jorgelobo.koobe.ui.components.model.enums.KeyType
-
-data class KeypadKey(
-    val type: KeyType,
-    @field:StringRes val labelRes: Int? = null
-)
+sealed class KeypadKey {
+    data class Digit(val value: Int) : KeypadKey()
+    object Decimal : KeypadKey()
+    object Backspace : KeypadKey()
+}
 
 val keypadKeys = listOf(
     listOf(
-        KeypadKey(KeyType.NUMERIC, R.string.keypad_1),
-        KeypadKey(KeyType.NUMERIC, R.string.keypad_2),
-        KeypadKey(KeyType.NUMERIC, R.string.keypad_3)
+        KeypadKey.Digit(1),
+        KeypadKey.Digit(2),
+        KeypadKey.Digit(3)
     ),
     listOf(
-        KeypadKey(KeyType.NUMERIC, R.string.keypad_4),
-        KeypadKey(KeyType.NUMERIC, R.string.keypad_5),
-        KeypadKey(KeyType.NUMERIC, R.string.keypad_6)
+        KeypadKey.Digit(4),
+        KeypadKey.Digit(5),
+        KeypadKey.Digit(6)
     ),
     listOf(
-        KeypadKey(KeyType.NUMERIC, R.string.keypad_7),
-        KeypadKey(KeyType.NUMERIC, R.string.keypad_8),
-        KeypadKey(KeyType.NUMERIC, R.string.keypad_9)
+        KeypadKey.Digit(7),
+        KeypadKey.Digit(8),
+        KeypadKey.Digit(9)
     ),
     listOf(
-        KeypadKey(KeyType.NUMERIC, R.string.keypad__),
-        KeypadKey(KeyType.NUMERIC, R.string.keypad_0),
-        KeypadKey(KeyType.BACKSPACE, null)
+        KeypadKey.Decimal,
+        KeypadKey.Digit(0),
+        KeypadKey.Backspace
     )
 )

@@ -12,6 +12,7 @@ import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.navigation.navigateClearingCurrent
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorConfig
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorConfig
+import com.jorgelobo.koobe.ui.screen.common.UiEvent
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
 import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
@@ -120,9 +121,11 @@ fun CategorySelectorTarget.toRoute(
     CategorySelectorTarget.TRANSACTION_EDITOR -> Route.TransactionEditor.create(
         TransactionEditorConfig(
             transactionId = config.transactionId,
-            categoryId = uiState.selectedCategoryId,
+            categoryId = uiState.selectedCategoryId!!,
             subcategoryId = uiState.selectedSubcategoryId,
-            shortcutId = uiState.selectedShortcutId
+            shortcutId = uiState.selectedShortcutId,
+            transactionType = config.initialTransactionType,
+            originRoute = Route.Dashboard.route
         )
     )
 

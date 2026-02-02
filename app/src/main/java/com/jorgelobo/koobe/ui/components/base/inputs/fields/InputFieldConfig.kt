@@ -9,5 +9,6 @@ data class InputFieldConfig(
     val icon: String? = null,
     val isPassword: Boolean = false,
     val state: InputState = InputState.DEFAULT,
-    val onValueChange: (String) -> Unit
+    val onValueChange: (String) -> Unit,
+    val onResetClick: () -> Unit
 )

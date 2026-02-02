@@ -4,11 +4,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.RowScope
-import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -34,22 +32,18 @@ fun ButtonBase(
     val shapes = AppTheme.shapes
 
     val shape = when (type) {
-        ButtonType.SQUARE, ButtonType.SECONDARY_COMPACT, ButtonType.ADD_TRANSACTION -> shapes.medium
+        ButtonType.SQUARE -> shapes.medium
         else -> shapes.extraLarge
     }
 
     val height = when (type) {
         ButtonType.SQUARE -> ButtonSize.SquareButton.Dimension
         ButtonType.TEXT -> ButtonSize.TextButton.Height
-        ButtonType.SECONDARY_COMPACT -> ButtonSize.CompactButton.Height
-        ButtonType.ADD_TRANSACTION -> ButtonSize.AddTransactionButton.Height
         else -> ButtonSize.MainButton.Height
     }
 
     val baseModifier = when (type) {
         ButtonType.SQUARE -> modifier.size(ButtonSize.SquareButton.Dimension)
-        ButtonType.SECONDARY_COMPACT -> modifier.width(ButtonSize.CompactButton.Width)
-        ButtonType.ADD_TRANSACTION -> modifier.height(height)
         ButtonType.TEXT -> modifier.wrapContentWidth()
         else -> modifier
             .fillMaxWidth()
@@ -69,7 +63,7 @@ fun ButtonBase(
     Button(
         onClick = onClick,
         enabled = isEnabled,
-        modifier = buttonModifier.defaultMinSize(minHeight = height),
+        modifier = buttonModifier,
         shape = shape,
         colors = ButtonDefaults.buttonColors(
             containerColor = backgroundColor,
