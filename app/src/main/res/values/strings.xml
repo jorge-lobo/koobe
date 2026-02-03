@@ -146,7 +146,9 @@
     <string name="label_language">Language</string>
     <string name="label_currency">Currency</string>
     <string name="label_first_day">First day of week</string>
-    
+    <string name="label_payment_method">Payment method</string>
+    <string name="label_period">First day of week</string>
+
     <!-- Empty States -->
     <string name="empty_dashboard_shortcuts">No shortcuts added!</string>
     <string name="empty_dashboard_budgets">You don\'t have any budgets yet!</string>
