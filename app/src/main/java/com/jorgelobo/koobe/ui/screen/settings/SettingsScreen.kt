@@ -13,6 +13,7 @@ import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
 import com.jorgelobo.koobe.ui.components.composed.navigation.AppBottomNavigation
 import com.jorgelobo.koobe.ui.components.composed.navigation.BottomNavigationDefaults
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
 @Composable
@@ -36,7 +37,7 @@ fun SettingsScreen(
             AppBottomNavigation(
                 currentRoute = config.currentRoute,
                 items = BottomNavigationDefaults.items,
-                onItemSelected = { item -> config.onRouteSelected(item.route)}
+                onItemSelected = { item -> config.onRouteSelected(item.route) }
             )
         },
         containerColor = AppTheme.colors.backgroundColors.screenBackground
@@ -49,8 +50,8 @@ fun SettingsScreen(
             onCurrencySelectorClick = {},
             onStartOfWeekSelectorClick = {},
             onPaymentMethodSelectorClick = {},
-            onManageCategoriesClick = {},
-            onManageShortcutsClick = {}
+            onManageCategoriesClick = { navController.navigate(Route.CategoryManager.route) },
+            onManageShortcutsClick = { navController.navigate(Route.ShortcutManager.route) }
         )
     }
 }
