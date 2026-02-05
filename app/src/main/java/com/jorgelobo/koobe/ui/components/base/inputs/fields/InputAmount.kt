@@ -39,6 +39,7 @@ import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.ui.theme.dimens.InputAmountSize
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 
 @Composable
 fun InputAmount(
@@ -107,7 +108,9 @@ fun InputAmount(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewInputAmount() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

@@ -31,7 +31,8 @@ import com.jorgelobo.koobe.utils.getCurrencyCode
 @Composable
 fun SettingsScreenUI(
     modifier: Modifier = Modifier,
-    config: SettingsConfig,
+    uiState: SettingsUiState,
+    themeSelected: ThemeOption,
     onThemeOptionChange: (ThemeOption) -> Unit,
     onLanguageSelectorClick: () -> Unit,
     onCurrencySelectorClick: () -> Unit,
@@ -47,15 +48,15 @@ fun SettingsScreenUI(
         verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
     ) {
         SettingsToggleSection(
-            themeSelected = config.themeSelected,
+            themeSelected = themeSelected,
             onOptionSelected = onThemeOptionChange
         )
 
         SettingsSelectorSection(
-            language = config.languageSelected,
-            currencyType = config.currencySelected,
-            startOfWeek = config.daySelected,
-            paymentMethod = config.paymentMethodSelected,
+            language = uiState.languageSelected,
+            currencyType = uiState.currencySelected,
+            startOfWeek = uiState.startOfWeekSelected,
+            paymentMethod = uiState.paymentMethodSelected,
             onLanguageSelectorClick = onLanguageSelectorClick,
             onCurrencySelectorClick = onCurrencySelectorClick,
             onStartOfWeekSelectorClick = onStartOfWeekSelectorClick,
@@ -165,17 +166,17 @@ private fun SettingsButtonsSection(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewSettingsScreenUI() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         SettingsScreenUI(
-            config = SettingsConfig(
-                currentRoute = "settings",
-                onRouteSelected = {},
-                themeSelected = ThemeOption.SYSTEM,
+            uiState = SettingsUiState(
                 languageSelected = AppLanguage.ENGLISH,
                 currencySelected = CurrencyType.EUR,
-                daySelected = StartOfWeek.MONDAY,
+                startOfWeekSelected = StartOfWeek.MONDAY,
                 paymentMethodSelected = PaymentMethodType.CASH
             ),
+            themeSelected = ThemeOption.LIGHT,
             onThemeOptionChange = {},
             onLanguageSelectorClick = {},
             onCurrencySelectorClick = {},

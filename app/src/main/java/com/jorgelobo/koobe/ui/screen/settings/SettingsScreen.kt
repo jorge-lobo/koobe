@@ -12,6 +12,7 @@ import androidx.navigation.NavController
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.ui.app.AppViewModel
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
 import com.jorgelobo.koobe.ui.components.composed.navigation.AppBottomNavigation
 import com.jorgelobo.koobe.ui.components.composed.navigation.BottomNavigationDefaults
@@ -22,10 +23,12 @@ import com.jorgelobo.koobe.ui.theme.AppTheme
 @Composable
 fun SettingsScreen(
     navController: NavController,
+    appViewModel: AppViewModel,
     viewModel: SettingsViewModel = hiltViewModel(),
     config: SettingsConfig
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val themeOption by appViewModel.themeOption.collectAsStateWithLifecycle()
 
     Scaffold(
         topBar = {
@@ -50,16 +53,9 @@ fun SettingsScreen(
     ) { padding ->
         SettingsScreenUI(
             modifier = Modifier.padding(padding),
-            config = SettingsConfig(
-                themeSelected = uiState.themeSelected,
-                languageSelected = uiState.languageSelected,
-                currencySelected = uiState.currencySelected,
-                daySelected = uiState.startOfWeekSelected,
-                paymentMethodSelected = uiState.paymentMethodSelected,
-                currentRoute = config.currentRoute,
-                onRouteSelected = config.onRouteSelected
-            ),
-            onThemeOptionChange = {/* viewModel.onThemeOptionChange(it) */},
+            uiState = uiState,
+            themeSelected = themeOption,
+            onThemeOptionChange = { appViewModel.setTheme(it) },
             onLanguageSelectorClick = {},
             onCurrencySelectorClick = {},
             onStartOfWeekSelectorClick = {},

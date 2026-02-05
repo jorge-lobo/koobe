@@ -19,6 +19,7 @@ import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.dialogs.BaseDialog
 import com.jorgelobo.koobe.ui.components.base.radioButtons.CurrencyRadioButton
@@ -144,7 +145,9 @@ fun PreviewPeriodDialog() = PreviewOptionSelectorDialog(OptionSelectorType.PERIO
 
 @Composable
 fun PreviewOptionSelectorDialog(type: OptionSelectorType) {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

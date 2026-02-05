@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.jorgelobo.koobe.ui.app.AppViewModel
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorConfig
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorScreen
 import com.jorgelobo.koobe.ui.screen.budgets.manager.BudgetManagerScreen
@@ -32,7 +33,8 @@ import kotlinx.serialization.json.Json
 
 @Composable
 fun NavGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    appViewModel: AppViewModel
 ) {
     NavHost(
         navController = navController,
@@ -59,6 +61,7 @@ fun NavGraph(
         composable(Route.Settings.route) {
             SettingsScreen(
                 navController = navController,
+                appViewModel = appViewModel,
                 config = SettingsConfig(
                     currentRoute = Route.Settings.route,
                     onRouteSelected = { route ->

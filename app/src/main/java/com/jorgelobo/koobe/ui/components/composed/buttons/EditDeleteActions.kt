@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.buttons.types.ButtonDeleteItem
 import com.jorgelobo.koobe.ui.components.base.buttons.types.ButtonEditItem
@@ -36,7 +37,9 @@ fun EditDeleteActions(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewEditDeleteActions() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

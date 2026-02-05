@@ -29,6 +29,7 @@ import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.DateUtils
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 
 @Composable
 fun DateSelector(
@@ -85,7 +86,9 @@ fun DateSelector(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewDateSelector() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

@@ -26,6 +26,7 @@ import com.jorgelobo.koobe.ui.theme.color.AccentMint
 import com.jorgelobo.koobe.ui.theme.dimens.Height
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 
 @Composable
 fun StatusIndicator(
@@ -65,7 +66,9 @@ fun StatusIndicator(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewWarningIndicator() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

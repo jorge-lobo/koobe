@@ -12,8 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.rememberNavController
+import com.jorgelobo.koobe.ui.app.AppViewModel
 import com.jorgelobo.koobe.ui.navigation.NavGraph
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import dagger.hilt.android.AndroidEntryPoint
@@ -37,9 +41,16 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun Koobe() {
+fun Koobe(
+    appViewModel: AppViewModel = hiltViewModel()
+) {
     val navController = rememberNavController()
-    KoobeTheme {
+
+    val themeOption by appViewModel.themeOption.collectAsStateWithLifecycle()
+
+    KoobeTheme(
+        themeOption = themeOption
+    ) {
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -48,7 +59,10 @@ fun Koobe() {
                         .asPaddingValues()
                 )
         ) {
-            NavGraph(navController = navController)
+            NavGraph(
+                navController = navController,
+                appViewModel = appViewModel
+            )
         }
     }
 }

@@ -4,10 +4,8 @@ import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
-import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 
 data class SettingsUiState(
-    val themeSelected: ThemeOption = ThemeOption.SYSTEM,
     val languageSelected: AppLanguage = AppLanguage.ENGLISH,
     val currencySelected: CurrencyType = CurrencyType.EUR,
     val startOfWeekSelected: StartOfWeek = StartOfWeek.SUNDAY,

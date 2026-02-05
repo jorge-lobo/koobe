@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.common.extensions.toHexString
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.colors.AvatarColorPalette
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarConfigurationType
@@ -100,7 +101,9 @@ fun ColorSelectorDialog(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewColorSelectorDialog() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

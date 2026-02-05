@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.inputs.fields.InputAmount
 import com.jorgelobo.koobe.ui.components.base.inputs.fields.SelectorCurrency
@@ -63,7 +64,9 @@ fun AmountEditor(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewAmountEditor() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(
