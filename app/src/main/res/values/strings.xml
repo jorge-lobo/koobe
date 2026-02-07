@@ -95,6 +95,7 @@
     <string name="dialog_headline_language_selector">Language</string>
     <string name="dialog_headline_period_selector">Select period</string>
     <string name="dialog_headline_first_day_selector">First day of week</string>
+    <string name="dialog_headline_payment_method_selector">Payment method</string>
     <string name="dialog_headline_discard_changes">Discard changes?</string>
     <string name="dialog_headline_delete_category">Delete category?</string>
     <string name="dialog_headline_delete_subcategory">Delete subcategory?</string>

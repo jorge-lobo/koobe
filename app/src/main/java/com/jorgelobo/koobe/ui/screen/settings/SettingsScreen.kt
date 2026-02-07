@@ -18,6 +18,7 @@ import com.jorgelobo.koobe.ui.components.composed.navigation.AppBottomNavigation
 import com.jorgelobo.koobe.ui.components.composed.navigation.BottomNavigationDefaults
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.navigation.Route
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
 @Composable
@@ -29,6 +30,22 @@ fun SettingsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val themeOption by appViewModel.themeOption.collectAsStateWithLifecycle()
+
+    SettingsDialogs(
+        state = uiState,
+        onLanguageSelectorAction = {
+            viewModel.onSelectorAction(SettingsSelector.LANGUAGE, it)
+        },
+        onCurrencySelectorAction = {
+            viewModel.onSelectorAction(SettingsSelector.CURRENCY, it)
+        },
+        onStartOfWeekSelectorAction = {
+            viewModel.onSelectorAction(SettingsSelector.START_OF_WEEK, it)
+        },
+        onPaymentMethodSelectorAction = {
+            viewModel.onSelectorAction(SettingsSelector.PAYMENT_METHOD, it)
+        }
+    )
 
     Scaffold(
         topBar = {
@@ -56,10 +73,30 @@ fun SettingsScreen(
             uiState = uiState,
             themeSelected = themeOption,
             onThemeOptionChange = { appViewModel.setTheme(it) },
-            onLanguageSelectorClick = {},
-            onCurrencySelectorClick = {},
-            onStartOfWeekSelectorClick = {},
-            onPaymentMethodSelectorClick = {},
+            onLanguageSelectorClick = {
+                viewModel.onSelectorAction(
+                    SettingsSelector.LANGUAGE,
+                    SelectorDialogAction.Open
+                )
+            },
+            onCurrencySelectorClick = {
+                viewModel.onSelectorAction(
+                    SettingsSelector.CURRENCY,
+                    SelectorDialogAction.Open
+                )
+            },
+            onStartOfWeekSelectorClick = {
+                viewModel.onSelectorAction(
+                    SettingsSelector.START_OF_WEEK,
+                    SelectorDialogAction.Open
+                )
+            },
+            onPaymentMethodSelectorClick = {
+                viewModel.onSelectorAction(
+                    SettingsSelector.PAYMENT_METHOD,
+                    SelectorDialogAction.Open
+                )
+            },
             onManageCategoriesClick = { navController.navigate(Route.CategoryManager.route) },
             onManageShortcutsClick = { navController.navigate(Route.ShortcutManager.route) }
         )
