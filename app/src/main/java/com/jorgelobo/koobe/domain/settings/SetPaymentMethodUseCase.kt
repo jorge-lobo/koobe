@@ -1,13 +1,12 @@
-package com.jorgelobo.koobe.domain.settings.paymentMethod
+package com.jorgelobo.koobe.domain.settings
 
-import com.jorgelobo.koobe.data.settings.SettingsPreferences
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import javax.inject.Inject
 
 class SetPaymentMethodUseCase @Inject constructor(
-    private val preferences: SettingsPreferences
+    private val repository: SettingsRepository
 ) {
     suspend operator fun invoke(paymentMethod: PaymentMethodType) {
-        preferences.setPaymentMethod(paymentMethod)
+        repository.setPaymentMethod(paymentMethod)
     }
 }

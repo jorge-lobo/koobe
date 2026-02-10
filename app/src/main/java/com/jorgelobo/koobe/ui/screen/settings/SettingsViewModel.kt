@@ -6,15 +6,11 @@ import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
-import com.jorgelobo.koobe.domain.model.settings.UserSettings
-import com.jorgelobo.koobe.domain.settings.currency.GetCurrencyUseCase
-import com.jorgelobo.koobe.domain.settings.currency.SetCurrencyUseCase
-import com.jorgelobo.koobe.domain.settings.language.GetLanguageUseCase
-import com.jorgelobo.koobe.domain.settings.language.SetLanguageUseCase
-import com.jorgelobo.koobe.domain.settings.paymentMethod.GetPaymentMethodUseCase
-import com.jorgelobo.koobe.domain.settings.paymentMethod.SetPaymentMethodUseCase
-import com.jorgelobo.koobe.domain.settings.startOfWeek.GetStartOfWeekUseCase
-import com.jorgelobo.koobe.domain.settings.startOfWeek.SetStartOfWeekUseCase
+import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
+import com.jorgelobo.koobe.domain.settings.SetCurrencyUseCase
+import com.jorgelobo.koobe.domain.settings.SetLanguageUseCase
+import com.jorgelobo.koobe.domain.settings.SetPaymentMethodUseCase
+import com.jorgelobo.koobe.domain.settings.SetStartOfWeekUseCase
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
@@ -22,20 +18,16 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
-    private val getLanguage: GetLanguageUseCase,
+    private val getUserSettings: GetUserSettingsUseCase,
     private val setLanguage: SetLanguageUseCase,
-    private val getCurrency: GetCurrencyUseCase,
     private val setCurrency: SetCurrencyUseCase,
-    private val getStartOfWeek: GetStartOfWeekUseCase,
     private val setStartOfWeek: SetStartOfWeekUseCase,
-    private val getPaymentMethod: GetPaymentMethodUseCase,
     private val setPaymentMethod: SetPaymentMethodUseCase
 ) : ViewModel() {
 
@@ -44,29 +36,17 @@ class SettingsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            combine(
-                getLanguage(),
-                getCurrency(),
-                getStartOfWeek(),
-                getPaymentMethod()
-            ) { language, currency, startOfWeek, paymentMethod ->
-                UserSettings(
-                    language = language,
-                    currency = currency,
-                    startOfWeek = startOfWeek,
-                    paymentMethod = paymentMethod
-                )
-            }.collect { selections ->
+            getUserSettings().collect { settings ->
                 _uiState.update {
                     it.copy(
-                        languageSelected = selections.language,
-                        currencySelected = selections.currency,
-                        startOfWeekSelected = selections.startOfWeek,
-                        paymentMethodSelected = selections.paymentMethod,
-                        languageDialog = it.languageDialog.copy(initial = selections.language),
-                        currencyDialog = it.currencyDialog.copy(initial = selections.currency),
-                        startOfWeekDialog = it.startOfWeekDialog.copy(initial = selections.startOfWeek),
-                        paymentMethodDialog = it.paymentMethodDialog.copy(initial = selections.paymentMethod)
+                        languageSelected = settings.language,
+                        currencySelected = settings.currency,
+                        startOfWeekSelected = settings.startOfWeek,
+                        paymentMethodSelected = settings.paymentMethod,
+                        languageDialog = it.languageDialog.copy(initial = settings.language),
+                        currencyDialog = it.currencyDialog.copy(initial = settings.currency),
+                        startOfWeekDialog = it.startOfWeekDialog.copy(initial = settings.startOfWeek),
+                        paymentMethodDialog = it.paymentMethodDialog.copy(initial = settings.paymentMethod)
                     )
                 }
             }

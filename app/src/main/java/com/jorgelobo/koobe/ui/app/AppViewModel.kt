@@ -3,19 +3,20 @@ package com.jorgelobo.koobe.ui.app
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
-import com.jorgelobo.koobe.domain.settings.theme.GetThemeOptionUseCase
-import com.jorgelobo.koobe.domain.settings.theme.SetThemeOptionUseCase
+import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
+import com.jorgelobo.koobe.domain.settings.SetThemeOptionUseCase
 import com.jorgelobo.koobe.domain.usecase.app.AppStartUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class AppViewModel @Inject constructor(
     private val appStartUseCase: AppStartUseCase,
-    private val getThemeOptionUseCase: GetThemeOptionUseCase,
+    private val getUserSettingsUseCase: GetUserSettingsUseCase,
     private val setThemeOptionUseCase: SetThemeOptionUseCase
 ) : ViewModel() {
 
@@ -32,9 +33,9 @@ class AppViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            getThemeOptionUseCase().collect {
-                _themeOption.value = it
-            }
+            getUserSettingsUseCase()
+                .map { it.theme }
+                .collect { _themeOption.value = it }
         }
     }
 

@@ -1,13 +1,12 @@
-package com.jorgelobo.koobe.domain.settings.startOfWeek
+package com.jorgelobo.koobe.domain.settings
 
-import com.jorgelobo.koobe.data.settings.SettingsPreferences
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import javax.inject.Inject
 
 class SetStartOfWeekUseCase @Inject constructor(
-    private val preferences: SettingsPreferences
+    private val repository: SettingsRepository
 ) {
     suspend operator fun invoke(startOfWeek: StartOfWeek) {
-        preferences.setStartOfWeek(startOfWeek)
+        repository.setStartOfWeek(startOfWeek)
     }
 }
