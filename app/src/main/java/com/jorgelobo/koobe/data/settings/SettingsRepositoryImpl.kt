@@ -1,7 +1,7 @@
 package com.jorgelobo.koobe.data.settings
 
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
-import com.jorgelobo.koobe.domain.settings.SettingsRepository
+import com.jorgelobo.koobe.domain.settings.theme.SettingsRepository
 import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 

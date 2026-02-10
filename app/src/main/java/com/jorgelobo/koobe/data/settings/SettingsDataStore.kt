@@ -8,7 +8,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
-private val Context.dataStore by preferencesDataStore("settings")
+val Context.dataStore by preferencesDataStore("settings")
 
 class SettingsDataStore(
     private val context: Context

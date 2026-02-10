@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.domain.settings
+package com.jorgelobo.koobe.domain.settings.theme
 
 import com.jorgelobo.koobe.data.preferences.AppPreferences
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption

@@ -1,10 +1,20 @@
 package com.jorgelobo.koobe.ui.screen.settings
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
+import com.jorgelobo.koobe.domain.model.settings.UserSettings
+import com.jorgelobo.koobe.domain.settings.currency.GetCurrencyUseCase
+import com.jorgelobo.koobe.domain.settings.currency.SetCurrencyUseCase
+import com.jorgelobo.koobe.domain.settings.language.GetLanguageUseCase
+import com.jorgelobo.koobe.domain.settings.language.SetLanguageUseCase
+import com.jorgelobo.koobe.domain.settings.paymentMethod.GetPaymentMethodUseCase
+import com.jorgelobo.koobe.domain.settings.paymentMethod.SetPaymentMethodUseCase
+import com.jorgelobo.koobe.domain.settings.startOfWeek.GetStartOfWeekUseCase
+import com.jorgelobo.koobe.domain.settings.startOfWeek.SetStartOfWeekUseCase
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
@@ -12,20 +22,55 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor() : ViewModel() {
+class SettingsViewModel @Inject constructor(
+    private val getLanguage: GetLanguageUseCase,
+    private val setLanguage: SetLanguageUseCase,
+    private val getCurrency: GetCurrencyUseCase,
+    private val setCurrency: SetCurrencyUseCase,
+    private val getStartOfWeek: GetStartOfWeekUseCase,
+    private val setStartOfWeek: SetStartOfWeekUseCase,
+    private val getPaymentMethod: GetPaymentMethodUseCase,
+    private val setPaymentMethod: SetPaymentMethodUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState
 
-    private lateinit var config: SettingsConfig
-
-    fun init(config: SettingsConfig) {
-        if (this::config.isInitialized) return
-        this.config = config
+    init {
+        viewModelScope.launch {
+            combine(
+                getLanguage(),
+                getCurrency(),
+                getStartOfWeek(),
+                getPaymentMethod()
+            ) { language, currency, startOfWeek, paymentMethod ->
+                UserSettings(
+                    language = language,
+                    currency = currency,
+                    startOfWeek = startOfWeek,
+                    paymentMethod = paymentMethod
+                )
+            }.collect { selections ->
+                _uiState.update {
+                    it.copy(
+                        languageSelected = selections.language,
+                        currencySelected = selections.currency,
+                        startOfWeekSelected = selections.startOfWeek,
+                        paymentMethodSelected = selections.paymentMethod,
+                        languageDialog = it.languageDialog.copy(initial = selections.language),
+                        currencyDialog = it.currencyDialog.copy(initial = selections.currency),
+                        startOfWeekDialog = it.startOfWeekDialog.copy(initial = selections.startOfWeek),
+                        paymentMethodDialog = it.paymentMethodDialog.copy(initial = selections.paymentMethod)
+                    )
+                }
+            }
+        }
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -41,7 +86,7 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
                     _uiState.update { it.copy(languageDialog = dialog) }
                 },
                 onApplied = { value ->
-                    _uiState.update { it.copy(languageSelected = value) }
+                    viewModelScope.launch { setLanguage(value) }
                 }
             )
 
@@ -52,7 +97,7 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
                     _uiState.update { it.copy(currencyDialog = dialog) }
                 },
                 onApplied = { value ->
-                    _uiState.update { it.copy(currencySelected = value) }
+                    viewModelScope.launch { setCurrency(value) }
                 }
             )
 
@@ -63,7 +108,7 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
                     _uiState.update { it.copy(startOfWeekDialog = dialog) }
                 },
                 onApplied = { value ->
-                    _uiState.update { it.copy(startOfWeekSelected = value) }
+                    viewModelScope.launch { setStartOfWeek(value) }
                 }
             )
 
@@ -74,7 +119,7 @@ class SettingsViewModel @Inject constructor() : ViewModel() {
                     _uiState.update { it.copy(paymentMethodDialog = dialog) }
                 },
                 onApplied = { value ->
-                    _uiState.update { it.copy(paymentMethodSelected = value) }
+                    viewModelScope.launch { setPaymentMethod(value) }
                 }
             )
         }

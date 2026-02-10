@@ -3,7 +3,7 @@ package com.jorgelobo.koobe.di
 import android.content.Context
 import com.jorgelobo.koobe.data.settings.SettingsDataStore
 import com.jorgelobo.koobe.data.settings.SettingsRepositoryImpl
-import com.jorgelobo.koobe.domain.settings.SettingsRepository
+import com.jorgelobo.koobe.domain.settings.theme.SettingsRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
