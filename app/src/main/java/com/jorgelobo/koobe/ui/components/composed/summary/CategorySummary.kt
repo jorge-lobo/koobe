@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonConfig
@@ -96,7 +97,9 @@ private fun ChangeCategoryButton(onClick: () -> Unit) {
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewCategorySummary() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

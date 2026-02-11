@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.bottomSheet.AppModalBottomSheet
 import com.jorgelobo.koobe.ui.components.base.bottomSheet.BaseBottomSheetContent
@@ -196,7 +197,9 @@ private fun rememberPreviewSheetState(): SheetState =
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewPeriodFilterBottomSheet() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         val sheetState = rememberPreviewSheetState()

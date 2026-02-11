@@ -20,6 +20,7 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.LogoSize
@@ -68,7 +69,9 @@ fun SplashScreenUI() {
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewSplashScreen() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         SplashScreenUI()
     }
 }

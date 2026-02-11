@@ -31,6 +31,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.SortingType
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.UiState
@@ -169,7 +170,9 @@ fun SortingRadioButton(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewRadioButtons() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

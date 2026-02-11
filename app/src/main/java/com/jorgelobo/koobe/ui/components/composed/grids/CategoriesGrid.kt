@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.category.Category
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.grid.BaseGridItem
@@ -63,7 +64,9 @@ fun CategoriesGrid(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewCategoriesGrid() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

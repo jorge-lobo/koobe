@@ -18,6 +18,7 @@ import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.CategoryDetailType
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.ui.components.base.toggles.CategoryDetailToggle
@@ -176,7 +177,9 @@ data class CategoryDetailUi(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewSubcategorySelection() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         var categoryDetailSelected by remember { mutableStateOf(CategoryDetailType.SUBCATEGORIES) }
         var selectedSubcategoryId by remember { mutableStateOf<Int?>(null) }
         var selectedShortcutId by remember { mutableStateOf<Int?>(null) }

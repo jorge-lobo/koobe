@@ -17,16 +17,20 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
+import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.dialogs.BaseDialog
 import com.jorgelobo.koobe.ui.components.base.radioButtons.CurrencyRadioButton
 import com.jorgelobo.koobe.ui.components.base.radioButtons.LanguageRadioButton
+import com.jorgelobo.koobe.ui.components.base.radioButtons.PaymentMethodRadioButton
 import com.jorgelobo.koobe.ui.components.base.radioButtons.PeriodFilterRadioButton
 import com.jorgelobo.koobe.ui.components.base.radioButtons.StartOfWeekRadioButton
 import com.jorgelobo.koobe.ui.components.base.radioButtons.currencyRadioButtonConfig
 import com.jorgelobo.koobe.ui.components.base.radioButtons.languageRadioButtonConfig
+import com.jorgelobo.koobe.ui.components.base.radioButtons.paymentMethodRadioButtonConfig
 import com.jorgelobo.koobe.ui.components.base.radioButtons.periodFilterRadioButtonConfig
 import com.jorgelobo.koobe.ui.components.base.radioButtons.startOfWeekRadioButtonConfig
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
@@ -106,6 +110,21 @@ fun OptionSelectorDialog(
                 )
             }
         )
+
+        OptionSelectorType.PAYMENT_METHOD -> Pair(
+            DialogSize.OptionSelector.QuadrupleOptions,
+            @Composable {
+                PaymentMethodRadioButton(
+                    config = paymentMethodRadioButtonConfig(
+                        selected = config.selectedPaymentMethod ?: PaymentMethodType.CASH,
+                        onOptionSelected = {
+                            config.onPaymentMethodSelected(it)
+                            enable = true
+                        }
+                    )
+                )
+            }
+        )
     }
 
     BaseDialog(
@@ -132,19 +151,28 @@ fun OptionSelectorDialog(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewCurrencyDialog() = PreviewOptionSelectorDialog(OptionSelectorType.CURRENCY)
+
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewLanguageDialog() = PreviewOptionSelectorDialog(OptionSelectorType.LANGUAGE)
+
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewFirstWeekdayDialog() = PreviewOptionSelectorDialog(OptionSelectorType.FIRST_WEEKDAY)
+
+@Preview(apiLevel = 34, showBackground = true)
+@Composable
+fun PreviewPaymentMethodDialog() = PreviewOptionSelectorDialog(OptionSelectorType.PAYMENT_METHOD)
+
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewPeriodDialog() = PreviewOptionSelectorDialog(OptionSelectorType.PERIOD)
 
 @Composable
 fun PreviewOptionSelectorDialog(type: OptionSelectorType) {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

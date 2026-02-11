@@ -3,6 +3,7 @@ package com.jorgelobo.koobe.ui.theme
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.theme.color.DarkColors
 import com.jorgelobo.koobe.ui.theme.color.LightColors
 import com.jorgelobo.koobe.ui.theme.locals.LocalAppColors
@@ -15,10 +16,17 @@ import com.jorgelobo.koobe.ui.theme.typography.TextTypography
 
 @Composable
 fun KoobeTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeOption: ThemeOption = ThemeOption.SYSTEM,
     content: @Composable () -> Unit
 ) {
-    val colorScheme = if (darkTheme) DarkColors else LightColors
+    val isDarkTheme = when (themeOption) {
+        ThemeOption.LIGHT -> false
+        ThemeOption.DARK -> true
+        ThemeOption.SYSTEM -> isSystemInDarkTheme()
+    }
+
+    val colorScheme = if (isDarkTheme) DarkColors else LightColors
+
     val typography = AppTypography(
         text = TextTypography,
         numbers = NumberTypography

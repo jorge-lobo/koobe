@@ -21,6 +21,7 @@ import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
 import com.jorgelobo.koobe.ui.components.base.background.Background
@@ -146,7 +147,9 @@ fun BudgetSimpleItem(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewBudgetSimpleItem() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

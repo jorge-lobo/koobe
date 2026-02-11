@@ -40,6 +40,7 @@ import com.jorgelobo.koobe.utils.DateUtils
 import com.jorgelobo.koobe.utils.DateUtils.formatAs
 import com.jorgelobo.koobe.utils.paymentMethodIcon
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 
 @Composable
 fun ListTransactionItem(
@@ -107,7 +108,9 @@ fun ListTransactionItem(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewTransactionItem() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

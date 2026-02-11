@@ -12,6 +12,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CategoryDetailType
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
@@ -103,7 +104,9 @@ fun CategorySelectorScreenUI(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewCategorySelectorScreen() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         val mockCategories = listOf(
             Category(1, "Home", IconPack.HOME.icon, "#FFB74D", TransactionType.EXPENSE),
             Category(2, "Grocery", IconPack.GROCERY.icon, "#DAE067", TransactionType.EXPENSE),

@@ -18,6 +18,7 @@ import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.payment.PaymentMethod
 import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
@@ -111,7 +112,9 @@ fun ReportItemRow(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewReportItemRow() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

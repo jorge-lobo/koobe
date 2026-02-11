@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.BaseNumericKey
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
@@ -60,7 +61,9 @@ fun NumericKeypad(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewKeypad() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

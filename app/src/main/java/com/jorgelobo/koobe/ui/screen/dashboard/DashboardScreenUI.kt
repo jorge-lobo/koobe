@@ -17,6 +17,7 @@ import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.ui.components.composed.appBar.LogoAppBar
@@ -93,7 +94,9 @@ fun DashboardScreenUI(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewDashboardScreen() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         DashboardScreenUI(
             state = DashboardUiState(
                 date = DateUtils.currentDate,

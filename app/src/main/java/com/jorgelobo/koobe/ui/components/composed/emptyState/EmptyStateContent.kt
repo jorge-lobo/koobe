@@ -20,6 +20,7 @@ import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
 import com.jorgelobo.koobe.ui.theme.color.LightThemeGrey2
@@ -60,7 +61,9 @@ fun EmptyStateContent(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewEmptyState() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

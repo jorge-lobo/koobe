@@ -16,6 +16,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.dialogs.BaseDialog
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
@@ -166,7 +167,9 @@ fun DeleteDialog(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewConfirmationDialog() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

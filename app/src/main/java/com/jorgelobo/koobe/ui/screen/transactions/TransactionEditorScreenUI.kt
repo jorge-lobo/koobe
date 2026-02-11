@@ -18,6 +18,7 @@ import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.DescriptionSource
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
@@ -257,7 +258,9 @@ private fun TransactionSaveButton(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewTransactionEditorScreen() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         val category = Category(
             8,
             "Entertainment",

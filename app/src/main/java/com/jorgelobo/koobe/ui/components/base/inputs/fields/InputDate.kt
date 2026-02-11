@@ -35,6 +35,7 @@ import com.jorgelobo.koobe.ui.theme.dimens.InputSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.DateUtils
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 
 @Composable
 fun InputDate(
@@ -81,7 +82,9 @@ fun InputDate(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewInputDate() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

@@ -7,6 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
+import com.jorgelobo.koobe.ui.app.AppViewModel
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorConfig
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorScreen
 import com.jorgelobo.koobe.ui.screen.budgets.manager.BudgetManagerScreen
@@ -18,6 +19,7 @@ import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorScreen
 import com.jorgelobo.koobe.ui.screen.dashboard.DashboardScreen
 import com.jorgelobo.koobe.ui.screen.historic.HistoricScreen
 import com.jorgelobo.koobe.ui.screen.reports.ReportsScreen
+import com.jorgelobo.koobe.ui.screen.settings.SettingsConfig
 import com.jorgelobo.koobe.ui.screen.settings.SettingsScreen
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorScreen
@@ -31,7 +33,8 @@ import kotlinx.serialization.json.Json
 
 @Composable
 fun NavGraph(
-    navController: NavHostController
+    navController: NavHostController,
+    appViewModel: AppViewModel
 ) {
     NavHost(
         navController = navController,
@@ -54,10 +57,31 @@ fun NavGraph(
         composable(Route.Dashboard.route) { DashboardScreen(navController) }
         composable(Route.Historic.route) { HistoricScreen(navController) }
         composable(Route.Reports.route) { ReportsScreen(navController) }
-        composable(Route.Settings.route) { SettingsScreen(navController) }
+
+        composable(Route.Settings.route) {
+            SettingsScreen(
+                navController = navController,
+                appViewModel = appViewModel,
+                config = SettingsConfig(
+                    currentRoute = Route.Settings.route,
+                    onRouteSelected = { route ->
+                        if (route != Route.Settings.route) {
+                            navController.navigate(route) {
+                                popUpTo(Route.Settings.route)
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                )
+            )
+        }
 
         // Budgets
-        composable(Route.BudgetManager.route) { BudgetManagerScreen(navController) }
+        composable(Route.BudgetManager.route) {
+            BudgetManagerScreen(
+                navController
+            )
+        }
 
         composable(
             route = "budget_editor/{config}",
@@ -68,7 +92,11 @@ fun NavGraph(
         }
 
         // Categories
-        composable(Route.CategoryManager.route) { CategoryManagerScreen(navController) }
+        composable(Route.CategoryManager.route) {
+            CategoryManagerScreen(
+                navController
+            )
+        }
 
         composable(
             route = "${Route.CategorySelector.route}/{config}",
@@ -83,7 +111,7 @@ fun NavGraph(
         }
 
         composable(
-            route = "category_editor/{config}"  ,
+            route = "category_editor/{config}",
             arguments = listOf(navArgument("config") { type = NavType.StringType })
         ) { backStackEntry ->
             val config = backStackEntry.decodeConfig<CategoryEditorConfig>()

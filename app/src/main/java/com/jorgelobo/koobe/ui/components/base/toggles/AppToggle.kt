@@ -146,7 +146,9 @@ fun CategoryDetailToggle(
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
 fun PreviewToggleButtons() {
-    KoobeTheme {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
         Background(BackgroundType.SCREEN)
 
         Column(

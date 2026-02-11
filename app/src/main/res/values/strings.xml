@@ -95,6 +95,7 @@
     <string name="dialog_headline_language_selector">Language</string>
     <string name="dialog_headline_period_selector">Select period</string>
     <string name="dialog_headline_first_day_selector">First day of week</string>
+    <string name="dialog_headline_payment_method_selector">Payment method</string>
     <string name="dialog_headline_discard_changes">Discard changes?</string>
     <string name="dialog_headline_delete_category">Delete category?</string>
     <string name="dialog_headline_delete_subcategory">Delete subcategory?</string>
@@ -146,7 +147,9 @@
     <string name="label_language">Language</string>
     <string name="label_currency">Currency</string>
     <string name="label_first_day">First day of week</string>
-    
+    <string name="label_payment_method">Payment method</string>
+    <string name="label_period">First day of week</string>
+
     <!-- Empty States -->
     <string name="empty_dashboard_shortcuts">No shortcuts added!</string>
     <string name="empty_dashboard_budgets">You don\'t have any budgets yet!</string>

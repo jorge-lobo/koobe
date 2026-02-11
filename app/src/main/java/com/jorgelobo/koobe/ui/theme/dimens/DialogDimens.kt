@@ -11,6 +11,7 @@ object DialogSize {
     object OptionSelector {
         val PairOptions = 264.dp
         val TripleOptions = 312.dp
+        val QuadrupleOptions = 360.dp
     }
 
     object AvatarConfigurator {
