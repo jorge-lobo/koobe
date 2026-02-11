@@ -22,6 +22,20 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the user settings screen logic and state.
+ *
+ * This ViewModel interacts with use cases to retrieve and update user preferences such as
+ * language, currency, the start day of the week, and the default payment method.
+ * It manages the state for various selection dialogs and ensures that preference changes are
+ * persisted through the corresponding use cases.
+ *
+ * @property getUserSettings Use case to retrieve the current user settings as a flow.
+ * @property setLanguage Use case to update the application language preference.
+ * @property setCurrency Use case to update the preferred currency.
+ * @property setStartOfWeek Use case to update the preferred first day of the week.
+ * @property setPaymentMethod Use case to update the preferred default payment method.
+ */
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val getUserSettings: GetUserSettingsUseCase,
@@ -53,6 +67,17 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles actions dispatched from various settings selector dialogs.
+     *
+     * This function updates the UI state for the specific [SettingsSelector] based on the
+     * provided [SelectorDialogAction]. When a value is successfully applied, it triggers the
+     * corresponding use case to persist the updated setting.
+     *
+     * @param selector The specific settings category being interacted with (e.g., Language, Currency).
+     * @param action The action performed within the selector dialog (e.g., selection, dismissal,
+     * application).
+     */
     @Suppress("UNCHECKED_CAST")
     fun onSelectorAction(
         selector: SettingsSelector,
@@ -105,6 +130,19 @@ class SettingsViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Generic handler for managing selector dialog logic and state transitions.
+     *
+     * Processes actions through the [reduceSelectorDialog] function, updates the UI state via the
+     * provided callback, and triggers the application of a new value if the dialog emits an
+     * [SelectorDialogEffect.Applied] effect.
+     *
+     * @param T The type of value being selected (e.g., [AppLanguage], [CurrencyType]).
+     * @param action The action performed on the selector dialog.
+     * @param dialogState The current state of the specific selector dialog.
+     * @param onDialogUpdate Callback to update the state in the UI flow.
+     * @param onApplied Callback to execute the business logic (e.g., UseCase) when a value is confirmed.
+     */
     private fun <T> handleSelector(
         action: SelectorDialogAction<T>,
         dialogState: SelectorDialogState<T>,

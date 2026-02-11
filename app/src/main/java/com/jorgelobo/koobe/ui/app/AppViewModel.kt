@@ -13,6 +13,14 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the global application state, including initialization
+ * processes and user preference settings such as theme selection.
+ *
+ * @property appStartUseCase Use case to handle initial application logic upon startup.
+ * @property getUserSettingsUseCase Use case to retrieve the current user settings flow.
+ * @property setThemeOptionUseCase Use case to update the application's theme preference.
+ */
 @HiltViewModel
 class AppViewModel @Inject constructor(
     private val appStartUseCase: AppStartUseCase,
@@ -39,6 +47,14 @@ class AppViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Updates the application's theme setting.
+     *
+     * This function launches a coroutine in the [viewModelScope] to persist the selected
+     * [ThemeOption] using the [setThemeOptionUseCase].
+     *
+     * @param option The [ThemeOption] to be applied and saved.
+     */
     fun setTheme(option: ThemeOption) {
         viewModelScope.launch {
             setThemeOptionUseCase(option)

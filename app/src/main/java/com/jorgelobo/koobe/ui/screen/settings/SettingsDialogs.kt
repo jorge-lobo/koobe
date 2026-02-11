@@ -12,6 +12,17 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.ui.components.model.enums.OptionSelectorType
 
+/**
+ * Composable function that manages and displays various selection dialogs for the settings screen.
+ * It handles the visibility and user interaction for language, currency, start of the week,
+ * and payment method configuration.
+ *
+ * @param state The current UI state of the settings screen.
+ * @param onLanguageSelectorAction Callback invoked for language selection actions.
+ * @param onCurrencySelectorAction Callback invoked for currency selection actions.
+ * @param onStartOfWeekSelectorAction Callback invoked for start-of-week selection actions.
+ * @param onPaymentMethodSelectorAction Callback invoked for payment method selection actions.
+ */
 @Composable
 fun SettingsDialogs(
     state: SettingsUiState,

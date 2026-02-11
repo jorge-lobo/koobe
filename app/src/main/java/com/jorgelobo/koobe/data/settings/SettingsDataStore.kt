@@ -18,8 +18,20 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 import javax.inject.Singleton
 
+/**
+ * Application-level DataStore instance used to persist user settings.
+ */
 val Context.dataStore by preferencesDataStore("settings")
 
+/**
+ * Data store class responsible for persisting and retrieving user-specific settings.
+ *
+ * This class leverages Jetpack DataStore to manage application preferences such as UI theme,
+ * language, currency format, the start of the week, and default payment methods.
+ * It provides a reactive [Flow] of [UserSettings] and methods to update individual preferences.
+ *
+ * @property context The application context used to access the DataStore instance.
+ */
 @Singleton
 class SettingsDataStore @Inject constructor(
     @ApplicationContext context: Context
@@ -34,6 +46,11 @@ class SettingsDataStore @Inject constructor(
         private val KEY_PAYMENT_METHOD = stringPreferencesKey("payment_method")
     }
 
+    /**
+     * A [Flow] that emits the current [UserSettings], mapping stored preferences to their
+     * respective domain models. It includes default values for each setting and uses
+     * [distinctUntilChanged] to ensure observers only receive updates when the data actually changes.
+     */
     val userSettingsFlow: Flow<UserSettings> =
         dataStore.data.map { prefs ->
             UserSettings(

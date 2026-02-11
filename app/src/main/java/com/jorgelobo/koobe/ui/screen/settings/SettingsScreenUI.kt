@@ -28,6 +28,25 @@ import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.getCurrencyCode
 
+/**
+ * Composable that represents the UI for the Settings screen.
+ *
+ * This screen allows users to configure application preferences, including visual themes,
+ * regional settings (language, currency, first day of the week), and manage categories or shortcuts.
+ *
+ * @param modifier The [Modifier] to be applied to the layout.
+ * @param uiState The state containing the current selections for language, currency, start of week,
+ * and payment method.
+ * @param themeSelected The currently active [ThemeOption].
+ * @param onThemeOptionChange Callback triggered when the theme selection changes.
+ * @param onLanguageSelectorClick Callback triggered when the language selection field is clicked.
+ * @param onCurrencySelectorClick Callback triggered when the currency selection field is clicked.
+ * @param onStartOfWeekSelectorClick Callback triggered when the start of week selection field is clicked.
+ * @param onPaymentMethodSelectorClick Callback triggered when the default payment method selection
+ * field is clicked.
+ * @param onManageCategoriesClick Callback triggered when the button to manage categories is clicked.
+ * @param onManageShortcutsClick Callback triggered when the button to manage shortcuts is clicked.
+ */
 @Composable
 fun SettingsScreenUI(
     modifier: Modifier = Modifier,
@@ -72,6 +91,13 @@ fun SettingsScreenUI(
     }
 }
 
+/**
+ * A composable that displays the theme selection toggle.
+ * It allows the user to switch between different app themes (e.g., Light, Dark, System).
+ *
+ * @param themeSelected The currently selected [ThemeOption].
+ * @param onOptionSelected A callback function that is invoked when a new theme option is selected.
+ */
 @Composable
 private fun SettingsToggleSection(
     themeSelected: ThemeOption,
@@ -85,6 +111,21 @@ private fun SettingsToggleSection(
     )
 }
 
+/**
+ * Composable that displays a group of selection fields for application settings.
+ *
+ * This section includes selectors for language, currency, start of the week, and default payment
+ * method, providing a consistent layout for user preferences.
+ *
+ * @param language The currently selected [AppLanguage].
+ * @param currencyType The currently selected [CurrencyType].
+ * @param startOfWeek The currently selected [StartOfWeek].
+ * @param paymentMethod The currently selected [PaymentMethodType].
+ * @param onLanguageSelectorClick Callback triggered when the language selector is clicked.
+ * @param onCurrencySelectorClick Callback triggered when the currency selector is clicked.
+ * @param onStartOfWeekSelectorClick Callback triggered when the start of week selector is clicked.
+ * @param onPaymentMethodSelectorClick Callback triggered when the payment method selector is clicked.
+ */
 @Composable
 private fun SettingsSelectorSection(
     language: AppLanguage,
@@ -134,6 +175,13 @@ private fun SettingsSelectorSection(
     }
 }
 
+/**
+ * A composable section that displays action buttons for managing specific app configurations.
+ * Currently includes buttons for managing categories and shortcuts.
+ *
+ * @param onManageCategoriesClick Callback triggered when the user clicks the "Manage Categories" button.
+ * @param onManageShortcutsClick Callback triggered when the user clicks the "Manage Shortcuts" button.
+ */
 @Composable
 private fun SettingsButtonsSection(
     onManageCategoriesClick: () -> Unit,

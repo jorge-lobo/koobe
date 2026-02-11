@@ -8,6 +8,12 @@ import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.settings.UserSettings
 import kotlinx.coroutines.flow.Flow
 
+/**
+ * Repository interface that manages user preferences and application settings.
+ *
+ * Provides a stream of [UserSettings] and methods to persist configuration changes
+ * such as visual themes, localization, currency preferences, and calendar formatting.
+ */
 interface SettingsRepository {
     fun userSettings(): Flow<UserSettings>
 

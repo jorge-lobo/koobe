@@ -8,6 +8,12 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Hilt module that binds the concrete implementation of [SettingsRepository] to its abstraction.
+ *
+ * Ensures that a singleton instance of [SettingsRepositoryImpl] is used whenever
+ * [SettingsRepository] is requested.
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object SettingsModule {

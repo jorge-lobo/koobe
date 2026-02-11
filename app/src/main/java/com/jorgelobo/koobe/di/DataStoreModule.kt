@@ -12,6 +12,11 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
+/**
+ * Dagger Hilt module that provides a Singleton instance of [DataStore<Preferences>].
+ * The DataStore is created using [PreferenceDataStoreFactory] and backed by a file named
+ * "koobe_preferences".
+ */
 @Module
 @InstallIn(SingletonComponent::class)
 object DataStoreModule {

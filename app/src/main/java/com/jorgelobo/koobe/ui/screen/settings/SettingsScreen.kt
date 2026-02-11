@@ -21,6 +21,18 @@ import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
+/**
+ * Composable function that represents the settings screen of the application.
+ * This screen allows users to configure various application preferences such as theme, language,
+ * currency, start of the week, and default payment methods.
+ * It also provides navigation to manage categories and shortcuts.
+ *
+ * @param navController The [NavController] used for navigating between screens.
+ * @param appViewModel The [AppViewModel] used to manage global application state, such as theme settings.
+ * @param viewModel The [SettingsViewModel] that handles the business logic and state for this screen.
+ * @param config The [SettingsConfig] containing configuration data for the settings screen,
+ * including current route information for the bottom navigation.
+ */
 @Composable
 fun SettingsScreen(
     navController: NavController,
