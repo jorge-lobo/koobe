@@ -178,7 +178,6 @@ fun PreviewCategorySelectorScreen() {
                     subcategoryId = null,
                     shortcutId = null
                 ),
-                showDiscardDialog = false,
                 mode = CategorySelectorMode.CREATE_TRANSACTION
             ),
             onBackClick = {},

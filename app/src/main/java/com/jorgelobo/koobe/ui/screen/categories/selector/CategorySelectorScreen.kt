@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.jorgelobo.koobe.ui.components.composed.dialogs.DiscardDialog
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.navigation.navigateClearingCurrent
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorConfig
@@ -57,12 +56,10 @@ fun CategorySelectorScreen(
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    if (uiState.showDiscardDialog) {
-        DiscardDialog(
-            onConfirm = viewModel::onDiscardConfirmed,
-            onCancel = viewModel::onDiscardDialogDismiss
-        )
-    }
+    CategorySelectorDialogs(
+        state = uiState,
+        onDiscardDialogAction = viewModel::onDiscardDialogAction
+    )
 
     CategorySelectorScreenUI(
         config = config,

@@ -8,6 +8,9 @@ import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.ui.screen.common.UiEvent
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -172,7 +175,7 @@ class CategorySelectorViewModel @Inject constructor(
         val state = _uiState.value
 
         if (state.hasUnsavedChanges) {
-            _uiState.update { it.copy(showDiscardDialog = true) }
+            onDiscardDialogAction(ConfirmationDialogAction.RequestClose)
         } else {
             viewModelScope.launch {
                 _events.emit(UiEvent.NavigateBack)
@@ -181,22 +184,32 @@ class CategorySelectorViewModel @Inject constructor(
     }
 
     /**
-     * Handles the dismissal of the "discard changes" confirmation dialog.
+     * Processes actions related to the discard changes confirmation dialog.
+     *
+     * This method updates the state of the discard dialog using a reducer and handles side effects
+     * triggered by the user's interaction with the dialog, such as confirming the intent to
+     * navigate back and discard changes.
+     *
+     * @param action The [ConfirmationDialogAction] to be processed (e.g., RequestClose, Confirm).
      */
-    fun onDiscardDialogDismiss() {
-        _uiState.update { it.copy(showDiscardDialog = false) }
-    }
+    fun onDiscardDialogAction(action: ConfirmationDialogAction) {
+        val (dialogState, effect) = reduceConfirmationDialog(
+            state = uiState.value.discardDialog,
+            action = action
+        )
 
-    /**
-     * Handles the user action of confirming the discard of unsaved changes.
-     * This function is called when the user taps the "confirm" button in the discard dialog.
-     * It dismisses the dialog and emits a [UiEvent.NavigateBack] event to navigate back from the current screen.
-     */
-    fun onDiscardConfirmed() {
-        _uiState.update { it.copy(showDiscardDialog = false) }
+        _uiState.update {
+            it.copy(discardDialog = dialogState)
+        }
 
-        viewModelScope.launch {
-            _events.emit(UiEvent.NavigateBack)
+        when (effect) {
+            ConfirmationDialogEffect.Confirmed -> {
+                viewModelScope.launch {
+                    _events.emit(UiEvent.NavigateBack)
+                }
+            }
+
+            null -> Unit
         }
     }
 

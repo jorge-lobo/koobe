@@ -6,6 +6,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.CategoryDetailType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
 
 /**
  * Represents the full UI state of the Category Selector screen.
@@ -16,7 +17,7 @@ import com.jorgelobo.koobe.R
  * - all selectable items ([categories], [subcategories], [shortcuts])
  * - the currently selected IDs
  * - derived UI state like [isPrimaryActionEnabled] or [headlineRes]
- * - dialog visibility ([showDiscardDialog])
+ * - dialog state holders such as [discardDialog]
  *
  * The state is immutable; all updates produce a new copy via the ViewModel.
  */
@@ -35,13 +36,12 @@ data class CategorySelectorUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val initialSnapshot: InitialSnapshot,
-    val showDiscardDialog: Boolean = false
+    val discardDialog: ConfirmationDialogState = ConfirmationDialogState()
 ) {
     /**
      * Determines if the current selection differs from the initial snapshot.
      *
-     * Used to prompt the user with a discard dialog when navigating back
-     * if there are unsaved changes.
+     * Used to prompt the user with a discard dialog when navigating back if there are unsaved changes.
      */
     val hasUnsavedChanges: Boolean
         get() = transactionType != initialSnapshot.transactionType ||
@@ -53,8 +53,8 @@ data class CategorySelectorUiState(
      * Returns the string resource for the current screen headline based on the current step
      * and selected category detail type.
      *
-     * This allows the UI to dynamically update the title as the user progresses through
-     * the selector flow.
+     * This allows the UI to dynamically update the title as the user progresses through the
+     * selector flow.
      */
     val headlineRes: Int
         get() = when (step) {
@@ -85,8 +85,8 @@ data class CategorySelectorUiState(
         )
 
         /**
-         * Returns the initial state based on the provided [CategorySelectorConfig],
-         * pre-selecting any IDs and transaction type supplied in the config.
+         * Returns the initial state based on the provided [CategorySelectorConfig], pre-selecting
+         * any IDs and transaction type supplied in the config.
          */
         fun initial(config: CategorySelectorConfig) = CategorySelectorUiState(
             mode = config.mode,
