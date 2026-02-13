@@ -3,10 +3,8 @@ package com.jorgelobo.koobe.ui.screen.dashboard
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,25 +18,19 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
-import com.jorgelobo.koobe.ui.components.composed.appBar.LogoAppBar
 import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.components.model.shortcut.ShortcutUiModel
-import com.jorgelobo.koobe.ui.screen.dashboard.components.DashboardBottomSection
 import com.jorgelobo.koobe.ui.screen.dashboard.components.DashboardCardsSection
 import com.jorgelobo.koobe.ui.screen.dashboard.components.DashboardTopSection
-import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.DateUtils
 
 @Composable
 fun DashboardScreenUI(
+    modifier: Modifier = Modifier,
     state: DashboardUiState,
-    currentRoute: String,
-    onRouteSelected: (String) -> Unit,
-    onAddIncomeClick: () -> Unit,
-    onAddExpenseClick: () -> Unit,
     onBudgetItemClick: (BudgetUiModel) -> Unit,
     onBudgetActionClick: () -> Unit,
     onShortcutItemClick: (ShortcutUiModel) -> Unit,
@@ -46,48 +38,34 @@ fun DashboardScreenUI(
 ) {
     val scrollState = rememberScrollState()
 
-    Scaffold(
-        topBar = { LogoAppBar() },
-        bottomBar = {
-            DashboardBottomSection(
-                currentRoute = currentRoute,
-                onRouteSelected = onRouteSelected,
-                onAddIncomeClick = onAddIncomeClick,
-                onAddExpenseClick = onAddExpenseClick
-            )
-        },
-        containerColor = AppTheme.colors.backgroundColors.screenBackground
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize()
-                .verticalScroll(scrollState),
-            verticalArrangement = Arrangement.spacedBy(Spacing.Large),
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            DashboardTopSection(
-                date = state.date,
-                currencyType = state.currencyType,
-                overallBalance = state.overallBalance,
-                income = state.income,
-                expenses = state.expenses
-            )
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .verticalScroll(scrollState),
+        verticalArrangement = Arrangement.spacedBy(Spacing.Large),
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        DashboardTopSection(
+            date = state.date,
+            currencyType = state.currencyType,
+            overallBalance = state.overallBalance,
+            income = state.income,
+            expenses = state.expenses
+        )
 
-            DashboardCardsSection(
-                dailyIncome = state.dailyIncome,
-                dailyExpenses = state.dailyExpenses,
-                weeklyIncome = state.weeklyIncome,
-                weeklyExpenses = state.weeklyExpenses,
-                currencyType = state.currencyType,
-                budgetItems = state.budgetItems,
-                shortcutItems = state.shortcutItems,
-                onBudgetItemClick = onBudgetItemClick,
-                onShortcutItemClick = onShortcutItemClick,
-                onBudgetActionClick = onBudgetActionClick,
-                onShortcutActionClick = onShortcutActionClick
-            )
-        }
+        DashboardCardsSection(
+            dailyIncome = state.dailyIncome,
+            dailyExpenses = state.dailyExpenses,
+            weeklyIncome = state.weeklyIncome,
+            weeklyExpenses = state.weeklyExpenses,
+            currencyType = state.currencyType,
+            budgetItems = state.budgetItems,
+            shortcutItems = state.shortcutItems,
+            onBudgetItemClick = onBudgetItemClick,
+            onShortcutItemClick = onShortcutItemClick,
+            onBudgetActionClick = onBudgetActionClick,
+            onShortcutActionClick = onShortcutActionClick
+        )
     }
 }
 
@@ -111,10 +89,6 @@ fun PreviewDashboardScreen() {
                 budgetItems = sampleBudgetUiModels(),
                 shortcutItems = sampleShortcutUiModels()
             ),
-            currentRoute = "home",
-            onRouteSelected = { "home" },
-            onAddIncomeClick = {},
-            onAddExpenseClick = {},
             onBudgetItemClick = {},
             onBudgetActionClick = {},
             onShortcutItemClick = {},
