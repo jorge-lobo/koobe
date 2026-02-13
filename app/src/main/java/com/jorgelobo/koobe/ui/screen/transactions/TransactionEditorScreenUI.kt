@@ -2,18 +2,14 @@ package com.jorgelobo.koobe.ui.screen.transactions
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
-import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
@@ -22,31 +18,20 @@ import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.DescriptionSource
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
-import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonConfig
-import com.jorgelobo.koobe.ui.components.base.buttons.types.AppButton
-import com.jorgelobo.koobe.ui.components.base.inputs.fields.AppInputText
-import com.jorgelobo.koobe.ui.components.base.inputs.fields.InputDate
-import com.jorgelobo.koobe.ui.components.base.inputs.fields.InputDateConfig
-import com.jorgelobo.koobe.ui.components.base.inputs.fields.InputFieldConfig
-import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
-import com.jorgelobo.koobe.ui.components.composed.amount.AmountEditor
-import com.jorgelobo.koobe.ui.components.composed.amount.AmountEditorConfig
-import com.jorgelobo.koobe.ui.components.composed.summary.CategorySummary
-import com.jorgelobo.koobe.ui.components.composed.summary.CategorySummaryConfig
-import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
-import com.jorgelobo.koobe.ui.components.model.enums.InputState
-import com.jorgelobo.koobe.ui.components.model.enums.UiState
-import com.jorgelobo.koobe.ui.components.model.icons.IconPack
-import com.jorgelobo.koobe.ui.mappers.asText
-import com.jorgelobo.koobe.ui.mappers.localizedName
-import com.jorgelobo.koobe.ui.mappers.toIcon
 import com.jorgelobo.koobe.ui.common.modifiers.clearFocusOnTap
+import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
+import com.jorgelobo.koobe.ui.components.model.enums.InputState
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetState
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
+import com.jorgelobo.koobe.ui.screen.transactions.components.TransactionAmountSection
+import com.jorgelobo.koobe.ui.screen.transactions.components.TransactionCategorySection
+import com.jorgelobo.koobe.ui.screen.transactions.components.TransactionDateSection
+import com.jorgelobo.koobe.ui.screen.transactions.components.TransactionDescriptionSection
+import com.jorgelobo.koobe.ui.screen.transactions.components.TransactionSaveButton
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.DateUtils
-import com.jorgelobo.koobe.utils.resolvedColor
 
 /**
  * Composable that renders the main UI of the Transaction Editor screen.
@@ -136,123 +121,6 @@ fun TransactionEditorScreenUI(
             onSaveClick = onSaveClick
         )
     }
-}
-
-/**
- * Displays the selected category, subcategory/shortcut, and allows changing it.
- */
-@Composable
-private fun TransactionCategorySection(
-    state: TransactionEditorUiState,
-    onChangeClick: () -> Unit
-) {
-    CategorySummary(
-        config = CategorySummaryConfig(
-            icon = state.category.icon,
-            color = state.category.resolvedColor(),
-            categoryName = state.category.localizedName(),
-            subcategoryName = state.subcategory?.localizedName() ?: state.shortcut?.name,
-            onChangeClick = onChangeClick
-        )
-    )
-}
-
-/**
- * Displays transaction date controls: "Today" button and date picker input.
- */
-@Composable
-private fun TransactionDateSection(
-    state: TransactionEditorUiState,
-    onTodayClick: () -> Unit,
-    onDatePickClick: () -> Unit
-) {
-    Row(
-        modifier = Modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(Spacing.Medium)
-    ) {
-        AppButton(
-            ButtonConfig(
-                text = stringResource(R.string.btn_today),
-                type = ButtonType.SECONDARY_COMPACT,
-                state = if (DateUtils.isSameDay(
-                        state.date,
-                        DateUtils.currentDate
-                    )
-                ) UiState.DISABLED else UiState.ENABLED,
-                onClick = onTodayClick
-            )
-        )
-
-        InputDate(
-            config = InputDateConfig(
-                date = state.date,
-                onIconClick = onDatePickClick
-            )
-        )
-    }
-}
-
-/**
- * Input field for the transaction description with reset button.
- */
-@Composable
-private fun TransactionDescriptionSection(
-    state: TransactionEditorUiState,
-    onDescriptionChange: (String) -> Unit,
-    onResetDescriptionClick: () -> Unit
-) {
-    AppInputText(
-        config = InputFieldConfig(
-            value = state.descriptionSource.asText(),
-            label = stringResource(R.string.label_description),
-            placeholder = stringResource(R.string.input_hint_description),
-            state = state.inputState,
-            onValueChange = onDescriptionChange,
-            onResetClick = onResetDescriptionClick
-        )
-    )
-}
-
-/**
- * Amount editor with keypad, payment method, and currency selectors.
- */
-@Composable
-private fun TransactionAmountSection(
-    state: TransactionEditorUiState,
-    onResetAmountClick: () -> Unit,
-    onPaymentSelectorClick: () -> Unit,
-    onCurrencySelectorClick: () -> Unit,
-    onKeyClick: (KeypadKey) -> Unit
-) {
-    AmountEditor(
-        config = AmountEditorConfig(
-            paymentIcon = state.paymentMethodType.toIcon(),
-            currencyType = state.currencyType,
-            value = state.amount,
-            onResetClick = onResetAmountClick,
-            onPaymentSelectorClick = onPaymentSelectorClick,
-            onCurrencySelectorClick = onCurrencySelectorClick,
-            onKeyClick = onKeyClick
-        )
-    )
-}
-
-/**
- * Primary save button, enabled or disabled based on state.isSaveButtonEnabled.
- */
-@Composable
-private fun TransactionSaveButton(
-    state: TransactionEditorUiState,
-    onSaveClick: () -> Unit
-) {
-    AppButton(
-        ButtonConfig(
-            text = stringResource(R.string.btn_save),
-            type = ButtonType.PRIMARY,
-            state = if (state.isSaveButtonEnabled) UiState.ENABLED else UiState.DISABLED,
-            onClick = onSaveClick
-        )
-    )
 }
 
 @Preview(apiLevel = 34, showBackground = true)
