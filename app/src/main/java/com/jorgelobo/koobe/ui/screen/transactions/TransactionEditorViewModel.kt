@@ -199,7 +199,7 @@ class TransactionEditorViewModel @Inject constructor(
         )) {
             is DescriptionResolution.Resolved -> saveTransaction(result.text)
 
-            is DescriptionResolution.RequireUserChoice -> sendSnackBar()
+            is DescriptionResolution.RequireUserChoice -> showSnackBar()
 
             DescriptionResolution.Missing -> Unit
         }
@@ -220,7 +220,7 @@ class TransactionEditorViewModel @Inject constructor(
         }
 
         when (effect) {
-            ConfirmationDialogEffect.Confirmed -> sendNavigateBack()
+            ConfirmationDialogEffect.Confirmed -> navigateBack()
             null -> Unit
         }
     }
@@ -285,7 +285,7 @@ class TransactionEditorViewModel @Inject constructor(
                 ),
                 isEditorMode = config.isEditMode
             )
-            sendNavigateBack()
+            navigateBack()
         }
     }
 
@@ -293,7 +293,7 @@ class TransactionEditorViewModel @Inject constructor(
     // Side effects / Events
     // ─────────────────────────────
 
-    private fun sendSnackBar() {
+    private fun showSnackBar() {
         emitEvent(
             TransactionEditorEvent.ShowSnackBar(
                 messageRes = R.string.snackBar_message,
@@ -303,7 +303,7 @@ class TransactionEditorViewModel @Inject constructor(
         )
     }
 
-    private fun sendNavigateBack() {
+    private fun navigateBack() {
         emitEvent(TransactionEditorEvent.ExitToOrigin)
     }
 

@@ -96,6 +96,10 @@ fun CategorySelectorScreen(
             )
         }
     )
+            onSubcategoryButtonClick = viewModel::onSubcategoryEditorRequested,
+            onShortcutButtonClick = viewModel::onShortcutEditorRequested,
+            onProceed = viewModel::onProceedRequested,
+            onCreateCategoryClick = viewModel::onCreateCategoryRequested,
 }
 
 /**

@@ -81,6 +81,8 @@ fun DashboardScreen(
         events = viewModel.events,
         navController = navController
     )
+                onAddIncomeClick = { viewModel.onAddTransactionClick(TransactionType.INCOME) },
+                onAddExpenseClick = { viewModel.onAddTransactionClick(TransactionType.EXPENSE) },
             )
         },
         onShortcutActionClick = {
@@ -93,4 +95,8 @@ fun DashboardScreen(
             ) else navController.navigate(Route.ShortcutManager.route)
         }
     )
+            onBudgetItemClick = { viewModel.onBudgetItemClick(it) },
+            onBudgetActionClick = { viewModel.onBudgetActionClick(uiState.budgetItems.isNotEmpty()) },
+            onShortcutItemClick = { viewModel.onShortcutItemClick(it) },
+            onShortcutActionClick = { viewModel.onShortcutActionClick(uiState.shortcutItems.isNotEmpty()) }
 }

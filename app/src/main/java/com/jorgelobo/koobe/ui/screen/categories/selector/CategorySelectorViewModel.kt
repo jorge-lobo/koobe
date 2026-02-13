@@ -7,10 +7,13 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
-import com.jorgelobo.koobe.ui.screen.common.UiEvent
+import com.jorgelobo.koobe.ui.navigation.Route
+import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
+import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
+import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -38,7 +41,7 @@ class CategorySelectorViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CategorySelectorUiState.initialEmpty())
     val uiState: StateFlow<CategorySelectorUiState> = _uiState
 
-    private val _events = MutableSharedFlow<UiEvent>()
+    private val _events = MutableSharedFlow<CategorySelectorEvent>()
     val events = _events.asSharedFlow()
 
     private lateinit var config: CategorySelectorConfig
@@ -169,7 +172,7 @@ class CategorySelectorViewModel @Inject constructor(
      *
      * If there are unsaved changes in the current state, it triggers the display
      * of a confirmation dialog to prevent accidental data loss. Otherwise, it emits
-     * a [UiEvent.NavigateBack] event to signal that navigation should proceed.
+     * a [CategorySelectorEvent.NavigateBack] event to signal that navigation should proceed.
      */
     fun onBackRequested() {
         val state = _uiState.value
@@ -177,10 +180,52 @@ class CategorySelectorViewModel @Inject constructor(
         if (state.hasUnsavedChanges) {
             onDiscardDialogAction(ConfirmationDialogAction.RequestClose)
         } else {
-            viewModelScope.launch {
-                _events.emit(UiEvent.NavigateBack)
-            }
+            navigateBack()
         }
+    }
+
+    fun onProceedRequested() {
+        val state = _uiState.value
+
+        if (!state.isPrimaryActionEnabled) return
+
+        val route = config.target.toRoute(config, state)
+
+        navigateAndReplace(route)
+    }
+
+    fun onSubcategoryEditorRequested() {
+        val state = _uiState.value
+
+        navigateTo(
+            Route.SubcategoryEditor.create(
+                SubcategoryEditorConfig(
+                    subcategoryId = state.selectedSubcategoryId,
+                    categoryId = state.selectedCategoryId
+                )
+            )
+        )
+    }
+
+    fun onShortcutEditorRequested() {
+        val state = _uiState.value
+
+        navigateTo(
+            Route.ShortcutEditor.create(
+                ShortcutEditorConfig(
+                    shortcutId = state.selectedShortcutId,
+                    categoryId = state.selectedCategoryId
+                )
+            )
+        )
+    }
+
+    fun onCreateCategoryRequested() {
+        navigateTo(
+            Route.CategoryEditor.create(
+                CategoryEditorConfig(categoryId = null)
+            )
+        )
     }
 
     /**
@@ -203,11 +248,7 @@ class CategorySelectorViewModel @Inject constructor(
         }
 
         when (effect) {
-            ConfirmationDialogEffect.Confirmed -> {
-                viewModelScope.launch {
-                    _events.emit(UiEvent.NavigateBack)
-                }
-            }
+            ConfirmationDialogEffect.Confirmed -> navigateBack()
 
             null -> Unit
         }
@@ -263,15 +304,27 @@ class CategorySelectorViewModel @Inject constructor(
      */
     private fun loadCategoryDetails(categoryId: Int) {
         viewModelScope.launch {
-            val subcategories =
-                subcategoryRepository.getSubcategoriesByCategoryId(categoryId).first()
-            val shortcuts = shortcutRepository.getShortcutsByCategoryId(categoryId).first()
+            try {
+                _uiState.update { it.copy(isLoading = true) }
 
-            _uiState.update {
-                it.copy(
-                    subcategories = subcategories,
-                    shortcuts = shortcuts
-                )
+                val subcategories =
+                    subcategoryRepository.getSubcategoriesByCategoryId(categoryId).first()
+                val shortcuts = shortcutRepository.getShortcutsByCategoryId(categoryId).first()
+
+                _uiState.update {
+                    it.copy(
+                        subcategories = subcategories,
+                        shortcuts = shortcuts,
+                        isLoading = false
+                    )
+                }
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = e.message
+                    )
+                }
             }
         }
     }
@@ -300,5 +353,21 @@ class CategorySelectorViewModel @Inject constructor(
         }
 
         _uiState.update { it.copy(isPrimaryActionEnabled = enabled) }
+    }
+
+    private fun emitEvent(event: CategorySelectorEvent) {
+        viewModelScope.launch { _events.emit(event) }
+    }
+
+    private fun navigateTo(route: String) {
+        emitEvent(CategorySelectorEvent.NavigateTo(route))
+    }
+
+    private fun navigateAndReplace(route: String) {
+        emitEvent(CategorySelectorEvent.NavigateAndReplace(route))
+    }
+
+    private fun navigateBack() {
+        emitEvent(CategorySelectorEvent.NavigateBack)
     }
 }
