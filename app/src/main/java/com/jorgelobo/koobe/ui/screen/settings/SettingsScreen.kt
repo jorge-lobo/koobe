@@ -43,6 +43,11 @@ fun SettingsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val themeOption by appViewModel.themeOption.collectAsStateWithLifecycle()
 
+    SettingsEffects(
+        navController = navController,
+        viewModel = viewModel
+    )
+
     SettingsDialogs(
         state = uiState,
         onLanguageSelectorAction = {

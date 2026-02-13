@@ -77,6 +77,10 @@ fun DashboardScreen(
                         shortcutId = it.shortcut.id
                     )
                 )
+    DashboardEffects(
+        events = viewModel.events,
+        navController = navController
+    )
             )
         },
         onShortcutActionClick = {

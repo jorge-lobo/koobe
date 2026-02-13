@@ -35,26 +35,20 @@ fun CategorySelectorScreen(
     config: CategorySelectorConfig,
     viewModel: CategorySelectorViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val onBack = rememberUpdatedState(viewModel::onBackRequested)
+    val mode = config.mode
+
     // Intercepts system back presses and delegates handling to the ViewModel.
     BackHandler {
-        viewModel.onBackRequested()
+        onBack.value()
     }
 
-    // Initializes the ViewModel once with the provided configuration.
-    LaunchedEffect(config) {
-        viewModel.init(config)
-    }
-
-    // Collects one-off UI events (such as navigation) emitted by the ViewModel.
-    LaunchedEffect(viewModel.events) {
-        viewModel.events.collect { event ->
-            when (event) {
-                UiEvent.NavigateBack -> navController.popBackStack()
-            }
-        }
-    }
-
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    CategorySelectorEffects(
+        navController = navController,
+        config = config,
+        viewModel = viewModel
+    )
 
     CategorySelectorDialogs(
         state = uiState,
