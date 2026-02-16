@@ -64,7 +64,7 @@ fun CategorySelectorScreen(
             CommonAppBar(
                 config = AppBarConfig(
                     headline = stringResource(uiState.headlineRes),
-                    leadingAction = AppBarAction(mode.leadingIcon) { viewModel::onBackRequested },
+                    leadingAction = AppBarAction(mode.leadingIcon, viewModel::onBackRequested),
                     trailingActions = emptyList()
                 )
             )
