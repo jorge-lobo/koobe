@@ -314,7 +314,7 @@ class TransactionEditorViewModel @Inject constructor(
     }
 
     /**
-     * Applies the user's default settings (currency and payment method) to the UI state.
+     * Applies the user's default settings (currency, payment method, and language) to the UI state.
      *
      * This operation is only performed if the editor is in "create" mode (not editing an existing
      * transaction), ensuring that new transactions start with the user's preferred defaults
@@ -329,7 +329,8 @@ class TransactionEditorViewModel @Inject constructor(
             updateState { state ->
                 state.copy(
                     currencyType = settings.currency,
-                    paymentMethodType = settings.paymentMethod
+                    paymentMethodType = settings.paymentMethod,
+                    language = settings.language
                 )
             }
         }
