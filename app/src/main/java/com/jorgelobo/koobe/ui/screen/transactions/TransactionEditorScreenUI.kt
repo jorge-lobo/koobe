@@ -12,6 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.Subcategory
+import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
@@ -165,6 +166,7 @@ fun PreviewTransactionEditorScreen() {
                 descriptionSource = DescriptionSource.TextDescription("Ticket"),
                 inputState = InputState.DEFAULT,
                 date = DateUtils.currentDate,
+                language = AppLanguage.ENGLISH,
                 paymentMethodType = PaymentMethodType.CASH,
                 currencyType = CurrencyType.EUR,
                 amount = 0.0,
