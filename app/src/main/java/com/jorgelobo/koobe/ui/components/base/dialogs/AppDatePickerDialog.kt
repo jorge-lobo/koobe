@@ -12,6 +12,7 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.jorgelobo.koobe.ui.theme.AppTheme
+import com.jorgelobo.koobe.core.localization.LocalizedContent
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -56,30 +57,32 @@ fun AppDatePickerDialog(
             containerColor = colors.containerColors.containerPrimary
         )
     ) {
-        DatePicker(
-            state = pickerState,
-            colors = DatePickerDefaults.colors(
-                containerColor = colors.containerColors.containerPrimary,
-                titleContentColor = colors.textColors.textPrimary,
-                headlineContentColor = colors.textColors.textPrimary,
-                subheadContentColor = colors.textColors.textPrimary,
-                navigationContentColor = colors.textColors.textPrimary,
-                selectedDayContainerColor = colors.containerColors.containerSelected,
-                selectedDayContentColor = colors.iconColors.iconSelected,
-                selectedYearContainerColor = colors.containerColors.containerSelected,
-                selectedYearContentColor = colors.iconColors.iconSelected,
-                todayDateBorderColor = colors.buttonColors.buttonTextDefault,
-                dateTextFieldColors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = colors.containerColors.containerSelected,
-                    unfocusedBorderColor = colors.containerColors.containerOutline,
-                    errorBorderColor = colors.negative,
-                    errorSupportingTextColor = colors.negative,
-                    errorLabelColor = colors.negative,
-                    errorCursorColor = colors.negative,
-                    errorTextColor = colors.negative
-                )
-            ),
-            showModeToggle = true
-        )
+        LocalizedContent(language = config.language) {
+            DatePicker(
+                state = pickerState,
+                colors = DatePickerDefaults.colors(
+                    containerColor = colors.containerColors.containerPrimary,
+                    titleContentColor = colors.textColors.textPrimary,
+                    headlineContentColor = colors.textColors.textPrimary,
+                    subheadContentColor = colors.textColors.textPrimary,
+                    navigationContentColor = colors.textColors.textPrimary,
+                    selectedDayContainerColor = colors.containerColors.containerSelected,
+                    selectedDayContentColor = colors.iconColors.iconSelected,
+                    selectedYearContainerColor = colors.containerColors.containerSelected,
+                    selectedYearContentColor = colors.iconColors.iconSelected,
+                    todayDateBorderColor = colors.buttonColors.buttonTextDefault,
+                    dateTextFieldColors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = colors.containerColors.containerSelected,
+                        unfocusedBorderColor = colors.containerColors.containerOutline,
+                        errorBorderColor = colors.negative,
+                        errorSupportingTextColor = colors.negative,
+                        errorLabelColor = colors.negative,
+                        errorCursorColor = colors.negative,
+                        errorTextColor = colors.negative
+                    )
+                ),
+                showModeToggle = true
+            )
+        }
     }
 }

@@ -12,6 +12,7 @@ import com.jorgelobo.koobe.domain.model.transaction.DescriptionSource
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
+import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.ResolveTransactionDescriptionUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.SaveTransactionUseCase
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
@@ -36,6 +37,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -60,7 +62,8 @@ class TransactionEditorViewModel @Inject constructor(
     private val subcategoryRepository: SubcategoryRepository,
     private val shortcutRepository: ShortcutRepository,
     private val saveTransactionUseCase: SaveTransactionUseCase,
-    private val resolveTransactionDescriptionUseCase: ResolveTransactionDescriptionUseCase
+    private val resolveTransactionDescriptionUseCase: ResolveTransactionDescriptionUseCase,
+    private val getUserSettingsUseCase: GetUserSettingsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TransactionEditorUiState.initialEmpty())
@@ -94,6 +97,8 @@ class TransactionEditorViewModel @Inject constructor(
                 subcategory = subcategory,
                 shortcut = shortcut
             )
+
+            applyUserDefaultsIfNeeded()
         }
     }
 
@@ -199,7 +204,7 @@ class TransactionEditorViewModel @Inject constructor(
         )) {
             is DescriptionResolution.Resolved -> saveTransaction(result.text)
 
-            is DescriptionResolution.RequireUserChoice -> sendSnackBar()
+            is DescriptionResolution.RequireUserChoice -> showSnackBar()
 
             DescriptionResolution.Missing -> Unit
         }
@@ -220,14 +225,24 @@ class TransactionEditorViewModel @Inject constructor(
         }
 
         when (effect) {
-            ConfirmationDialogEffect.Confirmed -> sendNavigateBack()
+            ConfirmationDialogEffect.Confirmed -> navigateBack()
             null -> Unit
         }
     }
 
     fun onCurrencySelectorDialogAction(action: SelectorDialogAction<CurrencyType>) {
+        val currentState = uiState.value
+
+        val baseState =
+            if (action is SelectorDialogAction.Open) {
+                currentState.currencyDialog.copy(
+                    initial = currentState.currencyType,
+                    selected = currentState.currencyType
+                )
+            } else currentState.currencyDialog
+
         val (dialogState, effect) = reduceSelectorDialog(
-            state = uiState.value.currencyDialog,
+            state = baseState,
             action = action
         )
 
@@ -248,8 +263,17 @@ class TransactionEditorViewModel @Inject constructor(
     fun onPaymentSelectorAction(
         action: SelectorSheetAction<PaymentMethodType>
     ) {
+        val currentState = uiState.value
+
+        val baseState =
+            if (action is SelectorSheetAction.Open) {
+                currentState.paymentMethodSelector.copy(
+                    selected = currentState.paymentMethodType,
+                )
+            } else currentState.paymentMethodSelector
+
         val newState = reduceSelectorSheet(
-            state = uiState.value.paymentMethodSelector,
+            state = baseState,
             action = action
         )
 
@@ -285,7 +309,30 @@ class TransactionEditorViewModel @Inject constructor(
                 ),
                 isEditorMode = config.isEditMode
             )
-            sendNavigateBack()
+            navigateBack()
+        }
+    }
+
+    /**
+     * Applies the user's default settings (currency, payment method, and language) to the UI state.
+     *
+     * This operation is only performed if the editor is in "create" mode (not editing an existing
+     * transaction), ensuring that new transactions start with the user's preferred defaults
+     * fetched from [GetUserSettingsUseCase].
+     */
+    private fun applyUserDefaultsIfNeeded() {
+        if (config.isEditMode) return
+
+        viewModelScope.launch {
+            val settings = getUserSettingsUseCase().first()
+
+            updateState { state ->
+                state.copy(
+                    currencyType = settings.currency,
+                    paymentMethodType = settings.paymentMethod,
+                    language = settings.language
+                )
+            }
         }
     }
 
@@ -293,7 +340,7 @@ class TransactionEditorViewModel @Inject constructor(
     // Side effects / Events
     // ─────────────────────────────
 
-    private fun sendSnackBar() {
+    private fun showSnackBar() {
         emitEvent(
             TransactionEditorEvent.ShowSnackBar(
                 messageRes = R.string.snackBar_message,
@@ -303,7 +350,7 @@ class TransactionEditorViewModel @Inject constructor(
         )
     }
 
-    private fun sendNavigateBack() {
+    private fun navigateBack() {
         emitEvent(TransactionEditorEvent.ExitToOrigin)
     }
 

@@ -17,7 +17,6 @@ import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
 import com.jorgelobo.koobe.ui.components.composed.navigation.AppBottomNavigation
 import com.jorgelobo.koobe.ui.components.composed.navigation.BottomNavigationDefaults
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
-import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
@@ -43,6 +42,11 @@ fun SettingsScreen(
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val themeOption by appViewModel.themeOption.collectAsStateWithLifecycle()
 
+    SettingsEffects(
+        navController = navController,
+        viewModel = viewModel
+    )
+
     SettingsDialogs(
         state = uiState,
         onLanguageSelectorAction = {
@@ -66,7 +70,7 @@ fun SettingsScreen(
                     headline = stringResource(R.string.headline_settings),
                     leadingAction = AppBarAction(
                         icon = IconGeneral.BACK,
-                        onClick = { navController.popBackStack() }
+                        onClick = viewModel::onBackClick
                     )
                 )
             )
@@ -109,8 +113,8 @@ fun SettingsScreen(
                     SelectorDialogAction.Open
                 )
             },
-            onManageCategoriesClick = { navController.navigate(Route.CategoryManager.route) },
-            onManageShortcutsClick = { navController.navigate(Route.ShortcutManager.route) }
+            onManageCategoriesClick = viewModel::onManagerCategoriesClick,
+            onManageShortcutsClick = viewModel::onManagerShortcutsClick
         )
     }
 }

@@ -11,13 +11,16 @@ import com.jorgelobo.koobe.domain.settings.SetCurrencyUseCase
 import com.jorgelobo.koobe.domain.settings.SetLanguageUseCase
 import com.jorgelobo.koobe.domain.settings.SetPaymentMethodUseCase
 import com.jorgelobo.koobe.domain.settings.SetStartOfWeekUseCase
+import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -47,6 +50,10 @@ class SettingsViewModel @Inject constructor(
 
     private val _uiState = MutableStateFlow(SettingsUiState())
     val uiState: StateFlow<SettingsUiState> = _uiState
+
+    private val _events = MutableSharedFlow<SettingsEvent>()
+    val events = _events.asSharedFlow()
+
 
     init {
         viewModelScope.launch {
@@ -128,6 +135,30 @@ class SettingsViewModel @Inject constructor(
                 }
             )
         }
+    }
+
+    fun onManagerCategoriesClick() {
+        navigateTo(Route.CategoryManager.route)
+    }
+
+    fun onManagerShortcutsClick() {
+        navigateTo(Route.ShortcutManager.route)
+    }
+
+    fun onBackClick() {
+        navigateBack()
+    }
+
+    private fun navigateTo(route: String) {
+        emitEvent(SettingsEvent.NavigateTo(route))
+    }
+
+    private fun navigateBack() {
+        emitEvent(SettingsEvent.NavigateBack)
+    }
+
+    private fun emitEvent(event: SettingsEvent) {
+        viewModelScope.launch { _events.emit(event) }
     }
 
     /**

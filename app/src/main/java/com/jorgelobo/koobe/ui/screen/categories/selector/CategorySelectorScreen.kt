@@ -1,20 +1,25 @@
 package com.jorgelobo.koobe.ui.screen.categories.selector
 
 import androidx.activity.compose.BackHandler
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
+import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
+import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.navigation.Route
-import com.jorgelobo.koobe.ui.navigation.navigateClearingCurrent
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorConfig
-import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorConfig
-import com.jorgelobo.koobe.ui.screen.common.UiEvent
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
 import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
+import com.jorgelobo.koobe.ui.theme.AppTheme
 
 /**
  * Entry point composable for the Category Selector feature.
@@ -24,7 +29,6 @@ import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
  * - Collecting UI state and one-off events from the ViewModel
  * - Handling system back navigation
  * - Delegating all user interactions to the ViewModel
- * - Performing navigation based on emitted [UiEvent]s and user actions
  *
  * The composable itself contains no business logic and acts purely as a state-to-UI and
  * event-to-navigation bridge.
@@ -35,73 +39,54 @@ fun CategorySelectorScreen(
     config: CategorySelectorConfig,
     viewModel: CategorySelectorViewModel = hiltViewModel()
 ) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val onBack = rememberUpdatedState(viewModel::onBackRequested)
+    val mode = config.mode
+
     // Intercepts system back presses and delegates handling to the ViewModel.
     BackHandler {
-        viewModel.onBackRequested()
+        onBack.value()
     }
 
-    // Initializes the ViewModel once with the provided configuration.
-    LaunchedEffect(config) {
-        viewModel.init(config)
-    }
-
-    // Collects one-off UI events (such as navigation) emitted by the ViewModel.
-    LaunchedEffect(viewModel.events) {
-        viewModel.events.collect { event ->
-            when (event) {
-                UiEvent.NavigateBack -> navController.popBackStack()
-            }
-        }
-    }
-
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    CategorySelectorEffects(
+        navController = navController,
+        config = config,
+        viewModel = viewModel
+    )
 
     CategorySelectorDialogs(
         state = uiState,
         onDiscardDialogAction = viewModel::onDiscardDialogAction
     )
 
-    CategorySelectorScreenUI(
-        config = config,
-        state = uiState,
-        onBackClick = viewModel::onBackRequested,
-        onTransactionTypeChange = viewModel::onTransactionTypeChanged,
-        onCategorySelected = viewModel::onCategorySelected,
-        onSubcategorySelected = viewModel::onSubcategorySelected,
-        onShortcutSelected = viewModel::onShortcutSelected,
-        onCategoryDetailSelected = viewModel::onCategoryDetailSelected,
-        onChangeClick = viewModel::onChangeCategoryClick,
-        onSubcategoryButtonClick = {
-            navController.navigate(
-                Route.SubcategoryEditor.create(
-                    SubcategoryEditorConfig(
-                        subcategoryId = uiState.selectedSubcategoryId,
-                        categoryId = uiState.selectedCategoryId
-                    )
+    Scaffold(
+        topBar = {
+            CommonAppBar(
+                config = AppBarConfig(
+                    headline = stringResource(uiState.headlineRes),
+                    leadingAction = AppBarAction(mode.leadingIcon, viewModel::onBackRequested),
+                    trailingActions = emptyList()
                 )
             )
         },
-        onShortcutButtonClick = {
-            navController.navigate(
-                Route.ShortcutEditor.create(
-                    ShortcutEditorConfig(
-                        shortcutId = uiState.selectedShortcutId,
-                        categoryId = uiState.selectedCategoryId
-                    )
-                )
-            )
-        },
-        onProceed = {
-            navController.navigateClearingCurrent(
-                config.target.toRoute(config, uiState)
-            )
-        },
-        onCreateCategoryClick = {
-            navController.navigate(
-                Route.CategoryEditor.create(CategoryEditorConfig(categoryId = null))
-            )
-        }
-    )
+        containerColor = AppTheme.colors.backgroundColors.screenBackground
+    ) { innerPadding ->
+        CategorySelectorScreenUI(
+            modifier = Modifier.padding(innerPadding),
+            config = config,
+            state = uiState,
+            onTransactionTypeChange = viewModel::onTransactionTypeChanged,
+            onCategorySelected = viewModel::onCategorySelected,
+            onSubcategorySelected = viewModel::onSubcategorySelected,
+            onShortcutSelected = viewModel::onShortcutSelected,
+            onCategoryDetailSelected = viewModel::onCategoryDetailSelected,
+            onChangeClick = viewModel::onChangeCategoryClick,
+            onSubcategoryButtonClick = viewModel::onSubcategoryEditorRequested,
+            onShortcutButtonClick = viewModel::onShortcutEditorRequested,
+            onProceed = viewModel::onProceedRequested,
+            onCreateCategoryClick = viewModel::onCreateCategoryRequested,
+        )
+    }
 }
 
 /**

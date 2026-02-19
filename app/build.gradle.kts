@@ -125,6 +125,9 @@ dependencies {
 
     // Json
     implementation(libs.kotlinx.serialization.json)
+
+    // AppCompat 1.6+
+    implementation(libs.androidx.appcompat)
 }
 
 kapt {

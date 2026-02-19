@@ -74,6 +74,7 @@ fun TransactionEditorDialogs(
         AppDatePickerDialog(
             config = AppDatePickerDialogConfig(
                 visible = state.datePickerDialog.visible,
+                language = state.datePickerDialog.language,
                 selectedDate = state.datePickerDialog.selectedDate,
                 onDateSelected = { onDatePickerDialogAction(DatePickerDialogAction.Select(it)) },
                 onConfirm = { onDatePickerDialogAction(DatePickerDialogAction.Confirm) },

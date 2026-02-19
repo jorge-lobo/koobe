@@ -3,24 +3,17 @@ package com.jorgelobo.koobe.ui.screen.categories.selector
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CategoryDetailType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
-import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
-import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
-import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.categories.selector.components.CategorySelection
 import com.jorgelobo.koobe.ui.screen.categories.selector.components.SubcategorySelection
-import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 
 /**
@@ -31,9 +24,9 @@ import com.jorgelobo.koobe.ui.theme.KoobeTheme
  */
 @Composable
 fun CategorySelectorScreenUI(
+    modifier: Modifier = Modifier,
     config: CategorySelectorConfig,
     state: CategorySelectorUiState,
-    onBackClick: () -> Unit,
     onTransactionTypeChange: (TransactionType) -> Unit,
     onCategorySelected: (Int) -> Unit,
     onSubcategorySelected: (Int) -> Unit,
@@ -47,56 +40,41 @@ fun CategorySelectorScreenUI(
 ) {
     val mode = config.mode
 
-    Scaffold(
-        topBar = {
-            CommonAppBar(
-                config = AppBarConfig(
-                    headline = stringResource(state.headlineRes),
-                    leadingAction = AppBarAction(mode.leadingIcon) { onBackClick() },
-                    trailingActions = emptyList()
-                )
+    Column(
+        modifier = modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        // Renders the UI corresponding to the current selector step
+        when (state.step) {
+            SelectorStep.SelectCategory -> CategorySelection(
+                showToggle = mode.showToggle,
+                showActionButton = mode.showActionButton,
+                actionButtonLabelRes = mode.actionButtonLabelRes,
+                categories = state.categories,
+                transactionSelected = state.transactionType,
+                onTransactionTypeChange = onTransactionTypeChange,
+                selectedCategoryId = state.selectedCategoryId,
+                onCategoryIdChange = onCategorySelected,
+                onActionButtonClick = onProceed,
+                onCreateCategoryClick = onCreateCategoryClick
             )
-        },
-        containerColor = AppTheme.colors.backgroundColors.screenBackground
-    ) { innerPadding ->
-        Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
-        ) {
-            // Renders the UI corresponding to the current selector step
-            when (state.step) {
-                SelectorStep.SelectCategory -> CategorySelection(
-                    showToggle = mode.showToggle,
-                    showActionButton = mode.showActionButton,
-                    actionButtonLabelRes = mode.actionButtonLabelRes,
-                    categories = state.categories,
-                    transactionSelected = state.transactionType,
-                    onTransactionTypeChange = onTransactionTypeChange,
-                    selectedCategoryId = state.selectedCategoryId,
-                    onCategoryIdChange = onCategorySelected,
-                    onActionButtonClick = onProceed,
-                    onCreateCategoryClick = onCreateCategoryClick
-                )
 
-                SelectorStep.SelectSubcategory -> SubcategorySelection(
-                    category = state.categories.first { it.id == state.selectedCategoryId },
-                    subcategories = state.subcategories,
-                    shortcuts = state.shortcuts,
-                    selectedSubcategoryId = state.selectedSubcategoryId,
-                    selectedShortcutId = state.selectedShortcutId,
-                    categoryDetailSelected = state.categoryDetailSelected,
-                    onCategoryDetailSelected = onCategoryDetailSelected,
-                    onSubcategorySelected = onSubcategorySelected,
-                    onShortcutSelected = onShortcutSelected,
-                    onChangeClick = onChangeClick,
-                    onContinueClick = onProceed,
-                    onCreateSubcategoryClick = onSubcategoryButtonClick,
-                    onCreateShortcutClick = onShortcutButtonClick
-                )
-            }
+            SelectorStep.SelectSubcategory -> SubcategorySelection(
+                category = state.categories.first { it.id == state.selectedCategoryId },
+                subcategories = state.subcategories,
+                shortcuts = state.shortcuts,
+                selectedSubcategoryId = state.selectedSubcategoryId,
+                selectedShortcutId = state.selectedShortcutId,
+                categoryDetailSelected = state.categoryDetailSelected,
+                onCategoryDetailSelected = onCategoryDetailSelected,
+                onSubcategorySelected = onSubcategorySelected,
+                onShortcutSelected = onShortcutSelected,
+                onChangeClick = onChangeClick,
+                onContinueClick = onProceed,
+                onCreateSubcategoryClick = onSubcategoryButtonClick,
+                onCreateShortcutClick = onShortcutButtonClick
+            )
         }
     }
 }
@@ -180,7 +158,6 @@ fun PreviewCategorySelectorScreen() {
                 ),
                 mode = CategorySelectorMode.CREATE_TRANSACTION
             ),
-            onBackClick = {},
             onTransactionTypeChange = {},
             onCategorySelected = {},
             onSubcategorySelected = {},
