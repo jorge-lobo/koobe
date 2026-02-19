@@ -15,6 +15,7 @@ import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
@@ -78,6 +79,7 @@ fun PreviewDashboardScreen() {
         DashboardScreenUI(
             state = DashboardUiState(
                 date = DateUtils.currentDate,
+                startOfWeek = StartOfWeek.MONDAY,
                 currencyType = CurrencyType.EUR,
                 overallBalance = 90.0,
                 income = 360.0,

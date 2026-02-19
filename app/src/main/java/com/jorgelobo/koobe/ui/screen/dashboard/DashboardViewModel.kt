@@ -7,6 +7,7 @@ import com.jorgelobo.koobe.domain.repository.BudgetRepository
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
+import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
 import com.jorgelobo.koobe.ui.components.model.shortcut.ShortcutUiModel
 import com.jorgelobo.koobe.ui.navigation.Route
@@ -30,7 +31,8 @@ class DashboardViewModel @Inject constructor(
     private val budgetRepository: BudgetRepository,
     private val shortcutRepository: ShortcutRepository,
     private val categoryRepository: CategoryRepository,
-    private val subcategoryRepository: SubcategoryRepository
+    private val subcategoryRepository: SubcategoryRepository,
+    private val getUserSettingsUseCase: GetUserSettingsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DashboardUiState())
@@ -40,6 +42,7 @@ class DashboardViewModel @Inject constructor(
     val events = _events.asSharedFlow()
 
     init {
+        loadUserSettings()
         loadDashboard()
     }
 
@@ -134,6 +137,19 @@ class DashboardViewModel @Inject constructor(
         }
 
         navigateTo(route)
+    }
+
+    private fun loadUserSettings() {
+        viewModelScope.launch {
+            getUserSettingsUseCase().collect { settings ->
+                _uiState.update { state ->
+                    state.copy(
+                        currencyType = settings.currency,
+                        startOfWeek = settings.startOfWeek
+                    )
+                }
+            }
+        }
     }
 
     private fun navigateTo(route: String) {
