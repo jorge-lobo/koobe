@@ -7,10 +7,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -52,12 +48,10 @@ fun CardHistoricItem(
     val category = config.category
     val categoryHistory = config.categoryHistory
 
-    var isExpanded by remember { mutableStateOf(false) }
-
     BaseExpandableCard(
         modifier = modifier,
-        isExpanded = isExpanded,
-        onExpandedChange = { isExpanded = it },
+        isExpanded = config.isExpanded,
+        onExpandedChange = { config.onCategoryExpandToggle() },
         headerContent = {
             Avatar(
                 type = AvatarType.MEDIUM,
@@ -75,7 +69,7 @@ fun CardHistoricItem(
 
             AppBadge(
                 value = categoryHistory.transactionCount,
-                isExpanded = isExpanded
+                isExpanded = config.isExpanded
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -94,11 +88,12 @@ fun CardHistoricItem(
         expandedContent = {
             categoryHistory.subcategories.forEach { subcategoryHistory ->
                 val subcategory = subcategoryHistory
-                var isSubExpanded by remember { mutableStateOf(false) }
+                val isSubExpanded =
+                    subcategoryHistory.subcategory.id in config.expandedSubcategories
 
                 BaseExpandableRow(
                     isExpanded = isSubExpanded,
-                    onExpandedChange = { isSubExpanded = it },
+                    onExpandedChange = { config.onSubcategoryExpandToggle(subcategoryHistory.subcategory.id) },
                     headerContent = {
                         Avatar(
                             type = AvatarType.SMALL,
@@ -251,7 +246,11 @@ fun PreviewCardHistoricItem() {
             val config = CardHistoricItemConfig(
                 category = categoryFood,
                 categoryHistory = categoryHistory,
-                currencyType = CurrencyType.EUR
+                currencyType = CurrencyType.EUR,
+                isExpanded = false,
+                expandedSubcategories = emptySet(),
+                onCategoryExpandToggle = {},
+                onSubcategoryExpandToggle = {}
             )
 
             CardHistoricItem(
