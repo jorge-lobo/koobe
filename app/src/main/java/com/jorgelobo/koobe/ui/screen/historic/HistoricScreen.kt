@@ -26,6 +26,11 @@ fun HistoricScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    HistoricEffects(
+        navController = navController,
+        viewModel = viewModel
+    )
+
     Scaffold(
         topBar = {
             CommonAppBar(
@@ -33,7 +38,7 @@ fun HistoricScreen(
                     headline = stringResource(R.string.headline_historic),
                     leadingAction = AppBarAction(
                         icon = IconGeneral.BACK,
-                        onClick = {}
+                        onClick = viewModel::onBackClick
                     ),
                     trailingActions = listOf(
                         AppBarAction(
