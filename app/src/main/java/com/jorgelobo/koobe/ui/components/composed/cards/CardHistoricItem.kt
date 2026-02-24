@@ -130,7 +130,10 @@ fun CardHistoricItem(
                     expandedContent = {
                         subcategoryHistory.transactions.forEach { transaction ->
                             ListTransactionItem(
-                                config = ListTransactionItemConfig(transaction)
+                                config = ListTransactionItemConfig(
+                                    transaction = transaction,
+                                    onClick = { config.onTransactionClick(transaction) }
+                                )
                             )
                         }
                     }
@@ -250,7 +253,8 @@ fun PreviewCardHistoricItem() {
                 isExpanded = false,
                 expandedSubcategories = emptySet(),
                 onCategoryExpandToggle = {},
-                onSubcategoryExpandToggle = {}
+                onSubcategoryExpandToggle = {},
+                onTransactionClick = {}
             )
 
             CardHistoricItem(

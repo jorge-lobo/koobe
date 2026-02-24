@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
+import com.jorgelobo.koobe.domain.model.transaction.Transaction
 import com.jorgelobo.koobe.ui.components.composed.cards.CardHistoricItem
 import com.jorgelobo.koobe.ui.components.composed.cards.CardHistoricItemConfig
 import com.jorgelobo.koobe.ui.screen.historic.CategoryHistoricUi
@@ -19,6 +20,7 @@ fun HistoricCategoriesSection(
     currencyType: CurrencyType,
     onCategoryExpandToggle: (Int) -> Unit,
     onSubcategoryExpandToggle: (categoryId: Int, subcategoryId: Int) -> Unit,
+    onTransactionClick: (Transaction) -> Unit,
     modifier: Modifier = Modifier
 ) {
     LazyColumn(
@@ -42,7 +44,8 @@ fun HistoricCategoriesSection(
                     onCategoryExpandToggle = { onCategoryExpandToggle(categoryUi.category.id) },
                     onSubcategoryExpandToggle = { subcategoryId ->
                         onSubcategoryExpandToggle(categoryUi.category.id, subcategoryId)
-                    }
+                    },
+                    onTransactionClick = onTransactionClick
                 )
             )
         }

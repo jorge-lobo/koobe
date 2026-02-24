@@ -32,7 +32,8 @@ fun HistoricScreenUI(
     modifier: Modifier = Modifier,
     onTransactionTypeChange: (TransactionType) -> Unit = {},
     onCategoryExpandToggle: (Int) -> Unit = {},
-    onSubcategoryExpandToggle: (categoryId: Int, subcategoryId: Int) -> Unit
+    onSubcategoryExpandToggle: (categoryId: Int, subcategoryId: Int) -> Unit,
+    onTransactionClick: (Transaction) -> Unit
 ) {
     Column(
         modifier = modifier.fillMaxSize(),
@@ -60,7 +61,8 @@ fun HistoricScreenUI(
             categories = state.categories,
             currencyType = state.currencyType,
             onCategoryExpandToggle = onCategoryExpandToggle,
-            onSubcategoryExpandToggle = onSubcategoryExpandToggle
+            onSubcategoryExpandToggle = onSubcategoryExpandToggle,
+            onTransactionClick = onTransactionClick
         )
     }
 }
@@ -75,7 +77,8 @@ private fun PreviewHistoricScreenUI() {
             state = previewHistoricUiState(),
             onTransactionTypeChange = {},
             onCategoryExpandToggle = {},
-            onSubcategoryExpandToggle = { _, _ -> }
+            onSubcategoryExpandToggle = { _, _ -> },
+            onTransactionClick = {}
         )
     }
 }

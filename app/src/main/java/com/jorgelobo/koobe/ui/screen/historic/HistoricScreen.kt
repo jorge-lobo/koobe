@@ -64,7 +64,8 @@ fun HistoricScreen(
             state = uiState,
             onTransactionTypeChange = {},
             onCategoryExpandToggle = {},
-            onSubcategoryExpandToggle = { _, _ -> }
+            onSubcategoryExpandToggle = { _, _ -> },
+            onTransactionClick = viewModel::onTransactionItemClick
         )
     }
 }
