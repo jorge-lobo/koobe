@@ -2,6 +2,7 @@ package com.jorgelobo.koobe.ui.screen.historic
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Transaction
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
@@ -10,6 +11,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -21,6 +23,12 @@ class HistoricViewModel @Inject constructor() : ViewModel() {
 
     private val _events = MutableSharedFlow<HistoricEvent>()
     val events = _events.asSharedFlow()
+
+    fun onTransactionTypeChanged(type: TransactionType) {
+        if (_uiState.value.transactionTypeSelected == type) return
+
+        _uiState.update { it.copy(transactionTypeSelected = type) }
+    }
 
     fun onBackClick() {
         navigateBack()

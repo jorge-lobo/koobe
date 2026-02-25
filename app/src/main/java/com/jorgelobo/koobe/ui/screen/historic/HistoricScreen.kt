@@ -61,8 +61,8 @@ fun HistoricScreen(
     ) { padding ->
         HistoricScreenUI(
             modifier = Modifier.padding(padding),
-            state = uiState,
-            onTransactionTypeChange = {},
+            state = uiState /*previewHistoricUiState()*/,
+            onTransactionTypeChange = viewModel::onTransactionTypeChanged,
             onCategoryExpandToggle = {},
             onSubcategoryExpandToggle = { _, _ -> },
             onTransactionClick = viewModel::onTransactionItemClick
