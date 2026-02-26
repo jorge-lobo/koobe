@@ -30,6 +30,7 @@ import com.jorgelobo.koobe.ui.components.composed.lists.ListTransactionItemConfi
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
@@ -61,7 +62,7 @@ fun CardHistoricItem(
             )
 
             Text(
-                text = category.name,
+                text = category.localizedName(),
                 style = typography.text.titleMedium,
                 color = colors.textColors.textPrimary,
                 modifier = Modifier.padding(start = Spacing.Small, end = Spacing.Tiny)
@@ -103,7 +104,7 @@ fun CardHistoricItem(
                         )
 
                         Text(
-                            text = subcategory.subcategory.name,
+                            text = subcategory.subcategory.localizedName(),
                             style = typography.text.titleMedium,
                             color = colors.textColors.textPrimary,
                             modifier = Modifier.padding(start = Spacing.Small, end = Spacing.Tiny)

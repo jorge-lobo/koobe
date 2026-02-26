@@ -2,11 +2,14 @@ package com.jorgelobo.koobe.ui.screen.historic
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jorgelobo.koobe.domain.model.category.CategoryHistory
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Transaction
+import com.jorgelobo.koobe.domain.usecase.historic.GetHistoricDataUseCase
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,7 +19,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HistoricViewModel @Inject constructor() : ViewModel() {
+class HistoricViewModel @Inject constructor(
+    private val getHistoricData: GetHistoricDataUseCase
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HistoricUiState())
     val uiState: StateFlow<HistoricUiState> = _uiState
@@ -24,10 +29,18 @@ class HistoricViewModel @Inject constructor() : ViewModel() {
     private val _events = MutableSharedFlow<HistoricEvent>()
     val events = _events.asSharedFlow()
 
+    private var loadJob: Job? = null
+
+    init {
+        loadHistoric()
+    }
+
     fun onTransactionTypeChanged(type: TransactionType) {
         if (_uiState.value.transactionTypeSelected == type) return
 
         _uiState.update { it.copy(transactionTypeSelected = type) }
+
+        loadHistoric()
     }
 
     fun onBackClick() {
@@ -47,6 +60,24 @@ class HistoricViewModel @Inject constructor() : ViewModel() {
         navigateTo(route)
     }
 
+    fun loadHistoric() {
+        _uiState.update { it.copy(isLoading = true) }
+
+        loadJob?.cancel()
+
+        loadJob = viewModelScope.launch {
+            getHistoricData(_uiState.value.transactionTypeSelected).collect { histories ->
+
+                _uiState.update { state ->
+                    state.copy(
+                        categories = histories.map { it.toUi() },
+                        isLoading = false
+                    )
+                }
+            }
+        }
+    }
+
     private fun navigateBack() {
         emitEvent(HistoricEvent.NavigateBack)
     }
@@ -58,4 +89,10 @@ class HistoricViewModel @Inject constructor() : ViewModel() {
     private fun emitEvent(event: HistoricEvent) {
         viewModelScope.launch { _events.emit(event) }
     }
+
+    private fun CategoryHistory.toUi() =
+        CategoryHistoricUi(
+            category = category,
+            history = this
+        )
 }
