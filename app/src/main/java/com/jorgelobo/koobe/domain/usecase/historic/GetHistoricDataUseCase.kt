@@ -4,6 +4,7 @@ import com.jorgelobo.koobe.domain.model.category.CategoryHistory
 import com.jorgelobo.koobe.domain.model.category.SubcategoryHistory
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoriesByTransactionTypeUseCase
+import com.jorgelobo.koobe.domain.usecase.subcategory.GetAllSubcategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.GetAllTransactionsUseCase
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
@@ -11,6 +12,7 @@ import javax.inject.Inject
 
 class GetHistoricDataUseCase @Inject constructor(
     private val getCategoriesByType: GetCategoriesByTransactionTypeUseCase,
+    private val getAllSubcategories: GetAllSubcategoriesUseCase,
     private val getAllTransactions: GetAllTransactionsUseCase
 ) {
 
@@ -18,12 +20,18 @@ class GetHistoricDataUseCase @Inject constructor(
 
         return combine(
             getCategoriesByType(type),
+            getAllSubcategories(),
             getAllTransactions()
-        ) { categories, transactions ->
+        ) { categories, subcategories, transactions ->
+
             categories.map { category ->
+
+                val categorySubcategories = subcategories.filter { it.categoryId == category.id }
+
                 val categoryTransactions = transactions.filter { it.categoryId == category.id }
 
-                val subcategoryHistories = category.subcategories.map { subcategory ->
+                val subcategoryHistories = categorySubcategories.map { subcategory ->
+
                     val subcategoryTransactions =
                         categoryTransactions.filter { it.subcategoryId == subcategory.id }
 
@@ -33,7 +41,7 @@ class GetHistoricDataUseCase @Inject constructor(
                         totalAmount = subcategoryTransactions.sumOf { it.amount },
                         transactions = subcategoryTransactions
                     )
-                }
+                }.filter { it.transactionCount > 0 }
 
                 CategoryHistory(
                     category = category,

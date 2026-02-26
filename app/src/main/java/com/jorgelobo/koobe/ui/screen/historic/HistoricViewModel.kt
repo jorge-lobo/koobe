@@ -60,6 +60,52 @@ class HistoricViewModel @Inject constructor(
         navigateTo(route)
     }
 
+    fun onCategoryExpandToggle(categoryId: Int) {
+        _uiState.update { state ->
+            val updated = state.categories.map { categoryUi ->
+
+                if (categoryUi.category.id == categoryId) {
+                    val newExpanded = !categoryUi.isExpanded
+
+                    categoryUi.copy(isExpanded = newExpanded,
+                        expandedSubcategories = if (newExpanded) {
+                            categoryUi.expandedSubcategories
+                        } else {
+                            emptySet()
+                        }
+                    )
+                } else {
+                    categoryUi
+                }
+            }
+
+            state.copy(categories = updated)
+        }
+    }
+
+    fun onSubcategoryExpandToggle(
+        categoryId: Int,
+        subcategoryId: Int
+    ) {
+        _uiState.update { state ->
+            val updated = state.categories.map { categoryUi ->
+
+                if (categoryUi.category.id != categoryId) return@map categoryUi
+
+                val newExpandedSet =
+                    if (subcategoryId in categoryUi.expandedSubcategories) {
+                        categoryUi.expandedSubcategories - subcategoryId
+                    } else {
+                        categoryUi.expandedSubcategories + subcategoryId
+                    }
+
+                categoryUi.copy(expandedSubcategories = newExpandedSet)
+            }
+
+            state.copy(categories = updated)
+        }
+    }
+
     fun loadHistoric() {
         _uiState.update { it.copy(isLoading = true) }
 
