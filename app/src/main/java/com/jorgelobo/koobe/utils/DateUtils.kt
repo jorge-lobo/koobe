@@ -1,6 +1,7 @@
 package com.jorgelobo.koobe.utils
 
 import android.annotation.SuppressLint
+import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.ui.components.model.enums.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -50,4 +51,79 @@ object DateUtils {
 
     fun Date.formatAs(dateFormat: DateFormat): String =
         formatDate(this, dateFormat)
+
+    fun getDailyItems(date: Date): List<String> =
+        withCalendar(date) {
+            val days = getActualMaximum(Calendar.DAY_OF_MONTH)
+            (1..days).map { it.toString() }
+        }
+
+    fun getWeeklyItems(date: Date): List<String> =
+        withCalendar(date) {
+            val weeks = getActualMaximum(Calendar.WEEK_OF_YEAR)
+            (1..weeks).map { "W$it" }
+        }
+
+    fun getYearlyItems(
+        date: Date,
+        range: Int = 20
+    ): List<String> =
+        withCalendar(date) {
+            val year = get(Calendar.YEAR)
+            (year - range..year + range).map { it.toString() }
+        }
+
+    fun getDailyIndex(date: Date): Int = withCalendar(date) { get(Calendar.DAY_OF_MONTH) - 1 }
+    fun getWeeklyIndex(date: Date): Int = withCalendar(date) { get(Calendar.WEEK_OF_YEAR) - 1 }
+    fun getMonthlyIndex(date: Date): Int = withCalendar(date) { get(Calendar.MONTH) }
+    fun getYearlyIndex(date: Date): Int = withCalendar(date) { get(Calendar.YEAR) - 2000 }
+
+    fun navigate(
+        date: Date,
+        type: PeriodType,
+        direction: Int
+    ): Date =
+        adjustDate(
+            date, when (type) {
+                PeriodType.DAILY -> Calendar.DAY_OF_MONTH
+                PeriodType.WEEKLY -> Calendar.WEEK_OF_YEAR
+                PeriodType.MONTHLY -> Calendar.MONTH
+                PeriodType.YEARLY -> Calendar.YEAR
+            }, direction
+        )
+
+    fun dateFromIndex(
+        index: Int,
+        type: PeriodType,
+        baseDate: Date
+    ): Date =
+        withCalendar(baseDate) {
+            val baseYear = 2000
+
+            when (type) {
+                PeriodType.DAILY -> set(Calendar.DAY_OF_MONTH, index + 1)
+                PeriodType.WEEKLY -> set(Calendar.WEEK_OF_YEAR, index + 1)
+                PeriodType.MONTHLY -> set(Calendar.MONTH, index)
+                PeriodType.YEARLY -> set(Calendar.YEAR, baseYear + index)
+            }
+            time
+        }
+
+    fun adjustDate(
+        date: Date,
+        field: Int,
+        amount: Int
+    ): Date =
+        withCalendar(date) {
+            add(field, amount)
+            time
+        }
+
+    private inline fun <T> withCalendar(
+        date: Date,
+        calendar: Calendar.() -> T
+    ): T {
+        val cal = Calendar.getInstance().apply { time = date }
+        return cal.calendar()
+    }
 }
