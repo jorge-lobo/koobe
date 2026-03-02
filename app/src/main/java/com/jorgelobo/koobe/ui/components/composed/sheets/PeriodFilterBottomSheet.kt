@@ -65,9 +65,11 @@ fun PeriodFilterBottomSheet(
         ) {
             PeriodToggle(
                 config = periodToggleConfig(
-                    selected = config.selectedType,
+                    selected = config.current.type,
                     onOptionSelected = { selected ->
-                        config.onTypeSelected(selected)
+                        config.onSelectionChanged(
+                            config.selected.copy(type = selected)
+                        )
                         isEnabled = true
                     }
                 )
@@ -77,18 +79,18 @@ fun PeriodFilterBottomSheet(
 
             DateSelector(
                 config = DateSelectorConfig(
-                    periodType = config.selectedType,
-                    date = config.date,
+                    periodType = config.current.type,
+                    date = config.current.date,
                     onLeftClick = {
-                        config.onLeftClick()
+                        config.dateNavigation.onLeftClick()
                         isEnabled = true
                     },
                     onRightClick = {
-                        config.onRightClick()
+                        config.dateNavigation.onRightClick()
                         isEnabled = true
                     },
                     onPickerClick = {
-                        config.onPickerClick()
+                        config.dateNavigation.onPickerClick()
                         isEnabled = true
                     }
                 ),
@@ -102,9 +104,8 @@ fun PeriodFilterBottomSheet(
                 contentAlignment = Alignment.Center
             ) {
                 PeriodListContent(
-                    periodType = config.selectedType,
                     months = months,
-                    config = config,
+                    periodConfig = config.periodConfig,
                     onItemSelected = { isEnabled = true }
                 )
             }
@@ -116,7 +117,7 @@ fun PeriodFilterBottomSheet(
                     confirmText = stringResource(R.string.btn_apply),
                     cancelText = stringResource(R.string.btn_cancel),
                     isConfirmEnabled = isEnabled,
-                    onConfirmClick = config.onApply,
+                    onConfirmClick = config.actions.onApply,
                     onCancelClick = onDismiss
                 )
             )
@@ -126,58 +127,57 @@ fun PeriodFilterBottomSheet(
 
 @Composable
 private fun PeriodListContent(
-    periodType: PeriodType,
     months: List<String>,
-    config: PeriodFilterBottomSheetConfig,
+    periodConfig: PeriodConfig,
     onItemSelected: () -> Unit
 ) {
-    when (periodType) {
-        PeriodType.DAILY -> {
+    when (periodConfig) {
+        is PeriodConfig.Daily -> {
             VerticalPeriodList(
                 config = SelectableListConfig(
-                    items = config.dailyItems,
-                    selectedIndex = config.selectedDailyIndex,
+                    items = periodConfig.items,
+                    selectedIndex = periodConfig.selectedIndex,
                     onItemSelected = {
-                        config.onDailySelected(it)
+                        periodConfig.onItemSelected(it)
                         onItemSelected()
                     }
                 )
             )
         }
 
-        PeriodType.WEEKLY -> {
+        is PeriodConfig.Weekly -> {
             VerticalPeriodList(
                 config = SelectableListConfig(
-                    items = config.weeklyItems,
-                    selectedIndex = config.selectedWeeklyIndex,
+                    items = periodConfig.items,
+                    selectedIndex = periodConfig.selectedIndex,
                     onItemSelected = {
-                        config.onWeeklySelected(it)
+                        periodConfig.onItemSelected(it)
                         onItemSelected()
                     }
                 )
             )
         }
 
-        PeriodType.MONTHLY -> {
+        is PeriodConfig.Monthly -> {
             MonthGrid(
                 config = SelectableListConfig(
                     items = months,
-                    selectedIndex = config.selectedMonthlyIndex,
+                    selectedIndex = periodConfig.selectedIndex,
                     onItemSelected = {
-                        config.onMonthlySelected(it)
+                        periodConfig.onItemSelected(it)
                         onItemSelected()
                     }
                 )
             )
         }
 
-        PeriodType.YEARLY -> {
+        is PeriodConfig.Yearly -> {
             VerticalPeriodList(
                 config = SelectableListConfig(
-                    items = config.yearlyItems,
-                    selectedIndex = config.selectedYearlyIndex,
+                    items = periodConfig.items,
+                    selectedIndex = periodConfig.selectedIndex,
                     onItemSelected = {
-                        config.onYearlySelected(it)
+                        periodConfig.onItemSelected(it)
                         onItemSelected()
                     }
                 )
@@ -214,11 +214,20 @@ fun PreviewPeriodFilterBottomSheet() {
                 .padding(vertical = Spacing.Medium),
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
-            var periodSelected by remember { mutableStateOf(PeriodType.MONTHLY) }
+            var currentSelection by remember {
+                mutableStateOf(
+                    PeriodSelection(
+                        type = PeriodType.MONTHLY,
+                        date = DateUtils.currentDate
+                    )
+                )
+            }
+
             var selectedDailyIndex by remember { mutableIntStateOf(4) }
             var selectedWeeklyIndex by remember { mutableIntStateOf(44) }
             var selectedMonthlyIndex by remember { mutableIntStateOf(10) }
             var selectedYearlyIndex by remember { mutableIntStateOf(10) }
+
             val dailyItems = (1..30).map { it.toString() }
             val weeklyItems = (1..52).map { it.toString() }
             val yearlyItems = (2015..2025).map { it.toString() }
@@ -226,28 +235,45 @@ fun PreviewPeriodFilterBottomSheet() {
             PeriodFilterBottomSheet(
                 sheetState = sheetState,
                 config = PeriodFilterBottomSheetConfig(
-                    type = PeriodType.WEEKLY,
-                    selectedType = periodSelected,
-                    onTypeSelected = { periodSelected = it },
-                    date = DateUtils.currentDate,
-                    onLeftClick = {},
-                    onRightClick = {},
-                    onPickerClick = {},
-                    dailyItems = dailyItems,
-                    weeklyItems = weeklyItems,
-                    yearlyItems = yearlyItems,
-                    selectedDailyIndex = selectedDailyIndex,
-                    selectedWeeklyIndex = selectedWeeklyIndex,
-                    selectedMonthlyIndex = selectedMonthlyIndex,
-                    selectedYearlyIndex = selectedYearlyIndex,
-                    onDailySelected = { selectedDailyIndex = it },
-                    onWeeklySelected = { selectedWeeklyIndex = it },
-                    onMonthlySelected = { selectedMonthlyIndex = it },
-                    onYearlySelected = { selectedYearlyIndex = it },
-                    onApply = {},
-                    onCancel = {},
-                    onDateSelected = {},
-                    selectedDate = DateUtils.currentDate
+                    current = currentSelection,
+                    selected = currentSelection,
+                    onSelectionChanged = { selection ->
+                        currentSelection = selection
+                    },
+                    dateNavigation = DateNavigation(
+                        onLeftClick = {},
+                        onRightClick = {},
+                        onPickerClick = {}
+                    ),
+                    periodConfig = when (currentSelection.type) {
+                        PeriodType.DAILY -> PeriodConfig.Daily(
+                            items = dailyItems,
+                            selectedIndex = selectedDailyIndex,
+                            onItemSelected = { index -> selectedDailyIndex = index }
+                        )
+
+                        PeriodType.WEEKLY -> PeriodConfig.Weekly(
+                            items = weeklyItems,
+                            selectedIndex = selectedWeeklyIndex,
+                            onItemSelected = { index -> selectedWeeklyIndex = index }
+                        )
+
+                        PeriodType.MONTHLY -> PeriodConfig.Monthly(
+                            items = emptyList(),
+                            selectedIndex = selectedMonthlyIndex,
+                            onItemSelected = { index -> selectedMonthlyIndex = index }
+                        )
+
+                        PeriodType.YEARLY -> PeriodConfig.Yearly(
+                            items = yearlyItems,
+                            selectedIndex = selectedYearlyIndex,
+                            onItemSelected = { index -> selectedYearlyIndex = index }
+                        )
+                    },
+                    actions = FilterActions(
+                        onApply = {},
+                        onCancel = {}
+                    )
                 ),
                 onDismiss = {}
             )
