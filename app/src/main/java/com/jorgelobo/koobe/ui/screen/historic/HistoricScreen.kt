@@ -1,7 +1,9 @@
 package com.jorgelobo.koobe.ui.screen.historic
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -16,8 +18,10 @@ import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.components.composed.navigation.AppBottomNavigation
 import com.jorgelobo.koobe.ui.components.composed.navigation.BottomNavigationDefaults
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.PeriodFilterAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoricScreen(
     navController: NavController,
@@ -25,10 +29,17 @@ fun HistoricScreen(
     viewModel: HistoricViewModel = hiltViewModel()
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val sheetState = rememberModalBottomSheetState()
 
     HistoricEffects(
         navController = navController,
         viewModel = viewModel
+    )
+
+    HistoricDialogs(
+        state = uiState,
+        sheetState = sheetState,
+        onPeriodFilterAction = viewModel::onPeriodFilterAction
     )
 
     Scaffold(
@@ -43,7 +54,7 @@ fun HistoricScreen(
                     trailingActions = listOf(
                         AppBarAction(
                             icon = IconGeneral.FILTER,
-                            onClick = {}
+                            onClick = { viewModel.onPeriodFilterAction(PeriodFilterAction.Open) }
                         )
                     )
                 )

@@ -7,6 +7,8 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Transaction
 import com.jorgelobo.koobe.domain.usecase.historic.GetHistoricDataUseCase
 import com.jorgelobo.koobe.ui.navigation.Route
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.PeriodFilterAction
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.reducePeriodFilter
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -67,7 +69,8 @@ class HistoricViewModel @Inject constructor(
                 if (categoryUi.category.id == categoryId) {
                     val newExpanded = !categoryUi.isExpanded
 
-                    categoryUi.copy(isExpanded = newExpanded,
+                    categoryUi.copy(
+                        isExpanded = newExpanded,
                         expandedSubcategories = if (newExpanded) {
                             categoryUi.expandedSubcategories
                         } else {
@@ -103,6 +106,24 @@ class HistoricViewModel @Inject constructor(
             }
 
             state.copy(categories = updated)
+        }
+    }
+
+    fun onPeriodFilterAction(action: PeriodFilterAction) {
+        _uiState.update { state ->
+            val newFilterState = reducePeriodFilter(state.periodFilter, action)
+            var newState = state.copy(periodFilter = newFilterState)
+
+            if (action is PeriodFilterAction.Apply) {
+                newState = newState.copy(
+                    date = newFilterState.selectedDate,
+                    periodType = newFilterState.selectedType
+                )
+
+                loadHistoric()
+            }
+
+            newState
         }
     }
 
