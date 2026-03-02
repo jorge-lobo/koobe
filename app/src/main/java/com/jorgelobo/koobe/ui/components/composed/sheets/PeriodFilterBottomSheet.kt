@@ -116,7 +116,7 @@ fun PeriodFilterBottomSheet(
                     confirmText = stringResource(R.string.btn_apply),
                     cancelText = stringResource(R.string.btn_cancel),
                     isConfirmEnabled = isEnabled,
-                    onConfirmClick = config.onConfirmClick,
+                    onConfirmClick = config.onApply,
                     onCancelClick = onDismiss
                 )
             )
@@ -244,7 +244,10 @@ fun PreviewPeriodFilterBottomSheet() {
                     onWeeklySelected = { selectedWeeklyIndex = it },
                     onMonthlySelected = { selectedMonthlyIndex = it },
                     onYearlySelected = { selectedYearlyIndex = it },
-                    onConfirmClick = {}
+                    onApply = {},
+                    onCancel = {},
+                    onDateSelected = {},
+                    selectedDate = DateUtils.currentDate
                 ),
                 onDismiss = {}
             )

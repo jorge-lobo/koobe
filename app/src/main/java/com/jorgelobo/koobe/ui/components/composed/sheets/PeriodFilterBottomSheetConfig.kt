@@ -8,6 +8,8 @@ data class PeriodFilterBottomSheetConfig(
     val selectedType: PeriodType,
     val onTypeSelected: (PeriodType) -> Unit,
     val date: Date,
+    val selectedDate: Date,
+    val onDateSelected: (Date) -> Unit,
     val onLeftClick: () -> Unit,
     val onRightClick: () -> Unit,
     val onPickerClick: () -> Unit,
@@ -22,5 +24,6 @@ data class PeriodFilterBottomSheetConfig(
     val onWeeklySelected: (Int) -> Unit,
     val onMonthlySelected: (Int) -> Unit,
     val onYearlySelected: (Int) -> Unit,
-    val onConfirmClick: () -> Unit
+    val onApply: () -> Unit,
+    val onCancel: () -> Unit
 )
