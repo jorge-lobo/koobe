@@ -23,19 +23,6 @@ object DateUtils {
                 cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
     }
 
-    fun getAllMonthsShortNames(): List<String> {
-        return (0..11).map { monthIndex ->
-            getMonthShortName(monthIndex)
-        }
-    }
-
-    fun getMonthShortName(monthIndex: Int): String {
-        val calendar = Calendar.getInstance(locale).apply { set(Calendar.MONTH, monthIndex) }
-        return SimpleDateFormat("MMM", locale)
-            .format(calendar.time)
-            .replaceFirstChar { it.uppercaseChar() }
-    }
-
     fun formatDate(date: Date, dateFormat: DateFormat): String {
         val pattern = when (dateFormat) {
             DateFormat.YEAR -> "yyyy"
@@ -52,17 +39,98 @@ object DateUtils {
     fun Date.formatAs(dateFormat: DateFormat): String =
         formatDate(this, dateFormat)
 
+    // ─────────────────────────────
+    // Daily utilities
+    // ─────────────────────────────
+
     fun getDailyItems(date: Date): List<String> =
         withCalendar(date) {
             val days = getActualMaximum(Calendar.DAY_OF_MONTH)
             (1..days).map { it.toString() }
         }
 
+    fun getDailyIndex(date: Date): Int =
+        withCalendar(date) { get(Calendar.DAY_OF_MONTH) - 1 }
+
+    fun getDailyDate(index: Int, baseDate: Date): Date =
+        withCalendar(baseDate) {
+            set(Calendar.DAY_OF_MONTH, index + 1)
+            time
+        }
+
+    // ─────────────────────────────
+    // Weekly utilities
+    // ─────────────────────────────
+
     fun getWeeklyItems(date: Date): List<String> =
         withCalendar(date) {
+            val year = get(Calendar.YEAR)
             val weeks = getActualMaximum(Calendar.WEEK_OF_YEAR)
-            (1..weeks).map { "W$it" }
+
+            (1..weeks).map { weekNumber ->
+                val weekCal = Calendar.getInstance(locale).apply {
+                    set(Calendar.YEAR, year)
+                    set(Calendar.WEEK_OF_YEAR, weekNumber)
+                    set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
+                }
+
+                val startDate = weekCal.time
+                val startDay = SimpleDateFormat("dd", locale).format(startDate)
+                val startMonth = SimpleDateFormat("MMM", locale).format(startDate)
+
+                weekCal.add(Calendar.DAY_OF_MONTH, 6)
+                val endDate = weekCal.time
+                val endDay = SimpleDateFormat("dd", locale).format(endDate)
+                val endMonth = SimpleDateFormat("MMM", locale).format(endDate)
+
+                if (startMonth == endMonth) {
+                    "$startDay - $endDay $endMonth"
+                } else {
+                    "$startDay $startMonth - $endDay $endMonth"
+                }
+            }
         }
+
+    fun getWeeklyIndex(date: Date): Int =
+        withCalendar(date) { get(Calendar.WEEK_OF_YEAR) - 1 }
+
+    fun getWeeklyDate(index: Int, baseDate: Date): Date =
+        withCalendar(baseDate) {
+            set(Calendar.WEEK_OF_YEAR, index + 1)
+            set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
+            time
+        }
+
+    // ─────────────────────────────
+    // Monthly utilities
+    // ────────────────────────
+
+    fun getAllMonthsShortNames(): List<String> {
+        return (0..11).map { monthIndex ->
+            getMonthShortName(monthIndex)
+        }
+    }
+
+    fun getMonthShortName(monthIndex: Int): String {
+        val calendar = Calendar.getInstance(locale).apply { set(Calendar.MONTH, monthIndex) }
+        return SimpleDateFormat("MMM", locale)
+            .format(calendar.time)
+            .replaceFirstChar { it.uppercaseChar() }
+    }
+
+    fun getMonthlyIndex(date: Date): Int =
+        withCalendar(date) { get(Calendar.MONTH) }
+
+    fun getMonthlyDate(index: Int, baseDate: Date): Date =
+        withCalendar(baseDate) {
+            set(Calendar.MONTH, index)
+            set(Calendar.DAY_OF_MONTH, 1)
+            time
+        }
+
+    // ─────────────────────────────
+    // Yearly utilities
+    // ────────────────────────
 
     fun getYearlyItems(
         date: Date,
@@ -70,13 +138,33 @@ object DateUtils {
     ): List<String> =
         withCalendar(date) {
             val year = get(Calendar.YEAR)
-            (year - range..year + range).map { it.toString() }
+            (year - range..year).map { it.toString() }
         }
 
-    fun getDailyIndex(date: Date): Int = withCalendar(date) { get(Calendar.DAY_OF_MONTH) - 1 }
-    fun getWeeklyIndex(date: Date): Int = withCalendar(date) { get(Calendar.WEEK_OF_YEAR) - 1 }
-    fun getMonthlyIndex(date: Date): Int = withCalendar(date) { get(Calendar.MONTH) }
-    fun getYearlyIndex(date: Date): Int = withCalendar(date) { get(Calendar.YEAR) - 2000 }
+    fun getYearlyIndex(
+        date: Date,
+        baseDate: Date = currentDate,
+        range: Int = 20
+    ): Int {
+        val targetYear = withCalendar(date) { get(Calendar.YEAR) }
+        val baseYear = withCalendar(baseDate) { get(Calendar.YEAR) }
+        val index = targetYear - (baseYear - range)
+        return index.coerceIn(0, range)
+    }
+
+    fun getYearlyDate(index: Int, baseDate: Date, range: Int = 20): Date =
+        withCalendar(baseDate) {
+            val currentYear = withCalendar(currentDate) { get(Calendar.YEAR) }
+            val yearAtIndex = currentYear - range + index
+            set(Calendar.YEAR, yearAtIndex)
+            set(Calendar.DAY_OF_YEAR, 1)
+            set(Calendar.MONTH, Calendar.JANUARY)
+            time
+        }
+
+    // ─────────────────────────────
+    // Navigation
+    // ────────────────────────
 
     fun navigate(
         date: Date,
@@ -86,28 +174,11 @@ object DateUtils {
         adjustDate(
             date, when (type) {
                 PeriodType.DAILY -> Calendar.DAY_OF_MONTH
-                PeriodType.WEEKLY -> Calendar.WEEK_OF_YEAR
-                PeriodType.MONTHLY -> Calendar.MONTH
+                PeriodType.WEEKLY -> Calendar.YEAR
+                PeriodType.MONTHLY -> Calendar.YEAR
                 PeriodType.YEARLY -> Calendar.YEAR
             }, direction
         )
-
-    fun dateFromIndex(
-        index: Int,
-        type: PeriodType,
-        baseDate: Date
-    ): Date =
-        withCalendar(baseDate) {
-            val baseYear = 2000
-
-            when (type) {
-                PeriodType.DAILY -> set(Calendar.DAY_OF_MONTH, index + 1)
-                PeriodType.WEEKLY -> set(Calendar.WEEK_OF_YEAR, index + 1)
-                PeriodType.MONTHLY -> set(Calendar.MONTH, index)
-                PeriodType.YEARLY -> set(Calendar.YEAR, baseYear + index)
-            }
-            time
-        }
 
     fun adjustDate(
         date: Date,
@@ -118,6 +189,61 @@ object DateUtils {
             add(field, amount)
             time
         }
+
+    // ─────────────────────────────
+    // Helpers
+    // ────────────────────────
+
+    fun isMonthInFuture(monthIndex: Int, referenceDate: Date): Boolean {
+        val now = Calendar.getInstance().apply { time = currentDate }
+        val reference = Calendar.getInstance().apply { time = referenceDate }
+
+        val currentYear = now.get(Calendar.YEAR)
+        val currentMonth = now.get(Calendar.MONTH)
+        val referenceYear = reference.get(Calendar.YEAR)
+
+        if (referenceYear == currentYear) {
+            return monthIndex > currentMonth
+        }
+
+        return referenceYear > currentYear
+    }
+
+    fun isWeekInFuture(weekIndex: Int, referenceDate: Date): Boolean {
+        val now = Calendar.getInstance().apply { time = currentDate }
+        val reference = Calendar.getInstance().apply { time = referenceDate }
+
+        val currentYear = now.get(Calendar.YEAR)
+        val currentWeek = now.get(Calendar.WEEK_OF_YEAR)
+        val referenceYear = reference.get(Calendar.YEAR)
+
+        if (referenceYear == currentYear) {
+            return weekIndex > currentWeek
+        }
+
+        return referenceYear > currentYear
+    }
+
+    fun isDayInFuture(dayIndex: Int, referenceDate: Date): Boolean {
+        val now = Calendar.getInstance().apply { time = currentDate }
+        val reference = Calendar.getInstance().apply { time = referenceDate }
+
+        val currentYear = now.get(Calendar.YEAR)
+        val currentMonth = now.get(Calendar.MONTH)
+        val currentDay = now.get(Calendar.DAY_OF_MONTH)
+        val referenceYear = reference.get(Calendar.YEAR)
+        val referenceMonth = reference.get(Calendar.MONTH)
+
+        if (referenceYear != currentYear) {
+            return referenceYear > currentYear
+        }
+
+        if (referenceMonth != currentMonth) {
+            return referenceMonth > currentMonth
+        }
+
+        return dayIndex > (currentDay - 1)
+    }
 
     private inline fun <T> withCalendar(
         date: Date,

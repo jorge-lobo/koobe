@@ -34,7 +34,7 @@ fun FormattedDateText(
     val formatedDate = when (periodType) {
         PeriodType.YEARLY -> date.formatAs(DateFormat.YEAR)
         PeriodType.MONTHLY -> date.formatAs(DateFormat.YEAR)
-        PeriodType.WEEKLY -> date.formatAs(DateFormat.MONTH_YEAR)
+        PeriodType.WEEKLY -> date.formatAs(DateFormat.YEAR)
         PeriodType.DAILY -> date.formatAs(DateFormat.DAY_MONTH_YEAR)
     }
 
