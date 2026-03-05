@@ -41,6 +41,7 @@ import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.DateUtils
+import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -65,7 +66,7 @@ fun PeriodFilterBottomSheet(
         ) {
             PeriodToggle(
                 config = periodToggleConfig(
-                    selected = config.current.type,
+                    selected = config.selected.type,
                     onOptionSelected = { selected ->
                         config.onSelectionChanged(
                             config.selected.copy(type = selected)
@@ -79,8 +80,8 @@ fun PeriodFilterBottomSheet(
 
             DateSelector(
                 config = DateSelectorConfig(
-                    periodType = config.current.type,
-                    date = config.current.date,
+                    periodType = config.selected.type,
+                    date = config.selected.date,
                     onLeftClick = {
                         config.dateNavigation.onLeftClick()
                         isEnabled = true
@@ -97,7 +98,7 @@ fun PeriodFilterBottomSheet(
                 modifier = Modifier
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(Spacing.Large))
 
             Box(
                 modifier = Modifier.fillMaxWidth(),
@@ -106,7 +107,8 @@ fun PeriodFilterBottomSheet(
                 PeriodListContent(
                     months = months,
                     periodConfig = config.periodConfig,
-                    onItemSelected = { isEnabled = true }
+                    onItemSelected = { isEnabled = true },
+                    referenceDate = config.selected.date
                 )
             }
 
@@ -129,6 +131,7 @@ fun PeriodFilterBottomSheet(
 private fun PeriodListContent(
     months: List<String>,
     periodConfig: PeriodConfig,
+    referenceDate: Date,
     onItemSelected: () -> Unit
 ) {
     when (periodConfig) {
@@ -141,7 +144,9 @@ private fun PeriodListContent(
                         periodConfig.onItemSelected(it)
                         onItemSelected()
                     }
-                )
+                ),
+                periodType = PeriodType.DAILY,
+                referenceDate = referenceDate
             )
         }
 
@@ -154,7 +159,9 @@ private fun PeriodListContent(
                         periodConfig.onItemSelected(it)
                         onItemSelected()
                     }
-                )
+                ),
+                periodType = PeriodType.WEEKLY,
+                referenceDate = referenceDate
             )
         }
 
@@ -167,7 +174,8 @@ private fun PeriodListContent(
                         periodConfig.onItemSelected(it)
                         onItemSelected()
                     }
-                )
+                ),
+                referenceDate = referenceDate
             )
         }
 
@@ -180,7 +188,9 @@ private fun PeriodListContent(
                         periodConfig.onItemSelected(it)
                         onItemSelected()
                     }
-                )
+                ),
+                periodType = PeriodType.YEARLY,
+                referenceDate = referenceDate
             )
         }
     }
@@ -217,7 +227,7 @@ fun PreviewPeriodFilterBottomSheet() {
             var currentSelection by remember {
                 mutableStateOf(
                     PeriodSelection(
-                        type = PeriodType.MONTHLY,
+                        type = PeriodType.DAILY,
                         date = DateUtils.currentDate
                     )
                 )
@@ -235,7 +245,6 @@ fun PreviewPeriodFilterBottomSheet() {
             PeriodFilterBottomSheet(
                 sheetState = sheetState,
                 config = PeriodFilterBottomSheetConfig(
-                    current = currentSelection,
                     selected = currentSelection,
                     onSelectionChanged = { selection ->
                         currentSelection = selection

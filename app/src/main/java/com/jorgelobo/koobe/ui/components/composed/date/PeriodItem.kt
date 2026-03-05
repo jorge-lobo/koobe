@@ -29,10 +29,11 @@ import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
 @Composable
 fun PeriodItem(
+    modifier: Modifier = Modifier,
     label: String,
     isSelected: Boolean,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
+    isFuture: Boolean = false,
+    onClick: () -> Unit
 ) {
     val colors = AppTheme.colors
     val typography = AppTheme.typography.text
@@ -44,6 +45,7 @@ fun PeriodItem(
     val targetColor = when {
         isPressed -> colors.containerColors.containerSelected
         isSelected -> colors.containerColors.containerSelected
+        isFuture -> colors.containerColors.containerDisabled
         else -> colors.containerColors.containerPrimary
     }
 
@@ -55,6 +57,7 @@ fun PeriodItem(
             .height(PeriodItemSize.Height)
             .background(backgroundColor, shape)
             .clickable(
+                enabled = !isFuture,
                 interactionSource = interactionSource,
                 indication = null,
                 onClick = onClick
@@ -65,7 +68,7 @@ fun PeriodItem(
         Text(
             text = label,
             style = typography.titleSmall,
-            color = colors.textColors.textSecondary
+            color = if (isFuture) colors.textColors.textDisabled else colors.textColors.textSecondary
         )
     }
 }
@@ -93,6 +96,13 @@ fun PreviewPeriodListItem() {
             PeriodItem(
                 label = "2025",
                 isSelected = true,
+                onClick = {}
+            )
+
+            PeriodItem(
+                label = "2025",
+                isSelected = false,
+                isFuture = true,
                 onClick = {}
             )
         }

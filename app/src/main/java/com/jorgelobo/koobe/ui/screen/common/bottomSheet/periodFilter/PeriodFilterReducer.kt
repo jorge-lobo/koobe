@@ -35,9 +35,8 @@ fun reducePeriodFilter(
 
         is PeriodFilterAction.SelectDaily -> {
             state.updateTemp(
-                date = DateUtils.dateFromIndex(
+                date = DateUtils.getDailyDate(
                     action.index,
-                    PeriodType.DAILY,
                     state.tempSelectedDate
                 )
             )
@@ -45,9 +44,8 @@ fun reducePeriodFilter(
 
         is PeriodFilterAction.SelectWeekly -> {
             state.updateTemp(
-                date = DateUtils.dateFromIndex(
+                date = DateUtils.getWeeklyDate(
                     action.index,
-                    PeriodType.WEEKLY,
                     state.tempSelectedDate
                 )
             )
@@ -55,9 +53,8 @@ fun reducePeriodFilter(
 
         is PeriodFilterAction.SelectMonthly -> {
             state.updateTemp(
-                date = DateUtils.dateFromIndex(
+                date = DateUtils.getMonthlyDate(
                     action.index,
-                    PeriodType.MONTHLY,
                     state.tempSelectedDate
                 )
             )
@@ -65,9 +62,8 @@ fun reducePeriodFilter(
 
         is PeriodFilterAction.SelectYearly -> {
             state.updateTemp(
-                date = DateUtils.dateFromIndex(
+                date = DateUtils.getYearlyDate(
                     action.index,
-                    PeriodType.YEARLY,
                     state.tempSelectedDate
                 )
             )

@@ -4,7 +4,6 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import java.util.Date
 
 data class PeriodFilterBottomSheetConfig(
-    val current: PeriodSelection,
     val selected: PeriodSelection,
     val onSelectionChanged: (PeriodSelection) -> Unit,
     val dateNavigation: DateNavigation,

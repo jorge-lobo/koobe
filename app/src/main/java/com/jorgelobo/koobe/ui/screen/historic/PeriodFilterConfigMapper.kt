@@ -15,19 +15,16 @@ fun buildPeriodFilterConfig(
     onAction: (PeriodFilterAction) -> Unit
 ): PeriodFilterBottomSheetConfig {
 
+    val currentDate = DateUtils.currentDate
     val tempDate = filter.tempSelectedDate
     val tempType = filter.tempSelectedType
 
     val dailyItems = DateUtils.getDailyItems(tempDate)
     val weeklyItems = DateUtils.getWeeklyItems(tempDate)
     val monthlyItems = DateUtils.getAllMonthsShortNames()
-    val yearlyItems = DateUtils.getYearlyItems(tempDate)
+    val yearlyItems = DateUtils.getYearlyItems(currentDate)
 
     return PeriodFilterBottomSheetConfig(
-        current = PeriodSelection(
-            type = filter.selectedType,
-            date = filter.selectedDate
-        ),
         selected = PeriodSelection(
             type = tempType,
             date = tempDate
@@ -61,7 +58,7 @@ fun buildPeriodFilterConfig(
 
             PeriodType.YEARLY -> PeriodConfig.Yearly(
                 items = yearlyItems,
-                selectedIndex = DateUtils.getYearlyIndex(tempDate),
+                selectedIndex = DateUtils.getYearlyIndex(tempDate, baseDate = currentDate),
                 onItemSelected = { index -> onAction(PeriodFilterAction.SelectYearly(index)) }
             )
         },

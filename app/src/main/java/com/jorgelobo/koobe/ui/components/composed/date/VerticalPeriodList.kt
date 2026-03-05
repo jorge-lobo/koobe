@@ -2,24 +2,23 @@ package com.jorgelobo.koobe.ui.components.composed.date
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
@@ -27,40 +26,57 @@ import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.PeriodListContainerSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import kotlinx.coroutines.flow.collectLatest
+import com.jorgelobo.koobe.utils.DateUtils
+import java.util.Date
 
 @Composable
 fun VerticalPeriodList(
     modifier: Modifier = Modifier,
     config: SelectableListConfig,
+    periodType: PeriodType,
+    referenceDate: Date
 ) {
     val colors = AppTheme.colors
     val shape = AppTheme.shapes.medium
-    val scrollState = rememberScrollState()
+    val listState = rememberLazyListState(
+        initialFirstVisibleItemIndex =
+            (config.selectedIndex - 2).coerceAtLeast(0)
+    )
 
-    LaunchedEffect(config.items.size) {
-        snapshotFlow { scrollState.maxValue }.collectLatest {
-            scrollState.scrollTo(it)
-        }
+    LaunchedEffect(config.selectedIndex) {
+        listState.animateScrollToItem(
+            index = (config.selectedIndex - 2).coerceAtLeast(0)
+        )
     }
 
-    Box(
+    Column(
         modifier = modifier
             .width(PeriodListContainerSize.Width)
-            .height(PeriodListContainerSize.Height)
+            .heightIn(max = PeriodListContainerSize.Height)
             .background(colors.containerColors.containerSecondary, shape)
-            .clipToBounds()
-            .verticalScroll(scrollState)
+            .clipToBounds(),
+
+        verticalArrangement = Arrangement.spacedBy(Spacing.Micro)
     ) {
-        Column(
+        LazyColumn(
             modifier = Modifier.padding(Spacing.Micro),
-            verticalArrangement = Arrangement.spacedBy(Spacing.Micro)
+            verticalArrangement = Arrangement.spacedBy(Spacing.Micro),
+            state = listState,
         ) {
-            config.items.forEachIndexed { index, label ->
+            items(config.items.size) { index ->
+                val isSelected = index == config.selectedIndex
+                val isFuture = when (periodType) {
+                    PeriodType.DAILY -> DateUtils.isDayInFuture(index, referenceDate)
+                    PeriodType.WEEKLY -> DateUtils.isWeekInFuture(index, referenceDate)
+                    PeriodType.MONTHLY -> false
+                    PeriodType.YEARLY -> false
+                }
+
                 PeriodItem(
-                    label = label,
-                    isSelected = index == config.selectedIndex,
-                    onClick = { config.onItemSelected(index) },
+                    label = config.items[index],
+                    isSelected = isSelected,
+                    isFuture = isFuture,
+                    onClick = { if (!isFuture) config.onItemSelected(index) },
                 )
             }
         }
@@ -89,7 +105,9 @@ fun PreviewVerticalPeriodList() {
                     items = items,
                     selectedIndex = selectedIndex,
                     onItemSelected = { selectedIndex = it }
-                )
+                ),
+                periodType = PeriodType.YEARLY,
+                referenceDate = DateUtils.currentDate
             )
         }
     }
