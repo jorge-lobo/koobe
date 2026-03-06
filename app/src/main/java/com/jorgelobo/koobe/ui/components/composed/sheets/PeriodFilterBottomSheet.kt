@@ -40,7 +40,8 @@ import com.jorgelobo.koobe.ui.components.composed.date.VerticalPeriodList
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.DateUtils
+import com.jorgelobo.koobe.utils.date.DateUtils
+import com.jorgelobo.koobe.utils.date.PeriodUtils
 import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -51,7 +52,7 @@ fun PeriodFilterBottomSheet(
     config: PeriodFilterBottomSheetConfig,
     onDismiss: () -> Unit
 ) {
-    val months = remember { DateUtils.getAllMonthsShortNames() }
+    val months = remember { PeriodUtils.getAllMonthsShortNames() }
     var isEnabled by remember { mutableStateOf(false) }
 
     AppModalBottomSheet(

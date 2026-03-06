@@ -1,7 +1,8 @@
 package com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter
 
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
-import com.jorgelobo.koobe.utils.DateUtils
+import com.jorgelobo.koobe.utils.date.DateNavigationUtils
+import com.jorgelobo.koobe.utils.date.DateUtils
 import java.util.Date
 
 fun reducePeriodFilter(
@@ -71,7 +72,7 @@ fun reducePeriodFilter(
 
         PeriodFilterAction.NavigateLeft -> {
             state.updateTemp(
-                date = DateUtils.navigate(
+                date = DateNavigationUtils.navigate(
                     state.tempSelectedDate,
                     state.tempSelectedType,
                     -1
@@ -81,7 +82,7 @@ fun reducePeriodFilter(
 
         PeriodFilterAction.NavigateRight -> {
             state.updateTemp(
-                date = DateUtils.navigate(
+                date = DateNavigationUtils.navigate(
                     state.tempSelectedDate,
                     state.tempSelectedType,
                     1

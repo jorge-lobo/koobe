@@ -26,7 +26,8 @@ import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.PeriodListContainerSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.DateUtils
+import com.jorgelobo.koobe.utils.date.DateFutureUtils
+import com.jorgelobo.koobe.utils.date.DateUtils
 import java.util.Date
 
 @Composable
@@ -66,8 +67,8 @@ fun VerticalPeriodList(
             items(config.items.size) { index ->
                 val isSelected = index == config.selectedIndex
                 val isFuture = when (periodType) {
-                    PeriodType.DAILY -> DateUtils.isDayInFuture(index, referenceDate)
-                    PeriodType.WEEKLY -> DateUtils.isWeekInFuture(index, referenceDate)
+                    PeriodType.DAILY -> DateFutureUtils.isDayInFuture(index, referenceDate)
+                    PeriodType.WEEKLY -> DateFutureUtils.isWeekInFuture(index, referenceDate)
                     PeriodType.MONTHLY -> false
                     PeriodType.YEARLY -> false
                 }

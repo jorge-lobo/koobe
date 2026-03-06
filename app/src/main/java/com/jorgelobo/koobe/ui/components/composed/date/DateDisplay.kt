@@ -19,8 +19,8 @@ import com.jorgelobo.koobe.ui.components.model.enums.DateFormat
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.DateUtils
-import com.jorgelobo.koobe.utils.DateUtils.formatAs
+import com.jorgelobo.koobe.utils.date.DateFormatter.formatAs
+import com.jorgelobo.koobe.utils.date.DateUtils
 import java.util.Date
 
 @Composable

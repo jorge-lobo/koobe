@@ -24,7 +24,7 @@ import com.jorgelobo.koobe.ui.screen.historic.components.HistoricToggleSection
 import com.jorgelobo.koobe.ui.screen.historic.components.HistoricTopSection
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.DateUtils
+import com.jorgelobo.koobe.utils.date.DateUtils
 
 @Composable
 fun HistoricScreenUI(

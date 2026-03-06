@@ -8,7 +8,8 @@ import com.jorgelobo.koobe.ui.components.composed.sheets.PeriodFilterBottomSheet
 import com.jorgelobo.koobe.ui.components.composed.sheets.PeriodSelection
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.PeriodFilterAction
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.PeriodFilterSheetState
-import com.jorgelobo.koobe.utils.DateUtils
+import com.jorgelobo.koobe.utils.date.DateUtils
+import com.jorgelobo.koobe.utils.date.PeriodUtils
 
 fun buildPeriodFilterConfig(
     filter: PeriodFilterSheetState,
@@ -19,10 +20,10 @@ fun buildPeriodFilterConfig(
     val tempDate = filter.tempSelectedDate
     val tempType = filter.tempSelectedType
 
-    val dailyItems = DateUtils.getDailyItems(tempDate)
-    val weeklyItems = DateUtils.getWeeklyItems(tempDate)
-    val monthlyItems = DateUtils.getAllMonthsShortNames()
-    val yearlyItems = DateUtils.getYearlyItems(currentDate)
+    val dailyItems = PeriodUtils.getDailyItems(tempDate)
+    val weeklyItems = PeriodUtils.getWeeklyItems(tempDate)
+    val monthlyItems = PeriodUtils.getAllMonthsShortNames()
+    val yearlyItems = PeriodUtils.getYearlyItems(currentDate)
 
     return PeriodFilterBottomSheetConfig(
         selected = PeriodSelection(

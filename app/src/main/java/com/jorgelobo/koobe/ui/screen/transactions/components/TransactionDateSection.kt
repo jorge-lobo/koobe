@@ -15,7 +15,7 @@ import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.components.model.enums.UiState
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorUiState
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.DateUtils
+import com.jorgelobo.koobe.utils.date.DateUtils
 
 /**
  * Displays transaction date controls: "Today" button and date picker input.

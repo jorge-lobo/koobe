@@ -24,7 +24,9 @@ import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.PeriodGridContainerSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.DateUtils
+import com.jorgelobo.koobe.utils.date.DateFutureUtils
+import com.jorgelobo.koobe.utils.date.DateUtils
+import com.jorgelobo.koobe.utils.date.PeriodUtils
 import java.util.Date
 
 @Composable
@@ -56,7 +58,7 @@ fun MonthGrid(
                 ) {
                     rowItems.forEachIndexed { colIndex, label ->
                         val index = rowIndex * 4 + colIndex
-                        val isFuture = DateUtils.isMonthInFuture(index, referenceDate)
+                        val isFuture = DateFutureUtils.isMonthInFuture(index, referenceDate)
 
                         PeriodItem(
                             label = label,
@@ -87,7 +89,7 @@ fun PreviewMonthGrid() {
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
             var selectedIndex by remember { mutableIntStateOf(9) }
-            val months = (0..11).map { DateUtils.getMonthShortName(it) }
+            val months = (0..11).map { PeriodUtils.getMonthShortName(it) }
 
             MonthGrid(
                 config = SelectableListConfig(

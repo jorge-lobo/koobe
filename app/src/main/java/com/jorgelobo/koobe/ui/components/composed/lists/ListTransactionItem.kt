@@ -36,8 +36,8 @@ import com.jorgelobo.koobe.ui.theme.color.AccentMint
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.ListItemSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.DateUtils
-import com.jorgelobo.koobe.utils.DateUtils.formatAs
+import com.jorgelobo.koobe.utils.date.DateUtils
+import com.jorgelobo.koobe.utils.date.DateFormatter.formatAs
 import com.jorgelobo.koobe.utils.paymentMethodIcon
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
