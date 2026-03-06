@@ -63,6 +63,7 @@ fun buildPeriodFilterConfig(
             )
         },
         actions = FilterActions(
+            onOpenDatePicker = { onAction(PeriodFilterAction.OpenDatePicker) },
             onApply = { onAction(PeriodFilterAction.Apply) },
             onCancel = { onAction(PeriodFilterAction.Dismiss) }
         )

@@ -9,6 +9,9 @@ import com.jorgelobo.koobe.domain.usecase.historic.GetHistoricDataUseCase
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.PeriodFilterAction
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.reducePeriodFilter
+import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogEffect
+import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.reduceDatePickerDialog
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -110,6 +113,20 @@ class HistoricViewModel @Inject constructor(
     }
 
     fun onPeriodFilterAction(action: PeriodFilterAction) {
+
+        if (action is PeriodFilterAction.OpenDatePicker) {
+            _uiState.update {
+                it.copy(
+                    datePickerDialog = it.datePickerDialog.copy(
+                        visible = true,
+                        selectedDate = it.periodFilter.tempSelectedDate
+                    )
+                )
+            }
+            
+            return
+        }
+
         _uiState.update { state ->
             val newFilterState = reducePeriodFilter(state.periodFilter, action)
             var newState = state.copy(periodFilter = newFilterState)

@@ -280,6 +280,7 @@ fun PreviewPeriodFilterBottomSheet() {
                         )
                     },
                     actions = FilterActions(
+                        onOpenDatePicker = {},
                         onApply = {},
                         onCancel = {}
                     )

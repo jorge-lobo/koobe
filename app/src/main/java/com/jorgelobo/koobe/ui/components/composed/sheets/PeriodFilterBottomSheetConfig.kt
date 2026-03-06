@@ -23,6 +23,7 @@ data class DateNavigation(
 )
 
 data class FilterActions(
+    val onOpenDatePicker: () -> Unit,
     val onApply: () -> Unit,
     val onCancel: () -> Unit
 )
