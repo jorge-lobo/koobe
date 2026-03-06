@@ -39,7 +39,8 @@ fun HistoricScreen(
     HistoricDialogs(
         state = uiState,
         sheetState = sheetState,
-        onPeriodFilterAction = viewModel::onPeriodFilterAction
+        onPeriodFilterAction = viewModel::onPeriodFilterAction,
+        onDatePickerDialogAction = viewModel::onDatePickerDialogAction
     )
 
     Scaffold(

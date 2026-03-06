@@ -127,6 +127,29 @@ class HistoricViewModel @Inject constructor(
         }
     }
 
+    fun onDatePickerDialogAction(action: DatePickerDialogAction) {
+        val (dialogState, effect) = reduceDatePickerDialog(
+            state = uiState.value.datePickerDialog,
+            action = action
+        )
+
+        _uiState.update { it.copy(datePickerDialog = dialogState) }
+
+        when (effect) {
+            is DatePickerDialogEffect.Confirmed -> {
+                _uiState.update {
+                    it.copy(
+                        periodFilter = it.periodFilter.copy(
+                            tempSelectedDate = effect.date
+                        )
+                    )
+                }
+            }
+
+            null -> Unit
+        }
+    }
+
     fun loadHistoric() {
         _uiState.update { it.copy(isLoading = true) }
 
