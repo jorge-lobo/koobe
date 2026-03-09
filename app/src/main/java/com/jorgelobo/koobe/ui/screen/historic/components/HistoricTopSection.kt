@@ -21,10 +21,11 @@ import java.util.Date
 @Composable
 fun HistoricTopSection(
     date: Date,
+    periodType: PeriodType,
     currencyType: CurrencyType,
     balance: Double,
     income: Double,
-    expenses: Double,
+    expenses: Double
 ) {
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -34,7 +35,7 @@ fun HistoricTopSection(
 
         DateDisplay(
             config = DateDisplayConfig(
-                periodType = PeriodType.WEEKLY,
+                periodType = periodType,
                 date = date
             )
         )

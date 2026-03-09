@@ -13,7 +13,7 @@ data class PeriodFilterBottomSheetConfig(
 
 data class PeriodSelection(
     val type: PeriodType,
-    val date: Date,
+    val date: Date
 )
 
 data class DateNavigation(

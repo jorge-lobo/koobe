@@ -59,7 +59,8 @@ fun DateSelector(
 
         FormattedDateText(
             periodType = config.periodType,
-            date = config.date
+            date = config.date,
+            isSelector = true
         )
 
         if (isDatePicker) {

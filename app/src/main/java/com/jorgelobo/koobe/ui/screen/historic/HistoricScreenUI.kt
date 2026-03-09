@@ -15,6 +15,7 @@ import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.model.category.SubcategoryHistory
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
+import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Transaction
@@ -42,6 +43,7 @@ fun HistoricScreenUI(
     ) {
         HistoricTopSection(
             date = state.date,
+            periodType = state.periodType,
             currencyType = state.currencyType,
             balance = state.balance,
             income = state.income,
@@ -297,19 +299,17 @@ fun previewHistoricUiState(): HistoricUiState {
 
     return HistoricUiState(
         currencyType = CurrencyType.EUR,
+        periodType = PeriodType.MONTHLY,
         categories = listOf(
             groceriesUi,
             transportUi,
             homeUi
         ),
         transactionTypeSelected = TransactionType.EXPENSE,
-        /*onTransactionTypeChange = {},*/
         date = DateUtils.currentDate,
         balance = 2822.90,
         income = 3000.00,
         expenses = 177.10,
-        /*onCategoryExpandToggle = {},
-        onSubcategoryExpandToggle = { _, _ -> },*/
         isLoading = false,
         errorMessage = null
     )
