@@ -3,8 +3,8 @@ package com.jorgelobo.koobe.ui.screen.historic
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.ui.components.composed.sheets.DateNavigation
 import com.jorgelobo.koobe.ui.components.composed.sheets.FilterActions
-import com.jorgelobo.koobe.ui.components.composed.sheets.PeriodConfig
 import com.jorgelobo.koobe.ui.components.composed.sheets.PeriodFilterBottomSheetConfig
+import com.jorgelobo.koobe.ui.components.composed.sheets.PeriodListState
 import com.jorgelobo.koobe.ui.components.composed.sheets.PeriodSelection
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.PeriodFilterAction
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.PeriodFilterSheetState
@@ -20,10 +20,19 @@ fun buildPeriodFilterConfig(
     val tempDate = filter.tempSelectedDate
     val tempType = filter.tempSelectedType
 
-    val dailyItems = PeriodUtils.getDailyItems(tempDate)
-    val weeklyItems = PeriodUtils.getWeeklyItems(tempDate)
-    val monthlyItems = PeriodUtils.getAllMonthsShortNames()
-    val yearlyItems = PeriodUtils.getYearlyItems(currentDate)
+    val items = when (tempType) {
+        PeriodType.DAILY -> PeriodUtils.getDailyItems(tempDate)
+        PeriodType.WEEKLY -> PeriodUtils.getWeeklyItems(tempDate)
+        PeriodType.MONTHLY -> PeriodUtils.getAllMonthsShortNames()
+        PeriodType.YEARLY -> PeriodUtils.getYearlyItems(currentDate)
+    }
+
+    val selectedIndex = when (tempType) {
+        PeriodType.DAILY -> DateUtils.getDailyIndex(tempDate)
+        PeriodType.WEEKLY -> DateUtils.getWeeklyIndex(tempDate)
+        PeriodType.MONTHLY -> DateUtils.getMonthlyIndex(tempDate)
+        PeriodType.YEARLY -> DateUtils.getYearlyIndex(tempDate, baseDate = currentDate)
+    }
 
     return PeriodFilterBottomSheetConfig(
         selected = PeriodSelection(
@@ -38,30 +47,19 @@ fun buildPeriodFilterConfig(
             onRightClick = { onAction(PeriodFilterAction.NavigateRight) },
             onPickerClick = { onAction(PeriodFilterAction.OpenDatePicker) }
         ),
-        periodConfig = when (tempType) {
-            PeriodType.DAILY -> PeriodConfig.Daily(
-                items = dailyItems,
-                selectedIndex = DateUtils.getDailyIndex(tempDate),
-                onItemSelected = { index -> onAction(PeriodFilterAction.SelectDaily(index)) }
-            )
-
-            PeriodType.WEEKLY -> PeriodConfig.Weekly(
-                items = weeklyItems,
-                selectedIndex = DateUtils.getWeeklyIndex(tempDate),
-                onItemSelected = { index -> onAction(PeriodFilterAction.SelectWeekly(index)) }
-            )
-
-            PeriodType.MONTHLY -> PeriodConfig.Monthly(
-                items = monthlyItems,
-                selectedIndex = DateUtils.getMonthlyIndex(tempDate),
-                onItemSelected = { index -> onAction(PeriodFilterAction.SelectMonthly(index)) }
-            )
-
-            PeriodType.YEARLY -> PeriodConfig.Yearly(
-                items = yearlyItems,
-                selectedIndex = DateUtils.getYearlyIndex(tempDate, baseDate = currentDate),
-                onItemSelected = { index -> onAction(PeriodFilterAction.SelectYearly(index)) }
-            )
+        periodListState = PeriodListState(
+            items = items,
+            selectedIndex = selectedIndex,
+            periodType = tempType,
+            referenceDate = tempDate
+        ),
+        onPeriodItemSelected = { index ->
+            when (tempType) {
+                PeriodType.DAILY -> onAction(PeriodFilterAction.SelectDaily(index))
+                PeriodType.WEEKLY -> onAction(PeriodFilterAction.SelectWeekly(index))
+                PeriodType.MONTHLY -> onAction(PeriodFilterAction.SelectMonthly(index))
+                PeriodType.YEARLY -> onAction(PeriodFilterAction.SelectYearly(index))
+            }
         },
         actions = FilterActions(
             onOpenDatePicker = { onAction(PeriodFilterAction.OpenDatePicker) },

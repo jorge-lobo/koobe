@@ -42,7 +42,6 @@ import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.date.DateUtils
 import com.jorgelobo.koobe.utils.date.PeriodUtils
-import java.util.Date
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +51,7 @@ fun PeriodFilterBottomSheet(
     config: PeriodFilterBottomSheetConfig,
     onDismiss: () -> Unit
 ) {
-    val months = remember { PeriodUtils.getAllMonthsShortNames() }
+    remember { PeriodUtils.getAllMonthsShortNames() }
     var isEnabled by remember { mutableStateOf(false) }
 
     AppModalBottomSheet(
@@ -106,10 +105,11 @@ fun PeriodFilterBottomSheet(
                 contentAlignment = Alignment.Center
             ) {
                 PeriodListContent(
-                    months = months,
-                    periodConfig = config.periodConfig,
-                    onItemSelected = { isEnabled = true },
-                    referenceDate = config.selected.date
+                    state = config.periodListState,
+                    onItemSelected = {
+                        config.onPeriodItemSelected(it)
+                        isEnabled = true
+                    }
                 )
             }
 
@@ -130,68 +130,30 @@ fun PeriodFilterBottomSheet(
 
 @Composable
 private fun PeriodListContent(
-    months: List<String>,
-    periodConfig: PeriodConfig,
-    referenceDate: Date,
-    onItemSelected: () -> Unit
+    state: PeriodListState,
+    onItemSelected: (Int) -> Unit
 ) {
-    when (periodConfig) {
-        is PeriodConfig.Daily -> {
-            VerticalPeriodList(
-                config = SelectableListConfig(
-                    items = periodConfig.items,
-                    selectedIndex = periodConfig.selectedIndex,
-                    onItemSelected = {
-                        periodConfig.onItemSelected(it)
-                        onItemSelected()
-                    }
-                ),
-                periodType = PeriodType.DAILY,
-                referenceDate = referenceDate
-            )
-        }
-
-        is PeriodConfig.Weekly -> {
-            VerticalPeriodList(
-                config = SelectableListConfig(
-                    items = periodConfig.items,
-                    selectedIndex = periodConfig.selectedIndex,
-                    onItemSelected = {
-                        periodConfig.onItemSelected(it)
-                        onItemSelected()
-                    }
-                ),
-                periodType = PeriodType.WEEKLY,
-                referenceDate = referenceDate
-            )
-        }
-
-        is PeriodConfig.Monthly -> {
+    when (state.periodType) {
+        PeriodType.MONTHLY -> {
             MonthGrid(
                 config = SelectableListConfig(
-                    items = months,
-                    selectedIndex = periodConfig.selectedIndex,
-                    onItemSelected = {
-                        periodConfig.onItemSelected(it)
-                        onItemSelected()
-                    }
+                    items = state.items,
+                    selectedIndex = state.selectedIndex,
+                    onItemSelected = onItemSelected
                 ),
-                referenceDate = referenceDate
+                referenceDate = state.referenceDate
             )
         }
 
-        is PeriodConfig.Yearly -> {
+        else -> {
             VerticalPeriodList(
                 config = SelectableListConfig(
-                    items = periodConfig.items,
-                    selectedIndex = periodConfig.selectedIndex,
-                    onItemSelected = {
-                        periodConfig.onItemSelected(it)
-                        onItemSelected()
-                    }
+                    items = state.items,
+                    selectedIndex = state.selectedIndex,
+                    onItemSelected = onItemSelected
                 ),
-                periodType = PeriodType.YEARLY,
-                referenceDate = referenceDate
+                periodType = state.periodType,
+                referenceDate = state.referenceDate
             )
         }
     }
@@ -234,13 +196,8 @@ fun PreviewPeriodFilterBottomSheet() {
                 )
             }
 
-            var selectedDailyIndex by remember { mutableIntStateOf(4) }
-            var selectedWeeklyIndex by remember { mutableIntStateOf(44) }
-            var selectedMonthlyIndex by remember { mutableIntStateOf(10) }
             var selectedYearlyIndex by remember { mutableIntStateOf(10) }
 
-            val dailyItems = (1..30).map { it.toString() }
-            val weeklyItems = (1..52).map { it.toString() }
             val yearlyItems = (2015..2025).map { it.toString() }
 
             PeriodFilterBottomSheet(
@@ -255,36 +212,18 @@ fun PreviewPeriodFilterBottomSheet() {
                         onRightClick = {},
                         onPickerClick = {}
                     ),
-                    periodConfig = when (currentSelection.type) {
-                        PeriodType.DAILY -> PeriodConfig.Daily(
-                            items = dailyItems,
-                            selectedIndex = selectedDailyIndex,
-                            onItemSelected = { index -> selectedDailyIndex = index }
-                        )
-
-                        PeriodType.WEEKLY -> PeriodConfig.Weekly(
-                            items = weeklyItems,
-                            selectedIndex = selectedWeeklyIndex,
-                            onItemSelected = { index -> selectedWeeklyIndex = index }
-                        )
-
-                        PeriodType.MONTHLY -> PeriodConfig.Monthly(
-                            items = emptyList(),
-                            selectedIndex = selectedMonthlyIndex,
-                            onItemSelected = { index -> selectedMonthlyIndex = index }
-                        )
-
-                        PeriodType.YEARLY -> PeriodConfig.Yearly(
-                            items = yearlyItems,
-                            selectedIndex = selectedYearlyIndex,
-                            onItemSelected = { index -> selectedYearlyIndex = index }
-                        )
-                    },
                     actions = FilterActions(
                         onOpenDatePicker = {},
                         onApply = {},
                         onCancel = {}
-                    )
+                    ),
+                    periodListState = PeriodListState(
+                        items = yearlyItems,
+                        selectedIndex = selectedYearlyIndex,
+                        periodType = PeriodType.YEARLY,
+                        referenceDate = DateUtils.currentDate
+                    ),
+                    onPeriodItemSelected = { index -> selectedYearlyIndex = index }
                 ),
                 onDismiss = {}
             )

@@ -7,7 +7,8 @@ data class PeriodFilterBottomSheetConfig(
     val selected: PeriodSelection,
     val onSelectionChanged: (PeriodSelection) -> Unit,
     val dateNavigation: DateNavigation,
-    val periodConfig: PeriodConfig,
+    val periodListState: PeriodListState,
+    val onPeriodItemSelected: (Int) -> Unit,
     val actions: FilterActions
 )
 
@@ -28,28 +29,9 @@ data class FilterActions(
     val onCancel: () -> Unit
 )
 
-sealed class PeriodConfig {
-    data class Daily(
-        val items: List<String>,
-        val selectedIndex: Int,
-        val onItemSelected: (Int) -> Unit
-    ) : PeriodConfig()
-
-    data class Weekly(
-        val items: List<String>,
-        val selectedIndex: Int,
-        val onItemSelected: (Int) -> Unit
-    ) : PeriodConfig()
-
-    data class Monthly(
-        val items: List<String>,
-        val selectedIndex: Int,
-        val onItemSelected: (Int) -> Unit
-    ) : PeriodConfig()
-
-    data class Yearly(
-        val items: List<String>,
-        val selectedIndex: Int,
-        val onItemSelected: (Int) -> Unit
-    ) : PeriodConfig()
-}
+data class PeriodListState(
+    val items: List<String>,
+    val selectedIndex: Int,
+    val periodType: PeriodType,
+    val referenceDate: Date
+)
