@@ -7,8 +7,20 @@ import java.util.Date
 
 object DateFormatter {
 
+    private val dayFormatter by lazy {
+        SimpleDateFormat("dd", DateUtils.locale)
+    }
+
     private val dayMonthFormatter by lazy {
         SimpleDateFormat("dd MMM", DateUtils.locale)
+    }
+
+    private val dayMonthYearFormatter by lazy {
+        SimpleDateFormat("dd MMM yyyy", DateUtils.locale)
+    }
+
+    private val monthYearFormatter by lazy {
+        SimpleDateFormat("MMMM yyyy", DateUtils.locale)
     }
 
     fun formatDate(date: Date, dateFormat: DateFormat): String {
@@ -33,8 +45,31 @@ object DateFormatter {
         val start = date.startOfWeek()
         val end = date.endOfWeek()
 
-        return "${dayMonthFormatter.format(start)} - ${dayMonthFormatter.format(end)}"
+        return when {
+
+            // Same year and same month
+            start.isSameMonth( end) -> {
+                val startDay = dayFormatter.format(start)
+                val endDay = dayFormatter.format(end)
+                val monthYear = monthYearFormatter.format(start)
+
+                "$startDay - $endDay $monthYear"
+            }
+
+            // Same year but different months
+            start.isSameYear( end) -> {
+                "${dayMonthFormatter.format(start)} - ${dayMonthFormatter.format(end)}"
+            }
+
+            // Different years
+            else -> {
+                "${dayMonthYearFormatter.format(start)} - ${dayMonthYearFormatter.format(end)}"
+            }
+        }
     }
+
+    fun Date.isSameMonth(other: Date) = DateUtils.isSameMonth(this, other)
+    fun Date.isSameYear(other: Date) = DateUtils.isSameYear(this, other)
 
     fun Date.formatAs(dateFormat: DateFormat): String =
         formatDate(this, dateFormat)
