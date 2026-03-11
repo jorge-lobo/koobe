@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.domain.model.category.CategoryHistory
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Transaction
+import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.historic.GetHistoricDataUseCase
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.PeriodFilterAction
@@ -25,7 +26,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class HistoricViewModel @Inject constructor(
-    private val getHistoricData: GetHistoricDataUseCase
+    private val getHistoricData: GetHistoricDataUseCase,
+    private val getUserSettingsUseCase: GetUserSettingsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HistoricUiState())
@@ -37,6 +39,7 @@ class HistoricViewModel @Inject constructor(
     private var loadJob: Job? = null
 
     init {
+        loadUserSettings()
         loadHistoric()
     }
 
@@ -179,6 +182,18 @@ class HistoricViewModel @Inject constructor(
                     state.copy(
                         categories = histories.map { it.toUi() },
                         isLoading = false
+                    )
+                }
+            }
+        }
+    }
+
+    private fun loadUserSettings() {
+        viewModelScope.launch {
+            getUserSettingsUseCase().collect { settings ->
+                _uiState.update { state ->
+                    state.copy(
+                        currencyType = settings.currency
                     )
                 }
             }
