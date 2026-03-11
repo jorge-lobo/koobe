@@ -1,9 +1,11 @@
 package com.jorgelobo.koobe.ui.components.composed.sheets
 
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import java.util.Date
 
 data class PeriodFilterBottomSheetConfig(
+    val startOfWeek: StartOfWeek,
     val selected: PeriodSelection,
     val onSelectionChanged: (PeriodSelection) -> Unit,
     val dateNavigation: DateNavigation,

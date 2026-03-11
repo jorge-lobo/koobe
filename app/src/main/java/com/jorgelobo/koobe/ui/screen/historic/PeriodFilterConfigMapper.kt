@@ -1,6 +1,7 @@
 package com.jorgelobo.koobe.ui.screen.historic
 
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.ui.components.composed.sheets.DateNavigation
 import com.jorgelobo.koobe.ui.components.composed.sheets.FilterActions
 import com.jorgelobo.koobe.ui.components.composed.sheets.PeriodFilterBottomSheetConfig
@@ -9,10 +10,12 @@ import com.jorgelobo.koobe.ui.components.composed.sheets.PeriodSelection
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.PeriodFilterAction
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.PeriodFilterSheetState
 import com.jorgelobo.koobe.utils.date.DateUtils
+import com.jorgelobo.koobe.utils.date.DateUtils.toCalendarValue
 import com.jorgelobo.koobe.utils.date.PeriodUtils
 
 fun buildPeriodFilterConfig(
     filter: PeriodFilterSheetState,
+    startOfWeek: StartOfWeek,
     onAction: (PeriodFilterAction) -> Unit
 ): PeriodFilterBottomSheetConfig {
 
@@ -22,7 +25,7 @@ fun buildPeriodFilterConfig(
 
     val items = when (tempType) {
         PeriodType.DAILY -> PeriodUtils.getDailyItems(tempDate)
-        PeriodType.WEEKLY -> PeriodUtils.getWeeklyItems(tempDate)
+        PeriodType.WEEKLY -> PeriodUtils.getWeeklyItems(tempDate, startOfWeek.toCalendarValue())
         PeriodType.MONTHLY -> PeriodUtils.getAllMonthsShortNames()
         PeriodType.YEARLY -> PeriodUtils.getYearlyItems(currentDate)
     }
@@ -35,6 +38,7 @@ fun buildPeriodFilterConfig(
     }
 
     return PeriodFilterBottomSheetConfig(
+        startOfWeek = startOfWeek,
         selected = PeriodSelection(
             type = tempType,
             date = tempDate

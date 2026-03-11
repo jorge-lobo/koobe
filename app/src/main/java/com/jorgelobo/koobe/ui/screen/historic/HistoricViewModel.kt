@@ -193,7 +193,8 @@ class HistoricViewModel @Inject constructor(
             getUserSettingsUseCase().collect { settings ->
                 _uiState.update { state ->
                     state.copy(
-                        currencyType = settings.currency
+                        currencyType = settings.currency,
+                        startOfWeek = settings.startOfWeek
                     )
                 }
             }

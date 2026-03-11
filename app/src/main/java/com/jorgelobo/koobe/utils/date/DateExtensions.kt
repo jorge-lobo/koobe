@@ -27,3 +27,8 @@ fun Date.day(): Int =
 
 fun Date.weekIndex(): Int =
     startOfWeek().week()
+
+fun Date.startOfWeek(): Date =
+    modify {
+        set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
+    }

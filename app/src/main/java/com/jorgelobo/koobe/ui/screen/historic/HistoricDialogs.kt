@@ -23,6 +23,7 @@ fun HistoricDialogs(
             sheetState = sheetState,
             config = buildPeriodFilterConfig(
                 filter = state.periodFilter,
+                startOfWeek = state.startOfWeek,
                 onAction = onPeriodFilterAction
             ),
             onDismiss = { onPeriodFilterAction(PeriodFilterAction.Dismiss) }

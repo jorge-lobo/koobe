@@ -1,6 +1,7 @@
 package com.jorgelobo.koobe.utils.date
 
 import android.annotation.SuppressLint
+import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -36,6 +37,12 @@ object DateUtils {
         withCalendar(this) {
             block()
             time
+        }
+
+    fun StartOfWeek.toCalendarValue(): Int =
+        when (this) {
+            StartOfWeek.SUNDAY -> Calendar.SUNDAY
+            StartOfWeek.MONDAY -> Calendar.MONDAY
         }
 
     // ─────────────────────────────

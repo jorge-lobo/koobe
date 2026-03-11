@@ -14,7 +14,10 @@ object PeriodUtils {
             (1..days).map { it.toString() }
         }
 
-    fun getWeeklyItems(date: Date): List<String> =
+    fun getWeeklyItems(
+        date: Date,
+        startOfWeek: Int
+    ): List<String> =
         withCalendar(date) {
             val year = get(Calendar.YEAR)
             val weeks = getActualMaximum(Calendar.WEEK_OF_YEAR)
@@ -23,7 +26,7 @@ object PeriodUtils {
                 val weekCal = Calendar.getInstance(locale).apply {
                     set(Calendar.YEAR, year)
                     set(Calendar.WEEK_OF_YEAR, weekNumber)
-                    set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
+                    set(Calendar.DAY_OF_WEEK, startOfWeek)
                 }
 
                 val startDate = weekCal.time

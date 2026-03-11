@@ -24,6 +24,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.bottomSheet.AppModalBottomSheet
@@ -203,6 +204,7 @@ fun PreviewPeriodFilterBottomSheet() {
             PeriodFilterBottomSheet(
                 sheetState = sheetState,
                 config = PeriodFilterBottomSheetConfig(
+                    startOfWeek = StartOfWeek.SUNDAY,
                     selected = currentSelection,
                     onSelectionChanged = { selection ->
                         currentSelection = selection
