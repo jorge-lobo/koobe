@@ -31,7 +31,7 @@ object DateFutureUtils {
     fun isWeekInFuture(weekIndex: Int, referenceDate: Date) =
         isIndexInFuture(
             weekIndex,
-            currentDate.week(),
+            currentDate.weekIndex(),
             referenceDate.year(),
             currentDate.year()
         )
@@ -39,7 +39,7 @@ object DateFutureUtils {
     fun isDayInFuture(dayIndex: Int, referenceDate: Date) =
         isIndexInFuture(
             dayIndex,
-            currentDate.day(),
+            currentDate.day() - 1,
             referenceDate.year(),
             currentDate.year()
         )

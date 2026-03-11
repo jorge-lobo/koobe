@@ -1,5 +1,6 @@
 package com.jorgelobo.koobe.utils.date
 
+import com.jorgelobo.koobe.utils.date.DateFormatter.startOfWeek
 import java.util.Calendar
 import java.util.Date
 
@@ -24,5 +25,5 @@ fun Date.week(): Int =
 fun Date.day(): Int =
     get(Calendar.DAY_OF_MONTH)
 
-fun Date.dayOfYear(): Int =
-    get(Calendar.DAY_OF_YEAR)
+fun Date.weekIndex(): Int =
+    startOfWeek().week()

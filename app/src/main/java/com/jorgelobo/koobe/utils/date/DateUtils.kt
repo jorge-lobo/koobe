@@ -70,7 +70,7 @@ object DateUtils {
     // ─────────────────────────────
 
     fun getWeeklyIndex(date: Date): Int =
-        date.get(Calendar.WEEK_OF_YEAR) - 1
+        date.weekIndex()
 
     fun getWeeklyDate(index: Int, baseDate: Date): Date =
         baseDate.modify {
