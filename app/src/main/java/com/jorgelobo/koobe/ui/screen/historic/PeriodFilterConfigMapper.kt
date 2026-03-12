@@ -27,7 +27,7 @@ fun buildPeriodFilterConfig(
         PeriodType.DAILY -> PeriodUtils.getDailyItems(tempDate)
         PeriodType.WEEKLY -> PeriodUtils.getWeeklyItems(tempDate, startOfWeek.toCalendarValue())
         PeriodType.MONTHLY -> PeriodUtils.getAllMonthsShortNames()
-        PeriodType.YEARLY -> PeriodUtils.getYearlyItems(currentDate)
+        PeriodType.YEARLY -> PeriodUtils.getYearlyItems(tempDate)
     }
 
     val selectedIndex = when (tempType) {
