@@ -1,6 +1,7 @@
 package com.jorgelobo.koobe.utils.date
 
 import android.annotation.SuppressLint
+import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import java.util.Calendar
 import java.util.Date
@@ -44,6 +45,13 @@ object DateUtils {
             StartOfWeek.SUNDAY -> Calendar.SUNDAY
             StartOfWeek.MONDAY -> Calendar.MONDAY
         }
+
+    fun Calendar.clearTime() {
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+    }
 
     // ─────────────────────────────
     // Comparisons
@@ -123,10 +131,68 @@ object DateUtils {
     ): Date {
         val currentYear = currentDate.get(Calendar.YEAR)
 
-        return baseDate.modify{
+        return baseDate.modify {
             val year = currentYear - range + index
             set(Calendar.YEAR, year)
             set(Calendar.DAY_OF_YEAR, 1)
         }
+    }
+
+    // ─────────────────────────────
+    // Get period
+    // ────────────────────────
+
+    fun getPeriodRange(
+        date: Date,
+        periodType: PeriodType
+    ): Pair<Date, Date> {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+
+        val start = calendar.clone() as Calendar
+        val end = calendar.clone() as Calendar
+
+        when (periodType) {
+
+            PeriodType.DAILY -> {
+                start.set(Calendar.HOUR_OF_DAY, 0)
+                start.set(Calendar.MINUTE, 0)
+                start.set(Calendar.SECOND, 0)
+                start.set(Calendar.MILLISECOND, 0)
+
+                end.time = start.time
+                end.add(Calendar.DAY_OF_MONTH, 1)
+                end.add(Calendar.MILLISECOND, -1)
+            }
+
+            PeriodType.WEEKLY -> {
+                start.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
+                start.clearTime()
+
+                end.time = start.time
+                end.add(Calendar.WEEK_OF_YEAR, 1)
+                end.add(Calendar.MILLISECOND, -1)
+            }
+
+            PeriodType.MONTHLY -> {
+                start.set(Calendar.DAY_OF_MONTH, 1)
+                start.clearTime()
+
+                end.time = start.time
+                end.add(Calendar.MONTH, 1)
+                end.add(Calendar.MILLISECOND, -1)
+            }
+
+            PeriodType.YEARLY -> {
+                start.set(Calendar.DAY_OF_YEAR, 1)
+                start.clearTime()
+
+                end.time = start.time
+                end.add(Calendar.YEAR, 1)
+                end.add(Calendar.MILLISECOND, -1)
+            }
+        }
+
+        return start.time to end.time
     }
 }
