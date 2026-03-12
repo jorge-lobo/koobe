@@ -126,7 +126,7 @@ class HistoricViewModel @Inject constructor(
                     )
                 )
             }
-            
+
             return
         }
 
@@ -176,7 +176,11 @@ class HistoricViewModel @Inject constructor(
         loadJob?.cancel()
 
         loadJob = viewModelScope.launch {
-            getHistoricData(_uiState.value.transactionTypeSelected).collect { histories ->
+            getHistoricData(
+                _uiState.value.date,
+                _uiState.value.transactionTypeSelected,
+                _uiState.value.periodType
+            ).collect { histories ->
 
                 _uiState.update { state ->
                     state.copy(

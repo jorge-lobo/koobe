@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.jorgelobo.koobe.data.local.entity.TransactionEntity
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -32,4 +33,15 @@ interface TransactionDao {
 
     @Query("SELECT * FROM transactions WHERE subcategoryId = :subcategoryId")
     fun getBySubcategoryId(subcategoryId: Int): Flow<List<TransactionEntity>>
+
+    @Query(
+        "SELECT * FROM transactions WHERE type = :type " +
+                "AND date BETWEEN :startDate AND :endDate " +
+                "ORDER BY date DESC"
+    )
+    fun getTransactionsByPeriod(
+        type: TransactionType,
+        startDate: Long,
+        endDate: Long
+    ): Flow<List<TransactionEntity>>
 }
