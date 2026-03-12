@@ -130,20 +130,22 @@ class HistoricViewModel @Inject constructor(
             return
         }
 
-        _uiState.update { state ->
-            val newFilterState = reducePeriodFilter(state.periodFilter, action)
-            var newState = state.copy(periodFilter = newFilterState)
+        val currentState = _uiState.value
+        val newFilterState = reducePeriodFilter(currentState.periodFilter, action)
 
-            if (action is PeriodFilterAction.Apply) {
-                newState = newState.copy(
-                    date = newFilterState.selectedDate,
-                    periodType = newFilterState.selectedType
-                )
+        var newState = currentState.copy(periodFilter = newFilterState)
 
-                loadHistoric()
-            }
+        if (action is PeriodFilterAction.Apply) {
+            newState = newState.copy(
+                date = newFilterState.selectedDate,
+                periodType = newFilterState.selectedType
+            )
+        }
 
-            newState
+        _uiState.value = newState
+
+        if (action is PeriodFilterAction.Apply) {
+            loadHistoric()
         }
     }
 
