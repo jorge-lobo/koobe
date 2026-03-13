@@ -7,6 +7,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Transaction
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.historic.GetHistoricDataUseCase
+import com.jorgelobo.koobe.domain.usecase.historic.GetPeriodTotalsUseCase
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.PeriodFilterAction
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.reducePeriodFilter
@@ -20,6 +21,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,7 +29,8 @@ import javax.inject.Inject
 @HiltViewModel
 class HistoricViewModel @Inject constructor(
     private val getHistoricData: GetHistoricDataUseCase,
-    private val getUserSettingsUseCase: GetUserSettingsUseCase
+    private val getPeriodTotals: GetPeriodTotalsUseCase,
+    private val getUserSettings: GetUserSettingsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(HistoricUiState())
@@ -172,21 +175,30 @@ class HistoricViewModel @Inject constructor(
         }
     }
 
-    fun loadHistoric() {
+    private fun loadHistoric() {
         _uiState.update { it.copy(isLoading = true) }
+
+        val date = _uiState.value.date
+        val periodType = _uiState.value.periodType
+        val type = _uiState.value.transactionTypeSelected
 
         loadJob?.cancel()
 
         loadJob = viewModelScope.launch {
-            getHistoricData(
-                _uiState.value.date,
-                _uiState.value.transactionTypeSelected,
-                _uiState.value.periodType
-            ).collect { histories ->
+            combine(
+                getHistoricData(date, type, periodType),
+                getPeriodTotals(date, periodType)
+            ) { histories, totals ->
+
+                histories to totals
+            }.collect { (histories, totals) ->
 
                 _uiState.update { state ->
                     state.copy(
                         categories = histories.map { it.toUi() },
+                        income = totals.income,
+                        expenses = totals.expenses,
+                        balance = totals.balance,
                         isLoading = false
                     )
                 }
@@ -196,7 +208,7 @@ class HistoricViewModel @Inject constructor(
 
     private fun loadUserSettings() {
         viewModelScope.launch {
-            getUserSettingsUseCase().collect { settings ->
+            getUserSettings().collect { settings ->
                 _uiState.update { state ->
                     state.copy(
                         currencyType = settings.currency,
