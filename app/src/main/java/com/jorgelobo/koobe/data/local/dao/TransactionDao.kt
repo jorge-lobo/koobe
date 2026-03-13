@@ -44,4 +44,14 @@ interface TransactionDao {
         startDate: Long,
         endDate: Long
     ): Flow<List<TransactionEntity>>
+
+    @Query(
+        "SELECT * FROM transactions WHERE date " +
+                "BETWEEN :startDate AND :endDate " +
+                "ORDER BY date DESC"
+    )
+    fun getTransactionsByPeriod(
+        startDate: Long,
+        endDate: Long
+    ): Flow<List<TransactionEntity>>
 }

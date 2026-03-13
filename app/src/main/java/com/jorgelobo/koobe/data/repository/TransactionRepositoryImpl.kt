@@ -1,6 +1,7 @@
 package com.jorgelobo.koobe.data.repository
 
 import com.jorgelobo.koobe.data.local.dao.TransactionDao
+import com.jorgelobo.koobe.data.local.entity.TransactionEntity
 import com.jorgelobo.koobe.data.mapper.toDomain
 import com.jorgelobo.koobe.data.mapper.toEntity
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
@@ -43,12 +44,22 @@ class TransactionRepositoryImpl @Inject constructor(
         type: TransactionType,
         startDate: Long,
         endDate: Long
-    ): Flow<List<Transaction>> {
-
-        return dao.getTransactionsByPeriod(
+    ): Flow<List<Transaction>> =
+        dao.getTransactionsByPeriod(
             type,
             startDate,
             endDate
-        ).map { list -> list.map { it.toDomain() } }
-    }
+        ).toDomainList()
+
+    override fun getTransactionsByPeriod(
+        startDate: Long,
+        endDate: Long
+    ): Flow<List<Transaction>> =
+        dao.getTransactionsByPeriod(
+            startDate,
+            endDate
+        ).toDomainList()
+
+    private fun Flow<List<TransactionEntity>>.toDomainList() =
+        map { list -> list.map { it.toDomain() } }
 }
