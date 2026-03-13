@@ -1,9 +1,12 @@
 package com.jorgelobo.koobe.domain.usecase.historic
 
+import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.CategoryHistory
+import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.model.category.SubcategoryHistory
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.domain.model.transaction.Transaction
 import com.jorgelobo.koobe.domain.repository.TransactionRepository
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoriesByTransactionTypeUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetAllSubcategoriesUseCase
@@ -16,7 +19,7 @@ import javax.inject.Inject
 class GetHistoricDataUseCase @Inject constructor(
     private val getCategoriesByType: GetCategoriesByTransactionTypeUseCase,
     private val getAllSubcategories: GetAllSubcategoriesUseCase,
-    private val transactionRepositor: TransactionRepository
+    private val transactionRepository: TransactionRepository
 ) {
 
     operator fun invoke(
@@ -26,50 +29,62 @@ class GetHistoricDataUseCase @Inject constructor(
     ): Flow<List<CategoryHistory>> {
 
         val (startDate, endDate) = DateUtils.getPeriodRange(date, periodType)
-        val startMillis = startDate.time
-        val endMillis = endDate.time
 
         return combine(
             getCategoriesByType(transactionType),
             getAllSubcategories(),
-            transactionRepositor.getTransactionsByPeriod(
+            transactionRepository.getTransactionsByPeriod(
                 type = transactionType,
-                startDate = startMillis,
-                endDate = endMillis
+                startDate = startDate.time,
+                endDate = endDate.time
             )
         ) { categories, subcategories, transactions ->
 
-            val transactionsByCategory = transactions.groupBy { it.categoryId }
-            val transactionsBySubcategory = transactions.groupBy { it.subcategoryId }
+            buildCategoryHistory(
+                categories,
+                subcategories,
+                transactions
+            )
+        }
+    }
 
-            categories.mapNotNull { category ->
+    private fun buildCategoryHistory(
+        categories: List<Category>,
+        subcategories: List<Subcategory>,
+        transactions: List<Transaction>
+    ): List<CategoryHistory> {
 
-                val categoryTransactions = transactionsByCategory[category.id].orEmpty()
-                if (categoryTransactions.isEmpty()) return@mapNotNull null
+        val transactionsByCategory = transactions.groupBy { it.categoryId }
+        val transactionsBySubcategory = transactions.groupBy { it.subcategoryId }
+        val subcategoriesByCategory = subcategories.groupBy { it.categoryId }
 
-                val categorySubcategories = subcategories.filter { it.categoryId == category.id }
+        return categories.mapNotNull { category ->
+            val categoryTransactions = transactionsByCategory[category.id].orEmpty()
 
-                val subcategoryHistories = categorySubcategories.mapNotNull { subcategory ->
+            if (categoryTransactions.isEmpty()) return@mapNotNull null
 
-                    val subcategoryTransactions =
-                        transactionsBySubcategory[subcategory.id].orEmpty()
-                    if (subcategoryTransactions.isEmpty()) return@mapNotNull null
+            val categorySubcategories = subcategoriesByCategory[category.id].orEmpty()
+            val subcategoryHistories = categorySubcategories.mapNotNull { subcategory ->
+                val subcategoryTransactions = transactionsBySubcategory[subcategory.id].orEmpty()
 
-                    SubcategoryHistory(
-                        subcategory = subcategory,
-                        transactionCount = subcategoryTransactions.size,
-                        totalAmount = subcategoryTransactions.sumOf { it.amount },
-                        transactions = subcategoryTransactions
-                    )
-                }
+                if (subcategoryTransactions.isEmpty()) return@mapNotNull null
 
-                CategoryHistory(
-                    category = category,
-                    transactionCount = categoryTransactions.size,
-                    totalAmount = categoryTransactions.sumOf { it.amount },
-                    subcategories = subcategoryHistories
+                SubcategoryHistory(
+                    subcategory = subcategory,
+                    transactionCount = subcategoryTransactions.size,
+                    totalAmount = subcategoryTransactions.sumOf { it.amount },
+                    transactions = subcategoryTransactions
                 )
             }
+                .sortedByDescending { it.totalAmount }
+
+            CategoryHistory(
+                category = category,
+                transactionCount = categoryTransactions.size,
+                totalAmount = categoryTransactions.sumOf { it.amount },
+                subcategories = subcategoryHistories
+            )
         }
+            .sortedByDescending { it.totalAmount }
     }
 }
