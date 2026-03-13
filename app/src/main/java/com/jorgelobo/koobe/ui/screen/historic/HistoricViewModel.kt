@@ -16,12 +16,16 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogEf
 import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.reduceDatePickerDialog
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Job
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -39,19 +43,24 @@ class HistoricViewModel @Inject constructor(
     private val _events = MutableSharedFlow<HistoricEvent>()
     val events = _events.asSharedFlow()
 
-    private var loadJob: Job? = null
+    private val filters =
+        _uiState.map {
+            Triple(
+                it.date,
+                it.periodType,
+                it.transactionTypeSelected
+            )
+        }
 
     init {
         loadUserSettings()
-        loadHistoric()
+        observeHistoric()
     }
 
     fun onTransactionTypeChanged(type: TransactionType) {
         if (_uiState.value.transactionTypeSelected == type) return
 
         _uiState.update { it.copy(transactionTypeSelected = type) }
-
-        loadHistoric()
     }
 
     fun onBackClick() {
@@ -146,10 +155,6 @@ class HistoricViewModel @Inject constructor(
         }
 
         _uiState.value = newState
-
-        if (action is PeriodFilterAction.Apply) {
-            loadHistoric()
-        }
     }
 
     fun onDatePickerDialogAction(action: DatePickerDialogAction) {
@@ -175,34 +180,36 @@ class HistoricViewModel @Inject constructor(
         }
     }
 
-    private fun loadHistoric() {
-        _uiState.update { it.copy(isLoading = true) }
-
-        val date = _uiState.value.date
-        val periodType = _uiState.value.periodType
-        val type = _uiState.value.transactionTypeSelected
-
-        loadJob?.cancel()
-
-        loadJob = viewModelScope.launch {
-            combine(
-                getHistoricData(date, type, periodType),
-                getPeriodTotals(date, periodType)
-            ) { histories, totals ->
-
-                histories to totals
-            }.collect { (histories, totals) ->
-
-                _uiState.update { state ->
-                    state.copy(
-                        categories = histories.map { it.toUi() },
-                        income = totals.income,
-                        expenses = totals.expenses,
-                        balance = totals.balance,
-                        isLoading = false
-                    )
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun observeHistoric() {
+        viewModelScope.launch {
+            filters
+                .distinctUntilChanged()
+                .onStart {
+                    _uiState.update { it.copy(isLoading = true) }
                 }
-            }
+                .flatMapLatest { (date, periodType, type) ->
+
+                    combine(
+                        getHistoricData(date, type, periodType),
+                        getPeriodTotals(date, periodType)
+                    ) { histories, totals ->
+
+                        histories to totals
+                    }
+                }
+                .collect { (histories, totals) ->
+
+                    _uiState.update { state ->
+                        state.copy(
+                            categories = histories.map { it.toUi() },
+                            income = totals.income,
+                            expenses = totals.expenses,
+                            balance = totals.balance,
+                            isLoading = false
+                        )
+                    }
+                }
         }
     }
 
