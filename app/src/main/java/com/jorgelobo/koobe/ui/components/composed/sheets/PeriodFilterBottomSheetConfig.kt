@@ -32,6 +32,7 @@ data class FilterActions(
 )
 
 data class PeriodListState(
+    val startOfWeek: StartOfWeek,
     val items: List<String>,
     val selectedIndex: Int,
     val periodType: PeriodType,

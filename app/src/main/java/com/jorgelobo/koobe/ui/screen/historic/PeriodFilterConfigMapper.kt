@@ -34,7 +34,7 @@ fun buildPeriodFilterConfig(
         PeriodType.DAILY -> DateUtils.getDailyIndex(tempDate)
         PeriodType.WEEKLY -> DateUtils.getWeeklyIndex(tempDate)
         PeriodType.MONTHLY -> DateUtils.getMonthlyIndex(tempDate)
-        PeriodType.YEARLY -> DateUtils.getYearlyIndex(tempDate, baseDate = currentDate)
+        PeriodType.YEARLY -> DateUtils.getYearlyIndex(currentDate)
     }
 
     return PeriodFilterBottomSheetConfig(
@@ -52,6 +52,7 @@ fun buildPeriodFilterConfig(
             onPickerClick = { onAction(PeriodFilterAction.OpenDatePicker) }
         ),
         periodListState = PeriodListState(
+            startOfWeek = startOfWeek,
             items = items,
             selectedIndex = selectedIndex,
             periodType = tempType,

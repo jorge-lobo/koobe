@@ -47,7 +47,8 @@ fun reducePeriodFilter(
             state.updateTemp(
                 date = DateUtils.getWeeklyDate(
                     action.index,
-                    state.tempSelectedDate
+                    state.tempSelectedDate,
+                    state.startOfWeek
                 )
             )
         }

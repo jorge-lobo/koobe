@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
@@ -93,6 +94,7 @@ fun PreviewMonthGrid() {
 
             MonthGrid(
                 config = SelectableListConfig(
+                    startOfWeek = StartOfWeek.SUNDAY,
                     items = months,
                     selectedIndex = selectedIndex,
                     onItemSelected = { selectedIndex = it }
