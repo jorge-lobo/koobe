@@ -1,46 +1,32 @@
 package com.jorgelobo.koobe.utils.date
 
+import android.util.Log
+import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
+import com.jorgelobo.koobe.utils.date.DateUtils.clearTime
 import java.util.Date
 
 object DateFutureUtils {
 
-    private val currentDate: Date
-        get() = DateUtils.currentDate
+    private fun today(): Date = DateUtils.currentDate.clearTime()
 
-    fun isIndexInFuture(
-        index: Int,
-        currentIndex: Int,
-        referenceYear: Int,
-        currentYear: Int
-    ): Boolean {
-        return if (referenceYear == currentYear) {
-            index > currentIndex
-        } else {
-            referenceYear > currentYear
-        }
+    fun isMonthInFuture(monthIndex: Int, referenceDate: Date): Boolean {
+        val itemDate = DateUtils.getMonthlyDate(monthIndex, referenceDate)
+        return itemDate.after(today())
     }
 
-    fun isMonthInFuture(monthIndex: Int, referenceDate: Date) =
-        isIndexInFuture(
-            monthIndex,
-            currentDate.month(),
-            referenceDate.year(),
-            currentDate.year()
-        )
+    fun isWeekInFuture(weekIndex: Int, referenceDate: Date, startOfWeek: StartOfWeek): Boolean {
+        val itemStart = DateUtils.getWeeklyDate(weekIndex, referenceDate, startOfWeek)
+        val today = today()
 
-    fun isWeekInFuture(weekIndex: Int, referenceDate: Date) =
-        isIndexInFuture(
-            weekIndex,
-            currentDate.weekIndex(),
-            referenceDate.year(),
-            currentDate.year()
+        Log.d(
+            "DateFutureUtils",
+            "isWeekInFuture: itemStart = $itemStart, today = $today, startOfWeek = $startOfWeek"
         )
+        return itemStart.after(today())
+    }
 
-    fun isDayInFuture(dayIndex: Int, referenceDate: Date) =
-        isIndexInFuture(
-            dayIndex,
-            currentDate.day() - 1,
-            referenceDate.year(),
-            currentDate.year()
-        )
+    fun isDayInFuture(dayIndex: Int, referenceDate: Date): Boolean {
+        val itemDate = DateUtils.getDailyDate(dayIndex, referenceDate)
+        return itemDate.after(today())
+    }
 }

@@ -40,6 +40,9 @@ object DateUtils {
             time
         }
 
+    fun Date.clearTime(): Date =
+        modify { clearTime() }
+
     fun StartOfWeek.toCalendarValue(): Int =
         when (this) {
             StartOfWeek.SUNDAY -> Calendar.SUNDAY
@@ -78,6 +81,7 @@ object DateUtils {
     fun getDailyDate(index: Int, baseDate: Date): Date =
         baseDate.modify {
             set(Calendar.DAY_OF_MONTH, index + 1)
+            clearTime()
         }
 
     // ─────────────────────────────
@@ -87,11 +91,19 @@ object DateUtils {
     fun getWeeklyIndex(date: Date): Int =
         date.weekIndex()
 
-    fun getWeeklyDate(index: Int, baseDate: Date): Date =
-        baseDate.modify {
-            set(Calendar.WEEK_OF_YEAR, index + 1)
+    fun getWeeklyDate(index: Int, referenceDate: Date, startOfWeek: StartOfWeek): Date {
+        val calendar = Calendar.getInstance(locale).apply {
+            time = referenceDate
+            firstDayOfWeek = startOfWeek.toCalendarValue()
+            clearTime()
+
+            set(Calendar.WEEK_OF_YEAR, 1)
             set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
+            add(Calendar.DAY_OF_YEAR, index * 7)
         }
+
+        return calendar.time
+    }
 
     // ─────────────────────────────
     // Monthly
@@ -104,6 +116,7 @@ object DateUtils {
         baseDate.modify {
             set(Calendar.MONTH, index)
             set(Calendar.DAY_OF_MONTH, 1)
+            clearTime()
         }
 
     // ─────────────────────────────
@@ -111,15 +124,10 @@ object DateUtils {
     // ────────────────────────
 
     fun getYearlyIndex(
-        date: Date,
-        baseDate: Date = currentDate,
+        baseDate: Date,
         range: Int = 20
     ): Int {
-
-        val targetYear = date.get(Calendar.YEAR)
-        val baseYear = baseDate.get(Calendar.YEAR)
-
-        val index = targetYear - (baseYear - range)
+        val index = baseDate.get(Calendar.YEAR)
 
         return index.coerceIn(0, range)
     }
@@ -129,12 +137,13 @@ object DateUtils {
         baseDate: Date,
         range: Int = 20
     ): Date {
-        val currentYear = currentDate.get(Calendar.YEAR)
+        val currentYear = baseDate.get(Calendar.YEAR)
 
         return baseDate.modify {
             val year = currentYear - range + index
             set(Calendar.YEAR, year)
             set(Calendar.DAY_OF_YEAR, 1)
+            clearTime()
         }
     }
 
