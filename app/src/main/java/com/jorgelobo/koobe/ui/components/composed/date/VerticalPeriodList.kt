@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
@@ -66,9 +67,11 @@ fun VerticalPeriodList(
         ) {
             items(config.items.size) { index ->
                 val isSelected = index == config.selectedIndex
+                val startOfWeek = config.startOfWeek
+
                 val isFuture = when (periodType) {
                     PeriodType.DAILY -> DateFutureUtils.isDayInFuture(index, referenceDate)
-                    PeriodType.WEEKLY -> DateFutureUtils.isWeekInFuture(index, referenceDate)
+                    PeriodType.WEEKLY -> DateFutureUtils.isWeekInFuture(index, referenceDate, startOfWeek)
                     PeriodType.MONTHLY -> false
                     PeriodType.YEARLY -> false
                 }
@@ -103,6 +106,7 @@ fun PreviewVerticalPeriodList() {
 
             VerticalPeriodList(
                 config = SelectableListConfig(
+                    startOfWeek = StartOfWeek.SUNDAY,
                     items = items,
                     selectedIndex = selectedIndex,
                     onItemSelected = { selectedIndex = it }

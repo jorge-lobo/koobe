@@ -42,7 +42,6 @@ import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.date.DateUtils
-import com.jorgelobo.koobe.utils.date.PeriodUtils
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -52,7 +51,6 @@ fun PeriodFilterBottomSheet(
     config: PeriodFilterBottomSheetConfig,
     onDismiss: () -> Unit
 ) {
-    remember { PeriodUtils.getAllMonthsShortNames() }
     var isEnabled by remember { mutableStateOf(false) }
 
     AppModalBottomSheet(
@@ -138,6 +136,7 @@ private fun PeriodListContent(
         PeriodType.MONTHLY -> {
             MonthGrid(
                 config = SelectableListConfig(
+                    startOfWeek = state.startOfWeek,
                     items = state.items,
                     selectedIndex = state.selectedIndex,
                     onItemSelected = onItemSelected
@@ -149,6 +148,7 @@ private fun PeriodListContent(
         else -> {
             VerticalPeriodList(
                 config = SelectableListConfig(
+                    startOfWeek = state.startOfWeek,
                     items = state.items,
                     selectedIndex = state.selectedIndex,
                     onItemSelected = onItemSelected
@@ -220,6 +220,7 @@ fun PreviewPeriodFilterBottomSheet() {
                         onCancel = {}
                     ),
                     periodListState = PeriodListState(
+                        startOfWeek = StartOfWeek.SUNDAY,
                         items = yearlyItems,
                         selectedIndex = selectedYearlyIndex,
                         periodType = PeriodType.YEARLY,
