@@ -36,6 +36,7 @@ data class ContainerColors(
     val containerSecondary: Color,
     val containerOutline: Color,
     val containerSelected: Color,
+    val containerDisabled: Color,
     val containerNeutralAmount: Color,
     val outlinePrimary: Color,
     val avatarContainerDefault: Color,

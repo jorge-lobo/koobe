@@ -1,8 +1,10 @@
 package com.jorgelobo.koobe.data.repository
 
 import com.jorgelobo.koobe.data.local.dao.TransactionDao
+import com.jorgelobo.koobe.data.local.entity.TransactionEntity
 import com.jorgelobo.koobe.data.mapper.toDomain
 import com.jorgelobo.koobe.data.mapper.toEntity
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Transaction
 import com.jorgelobo.koobe.domain.repository.TransactionRepository
 import kotlinx.coroutines.flow.Flow
@@ -37,4 +39,27 @@ class TransactionRepositoryImpl @Inject constructor(
     override suspend fun deleteTransaction(transaction: Transaction) {
         dao.delete(transaction.toEntity())
     }
+
+    override fun getTransactionsByPeriod(
+        type: TransactionType,
+        startDate: Long,
+        endDate: Long
+    ): Flow<List<Transaction>> =
+        dao.getTransactionsByPeriod(
+            type,
+            startDate,
+            endDate
+        ).toDomainList()
+
+    override fun getTransactionsByPeriod(
+        startDate: Long,
+        endDate: Long
+    ): Flow<List<Transaction>> =
+        dao.getTransactionsByPeriod(
+            startDate,
+            endDate
+        ).toDomainList()
+
+    private fun Flow<List<TransactionEntity>>.toDomainList() =
+        map { list -> list.map { it.toDomain() } }
 }

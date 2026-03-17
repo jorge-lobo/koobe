@@ -30,7 +30,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.reduceDatePickerDi
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
-import com.jorgelobo.koobe.utils.DateUtils
+import com.jorgelobo.koobe.utils.date.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow

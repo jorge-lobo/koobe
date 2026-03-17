@@ -4,8 +4,9 @@ import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-class GetCategoriesByTransactionTypeUseCase(
+class GetCategoriesByTransactionTypeUseCase @Inject constructor(
     private val repository: CategoryRepository
 ) {
     operator fun invoke(type: TransactionType): Flow<List<Category>> =

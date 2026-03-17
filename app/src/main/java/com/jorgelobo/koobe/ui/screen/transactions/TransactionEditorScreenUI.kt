@@ -32,7 +32,7 @@ import com.jorgelobo.koobe.ui.screen.transactions.components.TransactionDescript
 import com.jorgelobo.koobe.ui.screen.transactions.components.TransactionSaveButton
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.DateUtils
+import com.jorgelobo.koobe.utils.date.DateUtils
 
 /**
  * Composable that renders the main UI of the Transaction Editor screen.

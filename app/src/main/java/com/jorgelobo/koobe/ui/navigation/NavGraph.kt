@@ -17,6 +17,7 @@ import com.jorgelobo.koobe.ui.screen.categories.manager.CategoryManagerScreen
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorScreen
 import com.jorgelobo.koobe.ui.screen.dashboard.DashboardScreen
+import com.jorgelobo.koobe.ui.screen.historic.HistoricConfig
 import com.jorgelobo.koobe.ui.screen.historic.HistoricScreen
 import com.jorgelobo.koobe.ui.screen.reports.ReportsScreen
 import com.jorgelobo.koobe.ui.screen.settings.SettingsConfig
@@ -55,7 +56,23 @@ fun NavGraph(
 
         // Main views
         composable(Route.Dashboard.route) { DashboardScreen(navController) }
-        composable(Route.Historic.route) { HistoricScreen(navController) }
+        composable(Route.Historic.route) {
+            HistoricScreen(
+                navController = navController,
+                config = HistoricConfig(
+                    currentRoute = Route.Historic.route,
+                    onRouteSelected = { route ->
+                        if (route != Route.Historic.route) {
+                            navController.navigate(route) {
+                                popUpTo(Route.Historic.route)
+                                launchSingleTop = true
+                            }
+                        }
+                    },
+                )
+            )
+        }
+
         composable(Route.Reports.route) { ReportsScreen(navController) }
 
         composable(Route.Settings.route) {

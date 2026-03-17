@@ -14,7 +14,7 @@ import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetSt
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
-import com.jorgelobo.koobe.utils.DateUtils
+import com.jorgelobo.koobe.utils.date.DateUtils
 import java.util.Date
 
 /**

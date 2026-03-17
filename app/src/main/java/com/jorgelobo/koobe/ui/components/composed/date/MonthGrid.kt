@@ -17,6 +17,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
@@ -24,12 +25,16 @@ import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.PeriodGridContainerSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.DateUtils
+import com.jorgelobo.koobe.utils.date.DateFutureUtils
+import com.jorgelobo.koobe.utils.date.DateUtils
+import com.jorgelobo.koobe.utils.date.PeriodUtils
+import java.util.Date
 
 @Composable
 fun MonthGrid(
     modifier: Modifier = Modifier,
-    config: SelectableListConfig
+    config: SelectableListConfig,
+    referenceDate: Date = DateUtils.currentDate
 ) {
     val colors = AppTheme.colors
     val shape = AppTheme.shapes.medium
@@ -54,9 +59,12 @@ fun MonthGrid(
                 ) {
                     rowItems.forEachIndexed { colIndex, label ->
                         val index = rowIndex * 4 + colIndex
+                        val isFuture = DateFutureUtils.isMonthInFuture(index, referenceDate)
+
                         PeriodItem(
                             label = label,
                             isSelected = index == config.selectedIndex,
+                            isFuture = isFuture,
                             onClick = { config.onItemSelected(index) },
                             modifier = Modifier.weight(1f)
                         )
@@ -82,10 +90,11 @@ fun PreviewMonthGrid() {
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
             var selectedIndex by remember { mutableIntStateOf(9) }
-            val months = (0..11).map { DateUtils.getMonthShortName(it) }
+            val months = (0..11).map { PeriodUtils.getMonthShortName(it) }
 
             MonthGrid(
                 config = SelectableListConfig(
+                    startOfWeek = StartOfWeek.SUNDAY,
                     items = months,
                     selectedIndex = selectedIndex,
                     onItemSelected = { selectedIndex = it }

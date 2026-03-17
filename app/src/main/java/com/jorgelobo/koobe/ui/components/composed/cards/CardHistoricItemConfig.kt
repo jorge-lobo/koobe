@@ -4,10 +4,16 @@ import androidx.compose.runtime.Stable
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.CategoryHistory
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
+import com.jorgelobo.koobe.domain.model.transaction.Transaction
 
 @Stable
 data class CardHistoricItemConfig(
     val category: Category,
     val categoryHistory: CategoryHistory,
-    val currencyType: CurrencyType
+    val currencyType: CurrencyType,
+    val isExpanded: Boolean,
+    val expandedSubcategories: Set<Int>,
+    val onCategoryExpandToggle: () -> Unit,
+    val onSubcategoryExpandToggle: (Int) -> Unit,
+    val onTransactionClick: (Transaction) -> Unit
 )

@@ -1,0 +1,209 @@
+package com.jorgelobo.koobe.utils.date
+
+import android.annotation.SuppressLint
+import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+
+object DateUtils {
+    @SuppressLint("ConstantLocale")
+            /*private val locale = Locale.getDefault()*/
+    val locale: Locale = Locale.ENGLISH
+
+    val currentDate: Date
+        get() = DateProvider.now
+
+    // ─────────────────────────────
+    // Core helper
+    // ─────────────────────────────
+
+    inline fun <T> withCalendar(
+        date: Date,
+        block: Calendar.() -> T
+    ): T {
+        val cal = Calendar.getInstance().apply { time = date }
+        return cal.block()
+    }
+
+    // ─────────────────────────────
+    // Generic helpers
+    // ─────────────────────────────
+
+    fun Date.get(field: Int): Int =
+        withCalendar(this) { get(field) }
+
+    fun Date.modify(block: Calendar.() -> Unit): Date =
+        withCalendar(this) {
+            block()
+            time
+        }
+
+    fun Date.clearTime(): Date =
+        modify { clearTime() }
+
+    fun StartOfWeek.toCalendarValue(): Int =
+        when (this) {
+            StartOfWeek.SUNDAY -> Calendar.SUNDAY
+            StartOfWeek.MONDAY -> Calendar.MONDAY
+        }
+
+    fun Calendar.clearTime() {
+        set(Calendar.HOUR_OF_DAY, 0)
+        set(Calendar.MINUTE, 0)
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+    }
+
+    // ─────────────────────────────
+    // Comparisons
+    // ─────────────────────────────
+
+    fun isSameDay(date1: Date, date2: Date): Boolean =
+        date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR) &&
+                date1.get(Calendar.DAY_OF_YEAR) == date2.get(Calendar.DAY_OF_YEAR)
+
+    fun isSameMonth(date1: Date, date2: Date): Boolean =
+        date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR) &&
+                date1.get(Calendar.MONTH) == date2.get(Calendar.MONTH)
+
+    fun isSameYear(date1: Date, date2: Date): Boolean =
+        date1.get(Calendar.YEAR) == date2.get(Calendar.YEAR)
+
+    // ─────────────────────────────
+    // Daily
+    // ─────────────────────────────
+
+    fun getDailyIndex(date: Date): Int =
+        date.get(Calendar.DAY_OF_MONTH) - 1
+
+    fun getDailyDate(index: Int, baseDate: Date): Date =
+        baseDate.modify {
+            set(Calendar.DAY_OF_MONTH, index + 1)
+            clearTime()
+        }
+
+    // ─────────────────────────────
+    // Weekly
+    // ─────────────────────────────
+
+    fun getWeeklyIndex(date: Date): Int =
+        date.weekIndex()
+
+    fun getWeeklyDate(index: Int, referenceDate: Date, startOfWeek: StartOfWeek): Date {
+        val calendar = Calendar.getInstance(locale).apply {
+            time = referenceDate
+            firstDayOfWeek = startOfWeek.toCalendarValue()
+            clearTime()
+
+            set(Calendar.WEEK_OF_YEAR, 1)
+            set(Calendar.DAY_OF_WEEK, firstDayOfWeek)
+            add(Calendar.DAY_OF_YEAR, index * 7)
+        }
+
+        return calendar.time
+    }
+
+    // ─────────────────────────────
+    // Monthly
+    // ────────────────────────
+
+    fun getMonthlyIndex(date: Date): Int =
+        date.get(Calendar.MONTH)
+
+    fun getMonthlyDate(index: Int, baseDate: Date): Date =
+        baseDate.modify {
+            set(Calendar.MONTH, index)
+            set(Calendar.DAY_OF_MONTH, 1)
+            clearTime()
+        }
+
+    // ─────────────────────────────
+    // Yearly
+    // ────────────────────────
+
+    fun getYearlyIndex(
+        selectedDate: Date,
+        baseDate: Date,
+        range: Int = 20
+    ): Int {
+        val baseYear = baseDate.get(Calendar.YEAR)
+        val selectedYear = selectedDate.get(Calendar.YEAR)
+
+        return (selectedYear - (baseYear - range)).coerceIn(0, range)
+    }
+
+    fun getYearlyDate(
+        index: Int,
+        baseDate: Date,
+        range: Int = 20
+    ): Date {
+        val baseYear = baseDate.get(Calendar.YEAR)
+        val targetYear = baseYear - range + index
+
+        return baseDate.modify {
+            set(Calendar.YEAR, targetYear)
+            set(Calendar.DAY_OF_YEAR, 1)
+            clearTime()
+        }
+    }
+
+    // ─────────────────────────────
+    // Get period
+    // ────────────────────────
+
+    fun getPeriodRange(
+        date: Date,
+        periodType: PeriodType
+    ): Pair<Date, Date> {
+        val calendar = Calendar.getInstance()
+        calendar.time = date
+
+        val start = calendar.clone() as Calendar
+        val end = calendar.clone() as Calendar
+
+        when (periodType) {
+
+            PeriodType.DAILY -> {
+                start.set(Calendar.HOUR_OF_DAY, 0)
+                start.set(Calendar.MINUTE, 0)
+                start.set(Calendar.SECOND, 0)
+                start.set(Calendar.MILLISECOND, 0)
+
+                end.time = start.time
+                end.add(Calendar.DAY_OF_MONTH, 1)
+                end.add(Calendar.MILLISECOND, -1)
+            }
+
+            PeriodType.WEEKLY -> {
+                start.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
+                start.clearTime()
+
+                end.time = start.time
+                end.add(Calendar.WEEK_OF_YEAR, 1)
+                end.add(Calendar.MILLISECOND, -1)
+            }
+
+            PeriodType.MONTHLY -> {
+                start.set(Calendar.DAY_OF_MONTH, 1)
+                start.clearTime()
+
+                end.time = start.time
+                end.add(Calendar.MONTH, 1)
+                end.add(Calendar.MILLISECOND, -1)
+            }
+
+            PeriodType.YEARLY -> {
+                start.set(Calendar.DAY_OF_YEAR, 1)
+                start.clearTime()
+
+                end.time = start.time
+                end.add(Calendar.YEAR, 1)
+                end.add(Calendar.MILLISECOND, -1)
+            }
+        }
+
+        return start.time to end.time
+    }
+}

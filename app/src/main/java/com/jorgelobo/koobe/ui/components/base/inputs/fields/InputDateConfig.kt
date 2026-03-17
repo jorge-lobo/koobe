@@ -1,7 +1,8 @@
 package com.jorgelobo.koobe.ui.components.base.inputs.fields
 
 import com.jorgelobo.koobe.ui.components.model.enums.DateFormat
-import com.jorgelobo.koobe.utils.DateUtils
+import com.jorgelobo.koobe.utils.date.DateFormatter
+import com.jorgelobo.koobe.utils.date.DateUtils
 import java.util.Date
 
 data class InputDateConfig(
@@ -9,5 +10,5 @@ data class InputDateConfig(
     val onIconClick: () -> Unit
 ) {
     val dateLabel: String
-        get() = DateUtils.formatDate(date, DateFormat.COMPLETE)
+        get() = DateFormatter.formatDate(date, DateFormat.COMPLETE)
 }

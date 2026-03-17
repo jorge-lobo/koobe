@@ -54,7 +54,6 @@ class SettingsViewModel @Inject constructor(
     private val _events = MutableSharedFlow<SettingsEvent>()
     val events = _events.asSharedFlow()
 
-
     init {
         viewModelScope.launch {
             getUserSettings().collect { settings ->

@@ -15,6 +15,7 @@ val LightColors = AppColorScheme(
         containerSecondary = LightThemeGrey1,
         containerOutline = LightThemeGrey1,
         containerSelected = AccentMint,
+        containerDisabled = LightThemeGrey2,
         containerNeutralAmount = LightThemeGrey1,
         outlinePrimary = LightThemeGrey1,
         avatarContainerDefault = LightThemeGrey3,

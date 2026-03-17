@@ -19,22 +19,23 @@ import com.jorgelobo.koobe.ui.components.model.enums.DateFormat
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.DateUtils
-import com.jorgelobo.koobe.utils.DateUtils.formatAs
+import com.jorgelobo.koobe.utils.date.DateFormatter.formatAs
+import com.jorgelobo.koobe.utils.date.DateUtils
 import java.util.Date
 
 @Composable
 fun FormattedDateText(
     periodType: PeriodType,
-    date: Date
+    date: Date,
+    isSelector: Boolean = false
 ) {
     val colors = AppTheme.colors
     val typography = AppTheme.typography.text
 
     val formatedDate = when (periodType) {
         PeriodType.YEARLY -> date.formatAs(DateFormat.YEAR)
-        PeriodType.MONTHLY -> date.formatAs(DateFormat.YEAR)
-        PeriodType.WEEKLY -> date.formatAs(DateFormat.MONTH_YEAR)
+        PeriodType.MONTHLY -> date.formatAs(if (isSelector) DateFormat.YEAR else DateFormat.MONTH_YEAR)
+        PeriodType.WEEKLY -> date.formatAs(if (isSelector) DateFormat.YEAR else DateFormat.WEEK)
         PeriodType.DAILY -> date.formatAs(DateFormat.DAY_MONTH_YEAR)
     }
 
@@ -42,7 +43,7 @@ fun FormattedDateText(
         text = formatedDate,
         style = typography.titleSmall,
         color = colors.textColors.textSecondary,
-        textAlign = TextAlign.Center,
+        textAlign = TextAlign.Center
     )
 }
 
@@ -57,7 +58,8 @@ fun DateDisplay(
     ) {
         FormattedDateText(
             periodType = config.periodType,
-            date = config.date
+            date = config.date,
+            isSelector = false
         )
     }
 }
