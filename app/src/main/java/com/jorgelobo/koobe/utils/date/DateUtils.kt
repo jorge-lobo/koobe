@@ -124,12 +124,14 @@ object DateUtils {
     // ────────────────────────
 
     fun getYearlyIndex(
+        selectedDate: Date,
         baseDate: Date,
         range: Int = 20
     ): Int {
-        val index = baseDate.get(Calendar.YEAR)
+        val baseYear = baseDate.get(Calendar.YEAR)
+        val selectedYear = selectedDate.get(Calendar.YEAR)
 
-        return index.coerceIn(0, range)
+        return (selectedYear - (baseYear - range)).coerceIn(0, range)
     }
 
     fun getYearlyDate(
@@ -137,11 +139,11 @@ object DateUtils {
         baseDate: Date,
         range: Int = 20
     ): Date {
-        val currentYear = baseDate.get(Calendar.YEAR)
+        val baseYear = baseDate.get(Calendar.YEAR)
+        val targetYear = baseYear - range + index
 
         return baseDate.modify {
-            val year = currentYear - range + index
-            set(Calendar.YEAR, year)
+            set(Calendar.YEAR, targetYear)
             set(Calendar.DAY_OF_YEAR, 1)
             clearTime()
         }
