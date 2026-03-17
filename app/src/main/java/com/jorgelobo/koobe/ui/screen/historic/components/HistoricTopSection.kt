@@ -18,6 +18,17 @@ import com.jorgelobo.koobe.ui.components.model.enums.ScreenType
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import java.util.Date
 
+/**
+ * Composable that represents the top section of the historic screen.
+ * It displays the current period date information and a summary of the financial balance.
+ *
+ * @param date The reference date to be displayed.
+ * @param periodType The type of period (e.g., Daily, Monthly) used to format the date display.
+ * @param currencyType The currency format to be applied to the financial values.
+ * @param balance The calculated net balance for the given period.
+ * @param income The total income amount for the given period.
+ * @param expenses The total expenses amount for the given period.
+ */
 @Composable
 fun HistoricTopSection(
     date: Date,

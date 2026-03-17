@@ -14,6 +14,16 @@ import com.jorgelobo.koobe.ui.components.composed.cards.CardHistoricItemConfig
 import com.jorgelobo.koobe.ui.screen.historic.CategoryHistoricUi
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
+/**
+ * A composable that displays a list of historical transaction categories using a [LazyColumn].
+ * Each category is rendered as a [CardHistoricItem] which can be expanded to show subcategories
+ * and transaction details.
+ *
+ * @param categories The list of categories containing historical data and UI states to display.
+ * @param currencyType The currency format used to display monetary values.
+ * @param onCategoryExpandToggle Callback invoked when a category's expansion state is toggled,
+ * providing the category ID.
+ */
 @Composable
 fun HistoricCategoriesSection(
     categories: List<CategoryHistoricUi>,

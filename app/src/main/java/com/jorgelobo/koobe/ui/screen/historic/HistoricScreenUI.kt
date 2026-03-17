@@ -27,6 +27,18 @@ import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.date.DateUtils
 
+/**
+ * Composable function that represents the UI for the Historic screen.
+ * Displays a summary of financial data, a toggle to switch between transaction types, and a
+ * categorized list of transactions for a specific period.
+ *
+ * @param state The current UI state containing the data to be displayed.
+ * @param modifier The [Modifier] to be applied to the component.
+ * @param onTransactionTypeChange Callback triggered when the transaction type (Income/Expense) is changed.
+ * @param onCategoryExpandToggle Callback triggered when a category is expanded or collapsed, providing the category ID.
+ * @param onSubcategoryExpandToggle Callback triggered when a subcategory is expanded or collapsed, providing both category and subcategory IDs.
+ * @param onTransactionClick Callback triggered when a specific transaction is selected.
+ */
 @Composable
 fun HistoricScreenUI(
     state: HistoricUiState,

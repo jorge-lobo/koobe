@@ -9,6 +9,13 @@ import com.jorgelobo.koobe.ui.components.base.toggles.TransactionToggle
 import com.jorgelobo.koobe.ui.components.base.toggles.transactionToggleConfig
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
+/**
+ * A composable section that displays a toggle switch for filtering transactions by type within
+ * the historic screen.
+ *
+ * @param transactionTypeSelected The currently active [TransactionType] filter.
+ * @param onTransactionTypeChange Callback invoked when the selected [TransactionType] changes.
+ */
 @Composable
 fun HistoricToggleSection(
     transactionTypeSelected: TransactionType,

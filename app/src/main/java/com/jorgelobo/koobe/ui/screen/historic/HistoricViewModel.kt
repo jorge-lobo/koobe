@@ -30,6 +30,22 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Historic screen, responsible for managing and providing the UI state
+ * related to transaction history.
+ *
+ * This ViewModel handles:
+ * - Fetching and filtering historical transaction data based on date, period type (daily, weekly,
+ * monthly, etc.), and transaction type (Income/Expense).
+ * - Calculating and displaying period totals (income, expenses, and balance).
+ * - Managing the UI state for expandable category and subcategory lists.
+ * - Handling user interactions for date selection and period filtering.
+ * - Coordinating navigation to the transaction editor and handling back navigation.
+ * - Syncing user preferences such as currency symbols and the start day of the week.
+ *
+ * @property getHistoricData Use case to retrieve categorized transaction history.
+ * @property getPeriodTotals Use case to retrieve financial summaries for a specific period.
+ */
 @HiltViewModel
 class HistoricViewModel @Inject constructor(
     private val getHistoricData: GetHistoricDataUseCase,
@@ -43,6 +59,11 @@ class HistoricViewModel @Inject constructor(
     private val _events = MutableSharedFlow<HistoricEvent>()
     val events = _events.asSharedFlow()
 
+    /**
+     * A flow that transforms the [uiState] into a combination of filter criteria, including the
+     * selected date, period type, and transaction type. This is used to trigger data re-fetching
+     * whenever any of these specific values change.
+     */
     private val filters =
         _uiState.map {
             Triple(
@@ -67,6 +88,12 @@ class HistoricViewModel @Inject constructor(
         navigateBack()
     }
 
+    /**
+     * Handles the click event on a transaction item by navigating to the transaction editor screen.
+     * It builds a navigation route with the details of the selected transaction to allow for editing.
+     *
+     * @param item The [Transaction] that was clicked.
+     */
     fun onTransactionItemClick(item: Transaction) {
         val route = Route.TransactionEditor.create(
             TransactionEditorConfig(
@@ -80,6 +107,13 @@ class HistoricViewModel @Inject constructor(
         navigateTo(route)
     }
 
+    /**
+     * Toggles the expansion state of a specific category within the historic list.
+     *
+     * If the category is being collapsed, any expanded subcategories within it are also cleared.
+     *
+     * @param categoryId The unique identifier of the category to toggle.
+     */
     fun onCategoryExpandToggle(categoryId: Int) {
         _uiState.update { state ->
             val updated = state.categories.map { categoryUi ->
@@ -104,6 +138,15 @@ class HistoricViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Toggles the expanded or collapsed state of a specific subcategory within a given category.
+     *
+     * This updates the UI state by adding or removing the subcategory ID from the set of
+     * expanded subcategories for the specified parent category.
+     *
+     * @param categoryId The unique identifier of the parent category.
+     * @param subcategoryId The unique identifier of the subcategory to toggle.
+     */
     fun onSubcategoryExpandToggle(
         categoryId: Int,
         subcategoryId: Int
@@ -127,6 +170,11 @@ class HistoricViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles interactions and state updates for the period filter.
+     *
+     * Processes actions such as opening the date picker, changing the period type,
+     */
     fun onPeriodFilterAction(action: PeriodFilterAction) {
 
         if (action is PeriodFilterAction.OpenDatePicker) {
@@ -157,6 +205,15 @@ class HistoricViewModel @Inject constructor(
         _uiState.value = newState
     }
 
+    /**
+     * Handles actions dispatched from the date picker dialog.
+     *
+     * This method updates the date picker dialog's internal state using a reducer and processes
+     * any resulting effects, such as updating the temporary selected date in the period filter
+     * when a selection is confirmed.
+     *
+     * @param action The specific [DatePickerDialogAction] to be processed.
+     */
     fun onDatePickerDialogAction(action: DatePickerDialogAction) {
         val (dialogState, effect) = reduceDatePickerDialog(
             state = uiState.value.datePickerDialog,
@@ -180,6 +237,14 @@ class HistoricViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Observes changes in filtering criteria (date, period type, and transaction type) to
+     * reactively update the UI state.
+     *
+     * This function triggers a new data fetch whenever filters change, updating the loading status,
+     * category-specific historical data, and the overall financial summary (income, expenses, and
+     * balance) for the selected period.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun observeHistoric() {
         viewModelScope.launch {
@@ -213,6 +278,10 @@ class HistoricViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Loads the user's configuration settings, such as currency preference and the preferred
+     * start day of the week, and updates the UI state accordingly.
+     */
     private fun loadUserSettings() {
         viewModelScope.launch {
             getUserSettings().collect { settings ->

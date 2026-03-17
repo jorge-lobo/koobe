@@ -13,6 +13,18 @@ import com.jorgelobo.koobe.utils.date.DateUtils
 import com.jorgelobo.koobe.utils.date.DateUtils.toCalendarValue
 import com.jorgelobo.koobe.utils.date.PeriodUtils
 
+/**
+ * Maps the current [PeriodFilterSheetState] into a [PeriodFilterBottomSheetConfig] to be used by
+ * the UI components.
+ *
+ * This function handles the logic for calculating available periods, the current selection index,
+ * and mapping UI interactions to specific [PeriodFilterAction] events based on the selected
+ * [PeriodType].
+ *
+ * @param filter The current state of the period filter sheet, containing temporary date and type selections.
+ * @param startOfWeek The configuration for the first day of the week.
+ * @param onAction Callback to handle actions triggered within the period filter UI.
+ */
 fun buildPeriodFilterConfig(
     filter: PeriodFilterSheetState,
     startOfWeek: StartOfWeek,

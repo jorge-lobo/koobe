@@ -21,6 +21,14 @@ import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.PeriodFilterAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
+/**
+ * Composable function that represents the Historic screen, displaying a detailed history
+ * of transactions with filtering capabilities.
+ *
+ * @param navController The [NavController] used for navigating between screens.
+ * @param config The [HistoricConfig] containing configuration data such as navigation routes.
+ * @param viewModel The [HistoricViewModel] that manages the screen's state and business logic.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HistoricScreen(
