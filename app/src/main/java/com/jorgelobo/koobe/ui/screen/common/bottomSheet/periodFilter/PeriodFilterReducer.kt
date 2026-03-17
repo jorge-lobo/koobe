@@ -66,7 +66,7 @@ fun reducePeriodFilter(
             state.updateTemp(
                 date = DateUtils.getYearlyDate(
                     action.index,
-                    state.tempSelectedDate
+                    state.currentDate
                 )
             )
         }

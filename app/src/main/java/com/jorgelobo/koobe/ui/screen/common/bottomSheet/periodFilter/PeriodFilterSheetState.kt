@@ -8,6 +8,7 @@ import java.util.Date
 data class PeriodFilterSheetState(
     val visible: Boolean = false,
     val startOfWeek: StartOfWeek = StartOfWeek.SUNDAY,
+    val currentDate: Date = DateUtils.currentDate,
     val selectedType: PeriodType = PeriodType.MONTHLY,
     val selectedDate: Date = DateUtils.currentDate,
     val tempSelectedType: PeriodType = PeriodType.MONTHLY,

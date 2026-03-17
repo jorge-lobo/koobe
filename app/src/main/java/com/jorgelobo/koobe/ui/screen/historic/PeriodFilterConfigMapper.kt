@@ -27,14 +27,14 @@ fun buildPeriodFilterConfig(
         PeriodType.DAILY -> PeriodUtils.getDailyItems(tempDate)
         PeriodType.WEEKLY -> PeriodUtils.getWeeklyItems(tempDate, startOfWeek.toCalendarValue())
         PeriodType.MONTHLY -> PeriodUtils.getAllMonthsShortNames()
-        PeriodType.YEARLY -> PeriodUtils.getYearlyItems(tempDate)
+        PeriodType.YEARLY -> PeriodUtils.getYearlyItems(currentDate)
     }
 
     val selectedIndex = when (tempType) {
         PeriodType.DAILY -> DateUtils.getDailyIndex(tempDate)
         PeriodType.WEEKLY -> DateUtils.getWeeklyIndex(tempDate)
         PeriodType.MONTHLY -> DateUtils.getMonthlyIndex(tempDate)
-        PeriodType.YEARLY -> DateUtils.getYearlyIndex(currentDate)
+        PeriodType.YEARLY -> DateUtils.getYearlyIndex(selectedDate = tempDate, baseDate = currentDate)
     }
 
     return PeriodFilterBottomSheetConfig(
