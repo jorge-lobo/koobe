@@ -12,6 +12,7 @@ import com.jorgelobo.koobe.domain.model.transaction.DescriptionSource
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
+import com.jorgelobo.koobe.domain.repository.TransactionRepository
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.ResolveTransactionDescriptionUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.SaveTransactionUseCase
@@ -61,9 +62,10 @@ class TransactionEditorViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val subcategoryRepository: SubcategoryRepository,
     private val shortcutRepository: ShortcutRepository,
-    private val saveTransactionUseCase: SaveTransactionUseCase,
-    private val resolveTransactionDescriptionUseCase: ResolveTransactionDescriptionUseCase,
-    private val getUserSettingsUseCase: GetUserSettingsUseCase
+    private val transactionRepository: TransactionRepository,
+    private val saveTransaction: SaveTransactionUseCase,
+    private val resolveTransactionDescription: ResolveTransactionDescriptionUseCase,
+    private val getUserSettings: GetUserSettingsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(TransactionEditorUiState.initialEmpty())
@@ -86,19 +88,35 @@ class TransactionEditorViewModel @Inject constructor(
         this.config = config
 
         viewModelScope.launch {
-            val category = categoryRepository.getCategoryById(config.categoryId) ?: Category.empty()
+
+            val category = categoryRepository.getCategoryById(config.categoryId)
+                ?: Category.empty()
             val subcategory =
                 config.subcategoryId?.let { subcategoryRepository.getSubcategoryById(it) }
             val shortcut = config.shortcutId?.let { shortcutRepository.getShortcutById(it) }
 
-            _uiState.value = TransactionEditorUiState.initial(
-                config = config,
-                category = category,
-                subcategory = subcategory,
-                shortcut = shortcut
-            )
+            if (config.isEditMode) {
+                val transaction = transactionRepository.getTransactionById(config.transactionId!!)
 
-            applyUserDefaultsIfNeeded()
+                if (transaction != null) {
+                    _uiState.value = TransactionEditorUiState.initialFromTransaction(
+                        config = config,
+                        transaction = transaction,
+                        category = category,
+                        subcategory = subcategory,
+                        shortcut = shortcut
+                    )
+                }
+            } else {
+                _uiState.value = TransactionEditorUiState.initial(
+                    config = config,
+                    category = category,
+                    subcategory = subcategory,
+                    shortcut = shortcut
+                )
+
+                applyUserDefaultsIfNeeded()
+            }
         }
     }
 
@@ -197,7 +215,7 @@ class TransactionEditorViewModel @Inject constructor(
     fun onSaveClick() {
         val state = _uiState.value
 
-        when (val result = resolveTransactionDescriptionUseCase.resolve(
+        when (val result = resolveTransactionDescription.resolve(
             state.descriptionSource,
             state.subcategory,
             state.shortcut
@@ -302,7 +320,7 @@ class TransactionEditorViewModel @Inject constructor(
         val state = _uiState.value
 
         viewModelScope.launch {
-            saveTransactionUseCase(
+            saveTransaction(
                 transaction = state.toTransaction(
                     config = config,
                     resolvedDescription = description
@@ -324,7 +342,7 @@ class TransactionEditorViewModel @Inject constructor(
         if (config.isEditMode) return
 
         viewModelScope.launch {
-            val settings = getUserSettingsUseCase().first()
+            val settings = getUserSettings().first()
 
             updateState { state ->
                 state.copy(
