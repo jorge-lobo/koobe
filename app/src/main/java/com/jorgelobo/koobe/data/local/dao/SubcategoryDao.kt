@@ -32,4 +32,7 @@ interface SubcategoryDao {
 
     @Query("SELECT * FROM subcategories WHERE categoryId = :categoryId")
     fun getByCategoryId(categoryId: Int): Flow<List<SubcategoryEntity>>
+
+    @Query("SELECT * FROM subcategories WHERE id = :id")
+    fun getByIdFlow(id: Int): Flow<SubcategoryEntity?>
 }

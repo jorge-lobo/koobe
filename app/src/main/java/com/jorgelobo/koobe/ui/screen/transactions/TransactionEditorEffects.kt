@@ -37,9 +37,6 @@ fun TransactionEditorEffects(
     autoFillDescriptionState: State<String?>,
     onSnackBarConfigChange: (SnackBarConfig?) -> Unit
 ) {
-    LaunchedEffect(config) {
-        viewModel.init(config)
-    }
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->

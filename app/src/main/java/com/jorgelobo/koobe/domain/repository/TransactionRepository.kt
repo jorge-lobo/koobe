@@ -20,4 +20,5 @@ interface TransactionRepository {
         startDate: Long,
         endDate: Long
     ): Flow<List<Transaction>>
+    fun getTransactionByIdFlow(id: Int): Flow<Transaction?>
 }

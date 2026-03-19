@@ -47,4 +47,7 @@ class CategoryRepositoryImpl @Inject constructor(
     override suspend fun insertCategoryEntities(list: List<CategoryEntity>) {
         dao.insertAll(list)
     }
+
+    override fun getCategoryByIdFlow(id: Int): Flow<Category?> =
+        dao.getByIdFlow(id).map { it?.toDomain() }
 }

@@ -54,4 +54,7 @@ interface TransactionDao {
         startDate: Long,
         endDate: Long
     ): Flow<List<TransactionEntity>>
+
+    @Query("SELECT * FROM transactions WHERE id = :id")
+    fun getByIdFlow(id: Int): Flow<TransactionEntity?>
 }

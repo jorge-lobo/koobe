@@ -14,4 +14,5 @@ interface CategoryRepository {
     suspend fun updateCategory(category: Category)
     suspend fun deleteCategory(category: Category)
     suspend fun insertCategoryEntities(list: List<CategoryEntity>)
+    fun getCategoryByIdFlow(id: Int): Flow<Category?>
 }

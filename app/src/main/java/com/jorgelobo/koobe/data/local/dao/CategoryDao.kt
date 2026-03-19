@@ -33,4 +33,7 @@ interface CategoryDao {
 
     @Query("SELECT * FROM categories WHERE type = :type")
     fun getByTransactionType(type: TransactionType): Flow<List<CategoryEntity>>
+
+    @Query("SELECT * FROM categories WHERE id = :id")
+    fun getByIdFlow(id: Int): Flow<CategoryEntity?>
 }

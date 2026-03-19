@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 class SubcategoryRepositoryImpl @Inject constructor(
     private val dao: SubcategoryDao
-) : SubcategoryRepository{
+) : SubcategoryRepository {
 
     override fun getAllSubcategories(): Flow<List<Subcategory>> =
         dao.getAll().map { list ->
@@ -47,4 +47,7 @@ class SubcategoryRepositoryImpl @Inject constructor(
     override suspend fun insertSubcategoryEntities(list: List<SubcategoryEntity>) {
         dao.insertAll(list)
     }
+
+    override fun getSubcategoryByIdFlow(id: Int): Flow<Subcategory?> =
+        dao.getByIdFlow(id).map { it?.toDomain() }
 }

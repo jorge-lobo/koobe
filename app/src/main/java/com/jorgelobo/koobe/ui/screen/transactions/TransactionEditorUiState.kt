@@ -9,6 +9,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.DescriptionSource
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
+import com.jorgelobo.koobe.domain.model.transaction.Transaction
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetState
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
@@ -151,6 +152,7 @@ data class TransactionEditorUiState(
         ): TransactionEditorUiState {
 
             return TransactionEditorUiState(
+                config = config,
                 category = category,
                 subcategory = subcategory,
                 shortcut = shortcut,
@@ -173,6 +175,51 @@ data class TransactionEditorUiState(
                 )
             )
         }
+
+        fun initialFromTransaction(
+            config: TransactionEditorConfig,
+            transaction: Transaction,
+            category: Category,
+            subcategory: Subcategory?,
+            shortcut: Shortcut?
+        ): TransactionEditorUiState {
+
+            val descriptionSource = DescriptionSource.TextDescription(transaction.description)
+
+            return TransactionEditorUiState(
+                config = config,
+                category = category,
+                subcategory = subcategory,
+                shortcut = shortcut,
+                descriptionSource = descriptionSource,
+                inputState = InputState.DEFAULT,
+                date = transaction.date,
+                paymentMethodType = transaction.paymentMethod,
+                currencyType = transaction.currency,
+                amount = transaction.amount,
+                amountInput = transaction.amount.toString(),
+                initialSnapshot = InitialSnapshot(
+                    category = category,
+                    subcategory = subcategory,
+                    shortcut = shortcut,
+                    transactionType = config.transactionType,
+                    descriptionSource = descriptionSource,
+                    date = transaction.date,
+                    paymentMethodType = transaction.paymentMethod,
+                    currencyType = transaction.currency,
+                    amount = transaction.amount
+                ),
+                paymentMethodSelector = SelectorSheetState(
+                    visible = false,
+                    selected = transaction.paymentMethod
+                ),
+                datePickerDialog = DatePickerDialogState(
+                    visible = false,
+                    selectedDate = transaction.date,
+                    language = AppLanguage.ENGLISH
+                )
+            )
+        }
     }
 }
 
@@ -188,5 +235,5 @@ data class InitialSnapshot(
     val date: Date,
     val paymentMethodType: PaymentMethodType,
     val currencyType: CurrencyType,
-    val amount: Double,
+    val amount: Double
 )

@@ -1,5 +1,7 @@
 package com.jorgelobo.koobe.ui.screen.transactions
 
+import android.net.Uri
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.R
@@ -9,9 +11,11 @@ import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.transaction.DescriptionResolution
 import com.jorgelobo.koobe.domain.model.transaction.DescriptionSource
+import com.jorgelobo.koobe.domain.model.transaction.Transaction
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
+import com.jorgelobo.koobe.domain.repository.TransactionRepository
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.ResolveTransactionDescriptionUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.SaveTransactionUseCase
@@ -32,73 +36,183 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
 import com.jorgelobo.koobe.utils.date.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.serialization.json.Json
 import javax.inject.Inject
 
 /**
  * ViewModel responsible for managing the state and business logic of the Transaction Editor screen.
  *
  * This ViewModel handles:
- * - Loading initial category, subcategory and shortcut data
- * - Managing transaction form state (date, description, amount, currency, payment method)
- * - Resolving transaction descriptions automatically when possible
- * - Validating and enabling/disabling the save action
- * - Persisting transactions via [SaveTransactionUseCase]
- * - Emitting one-off UI events such as navigation and snackBars
+ * - Loading initial category, subcategory, and shortcut data via repositories.
+ * - Managing transaction form state, including date, description, amount, currency, and payment method.
+ * - Resolving transaction descriptions automatically based on selected subcategories or shortcuts.
+ * - Validating the form to enable or disable the save action.
+ * - Persisting new or edited transactions via [SaveTransactionUseCase].
+ * - Emitting one-off UI events such as navigation and SnackBar notifications.
  *
  * State is exposed via [uiState] as a [StateFlow], while UI side-effects are emitted through
  * [events] as a [SharedFlow].
  */
 @HiltViewModel
 class TransactionEditorViewModel @Inject constructor(
-    private val categoryRepository: CategoryRepository,
-    private val subcategoryRepository: SubcategoryRepository,
-    private val shortcutRepository: ShortcutRepository,
-    private val saveTransactionUseCase: SaveTransactionUseCase,
-    private val resolveTransactionDescriptionUseCase: ResolveTransactionDescriptionUseCase,
-    private val getUserSettingsUseCase: GetUserSettingsUseCase
+    savedStateHandle: SavedStateHandle,
+    categoryRepository: CategoryRepository,
+    subcategoryRepository: SubcategoryRepository,
+    shortcutRepository: ShortcutRepository,
+    transactionRepository: TransactionRepository,
+    getUserSettings: GetUserSettingsUseCase,
+    private val saveTransaction: SaveTransactionUseCase,
+    private val resolveTransactionDescription: ResolveTransactionDescriptionUseCase
 ) : ViewModel() {
-
-    private val _uiState = MutableStateFlow(TransactionEditorUiState.initialEmpty())
-    val uiState: StateFlow<TransactionEditorUiState> = _uiState
 
     private val _events = MutableSharedFlow<TransactionEditorEvent>()
     val events = _events.asSharedFlow()
 
-    private lateinit var config: TransactionEditorConfig
+    /**
+     * Configuration settings for the transaction editor, retrieved from the [SavedStateHandle].
+     *
+     * This object contains the initial parameters required to initialize the editor,
+     * such as whether it's in edit mode, the transaction ID, and associated category,
+     * subcategory, or shortcut identifiers.
+     */
+    private val config: TransactionEditorConfig =
+        savedStateHandle.get<String>("config")
+            ?.let { Uri.decode(it) }
+            ?.let { Json.decodeFromString<TransactionEditorConfig>(it) }
+            ?: error("Missing TransactionEditorConfig")
+
+    private val transactionFlow: Flow<Transaction?> =
+        if (config.isEditMode) {
+            transactionRepository.getTransactionByIdFlow(config.transactionId!!)
+        } else {
+            flowOf(null)
+        }
+
+    private val categoryFlow = categoryRepository.getCategoryByIdFlow(config.categoryId)
+
+    private val subcategoryFlow = config.subcategoryId
+        ?.let { subcategoryRepository.getSubcategoryByIdFlow(it) }
+        ?: flowOf(null)
+
+    private val shortcutFlow = config.shortcutId
+        ?.let { shortcutRepository.getShortcutByIdFlow(it) }
+        ?: flowOf(null)
+
+    private val userSettingsFlow = getUserSettings()
+
+    private val userInput = MutableStateFlow(UserInputState())
 
     /**
-     * Initializes the ViewModel with the provided [TransactionEditorConfig].
+     * A [Flow] that combines external data sources (category, subcategory, shortcut, existing
+     * transaction, and user settings) to produce the baseline [TransactionEditorUiState].
      *
-     * This method is safe to call multiple times and will only execute once.
-     * It loads the initial category, subcategory and shortcut (if provided)
-     * and builds the initial UI state accordingly.
+     * This flow determines the initial state of the editor, distinguishing between
+     * creation mode and edit mode, and serves as the foundation upon which
+     * [userInput] changes are applied.
      */
-    fun init(config: TransactionEditorConfig) {
-        if (this::config.isInitialized) return
-        this.config = config
+    private val baseStateFlow: Flow<TransactionEditorUiState> =
+        combine(
+            categoryFlow,
+            subcategoryFlow,
+            shortcutFlow,
+            transactionFlow,
+            userSettingsFlow
+        ) { category, subcategory, shortcut, transaction, settings ->
 
-        viewModelScope.launch {
-            val category = categoryRepository.getCategoryById(config.categoryId) ?: Category.empty()
-            val subcategory =
-                config.subcategoryId?.let { subcategoryRepository.getSubcategoryById(it) }
-            val shortcut = config.shortcutId?.let { shortcutRepository.getShortcutById(it) }
+            val safeCategory = category ?: Category.empty()
 
-            _uiState.value = TransactionEditorUiState.initial(
-                config = config,
-                category = category,
-                subcategory = subcategory,
-                shortcut = shortcut
+            if (config.isEditMode && transaction != null) {
+                TransactionEditorUiState.initialFromTransaction(
+                    config = config,
+                    transaction = transaction,
+                    category = safeCategory,
+                    subcategory = subcategory,
+                    shortcut = shortcut
+                ).copy(
+                    language = settings.language
+                )
+            } else {
+                TransactionEditorUiState.initial(
+                    config = config,
+                    category = safeCategory,
+                    subcategory = subcategory,
+                    shortcut = shortcut
+                ).copy(
+                    language = settings.language,
+                    currencyType = settings.currency,
+                    paymentMethodType = settings.paymentMethod
+                )
+            }
+        }
+
+    /**
+     * The combined and observable state of the Transaction Editor screen.
+     *
+     * This property merges the [baseStateFlow] (containing data from repositories and settings)
+     * with the [userInput] state (containing temporary changes made by the user). It calculates
+     * the final state used by the UI, including the validation of the save button.
+     */
+    val uiState: StateFlow<TransactionEditorUiState> =
+        combine(
+            baseStateFlow,
+            userInput
+        ) { base: TransactionEditorUiState, input: UserInputState ->
+
+            val amountInput = input.amountInput ?: base.amountInput
+
+            val newState = base.copy(
+                descriptionSource = input.descriptionSource ?: base.descriptionSource,
+                amountInput = amountInput,
+                amount = amountInput.toDoubleOrNull() ?: base.amount,
+                date = input.date ?: base.date,
+                paymentMethodType = input.paymentMethodType ?: base.paymentMethodType,
+                currencyType = input.currencyType ?: base.currencyType,
+                discardDialog = input.discardDialog ?: base.discardDialog,
+                currencyDialog = input.currencyDialog ?: base.currencyDialog,
+                paymentMethodSelector = input.paymentMethodSelector ?: base.paymentMethodSelector,
+                datePickerDialog = input.datePickerDialog ?: base.datePickerDialog
             )
 
-            applyUserDefaultsIfNeeded()
+            newState.copy(
+                isSaveButtonEnabled = computeSaveEnabled(newState)
+            )
+        }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.WhileSubscribed(5000),
+                initialValue = TransactionEditorUiState.initialEmpty()
+            )
+
+    // ─────────────────────────────
+    // Save button logic
+    // ─────────────────────────────
+
+    /**
+     * Determines whether the save action should be enabled based on the current [state].
+     *
+     * In edit mode, saving is enabled only if there are unsaved changes.
+     * In creation mode, saving is enabled as long as the amount is greater than zero.
+     *
+     * @param state The current UI state of the transaction editor.
+     * @return True if the transaction can be saved, false otherwise.
+     */
+    private fun computeSaveEnabled(state: TransactionEditorUiState): Boolean {
+        return if (config.isEditMode) {
+            state.hasUnsavedChanges
+        } else {
+            state.amount > 0
         }
     }
 
@@ -107,8 +221,8 @@ class TransactionEditorViewModel @Inject constructor(
     // ─────────────────────────────
 
     fun onTodayClick() {
-        updateState { state ->
-            state.copy(date = DateUtils.currentDate)
+        userInput.update {
+            it.copy(date = DateUtils.currentDate)
         }
     }
 
@@ -118,13 +232,13 @@ class TransactionEditorViewModel @Inject constructor(
             action = action
         )
 
-        updateState { state ->
-            state.copy(datePickerDialog = dialogState)
+        userInput.update {
+            it.copy(datePickerDialog = dialogState)
         }
 
         when (effect) {
             is DatePickerDialogEffect.Confirmed ->
-                updateState {
+                userInput.update {
                     it.copy(date = effect.date)
                 }
 
@@ -137,14 +251,14 @@ class TransactionEditorViewModel @Inject constructor(
     // ─────────────────────────────
 
     fun onDescriptionChanged(text: String) {
-        updateState { state ->
-            state.copy(descriptionSource = DescriptionSource.TextDescription(text))
+        userInput.update {
+            it.copy(descriptionSource = DescriptionSource.TextDescription(text))
         }
     }
 
     fun onResetDescription() {
-        updateState { state ->
-            state.copy(descriptionSource = DescriptionSource.Empty)
+        userInput.update {
+            it.copy(descriptionSource = DescriptionSource.Empty)
         }
     }
 
@@ -157,27 +271,17 @@ class TransactionEditorViewModel @Inject constructor(
     // ─────────────────────────────
 
     fun onAmountKeyPressed(key: KeypadKey) {
-        val action = key.toAmountAction()
+        userInput.update { input ->
+            val current = input.amountInput ?: uiState.value.amountInput
+            val newInput = reduceAmountInput(current, key.toAmountAction())
 
-        updateState { state ->
-            val newInput = reduceAmountInput(
-                current = state.amountInput,
-                action = action
-            )
-
-            state.copy(
-                amountInput = newInput,
-                amount = newInput.toDoubleOrNull() ?: 0.0
-            )
+            input.copy(amountInput = newInput)
         }
     }
 
     fun onResetAmount() {
-        updateState { state ->
-            state.copy(
-                amountInput = "0",
-                amount = 0.0
-            )
+        userInput.update {
+            it.copy(amountInput = "0")
         }
     }
 
@@ -186,18 +290,18 @@ class TransactionEditorViewModel @Inject constructor(
     // ─────────────────────────────
 
     /**
-     * Handles the save action.
+     * Handles the click event on the save button.
      *
-     * Attempts to resolve the transaction description automatically based on the
-     * current state (subcategory or shortcut). Depending on the resolution result:
-     * - Saves the transaction immediately
-     * - Requests user confirmation via snackBar
-     * - Or aborts if the description is missing
+     * It attempts to resolve the transaction description based on the current user input,
+     * selected subcategory, or shortcut. Depending on the [DescriptionResolution] result:
+     * - **Resolved**: Saves the transaction immediately using the resolved description.
+     * - **RequireUserChoice**: Triggers a SnackBar to let the user choose or confirm a description.
+     * - **Missing**: Does nothing (aborts the save process).
      */
     fun onSaveClick() {
-        val state = _uiState.value
+        val state = uiState.value
 
-        when (val result = resolveTransactionDescriptionUseCase.resolve(
+        when (val result = resolveTransactionDescription.resolve(
             state.descriptionSource,
             state.subcategory,
             state.shortcut
@@ -220,8 +324,8 @@ class TransactionEditorViewModel @Inject constructor(
             action = action
         )
 
-        updateState { state ->
-            state.copy(discardDialog = dialogState)
+        userInput.update {
+            it.copy(discardDialog = dialogState)
         }
 
         when (effect) {
@@ -246,13 +350,13 @@ class TransactionEditorViewModel @Inject constructor(
             action = action
         )
 
-        updateState { state ->
-            state.copy(currencyDialog = dialogState)
+        userInput.update {
+            it.copy(currencyDialog = dialogState)
         }
 
         when (effect) {
             is SelectorDialogEffect.Applied ->
-                updateState {
+                userInput.update {
                     it.copy(currencyType = effect.value)
                 }
 
@@ -277,8 +381,8 @@ class TransactionEditorViewModel @Inject constructor(
             action = action
         )
 
-        updateState { state ->
-            state.copy(
+        userInput.update {
+            it.copy(
                 paymentMethodSelector = newState,
                 paymentMethodType = newState.selected
             )
@@ -291,18 +395,18 @@ class TransactionEditorViewModel @Inject constructor(
 
     // Automatically fills the description and proceeds with saving the transaction
     private fun autoFillDescription(text: String) {
-        updateState { state ->
-            state.copy(descriptionSource = DescriptionSource.TextDescription(text))
+        userInput.update {
+            it.copy(descriptionSource = DescriptionSource.TextDescription(text))
         }
 
         saveTransaction(text)
     }
 
     private fun saveTransaction(description: String) {
-        val state = _uiState.value
+        val state = uiState.value
 
         viewModelScope.launch {
-            saveTransactionUseCase(
+            saveTransaction(
                 transaction = state.toTransaction(
                     config = config,
                     resolvedDescription = description
@@ -310,29 +414,6 @@ class TransactionEditorViewModel @Inject constructor(
                 isEditorMode = config.isEditMode
             )
             navigateBack()
-        }
-    }
-
-    /**
-     * Applies the user's default settings (currency, payment method, and language) to the UI state.
-     *
-     * This operation is only performed if the editor is in "create" mode (not editing an existing
-     * transaction), ensuring that new transactions start with the user's preferred defaults
-     * fetched from [GetUserSettingsUseCase].
-     */
-    private fun applyUserDefaultsIfNeeded() {
-        if (config.isEditMode) return
-
-        viewModelScope.launch {
-            val settings = getUserSettingsUseCase().first()
-
-            updateState { state ->
-                state.copy(
-                    currencyType = settings.currency,
-                    paymentMethodType = settings.paymentMethod,
-                    language = settings.language
-                )
-            }
         }
     }
 
@@ -356,31 +437,5 @@ class TransactionEditorViewModel @Inject constructor(
 
     private fun emitEvent(event: TransactionEditorEvent) {
         viewModelScope.launch { _events.emit(event) }
-    }
-
-    // ─────────────────────────────
-    // State reducer
-    // ─────────────────────────────
-
-    /**
-     * Centralized state reducer.
-     *
-     * Applies the given [reducer] to the current state and recalculates
-     * whether the save button should be enabled based on the editor mode:
-     * - Edit mode: enabled only if there are unsaved changes
-     * - Create mode: enabled only if the amount is greater than zero
-     */
-    private fun updateState(reducer: (TransactionEditorUiState) -> TransactionEditorUiState) {
-        _uiState.update { state ->
-            val newState = reducer(state)
-
-            val enabled = if (config.isEditMode) {
-                newState.hasUnsavedChanges
-            } else {
-                newState.amount > 0.0
-            }
-
-            newState.copy(isSaveButtonEnabled = enabled)
-        }
     }
 }

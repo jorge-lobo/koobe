@@ -10,4 +10,5 @@ interface ShortcutRepository {
     suspend fun insertShortcut(shortcut: Shortcut)
     suspend fun updateShortcut(shortcut: Shortcut)
     suspend fun deleteShortcut(shortcut: Shortcut)
+    fun getShortcutByIdFlow(id: Int): Flow<Shortcut?>
 }
