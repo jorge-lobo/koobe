@@ -1,5 +1,6 @@
 package com.jorgelobo.koobe.ui.navigation
 
+import android.net.Uri
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavHostController
@@ -170,5 +171,5 @@ inline fun <reified T> NavBackStackEntry.decodeConfig(): T {
     val json = requireNotNull(arguments?.getString("config")) {
         "Argument config is missing"
     }
-    return Json.decodeFromString(json)
+    return Json.decodeFromString(Uri.decode(json))
 }
