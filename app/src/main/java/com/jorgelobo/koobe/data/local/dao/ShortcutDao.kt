@@ -35,4 +35,7 @@ interface ShortcutDao {
 
     @Query("SELECT * FROM shortcuts WHERE categoryId = :categoryId")
     fun getByCategoryId(categoryId: Int): Flow<List<ShortcutEntity>>
+
+    @Query("SELECT * FROM shortcuts WHERE id = :id")
+    fun getByIdFlow(id: Int): Flow<ShortcutEntity?>
 }

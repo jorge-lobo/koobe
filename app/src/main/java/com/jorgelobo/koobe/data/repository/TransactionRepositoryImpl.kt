@@ -60,6 +60,9 @@ class TransactionRepositoryImpl @Inject constructor(
             endDate
         ).toDomainList()
 
+    override fun getTransactionByIdFlow(id: Int): Flow<Transaction?> =
+        dao.getByIdFlow(id).map { it?.toDomain() }
+
     private fun Flow<List<TransactionEntity>>.toDomainList() =
         map { list -> list.map { it.toDomain() } }
 }

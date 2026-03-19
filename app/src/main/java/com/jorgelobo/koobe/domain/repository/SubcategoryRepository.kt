@@ -13,4 +13,5 @@ interface SubcategoryRepository {
     suspend fun updateSubcategory(subcategory: Subcategory)
     suspend fun deleteSubcategory(subcategory: Subcategory)
     suspend fun insertSubcategoryEntities(list: List<SubcategoryEntity>)
+    fun getSubcategoryByIdFlow(id: Int): Flow<Subcategory?>
 }

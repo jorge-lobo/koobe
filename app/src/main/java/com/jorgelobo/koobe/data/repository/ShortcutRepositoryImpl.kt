@@ -37,4 +37,7 @@ class ShortcutRepositoryImpl @Inject constructor(
     override suspend fun deleteShortcut(shortcut: Shortcut) {
         dao.delete(shortcut.toEntity())
     }
+
+    override fun getShortcutByIdFlow(id: Int): Flow<Shortcut?> =
+        dao.getByIdFlow(id).map { it?.toDomain() }
 }
