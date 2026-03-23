@@ -200,6 +200,7 @@
     <!-- SnackBar -->
     <string name="snackBar_action">Use name</string>
     <string name="snackBar_message">No description added.\nUse subcategory name instead?</string>
+    <string name="snackBar_delete_transaction_error">Failed to delete transaction.\nPlease try again.</string>
 
     <!-- RadioButtons -->
     <string name="radio_cash">Cash</string>

@@ -26,33 +26,10 @@ import java.util.Date
  * date, currency, payment method), and the visibility/state of various UI components
  * like dialogs and bottom sheets.
  *
- * The state is immutable and serves as a single source of truth for the view.
- * Changes are driven by the ViewModel.
- *
- * @property config Configuration details for the editor, such as IDs and edit mode status.
- * @property category The currently selected [Category].
- * @property subcategory The currently selected [Subcategory], if applicable.
- * @property shortcut The currently selected [Shortcut], if applicable.
- * @property descriptionSource The current source providing the transaction description.
- * @property inputState The state of the numeric input (e.g., whether the user is typing).
- * @property date The selected date for the transaction.
- * @property language The current [AppLanguage] used for localized UI elements like date pickers.
- * @property paymentMethodType The selected [PaymentMethodType].
- * @property currencyType The selected [CurrencyType].
- * @property amountInput The raw string representation of the amount entered by the user.
- * @property amount The parsed numeric value of the transaction.
- * @property isSaveButtonEnabled Indicates if the current input is valid for saving.
- * @property isLoading Indicates if the screen is currently fetching initial data.
- * @property errorMessage An optional error message to be displayed in the UI.
- * @property initialSnapshot A snapshot of the state at initialization used for change detection.
- * @property showSnackBar Triggers the display of a snackBar message.
- * @property discardDialog State for the "discard changes" confirmation dialog.
- * @property currencyDialog State for the currency selection dialog.
- * @property paymentMethodSelector State for the payment method bottom sheet selector.
- * @property datePickerDialog State for the date picker dialog.
  */
 data class TransactionEditorUiState(
     val config: TransactionEditorConfig? = null,
+    val originalTransaction: Transaction? = null,
     val category: Category,
     val subcategory: Subcategory? = null,
     val shortcut: Shortcut? = null,
@@ -70,6 +47,7 @@ data class TransactionEditorUiState(
     val initialSnapshot: InitialSnapshot,
     val showSnackBar: Boolean = false,
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
+    val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val currencyDialog: SelectorDialogState<CurrencyType> = SelectorDialogState(),
     val paymentMethodSelector: SelectorSheetState<PaymentMethodType>,
     val datePickerDialog: DatePickerDialogState = DatePickerDialogState(
@@ -121,6 +99,7 @@ data class TransactionEditorUiState(
 
             return TransactionEditorUiState(
                 category = emptyCategory,
+                originalTransaction = null,
                 inputState = InputState.DEFAULT,
                 isLoading = true,
                 initialSnapshot = InitialSnapshot(
@@ -153,6 +132,7 @@ data class TransactionEditorUiState(
 
             return TransactionEditorUiState(
                 config = config,
+                originalTransaction = null,
                 category = category,
                 subcategory = subcategory,
                 shortcut = shortcut,
@@ -188,6 +168,7 @@ data class TransactionEditorUiState(
 
             return TransactionEditorUiState(
                 config = config,
+                originalTransaction = transaction,
                 category = category,
                 subcategory = subcategory,
                 shortcut = shortcut,

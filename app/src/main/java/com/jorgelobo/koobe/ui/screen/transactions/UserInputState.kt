@@ -19,6 +19,7 @@ import java.util.Date
  * @property paymentMethodType The currently selected payment method.
  * @property currencyType The currently selected currency.
  * @property discardDialog State for managing the visibility and actions of the discard changes confirmation dialog.
+ * @property deleteDialog State for managing the visibility and actions of the elimination confirmation dialog.
  * @property currencyDialog State for managing the currency selection dialog.
  * @property paymentMethodSelector State for managing the payment method selection bottom sheet.
  * @property datePickerDialog State for managing the date picker dialog.
@@ -30,7 +31,9 @@ data class UserInputState(
     val paymentMethodType: PaymentMethodType? = null,
     val currencyType: CurrencyType? = null,
     val discardDialog: ConfirmationDialogState? = null,
+    val deleteDialog: ConfirmationDialogState? = null,
     val currencyDialog: SelectorDialogState<CurrencyType>? = null,
     val paymentMethodSelector: SelectorSheetState<PaymentMethodType>? = null,
-    val datePickerDialog: DatePickerDialogState? = null
+    val datePickerDialog: DatePickerDialogState? = null,
+    val isDeleting: Boolean? = null
 )
