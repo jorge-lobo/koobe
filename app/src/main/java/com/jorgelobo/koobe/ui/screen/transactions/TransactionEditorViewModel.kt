@@ -17,6 +17,7 @@ import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.domain.repository.TransactionRepository
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
+import com.jorgelobo.koobe.domain.usecase.transaction.DeleteTransactionUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.ResolveTransactionDescriptionUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.SaveTransactionUseCase
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
@@ -55,15 +56,17 @@ import javax.inject.Inject
  * ViewModel responsible for managing the state and business logic of the Transaction Editor screen.
  *
  * This ViewModel handles:
- * - Loading initial category, subcategory, and shortcut data via repositories.
- * - Managing transaction form state, including date, description, amount, currency, and payment method.
+ * - Loading initial data for categories, subcategories, shortcuts, and existing transactions.
+ * - Managing complex UI state including date selection, amount input via a custom keypad,
+ *   currency selection, and payment methods.
  * - Resolving transaction descriptions automatically based on selected subcategories or shortcuts.
- * - Validating the form to enable or disable the save action.
+ * - Validating form requirements and determining unsaved changes to enable/disable the save action.
  * - Persisting new or edited transactions via [SaveTransactionUseCase].
- * - Emitting one-off UI events such as navigation and SnackBar notifications.
+ * - Deleting existing transactions via [DeleteTransactionUseCase].
+ * - Emitting one-off UI events such as navigation and SnackBar notifications via [events].
  *
- * State is exposed via [uiState] as a [StateFlow], while UI side-effects are emitted through
- * [events] as a [SharedFlow].
+ * @property events A [SharedFlow] of [TransactionEditorEvent] for handling UI side-effects.
+ * @property uiState A [StateFlow] of [TransactionEditorUiState] representing the current screen state.
  */
 @HiltViewModel
 class TransactionEditorViewModel @Inject constructor(
@@ -74,7 +77,8 @@ class TransactionEditorViewModel @Inject constructor(
     transactionRepository: TransactionRepository,
     getUserSettings: GetUserSettingsUseCase,
     private val saveTransaction: SaveTransactionUseCase,
-    private val resolveTransactionDescription: ResolveTransactionDescriptionUseCase
+    private val resolveTransactionDescription: ResolveTransactionDescriptionUseCase,
+    private val deleteTransaction: DeleteTransactionUseCase
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<TransactionEditorEvent>()
@@ -160,9 +164,9 @@ class TransactionEditorViewModel @Inject constructor(
     /**
      * The combined and observable state of the Transaction Editor screen.
      *
-     * This property merges the [baseStateFlow] (containing data from repositories and settings)
-     * with the [userInput] state (containing temporary changes made by the user). It calculates
-     * the final state used by the UI, including the validation of the save button.
+     * This property merges [baseStateFlow] (containing data from repositories and settings)
+     * with [userInput] (containing temporary changes made by the user). It calculates
+     * the final UI state, including form validation and the enabled status of the save action.
      */
     val uiState: StateFlow<TransactionEditorUiState> =
         combine(
@@ -180,9 +184,11 @@ class TransactionEditorViewModel @Inject constructor(
                 paymentMethodType = input.paymentMethodType ?: base.paymentMethodType,
                 currencyType = input.currencyType ?: base.currencyType,
                 discardDialog = input.discardDialog ?: base.discardDialog,
+                deleteDialog = input.deleteDialog ?: base.deleteDialog,
                 currencyDialog = input.currencyDialog ?: base.currencyDialog,
                 paymentMethodSelector = input.paymentMethodSelector ?: base.paymentMethodSelector,
-                datePickerDialog = input.datePickerDialog ?: base.datePickerDialog
+                datePickerDialog = input.datePickerDialog ?: base.datePickerDialog,
+                isLoading = input.isDeleting ?: base.isLoading
             )
 
             newState.copy(
@@ -315,10 +321,44 @@ class TransactionEditorViewModel @Inject constructor(
     }
 
     // ─────────────────────────────
+    // User actions – Delete
+    // ─────────────────────────────
+
+    /**
+     * Deletes the current transaction from the repository and manages the UI state during the process.
+     *
+     * This function checks for the existence of an original transaction, updates the [userInput]
+     * to reflect a loading state, and invokes the [deleteTransaction] use case.
+     * - On success: Triggers navigation back to the previous screen.
+     * - On failure: Resets the loading state and emits a SnackBar event to notify the user of the error.
+     */
+    private fun deleteCurrentTransaction() {
+        val transaction = uiState.value.originalTransaction ?: return
+
+        viewModelScope.launch {
+            runCatching {
+                userInput.update { it.copy(isDeleting = true) }
+                deleteTransaction(transaction)
+            }.onSuccess {
+                navigateBack()
+            }.onFailure {
+                userInput.update { it.copy(isDeleting = false) }
+                emitEvent(
+                    TransactionEditorEvent.ShowSnackBar(
+                        messageRes = R.string.snackBar_delete_transaction_error,
+                        actionLabelRes = null,
+                        icon = IconGeneral.WARNING
+                    )
+                )
+            }
+        }
+    }
+
+    // ─────────────────────────────
     // User actions – Dialogs / Sheets
     // ─────────────────────────────
 
-    fun onDialogAction(action: ConfirmationDialogAction) {
+    fun onDiscardDialogAction(action: ConfirmationDialogAction) {
         val (dialogState, effect) = reduceConfirmationDialog(
             state = uiState.value.discardDialog,
             action = action
@@ -330,6 +370,24 @@ class TransactionEditorViewModel @Inject constructor(
 
         when (effect) {
             ConfirmationDialogEffect.Confirmed -> navigateBack()
+
+            null -> Unit
+        }
+    }
+
+    fun onDeleteDialogAction(action: ConfirmationDialogAction) {
+        val (dialogState, effect) = reduceConfirmationDialog(
+            state = uiState.value.deleteDialog,
+            action = action
+        )
+
+        userInput.update {
+            it.copy(deleteDialog = dialogState)
+        }
+
+        when (effect) {
+            ConfirmationDialogEffect.Confirmed -> deleteCurrentTransaction()
+
             null -> Unit
         }
     }

@@ -73,7 +73,7 @@ fun TransactionEditorScreen(
         rememberUpdatedState(uiState.subcategory?.localizedName() ?: uiState.shortcut?.name)
 
     BackHandler {
-        viewModel.onDialogAction(ConfirmationDialogAction.RequestClose)
+        viewModel.onDiscardDialogAction(ConfirmationDialogAction.RequestClose)
     }
 
     TransactionEditorEffects(
@@ -89,7 +89,8 @@ fun TransactionEditorScreen(
     TransactionEditorDialogs(
         state = uiState,
         sheetState = sheetState,
-        onDialogAction = { viewModel.onDialogAction(it) },
+        onDiscardDialogAction = { viewModel.onDiscardDialogAction(it) },
+        onDeleteDialogAction = { viewModel.onDeleteDialogAction(it) },
         onCurrencySelectorDialogAction = { viewModel.onCurrencySelectorDialogAction(it) },
         onDatePickerDialogAction = { viewModel.onDatePickerDialogAction(it) },
         onPaymentSelectorAction = { viewModel.onPaymentSelectorAction(it) }
@@ -119,15 +120,13 @@ fun TransactionEditorScreen(
                     ),
                     leadingAction = AppBarAction(
                         icon = IconGeneral.CLOSE,
-                        onClick = { viewModel.onDialogAction(ConfirmationDialogAction.RequestClose) }
+                        onClick = { viewModel.onDiscardDialogAction(ConfirmationDialogAction.RequestClose) }
                     ),
                     trailingActions = if (config.isEditMode) listOf(
                         AppBarAction(
                             IconGeneral.DELETE,
-                            onClick = {
-                                // TODO(HistoricScreen):
-                                // Implement delete transaction when editor is accessible from HistoricScreen.
-                            })
+                            onClick = { viewModel.onDeleteDialogAction(ConfirmationDialogAction.RequestClose) }
+                        )
                     ) else emptyList()
                 )
             )

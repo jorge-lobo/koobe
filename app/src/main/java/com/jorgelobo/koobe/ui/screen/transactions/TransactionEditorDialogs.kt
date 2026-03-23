@@ -10,11 +10,13 @@ import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.ui.components.base.dialogs.AppDatePickerDialog
 import com.jorgelobo.koobe.ui.components.base.dialogs.AppDatePickerDialogConfig
+import com.jorgelobo.koobe.ui.components.composed.dialogs.DeleteDialog
 import com.jorgelobo.koobe.ui.components.composed.dialogs.DiscardDialog
 import com.jorgelobo.koobe.ui.components.composed.dialogs.OptionSelectorDialog
 import com.jorgelobo.koobe.ui.components.composed.dialogs.OptionSelectorDialogConfig
 import com.jorgelobo.koobe.ui.components.composed.sheets.ListSelectorBottomSheet
 import com.jorgelobo.koobe.ui.components.composed.sheets.ListSelectorBottomSheetConfig
+import com.jorgelobo.koobe.ui.components.model.enums.DeleteType
 import com.jorgelobo.koobe.ui.components.model.enums.OptionSelectorType
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
@@ -35,7 +37,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
  *
  * @param state The current UI state of the transaction editor.
  * @param sheetState The [SheetState] used for the modal bottom sheet.
- * @param onDialogAction Callback for handling confirmation dialog actions.
+ * @param onDiscardDialogAction Callback for handling confirmation dialog actions.
  * @param onCurrencySelectorDialogAction Callback for handling currency selection dialog actions.
  * @param onDatePickerDialogAction Callback for handling date picker dialog actions.
  * @param onPaymentSelectorAction Callback for handling payment method selection actions.
@@ -45,15 +47,24 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 fun TransactionEditorDialogs(
     state: TransactionEditorUiState,
     sheetState: SheetState,
-    onDialogAction: (ConfirmationDialogAction) -> Unit,
+    onDiscardDialogAction: (ConfirmationDialogAction) -> Unit,
+    onDeleteDialogAction: (ConfirmationDialogAction) -> Unit,
     onCurrencySelectorDialogAction: (SelectorDialogAction<CurrencyType>) -> Unit,
     onDatePickerDialogAction: (DatePickerDialogAction) -> Unit,
     onPaymentSelectorAction: (SelectorSheetAction<PaymentMethodType>) -> Unit
 ) {
     if (state.discardDialog.visible) {
         DiscardDialog(
-            onConfirm = { onDialogAction(ConfirmationDialogAction.Confirm) },
-            onCancel = { onDialogAction(ConfirmationDialogAction.Dismiss) }
+            onConfirm = { onDiscardDialogAction(ConfirmationDialogAction.Confirm) },
+            onCancel = { onDiscardDialogAction(ConfirmationDialogAction.Dismiss) }
+        )
+    }
+
+    if (state.deleteDialog.visible) {
+        DeleteDialog(
+            type = DeleteType.TRANSACTION,
+            onConfirm = { onDeleteDialogAction(ConfirmationDialogAction.Confirm) },
+            onCancel = { onDeleteDialogAction(ConfirmationDialogAction.Dismiss) }
         )
     }
 
