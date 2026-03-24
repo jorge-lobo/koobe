@@ -155,6 +155,7 @@
     <string name="empty_dashboard_budgets">You don\'t have any budgets yet!</string>
     <string name="empty_dashboard_headline_expenses">No expenses recorded this month!</string>
     <string name="empty_dashboard_hint_expenses">Start by adding your first expense.</string>
+    <string name="empty_headline_categories">No categories created yet!</string>
     <string name="empty_headline_subcategories">No subcategories created yet!</string>
     <string name="empty_headline_shortcuts">No shortcuts created yet!</string>
     <string name="empty_headline_budgets">No budgets created yet!</string>

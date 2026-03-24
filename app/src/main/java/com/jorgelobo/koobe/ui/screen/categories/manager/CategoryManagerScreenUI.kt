@@ -33,6 +33,7 @@ fun CategoryManagerScreenUI(
         )
 
         CategoryManagerCategoriesSection(
+            isEmpty = state.categories.isEmpty(),
             modifier = Modifier.weight(1f),
             categories = state.categories,
             onCategoryExpandToggle = onCategoryExpandToggle,
