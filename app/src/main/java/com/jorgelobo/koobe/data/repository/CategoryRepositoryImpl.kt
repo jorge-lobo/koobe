@@ -50,4 +50,13 @@ class CategoryRepositoryImpl @Inject constructor(
 
     override fun getCategoryByIdFlow(id: Int): Flow<Category?> =
         dao.getByIdFlow(id).map { it?.toDomain() }
+
+    override fun getCategoriesWithSubcategories(type: TransactionType): Flow<List<Category>> =
+        dao.getCategoriesWithSubcategories(type).map { list ->
+            list.map { relation ->
+                relation.category.toDomain().copy(
+                    subcategories = relation.subcategories.map { it.toDomain() }
+                )
+            }
+        }
 }

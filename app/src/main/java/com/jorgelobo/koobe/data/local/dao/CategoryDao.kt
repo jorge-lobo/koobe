@@ -5,8 +5,10 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Transaction
 import androidx.room.Update
 import com.jorgelobo.koobe.data.local.entity.CategoryEntity
+import com.jorgelobo.koobe.domain.model.category.CategoryWithSubcategories
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import kotlinx.coroutines.flow.Flow
 
@@ -36,4 +38,8 @@ interface CategoryDao {
 
     @Query("SELECT * FROM categories WHERE id = :id")
     fun getByIdFlow(id: Int): Flow<CategoryEntity?>
+
+    @Transaction
+    @Query("SELECT * FROM categories WHERE type = :type")
+    fun getCategoriesWithSubcategories(type: TransactionType): Flow<List<CategoryWithSubcategories>>
 }
