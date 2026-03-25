@@ -2,6 +2,7 @@ package com.jorgelobo.koobe.ui.screen.categories.manager
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoriesWithSubcategoriesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -44,6 +45,24 @@ class CategoryManagerViewModel @Inject constructor(
                         )
                     }
                 }
+        }
+    }
+
+    fun onTransactionTypeChange(type: TransactionType) {
+        updateState {
+            copy(
+                transactionTypeSelected = type,
+                expandedCategoryId = null,
+                isLoading = true
+            )
+        }
+    }
+
+    fun onCategoryExpandToggle(categoryId: Int) {
+        updateState {
+            copy(
+                expandedCategoryId = if (expandedCategoryId == categoryId) null else categoryId
+            )
         }
     }
 

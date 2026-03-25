@@ -56,8 +56,8 @@ fun CategoryManagerScreen(
         CategoryManagerScreenUI(
             modifier = Modifier.padding(padding),
             state = uiState,
-            onTransactionTypeChange = {},
-            onCategoryExpandToggle = {},
+            onTransactionTypeChange = viewModel::onTransactionTypeChange,
+            onCategoryExpandToggle = viewModel::onCategoryExpandToggle,
             onEditSubcategory = {},
             onDeleteSubcategory = {},
             onAddSubcategoryClick = {}
