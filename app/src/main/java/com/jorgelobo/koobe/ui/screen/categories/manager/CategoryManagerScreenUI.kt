@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.screen.categories.manager.components.CategoryManagerCategoriesSection
@@ -21,11 +22,21 @@ fun CategoryManagerScreenUI(
     onDeleteSubcategory: (Int) -> Unit,
     onAddSubcategoryClick: (Int) -> Unit,
 ) {
+
+    val categoryItems = remember(state.categories, state.expandedCategoryId) {
+        state.categories.map { category ->
+            CategoryItemUi(
+                category = category,
+                isExpanded = category.id == state.expandedCategoryId
+            )
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
             .padding(top = Spacing.Large),
-        verticalArrangement = Arrangement.spacedBy(Spacing.Large),
+        verticalArrangement = Arrangement.spacedBy(Spacing.Medium),
     ) {
         CategoryManagerToggleSection(
             transactionTypeSelected = state.transactionTypeSelected,
@@ -35,7 +46,7 @@ fun CategoryManagerScreenUI(
         CategoryManagerCategoriesSection(
             isEmpty = state.categories.isEmpty(),
             modifier = Modifier.weight(1f),
-            categories = state.categories,
+            categories = categoryItems,
             onCategoryExpandToggle = onCategoryExpandToggle,
             onEditSubcategory = onEditSubcategory,
             onDeleteSubcategory = onDeleteSubcategory,

@@ -28,6 +28,7 @@ import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -58,7 +59,7 @@ fun CardCategoryItem(
             )
 
             Text(
-                text = category.name,
+                text = category.localizedName(),
                 style = typography.titleMedium,
                 color = colors.textColors.textPrimary,
                 modifier = Modifier
