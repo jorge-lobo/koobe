@@ -5,5 +5,7 @@ import com.jorgelobo.koobe.domain.model.category.Category
 
 @Stable
 data class CardCategoryItemConfig(
-    val category: Category
+    val category: Category,
+    val isExpanded: Boolean,
+    val onCategoryExpandToggle: () -> Unit
 )

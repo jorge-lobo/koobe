@@ -14,6 +14,7 @@ import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorScreen
 import com.jorgelobo.koobe.ui.screen.budgets.manager.BudgetManagerScreen
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorScreen
+import com.jorgelobo.koobe.ui.screen.categories.manager.CategoryManagerConfig
 import com.jorgelobo.koobe.ui.screen.categories.manager.CategoryManagerScreen
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorScreen
@@ -112,7 +113,18 @@ fun NavGraph(
         // Categories
         composable(Route.CategoryManager.route) {
             CategoryManagerScreen(
-                navController
+                navController = navController,
+                config = CategoryManagerConfig(
+                    currentRoute = Route.CategoryManager.route,
+                    onRouteSelected = { route ->
+                        if (route != Route.CategoryManager.route) {
+                            navController.navigate(route) {
+                                popUpTo(Route.CategoryManager.route)
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                )
             )
         }
 

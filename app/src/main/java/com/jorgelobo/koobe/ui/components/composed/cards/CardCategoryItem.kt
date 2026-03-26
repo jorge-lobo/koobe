@@ -8,10 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,6 +20,7 @@ import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonConfig
 import com.jorgelobo.koobe.ui.components.base.buttons.types.AppButton
+import com.jorgelobo.koobe.ui.components.base.buttons.types.ButtonEditItem
 import com.jorgelobo.koobe.ui.components.composed.base.BaseExpandableCard
 import com.jorgelobo.koobe.ui.components.composed.lists.ListSubcategoryItem
 import com.jorgelobo.koobe.ui.components.composed.lists.ListSubcategoryItemConfig
@@ -32,6 +29,7 @@ import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -41,20 +39,19 @@ import com.jorgelobo.koobe.utils.resolvedColor
 fun CardCategoryItem(
     modifier: Modifier = Modifier,
     config: CardCategoryItemConfig,
-    onEditSubcategory: (Int) -> Unit,
-    onDeleteSubcategory: (Int) -> Unit,
+    onEditCategory: (categoryId: Int) -> Unit,
+    onEditSubcategory: (subcategoryId: Int) -> Unit,
+    onDeleteSubcategory: (subcategoryId: Int) -> Unit,
     onAddSubcategoryClick: () -> Unit
 ) {
     val colors = AppTheme.colors
     val typography = AppTheme.typography.text
     val category = config.category
 
-    var isExpanded by remember { mutableStateOf(false) }
-
     BaseExpandableCard(
         modifier = modifier,
-        isExpanded = isExpanded,
-        onExpandedChange = { isExpanded = it },
+        isExpanded = config.isExpanded,
+        onExpandedChange = { config.onCategoryExpandToggle() },
         headerContent = {
             Avatar(
                 type = AvatarType.MEDIUM,
@@ -64,13 +61,16 @@ fun CardCategoryItem(
             )
 
             Text(
-                text = category.name,
+                text = category.localizedName(),
                 style = typography.titleMedium,
                 color = colors.textColors.textPrimary,
                 modifier = Modifier
                     .weight(1f)
                     .padding(start = Spacing.Small)
             )
+        },
+        headerActions = {
+            ButtonEditItem(onClick = { onEditCategory(category.id) })
         },
         expandedContent = {
             category.subcategories.forEach { subcategory ->
@@ -150,8 +150,11 @@ fun PreviewCardCategoryItem() {
 
             CardCategoryItem(
                 config = CardCategoryItemConfig(
-                    category = category
+                    category = category,
+                    isExpanded = true,
+                    onCategoryExpandToggle = {}
                 ),
+                onEditCategory = {},
                 onEditSubcategory = {},
                 onDeleteSubcategory = {},
                 onAddSubcategoryClick = {}
