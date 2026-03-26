@@ -28,7 +28,7 @@ fun CategoryManagerCategoriesSection(
     isEmpty: Boolean,
     categories: List<CategoryItemUi>,
     onCategoryExpandToggle: (Int) -> Unit,
-    onEditSubcategory: (Int) -> Unit,
+    onEditSubcategory: (categoryId: Int, subcategoryId: Int) -> Unit,
     onDeleteSubcategory: (Int) -> Unit,
     onAddSubcategoryClick: (Int) -> Unit,
     modifier: Modifier = Modifier

@@ -26,6 +26,16 @@ fun CategoryManagerScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    CategoryManagerEffects(
+        navController = navController,
+        viewModel = viewModel
+    )
+
+    CategoryManagerDialogs(
+        state = uiState,
+        onDeleteDialogAction = viewModel::onDeleteDialogAction
+    )
+
     Scaffold(
         topBar = {
             CommonAppBar(
@@ -33,12 +43,12 @@ fun CategoryManagerScreen(
                     headline = stringResource(R.string.headline_category_manager),
                     leadingAction = AppBarAction(
                         icon = IconGeneral.BACK,
-                        onClick = {}
+                        onClick = viewModel::onBackClick
                     ),
                     trailingActions = listOf(
                         AppBarAction(
                             icon = IconGeneral.ADD,
-                            onClick = {}
+                            onClick = viewModel::onAddCategoryClick
                         )
                     )
                 )
@@ -48,7 +58,7 @@ fun CategoryManagerScreen(
             AppBottomNavigation(
                 currentRoute = config.currentRoute,
                 items = BottomNavigationDefaults.items,
-                onItemSelected = { item -> config.onRouteSelected(item.route)}
+                onItemSelected = { item -> config.onRouteSelected(item.route) }
             )
         },
         containerColor = AppTheme.colors.backgroundColors.screenBackground
@@ -58,9 +68,9 @@ fun CategoryManagerScreen(
             state = uiState,
             onTransactionTypeChange = viewModel::onTransactionTypeChange,
             onCategoryExpandToggle = viewModel::onCategoryExpandToggle,
-            onEditSubcategory = {},
-            onDeleteSubcategory = {},
-            onAddSubcategoryClick = {}
+            onEditSubcategory = viewModel::onEditSubcategory,
+            onDeleteSubcategory = { viewModel.onDeleteSubcategoryClick(it) },
+            onAddSubcategoryClick = { viewModel.onAddSubcategoryClick(it) }
         )
     }
 }

@@ -115,11 +115,11 @@ fun NavGraph(
             CategoryManagerScreen(
                 navController = navController,
                 config = CategoryManagerConfig(
-                    currentRoute = Route.Settings.route,
+                    currentRoute = Route.CategoryManager.route,
                     onRouteSelected = { route ->
-                        if (route != Route.Settings.route) {
+                        if (route != Route.CategoryManager.route) {
                             navController.navigate(route) {
-                                popUpTo(Route.Settings.route)
+                                popUpTo(Route.CategoryManager.route)
                                 launchSingleTop = true
                             }
                         }

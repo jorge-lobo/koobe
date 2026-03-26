@@ -38,7 +38,7 @@ import com.jorgelobo.koobe.utils.resolvedColor
 fun CardCategoryItem(
     modifier: Modifier = Modifier,
     config: CardCategoryItemConfig,
-    onEditSubcategory: (Int) -> Unit,
+    onEditSubcategory: (categoryId: Int, subcategoryId: Int) -> Unit,
     onDeleteSubcategory: (Int) -> Unit,
     onAddSubcategoryClick: () -> Unit
 ) {
@@ -77,7 +77,7 @@ fun CardCategoryItem(
                             subcategory = subcategory,
                             category = category
                         ),
-                        onEditClick = { onEditSubcategory(subcategory.id) },
+                        onEditClick = { onEditSubcategory(category.id, subcategory.id) },
                         onDeleteClick = { onDeleteSubcategory(subcategory.id) }
                     )
                 }
@@ -149,7 +149,7 @@ fun PreviewCardCategoryItem() {
                     isExpanded = true,
                     onCategoryExpandToggle = {}
                 ),
-                onEditSubcategory = {},
+                onEditSubcategory = { _, _ -> },
                 onDeleteSubcategory = {},
                 onAddSubcategoryClick = {}
             )
