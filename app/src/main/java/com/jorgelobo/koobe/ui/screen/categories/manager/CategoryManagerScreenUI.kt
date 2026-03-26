@@ -18,6 +18,7 @@ fun CategoryManagerScreenUI(
     modifier: Modifier = Modifier,
     onTransactionTypeChange: (TransactionType) -> Unit,
     onCategoryExpandToggle: (Int) -> Unit,
+    onEditCategory: (categoryId: Int) -> Unit,
     onEditSubcategory: (categoryId: Int, subcategoryId: Int) -> Unit,
     onDeleteSubcategory: (subcategoryId: Int) -> Unit,
     onAddSubcategoryClick: (Int) -> Unit,
@@ -48,6 +49,7 @@ fun CategoryManagerScreenUI(
             modifier = Modifier.weight(1f),
             categories = categoryItems,
             onCategoryExpandToggle = onCategoryExpandToggle,
+            onEditCategory = onEditCategory,
             onEditSubcategory = onEditSubcategory,
             onDeleteSubcategory = onDeleteSubcategory,
             onAddSubcategoryClick = onAddSubcategoryClick

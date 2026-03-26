@@ -20,6 +20,7 @@ import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonConfig
 import com.jorgelobo.koobe.ui.components.base.buttons.types.AppButton
+import com.jorgelobo.koobe.ui.components.base.buttons.types.ButtonEditItem
 import com.jorgelobo.koobe.ui.components.composed.base.BaseExpandableCard
 import com.jorgelobo.koobe.ui.components.composed.lists.ListSubcategoryItem
 import com.jorgelobo.koobe.ui.components.composed.lists.ListSubcategoryItemConfig
@@ -38,6 +39,7 @@ import com.jorgelobo.koobe.utils.resolvedColor
 fun CardCategoryItem(
     modifier: Modifier = Modifier,
     config: CardCategoryItemConfig,
+    onEditCategory: (categoryId: Int) -> Unit,
     onEditSubcategory: (subcategoryId: Int) -> Unit,
     onDeleteSubcategory: (subcategoryId: Int) -> Unit,
     onAddSubcategoryClick: () -> Unit
@@ -66,6 +68,9 @@ fun CardCategoryItem(
                     .weight(1f)
                     .padding(start = Spacing.Small)
             )
+        },
+        headerActions = {
+            ButtonEditItem(onClick = { onEditCategory(category.id) })
         },
         expandedContent = {
             category.subcategories.forEach { subcategory ->
@@ -149,6 +154,7 @@ fun PreviewCardCategoryItem() {
                     isExpanded = true,
                     onCategoryExpandToggle = {}
                 ),
+                onEditCategory = {},
                 onEditSubcategory = {},
                 onDeleteSubcategory = {},
                 onAddSubcategoryClick = {}

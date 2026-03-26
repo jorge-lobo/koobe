@@ -68,6 +68,7 @@ fun CategoryManagerScreen(
             state = uiState,
             onTransactionTypeChange = viewModel::onTransactionTypeChange,
             onCategoryExpandToggle = viewModel::onCategoryExpandToggle,
+            onEditCategory = viewModel::onEditCategory,
             onEditSubcategory = viewModel::onEditSubcategory,
             onDeleteSubcategory = { viewModel.onDeleteSubcategoryClick(it) },
             onAddSubcategoryClick = { viewModel.onAddSubcategoryClick(it) }

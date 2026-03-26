@@ -90,6 +90,15 @@ class CategoryManagerViewModel @Inject constructor(
         navigateTo(route)
     }
 
+    fun onEditCategory(categoryId: Int) {
+        val route = Route.CategoryEditor.create(
+            CategoryEditorConfig(
+                categoryId = categoryId
+            )
+        )
+        navigateTo(route)
+    }
+
     fun onAddSubcategoryClick(categoryId: Int) {
         val route = Route.SubcategoryEditor.create(
             SubcategoryEditorConfig(
