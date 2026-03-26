@@ -19,7 +19,7 @@ fun CategoryManagerScreenUI(
     onTransactionTypeChange: (TransactionType) -> Unit,
     onCategoryExpandToggle: (Int) -> Unit,
     onEditSubcategory: (categoryId: Int, subcategoryId: Int) -> Unit,
-    onDeleteSubcategory: (Int) -> Unit,
+    onDeleteSubcategory: (subcategoryId: Int) -> Unit,
     onAddSubcategoryClick: (Int) -> Unit,
 ) {
 

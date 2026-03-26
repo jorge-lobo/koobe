@@ -29,7 +29,7 @@ fun CategoryManagerCategoriesSection(
     categories: List<CategoryItemUi>,
     onCategoryExpandToggle: (Int) -> Unit,
     onEditSubcategory: (categoryId: Int, subcategoryId: Int) -> Unit,
-    onDeleteSubcategory: (Int) -> Unit,
+    onDeleteSubcategory: (subcategoryId: Int) -> Unit,
     onAddSubcategoryClick: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -66,7 +66,7 @@ fun CategoryManagerCategoriesSection(
                         isExpanded = item.isExpanded,
                         onCategoryExpandToggle = { onCategoryExpandToggle(item.category.id) }
                     ),
-                    onEditSubcategory = onEditSubcategory,
+                    onEditSubcategory = { subcategoryId -> onEditSubcategory(item.category.id, subcategoryId) },
                     onDeleteSubcategory = onDeleteSubcategory,
                     onAddSubcategoryClick = { onAddSubcategoryClick(item.category.id) }
                 )
