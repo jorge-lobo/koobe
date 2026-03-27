@@ -128,6 +128,11 @@ dependencies {
 
     // AppCompat 1.6+
     implementation(libs.androidx.appcompat)
+
+    // Test Implementation
+    testImplementation(libs.kotlinx.coroutines.test)
+    testImplementation(libs.mockk)
+    testImplementation(libs.turbine)
 }
 
 kapt {
