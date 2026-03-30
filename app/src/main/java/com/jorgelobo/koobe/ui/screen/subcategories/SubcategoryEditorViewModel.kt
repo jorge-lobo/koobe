@@ -1,6 +1,5 @@
 package com.jorgelobo.koobe.ui.screen.subcategories
 
-import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -18,6 +17,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.json.Json
+import java.net.URLDecoder
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,7 +32,7 @@ class SubcategoryEditorViewModel @Inject constructor(
 
     private val config: SubcategoryEditorConfig =
         savedStateHandle.get<String>("config")
-            ?.let { Uri.decode(it) }
+            ?.let { URLDecoder.decode(it, "UTF-8") }
             ?.let { Json.decodeFromString<SubcategoryEditorConfig>(it) }
             ?: error("Missing SubcategoryEditorConfig")
 
@@ -81,7 +81,7 @@ class SubcategoryEditorViewModel @Inject constructor(
         baseStateFlow
             .stateIn(
                 scope = viewModelScope,
-                started = SharingStarted.WhileSubscribed(5000),
+                started = SharingStarted.Eagerly,
                 initialValue = SubcategoryEditorUiState.initialEmpty()
             )
 
