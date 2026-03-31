@@ -24,7 +24,7 @@ import java.util.Date
  * @property paymentMethodSelector State for managing the payment method selection bottom sheet.
  * @property datePickerDialog State for managing the date picker dialog.
  */
-data class UserInputState(
+data class TransactionInputState(
     val descriptionSource: DescriptionSource? = null,
     val amountInput: String? = null,
     val date: Date? = null,

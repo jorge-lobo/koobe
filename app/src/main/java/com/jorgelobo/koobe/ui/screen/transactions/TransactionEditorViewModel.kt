@@ -116,7 +116,7 @@ class TransactionEditorViewModel @Inject constructor(
 
     private val userSettingsFlow = getUserSettings()
 
-    private val userInput = MutableStateFlow(UserInputState())
+    private val userInput = MutableStateFlow(TransactionInputState())
 
     /**
      * A [Flow] that combines external data sources (category, subcategory, shortcut, existing
@@ -172,7 +172,7 @@ class TransactionEditorViewModel @Inject constructor(
         combine(
             baseStateFlow,
             userInput
-        ) { base: TransactionEditorUiState, input: UserInputState ->
+        ) { base: TransactionEditorUiState, input: TransactionInputState ->
 
             val amountInput = input.amountInput ?: base.amountInput
 
