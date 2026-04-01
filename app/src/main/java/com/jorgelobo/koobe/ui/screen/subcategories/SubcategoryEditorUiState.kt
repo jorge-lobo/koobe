@@ -1,10 +1,10 @@
 package com.jorgelobo.koobe.ui.screen.subcategories
 
 import androidx.compose.ui.graphics.vector.ImageVector
+import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
@@ -18,6 +18,7 @@ data class SubcategoryEditorUiState(
     val iconDialog: SelectorDialogState<IconPack> = SelectorDialogState(initial = IconPack.EXTRA),
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
+    val isSaveButtonEnabled: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 ) {
@@ -25,6 +26,14 @@ data class SubcategoryEditorUiState(
         get() = subcategory.name != initialSnapshot.name ||
                 subcategory.icon != initialSnapshot.icon ||
                 subcategory.categoryId != initialSnapshot.categoryId
+
+    fun headlineRes(isEditMode: Boolean): Int {
+        return if (isEditMode) {
+            R.string.headline_subcategory_editor
+        } else {
+            R.string.headline_subcategory_creator
+        }
+    }
 
     companion object {
         fun initialEmpty(): SubcategoryEditorUiState {
