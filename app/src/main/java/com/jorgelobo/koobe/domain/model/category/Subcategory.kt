@@ -1,7 +1,7 @@
 package com.jorgelobo.koobe.domain.model.category
 
 import androidx.compose.ui.graphics.vector.ImageVector
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 
 data class Subcategory(
     val id: Int,
@@ -15,7 +15,7 @@ data class Subcategory(
             id = -1,
             categoryId = -1,
             name = "",
-            icon = IconGeneral.EMPTY.icon,
+            icon = IconPack.PLACEHOLDER.icon,
         )
     }
 }

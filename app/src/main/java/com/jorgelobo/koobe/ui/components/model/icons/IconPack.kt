@@ -200,6 +200,7 @@ enum class IconPack(val icon: ImageVector) {
     PEN_NIB(RegularGroup.PenNib),
     PENCIL(RegularGroup.Pencil),
     PERCENT(RegularGroup.Percent),
+    PLACEHOLDER(RegularGroup.CircleDashed),
     PLANT(RegularGroup.Plant),
     PLAY(RegularGroup.Play),
     QUESTION(RegularGroup.Question),
