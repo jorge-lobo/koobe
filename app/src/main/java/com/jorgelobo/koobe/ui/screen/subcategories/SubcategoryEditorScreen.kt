@@ -57,7 +57,7 @@ fun SubcategoryEditorScreen(
             onNameChanged = viewModel::onNameChanged,
             onIconSelectorClick = {},
             onCategoryChangeClick = {},
-            onResetNameClick = {},
+            onResetNameClick = viewModel::onResetName,
             onSaveClick = {}
         )
     }

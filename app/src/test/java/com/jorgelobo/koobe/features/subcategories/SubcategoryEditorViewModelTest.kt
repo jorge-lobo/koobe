@@ -138,6 +138,38 @@ class SubcategoryEditorViewModelTest {
     }
 
     @Test
+    fun `onResetName should reset subcategory name`() = runTest {
+
+        val flow = MutableStateFlow<Subcategory?>(
+            fakeSubcategory(name = "Initial Name")
+        )
+
+        val category = fakeCategory()
+
+        val viewModel = createViewModel(
+            SubcategoryEditorConfig(
+                subcategoryId = 2,
+                categoryId = 1
+            ),
+            subcategoryFlow = flow,
+            categoryFlow = flowOf(category)
+        )
+
+        val initial = viewModel.awaitState {
+            it.subcategory.name == "Initial Name"
+        }
+
+        viewModel.onResetName()
+
+        val updated = viewModel.awaitState {
+            it.subcategory.name == ""
+        }
+
+        assertEquals("Initial Name", initial.subcategory.name)
+        assertEquals("", updated.subcategory.name)
+    }
+
+    @Test
     fun `onIconSelected should update icon`() = runTest {
         val viewModel = createViewModelCreateMode()
 

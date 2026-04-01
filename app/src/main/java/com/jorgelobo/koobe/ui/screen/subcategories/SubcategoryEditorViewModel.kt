@@ -108,6 +108,10 @@ class SubcategoryEditorViewModel @Inject constructor(
         userInput.update { it.copy(name = name) }
     }
 
+    fun onResetName() {
+        userInput.update { it.copy(name = "") }
+    }
+
     fun onIconSelected(icon: ImageVector) {
         userInput.update { it.copy(icon = icon) }
     }
