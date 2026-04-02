@@ -29,6 +29,8 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import java.net.URLEncoder
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class SubcategoryEditorViewModelTest {
@@ -196,6 +198,60 @@ class SubcategoryEditorViewModelTest {
         assertEquals(5, state.subcategory.categoryId)
     }
 
+    @Test
+    fun `create mode should enable save when subcategory is valid`() = runTest {
+        val viewModel = createViewModelCreateMode()
+
+        viewModel.onNameChanged("Food")
+        viewModel.onIconSelected(IconPack.FOOD.icon)
+
+        val state = viewModel.awaitState {
+            it.isSaveButtonEnabled
+        }
+
+        assertTrue(state.isSaveButtonEnabled)
+    }
+
+    @Test
+    fun `create mode should disable save when name is blank`() = runTest {
+        val viewModel = createViewModelCreateMode()
+
+        viewModel.onNameChanged("")
+        viewModel.onIconSelected(IconPack.FOOD.icon)
+
+        val state = viewModel.awaitState {
+            !it.isSaveButtonEnabled
+        }
+
+        assertFalse(state.isSaveButtonEnabled)
+    }
+
+    @Test
+    fun `edit mode should enable save when valid change occurs`() = runTest {
+        val viewModel = createViewModelEditMode()
+
+        viewModel.onNameChanged("New Name")
+
+        val state = viewModel.awaitState {
+            it.isSaveButtonEnabled
+        }
+
+        assertTrue(state.isSaveButtonEnabled)
+    }
+
+    @Test
+    fun `edit mode should disable save when name is blank`() = runTest {
+        val viewModel = createViewModelEditMode()
+
+        viewModel.onNameChanged("")
+
+        val state = viewModel.awaitState {
+            !it.isSaveButtonEnabled
+        }
+
+        assertFalse(state.isSaveButtonEnabled)
+    }
+
     private fun createViewModel(
         config: SubcategoryEditorConfig,
         subcategoryFlow: Flow<Subcategory?> = flowOf(null),
@@ -222,6 +278,19 @@ class SubcategoryEditorViewModelTest {
                 subcategoryId = null,
                 categoryId = 1
             )
+        )
+    }
+
+    private fun createViewModelEditMode(
+        subcategory: Subcategory = fakeSubcategory()
+    ): SubcategoryEditorViewModel {
+        return createViewModel(
+            SubcategoryEditorConfig(
+                subcategoryId = subcategory.id,
+                categoryId = subcategory.categoryId
+            ),
+            subcategoryFlow = flowOf(subcategory),
+            categoryFlow = flowOf(fakeCategory(subcategory.categoryId))
         )
     }
 
