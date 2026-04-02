@@ -94,8 +94,12 @@ class SubcategoryEditorViewModel @Inject constructor(
                 categoryId = input.categoryId ?: base.subcategory.categoryId
             )
 
-            base.copy(
+            val newState = base.copy(
                 subcategory = updatedSubcategory
+            )
+
+            newState.copy(
+                isSaveButtonEnabled = computeSaveEnabled(newState)
             )
         }
             .stateIn(
@@ -103,6 +107,16 @@ class SubcategoryEditorViewModel @Inject constructor(
                 started = SharingStarted.Eagerly,
                 initialValue = SubcategoryEditorUiState.initialEmpty()
             )
+
+    private fun computeSaveEnabled(state: SubcategoryEditorUiState): Boolean {
+        val isValid = state.isValid
+
+        return when {
+            !isValid -> false
+            config.isEditMode -> state.hasUnsavedChanges
+            else -> true
+        }
+    }
 
     fun onNameChanged(name: String) {
         userInput.update { it.copy(name = name) }
