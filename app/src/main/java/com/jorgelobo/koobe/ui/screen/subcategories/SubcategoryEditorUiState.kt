@@ -27,6 +27,10 @@ data class SubcategoryEditorUiState(
                 subcategory.icon != initialSnapshot.icon ||
                 subcategory.categoryId != initialSnapshot.categoryId
 
+    val isValid: Boolean
+        get() = subcategory.name.isNotBlank() &&
+                subcategory.icon != IconPack.PLACEHOLDER.icon
+
     fun headlineRes(isEditMode: Boolean): Int {
         return if (isEditMode) {
             R.string.headline_subcategory_editor
