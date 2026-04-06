@@ -26,7 +26,7 @@ import com.jorgelobo.koobe.ui.components.base.snackbar.SnackBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
@@ -119,12 +119,12 @@ fun TransactionEditorScreen(
                         )
                     ),
                     leadingAction = AppBarAction(
-                        icon = IconGeneral.CLOSE,
+                        icon = IconPack.CLOSE,
                         onClick = { viewModel.onDiscardDialogAction(ConfirmationDialogAction.RequestClose) }
                     ),
                     trailingActions = if (config.isEditMode) listOf(
                         AppBarAction(
-                            IconGeneral.DELETE,
+                            IconPack.DELETE,
                             onClick = { viewModel.onDeleteDialogAction(ConfirmationDialogAction.RequestClose) }
                         )
                     ) else emptyList()

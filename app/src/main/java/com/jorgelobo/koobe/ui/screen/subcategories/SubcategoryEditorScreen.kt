@@ -12,7 +12,7 @@ import androidx.navigation.NavController
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
 @Composable
@@ -36,12 +36,12 @@ fun SubcategoryEditorScreen(
                         uiState.headlineRes(config.isEditMode)
                     ),
                     leadingAction = AppBarAction(
-                        icon = IconGeneral.CLOSE,
+                        icon = IconPack.CLOSE,
                         onClick = {}
                     ),
                     trailingActions = if (config.isEditMode) listOf(
                         AppBarAction(
-                            IconGeneral.DELETE,
+                            IconPack.DELETE,
                             onClick = {}
                         )
                     ) else emptyList()

@@ -15,11 +15,10 @@ import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonConfig
-import com.jorgelobo.koobe.ui.components.base.buttons.base.iconVector
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.components.model.enums.UiState
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
@@ -51,23 +50,22 @@ fun AppButton(
         )
 
         ButtonType.SQUARE -> {
-            val iconVector = config.iconVector()
+            val icon = config.icon
                 ?: error("SquareButton needs an icon")
             ButtonSquare(
                 onClick = config.onClick,
                 enabled = enabled,
-                iconUrl = iconVector
+                icon = icon
             )
         }
 
         ButtonType.TEXT -> {
-            val iconVector = config.iconVector()
             ButtonText(
                 onClick = config.onClick,
                 enabled = enabled,
                 text = config.text,
                 textColor = config.textColor,
-                iconUrl = iconVector
+                icon = config.icon
             )
         }
 
@@ -138,7 +136,7 @@ fun PreviewButtons() {
                 ButtonConfig(
                     text = "",
                     type = ButtonType.SQUARE,
-                    icon = IconGeneral.CHANGE,
+                    icon = IconPack.CHANGE,
                     onClick = {}
                 )
             )
@@ -147,7 +145,7 @@ fun PreviewButtons() {
                 ButtonConfig(
                     text = stringResource(R.string.btn_add_subcategory),
                     type = ButtonType.TEXT,
-                    icon = IconGeneral.ADD,
+                    icon = IconPack.ADD,
                     onClick = {}
                 )
             )

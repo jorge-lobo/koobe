@@ -91,7 +91,7 @@ fun sampleBudgetUiModels(): List<BudgetUiModel> {
     val categoryFood = Category(
         id = 1,
         name = "Dining",
-        icon = IconPack.DINING.icon,
+        icon = IconPack.DINING,
         color = "#FFB74D",
         type = TransactionType.EXPENSE
     )
@@ -100,7 +100,7 @@ fun sampleBudgetUiModels(): List<BudgetUiModel> {
         id = 11,
         categoryId = 1,
         name = "Restaurant",
-        icon = IconPack.RESTAURANT.icon
+        icon = IconPack.RESTAURANT
     )
 
     val budget1 = Budget(

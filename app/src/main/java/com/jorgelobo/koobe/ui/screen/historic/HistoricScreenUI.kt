@@ -107,20 +107,20 @@ fun previewHistoricUiState(): HistoricUiState {
         id = 11,
         categoryId = 2,
         name = "Food items",
-        icon = IconPack.FOOD_ITEMS.icon
+        icon = IconPack.FOOD_ITEMS
     )
 
     val drinksSub = Subcategory(
         id = 12,
         categoryId = 2,
         name = "Drinks",
-        icon = IconPack.DRINKS.icon
+        icon = IconPack.DRINKS
     )
 
     val groceriesCategory = Category(
         id = 2,
         name = "Grocery",
-        icon = IconPack.GROCERY.icon,
+        icon = IconPack.GROCERY,
         color = "#DAE067",
         type = TransactionType.EXPENSE,
         subcategories = listOf(foodItemsSub, drinksSub)
@@ -176,20 +176,20 @@ fun previewHistoricUiState(): HistoricUiState {
         id = 19,
         categoryId = 4,
         name = "Fuel",
-        icon = IconPack.FUEL.icon
+        icon = IconPack.FUEL
     )
 
     val transitSub = Subcategory(
         id = 20,
         categoryId = 4,
         name = "Public transport",
-        icon = IconPack.TRANSIT.icon
+        icon = IconPack.TRANSIT
     )
 
     val transportCategory = Category(
         id = 4,
         name = "Transportation",
-        icon = IconPack.TRANSPORTATION.icon,
+        icon = IconPack.TRANSPORTATION,
         color = "#3EB5A9",
         type = TransactionType.EXPENSE,
         subcategories = listOf(fuelSub, transitSub)
@@ -244,20 +244,20 @@ fun previewHistoricUiState(): HistoricUiState {
         id = 30,
         categoryId = 6,
         name = "Rent",
-        icon = IconPack.RENT.icon
+        icon = IconPack.RENT
     )
 
     val houseMaintenanceSub = Subcategory(
         id = 31,
         categoryId = 6,
         name = "House maintenance",
-        icon = IconPack.HOUSE_MAINTENANCE.icon
+        icon = IconPack.HOUSE_MAINTENANCE
     )
 
     val homeCategory = Category(
         id = 6,
         name = "Home",
-        icon = IconPack.HOME.icon,
+        icon = IconPack.HOME,
         color = "#FFB74D",
         type = TransactionType.EXPENSE,
         subcategories = listOf(rentSub, houseMaintenanceSub)

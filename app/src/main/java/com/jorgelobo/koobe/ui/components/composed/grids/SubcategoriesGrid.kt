@@ -69,66 +69,66 @@ fun PreviewSubcategoriesGrid() {
                     id = 1,
                     categoryId = 1,
                     name = "Rent",
-                    icon = IconPack.RENT.icon
+                    icon = IconPack.RENT
                 ),
                 Subcategory(
                     id = 2,
                     categoryId = 1,
                     name = "Internet & TV",
-                    icon = IconPack.INTERNET_TV.icon
+                    icon = IconPack.INTERNET_TV
                 ),
                 Subcategory(
                     id = 3,
                     categoryId = 1,
                     name = "Electricity",
-                    icon = IconPack.ELECTRICITY.icon
+                    icon = IconPack.ELECTRICITY
                 ),
                 Subcategory(
                     id = 4,
                     categoryId = 1,
                     name = "Appliances",
-                    icon = IconPack.APPLIANCES.icon
+                    icon = IconPack.APPLIANCES
                 ),
                 Subcategory(
                     id = 5,
                     categoryId = 1,
                     name = "Water",
-                    icon = IconPack.WATER.icon
+                    icon = IconPack.WATER
                 ),
                 Subcategory(
                     id = 6,
                     categoryId = 1,
                     name = "Gas",
-                    icon = IconPack.GAS.icon
+                    icon = IconPack.GAS
                 ),
                 Subcategory(
                     id = 7,
                     categoryId = 1,
                     name = "Maintenance",
-                    icon = IconPack.HOUSE_MAINTENANCE.icon
+                    icon = IconPack.HOUSE_MAINTENANCE
                 ),
                 Subcategory(
                     id = 8,
                     categoryId = 1,
                     name = "Condominium",
-                    icon = IconPack.CONDOMINIUM.icon
+                    icon = IconPack.CONDOMINIUM
                 ),
                 Subcategory(
                     id = 9,
                     categoryId = 1,
                     name = "Mortgage",
-                    icon = IconPack.MORTGAGE.icon
+                    icon = IconPack.MORTGAGE
                 ),
                 Subcategory(
                     id = 10,
                     categoryId = 1,
                     name = "Furniture",
-                    icon = IconPack.FURNITURE.icon
+                    icon = IconPack.FURNITURE
                 )
             )
 
             val category =
-                Category(1, "Home", IconPack.HOME.icon, "#FFB74D", TransactionType.EXPENSE)
+                Category(1, "Home", IconPack.HOME, "#FFB74D", TransactionType.EXPENSE)
 
             SubcategoriesGrid(
                 config = SubcategoriesGridConfig(

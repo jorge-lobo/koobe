@@ -80,7 +80,7 @@ fun PreviewShortcutSimpleItem() {
             val shortcut = Shortcut(
                 id = 1,
                 name = "Electricity",
-                icon = IconPack.ELECTRICITY.icon,
+                icon = IconPack.ELECTRICITY,
                 categoryId = 1,
                 transactionType = TransactionType.EXPENSE,
                 paymentMethod = PaymentMethodType.CASH,
@@ -92,7 +92,7 @@ fun PreviewShortcutSimpleItem() {
             val category = Category(
                 id = 1,
                 name = "Home",
-                icon = IconPack.HOME.icon,
+                icon = IconPack.HOME,
                 color = "#FF5722",
                 type = TransactionType.EXPENSE
             )

@@ -93,7 +93,7 @@ fun AppBottomNavBarItem(
                 .background(indicatorColor, shape)
         ) {
             Icon(
-                imageVector = item.icon,
+                imageVector = item.icon.icon,
                 contentDescription = stringResource(item.labelResId),
                 tint = iconColor,
                 modifier = Modifier

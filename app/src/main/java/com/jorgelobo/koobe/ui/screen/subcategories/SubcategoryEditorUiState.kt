@@ -1,6 +1,5 @@
 package com.jorgelobo.koobe.ui.screen.subcategories
 
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.Subcategory
@@ -29,7 +28,7 @@ data class SubcategoryEditorUiState(
 
     val isValid: Boolean
         get() = subcategory.name.isNotBlank() &&
-                subcategory.icon != IconPack.PLACEHOLDER.icon
+                subcategory.icon != IconPack.PLACEHOLDER
 
     fun headlineRes(isEditMode: Boolean): Int {
         return if (isEditMode) {
@@ -78,6 +77,6 @@ data class SubcategoryEditorUiState(
 
 data class SubcategoryInitialSnapshot(
     val name: String,
-    val icon: ImageVector,
+    val icon: IconPack,
     val categoryId: Int
 )

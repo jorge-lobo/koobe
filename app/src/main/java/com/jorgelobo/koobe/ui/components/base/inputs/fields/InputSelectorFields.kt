@@ -14,7 +14,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
@@ -25,8 +24,7 @@ import com.jorgelobo.koobe.ui.components.base.inputs.base.BaseFieldContainer
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.SelectorType
 import com.jorgelobo.koobe.ui.components.model.enums.SelectorWidth
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
-import com.jorgelobo.koobe.ui.components.model.icons.IconPayment
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentGold
@@ -45,13 +43,13 @@ fun BaseSelectorField(
 
     val (icon, width, contentDescription) = when (config.width) {
         SelectorWidth.SMALL -> Triple(
-            IconGeneral.DISCLOSURE.icon,
+            IconPack.DISCLOSURE,
             SelectorSize.SmallWidth,
             stringResource(R.string.cd_disclosure)
         )
 
         SelectorWidth.MEDIUM -> Triple(
-            IconGeneral.EXPAND.icon,
+            IconPack.EXPAND,
             SelectorSize.MediumWidth,
             stringResource(R.string.cd_expand)
         )
@@ -77,7 +75,7 @@ fun BaseSelectorField(
             SelectorType.ICON -> {
                 config.icon?.let {
                     Icon(
-                        imageVector = it,
+                        imageVector = it.icon,
                         contentDescription = null,
                         tint = config.iconTint ?: colors.iconColors.iconPrimary,
                         modifier = Modifier.size(IconSize.Small)
@@ -100,7 +98,7 @@ fun BaseSelectorField(
         Spacer(modifier = Modifier.weight(1f))
 
         AnimatedIconButton(
-            imageVector = icon,
+            icon = icon,
             contentDescription = contentDescription,
             onClick = config.onClick
         )
@@ -110,7 +108,7 @@ fun BaseSelectorField(
 @Composable
 fun SelectorPayment(
     onClick: () -> Unit,
-    icon: ImageVector
+    icon: IconPack
 ) {
     BaseSelectorField(
         config = InputSelectorFieldConfig(
@@ -141,7 +139,7 @@ fun SelectorCurrency(
 @Composable
 fun SelectorIcon(
     onClick: () -> Unit,
-    icon: ImageVector,
+    icon: IconPack,
     iconTint: Color
 ) {
     BaseSelectorField(
@@ -203,7 +201,7 @@ fun PreviewSelectorFields() {
         ) {
             SelectorPayment(
                 onClick = {},
-                icon = IconPayment.CASH.icon
+                icon = IconPack.CASH
             )
 
             SelectorCurrency(
@@ -213,7 +211,7 @@ fun PreviewSelectorFields() {
 
             SelectorIcon(
                 onClick = {},
-                icon = IconGeneral.CALENDAR.icon,
+                icon = IconPack.CALENDAR,
                 iconTint = AccentGold
             )
 

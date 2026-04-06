@@ -9,14 +9,14 @@ import androidx.compose.ui.res.stringResource
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
-import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.ui.app.AppViewModel
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
+import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
+import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.components.composed.navigation.AppBottomNavigation
 import com.jorgelobo.koobe.ui.components.composed.navigation.BottomNavigationDefaults
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
@@ -69,7 +69,7 @@ fun SettingsScreen(
                 config = AppBarConfig(
                     headline = stringResource(R.string.headline_settings),
                     leadingAction = AppBarAction(
-                        icon = IconGeneral.BACK,
+                        icon = IconPack.BACK,
                         onClick = viewModel::onBackClick
                     )
                 )

@@ -1,7 +1,7 @@
 package com.jorgelobo.koobe.ui.screen.categories.selector
 
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import kotlinx.serialization.Serializable
 
 /**
@@ -26,7 +26,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 enum class CategorySelectorMode(
     val headlineRes: Int,
-    val leadingIcon: IconGeneral,
+    val leadingIcon: IconPack,
     val showToggle: Boolean,
     val requiresSubcategorySelection: Boolean,
     val showActionButton: Boolean,
@@ -35,7 +35,7 @@ enum class CategorySelectorMode(
     // Transaction-related modes
     CREATE_TRANSACTION(
         headlineRes = R.string.headline_category_selector,
-        leadingIcon = IconGeneral.CLOSE,
+        leadingIcon = IconPack.CLOSE,
         showToggle = false,
         requiresSubcategorySelection = true,
         showActionButton = false,
@@ -43,7 +43,7 @@ enum class CategorySelectorMode(
     ),
     EDIT_TRANSACTION(
         headlineRes = R.string.headline_category_changer,
-        leadingIcon = IconGeneral.BACK,
+        leadingIcon = IconPack.BACK,
         showToggle = true,
         requiresSubcategorySelection = true,
         showActionButton = false,
@@ -53,7 +53,7 @@ enum class CategorySelectorMode(
     // Subcategory editing
     EDIT_SUBCATEGORY(
         headlineRes = R.string.headline_category_changer,
-        leadingIcon = IconGeneral.BACK,
+        leadingIcon = IconPack.BACK,
         showToggle = true,
         requiresSubcategorySelection = false,
         showActionButton = true,
@@ -63,7 +63,7 @@ enum class CategorySelectorMode(
     // Shortcut-related modes
     CREATE_SHORTCUT(
         headlineRes = R.string.headline_category_selector,
-        leadingIcon = IconGeneral.CLOSE,
+        leadingIcon = IconPack.CLOSE,
         showToggle = true,
         requiresSubcategorySelection = false,
         showActionButton = true,
@@ -71,7 +71,7 @@ enum class CategorySelectorMode(
     ),
     EDIT_SHORTCUT(
         headlineRes = R.string.headline_category_changer,
-        leadingIcon = IconGeneral.BACK,
+        leadingIcon = IconPack.BACK,
         showToggle = true,
         requiresSubcategorySelection = false,
         showActionButton = true,
@@ -81,7 +81,7 @@ enum class CategorySelectorMode(
     // Budget-related modes
     CREATE_BUDGET(
         headlineRes = R.string.headline_category_selector,
-        leadingIcon = IconGeneral.CLOSE,
+        leadingIcon = IconPack.CLOSE,
         showToggle = true,
         requiresSubcategorySelection = true,
         showActionButton = false,
@@ -89,7 +89,7 @@ enum class CategorySelectorMode(
     ),
     EDIT_BUDGET(
         headlineRes = R.string.headline_category_changer,
-        leadingIcon = IconGeneral.BACK,
+        leadingIcon = IconPack.BACK,
         showToggle = true,
         requiresSubcategorySelection = true,
         showActionButton = false,
@@ -99,7 +99,7 @@ enum class CategorySelectorMode(
     // Fallback / generic mode
     DEFAULT(
         headlineRes = R.string.headline_category_selector,
-        leadingIcon = IconGeneral.BACK,
+        leadingIcon = IconPack.BACK,
         showToggle = false,
         requiresSubcategorySelection = false,
         showActionButton = false,

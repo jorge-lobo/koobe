@@ -133,7 +133,7 @@ fun PreviewTransactionEditorScreen() {
         val category = Category(
             8,
             "Entertainment",
-            IconPack.ENTERTAINMENT.icon,
+            IconPack.ENTERTAINMENT,
             "#FFD54F",
             TransactionType.EXPENSE
         )
@@ -142,13 +142,13 @@ fun PreviewTransactionEditorScreen() {
             id = 5,
             categoryId = 8,
             name = "Movies",
-            icon = IconPack.CINEMA.icon
+            icon = IconPack.CINEMA
         )
 
         val shortcut = Shortcut(
             id = 2,
             name = "Football",
-            icon = IconPack.SPORTS.icon,
+            icon = IconPack.SPORTS,
             categoryId = 8,
             transactionType = TransactionType.EXPENSE,
             paymentMethod = PaymentMethodType.CASH,

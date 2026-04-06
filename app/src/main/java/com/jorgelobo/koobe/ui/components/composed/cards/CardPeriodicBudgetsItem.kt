@@ -230,12 +230,12 @@ fun PreviewCardPeriodicBudgetsItem() {
             )
 
             val categories = listOf(
-                Category(1, "Home", IconPack.HOME.icon, "#FF5722", TransactionType.EXPENSE)
+                Category(1, "Home", IconPack.HOME, "#FF5722", TransactionType.EXPENSE)
             )
 
             val subcategories = listOf(
-                Subcategory(1, 1, "Internet", IconPack.INTERNET_TV.icon),
-                Subcategory(2, 1, "Electricity", IconPack.ELECTRICITY.icon)
+                Subcategory(1, 1, "Internet", IconPack.INTERNET_TV),
+                Subcategory(2, 1, "Electricity", IconPack.ELECTRICITY)
             )
 
             val config = CardPeriodicBudgetsConfig(

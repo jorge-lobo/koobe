@@ -12,15 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonBase
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.color.Transparent
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.R
 
 @Composable
 fun ButtonText(
@@ -29,12 +29,11 @@ fun ButtonText(
     text: String,
     textColor: Color? = null,
     enabled: Boolean,
-    iconUrl: ImageVector? = null
+    icon: IconPack? = null
 ) {
     val buttonColors = AppTheme.colors.buttonColors
     val iconColor = AppTheme.colors.iconColors
 
-    /*val textColor = textColor ?: buttonColors.buttonDisabledLabelText*/
     val resolvedTextColor = when {
         !enabled -> buttonColors.buttonDisabledLabelText
         textColor != null -> textColor
@@ -54,9 +53,9 @@ fun ButtonText(
             horizontalArrangement = Arrangement.Start,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            if (iconUrl != null) {
+            if (icon != null) {
                 Icon(
-                    imageVector = iconUrl,
+                    imageVector = icon.icon,
                     modifier = Modifier.size(IconSize.Small),
                     contentDescription = stringResource(R.string.cd_button_icon),
                     tint = iconColor.iconTextButton

@@ -56,7 +56,7 @@ fun SubcategoryInputSection(
 
             SelectorIcon(
                 onClick = onIconSelectorClick,
-                icon = if (isEditMode) state.subcategory.icon else IconPack.PLACEHOLDER.icon,
+                icon = if (isEditMode) state.subcategory.icon else IconPack.PLACEHOLDER,
                 iconTint = AppTheme.colors.iconColors.iconPrimary
             )
         }

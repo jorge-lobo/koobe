@@ -8,6 +8,13 @@ import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,6 +26,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import java.net.URLDecoder
 import javax.inject.Inject
@@ -126,7 +134,7 @@ class SubcategoryEditorViewModel @Inject constructor(
         userInput.update { it.copy(name = "") }
     }
 
-    fun onIconSelected(icon: ImageVector) {
+    fun onIconSelected(icon: IconPack) {
         userInput.update { it.copy(icon = icon) }
     }
 

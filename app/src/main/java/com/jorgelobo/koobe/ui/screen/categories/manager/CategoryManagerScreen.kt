@@ -15,7 +15,7 @@ import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.components.composed.navigation.AppBottomNavigation
 import com.jorgelobo.koobe.ui.components.composed.navigation.BottomNavigationDefaults
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
 @Composable
@@ -42,12 +42,12 @@ fun CategoryManagerScreen(
                 config = AppBarConfig(
                     headline = stringResource(R.string.headline_category_manager),
                     leadingAction = AppBarAction(
-                        icon = IconGeneral.BACK,
+                        icon = IconPack.BACK,
                         onClick = viewModel::onBackClick
                     ),
                     trailingActions = listOf(
                         AppBarAction(
-                            icon = IconGeneral.ADD,
+                            icon = IconPack.ADD,
                             onClick = viewModel::onAddCategoryClick
                         )
                     )

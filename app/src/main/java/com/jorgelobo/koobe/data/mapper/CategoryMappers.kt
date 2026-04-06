@@ -1,13 +1,13 @@
 package com.jorgelobo.koobe.data.mapper
 
 import com.jorgelobo.koobe.data.local.entity.CategoryEntity
-import com.jorgelobo.koobe.data.local.icon.IconResolver
 import com.jorgelobo.koobe.domain.model.category.Category
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 
 fun CategoryEntity.toDomain() = Category(
     id = id,
     name = name,
-    icon = IconResolver.resolve(iconName),
+    icon = IconPack.valueOf(iconName),
     color = color,
     type = type,
     subcategories = emptyList()

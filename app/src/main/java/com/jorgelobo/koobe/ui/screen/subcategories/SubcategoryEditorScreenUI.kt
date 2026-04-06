@@ -68,7 +68,7 @@ fun PreviewSubcategoryEditorScreen() {
         val category = Category(
             8,
             "Entertainment",
-            IconPack.ENTERTAINMENT.icon,
+            IconPack.ENTERTAINMENT,
             "#FFD54F",
             TransactionType.EXPENSE
         )
@@ -77,7 +77,7 @@ fun PreviewSubcategoryEditorScreen() {
             id = 5,
             categoryId = 8,
             name = "Movies",
-            icon = IconPack.CINEMA.icon
+            icon = IconPack.CINEMA
         )
 
         val emptySubcategory = Subcategory.empty()

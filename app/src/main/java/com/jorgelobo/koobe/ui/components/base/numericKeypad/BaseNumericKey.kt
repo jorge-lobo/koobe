@@ -12,8 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.jorgelobo.koobe.R
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
-import com.jorgelobo.koobe.ui.mappers.getIconFromName
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
 @Composable
@@ -62,7 +61,7 @@ fun BaseNumericKey(
 
             KeypadKey.Backspace ->
                 Icon(
-                    imageVector = getIconFromName(IconGeneral.BACKSPACE),
+                    imageVector = IconPack.BACKSPACE.icon,
                     contentDescription = stringResource(R.string.cd_backspace),
                     tint = AppTheme.colors.iconColors.iconPrimary
                 )

@@ -22,7 +22,7 @@ import com.jorgelobo.koobe.ui.components.composed.emptyState.EmptyStateContentCo
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.components.model.enums.EmptyStateIconType
 import com.jorgelobo.koobe.ui.components.model.enums.UiState
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.color.LightThemeGrey2
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -73,7 +73,7 @@ fun CategoryDetailContent(
                 EmptyStateContent(
                     config = EmptyStateContentConfig(
                         message = stringResource(emptyHeadlineRes),
-                        icon = IconGeneral.EMPTY.icon,
+                        icon = IconPack.EMPTY,
                         iconTint = LightThemeGrey2,
                         iconType = EmptyStateIconType.BACKGROUND
                     )
@@ -91,7 +91,7 @@ fun CategoryDetailContent(
                     enabled = true,
                     text = stringResource(createButtonRes),
                     textColor = AppTheme.colors.buttonColors.buttonTextDefault,
-                    iconUrl = IconGeneral.ADD.icon
+                    icon = IconPack.ADD
                 )
             }
         }

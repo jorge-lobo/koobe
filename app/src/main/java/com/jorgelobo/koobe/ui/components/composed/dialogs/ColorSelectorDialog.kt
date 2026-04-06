@@ -31,7 +31,7 @@ import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.colors.AvatarColorPalette
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarConfigurationType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.AvatarSize
@@ -86,7 +86,7 @@ fun ColorSelectorDialog(
                 ) {
                     if (isSelected) {
                         Icon(
-                            imageVector = IconGeneral.CHECK.icon,
+                            imageVector = IconPack.CHECK.icon,
                             contentDescription = null,
                             tint = AppTheme.colors.iconColors.iconAvatar,
                             modifier = Modifier.size(IconSize.Medium)

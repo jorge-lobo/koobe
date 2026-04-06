@@ -1,13 +1,13 @@
 package com.jorgelobo.koobe.data.mapper
 
 import com.jorgelobo.koobe.data.local.entity.ShortcutEntity
-import com.jorgelobo.koobe.data.local.icon.IconResolver
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 
 fun ShortcutEntity.toDomain() = Shortcut(
     id = id,
     name = name,
-    icon = IconResolver.resolve(iconName),
+    icon = IconPack.valueOf(iconName),
     categoryId = categoryId,
     transactionType = transactionType,
     paymentMethod = paymentMethod,

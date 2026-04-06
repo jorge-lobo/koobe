@@ -1,10 +1,10 @@
 package com.jorgelobo.koobe.ui.components.model.card
 
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 
 data class DashboardCardData(
     val label: String,
-    val emptyStateIcon: ImageVector,
+    val emptyStateIcon: IconPack,
     val emptyStateMessage: String,
     val addButtonLabel: String
 )

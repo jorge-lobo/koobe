@@ -15,8 +15,7 @@ import com.jorgelobo.koobe.ui.components.base.buttons.base.IconButtonInput
 import com.jorgelobo.koobe.ui.components.base.buttons.base.IconButtonListItem
 import com.jorgelobo.koobe.ui.components.base.buttons.base.IconButtonNavigation
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
-import com.jorgelobo.koobe.ui.mappers.getIconFromName
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
@@ -26,7 +25,7 @@ fun ButtonBack(
 ) {
     IconButtonAppBar(
         onClick = onClick,
-        iconUrl = getIconFromName(IconGeneral.BACK),
+        icon = IconPack.BACK,
         enabled = true
     )
 }
@@ -37,7 +36,7 @@ fun ButtonClose(
 ) {
     IconButtonAppBar(
         onClick = onClick,
-        iconUrl = getIconFromName(IconGeneral.CLOSE),
+        icon = IconPack.CLOSE,
         enabled = true
     )
 }
@@ -48,7 +47,7 @@ fun ButtonDisclosure(
 ) {
     IconButtonDisclosure(
         onClick = onClick,
-        iconUrl = getIconFromName(IconGeneral.DISCLOSURE),
+        icon = IconPack.DISCLOSURE,
         enabled = true
     )
 }
@@ -60,9 +59,8 @@ fun ButtonExpandCollapse(
 ) {
     IconButtonDisclosure(
         onClick = onClick,
-        iconUrl = if (isExpanded) getIconFromName(IconGeneral.COLLAPSE) else getIconFromName(
-            IconGeneral.EXPAND
-        ),
+        icon = if (isExpanded) IconPack.COLLAPSE
+        else IconPack.EXPAND,
         enabled = true
     )
 }
@@ -74,7 +72,7 @@ fun ButtonResetInput(
 ) {
     IconButtonInput(
         onClick = onClick,
-        iconUrl = getIconFromName(IconGeneral.RESET),
+        icon = IconPack.RESET,
         enabled = enabled
     )
 }
@@ -85,7 +83,7 @@ fun ButtonEditItem(
 ) {
     IconButtonListItem(
         onClick = onClick,
-        iconUrl = getIconFromName(IconGeneral.EDIT),
+        icon = IconPack.EDIT,
         enabled = true
     )
 }
@@ -96,7 +94,7 @@ fun ButtonDeleteItem(
 ) {
     IconButtonListItem(
         onClick = onClick,
-        iconUrl = getIconFromName(IconGeneral.DELETE),
+        icon = IconPack.DELETE,
         enabled = true
     )
 }
@@ -108,7 +106,7 @@ fun ButtonNavLeft(
 ) {
     IconButtonNavigation(
         onClick = onClick,
-        iconUrl = getIconFromName(IconGeneral.LEFT),
+        icon = IconPack.LEFT,
         enabled = enabled
     )
 }
@@ -120,7 +118,7 @@ fun ButtonNavRight(
 ) {
     IconButtonNavigation(
         onClick = onClick,
-        iconUrl = getIconFromName(IconGeneral.RIGHT),
+        icon = IconPack.RIGHT,
         enabled = enabled
     )
 }

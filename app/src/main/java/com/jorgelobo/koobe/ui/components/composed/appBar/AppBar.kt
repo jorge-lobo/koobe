@@ -27,8 +27,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.buttons.base.IconButtonAppBar
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
-import com.jorgelobo.koobe.ui.mappers.getIconFromName
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.AppBarSize
@@ -59,7 +58,7 @@ fun CommonAppBar(
             ) {
                 IconButtonAppBar(
                     onClick = config.leadingAction.onClick,
-                    iconUrl = getIconFromName(config.leadingAction.icon),
+                    icon = config.leadingAction.icon,
                     enabled = true
                 )
             }
@@ -86,7 +85,7 @@ fun CommonAppBar(
                 config.trailingActions.forEach { action ->
                     IconButtonAppBar(
                         onClick = action.onClick,
-                        iconUrl = getIconFromName(action.icon),
+                        icon = action.icon,
                         enabled = true
                     )
                 }
@@ -131,10 +130,10 @@ fun PreviewAppBars() {
             CommonAppBar(
                 config = AppBarConfig(
                     headline = stringResource(R.string.headline_shortcut_editor),
-                    leadingAction = AppBarAction(IconGeneral.BACK) {},
+                    leadingAction = AppBarAction(IconPack.BACK) {},
                     trailingActions = listOf(
-                        AppBarAction(IconGeneral.CHANGE) {},
-                        AppBarAction(IconGeneral.DELETE) {}
+                        AppBarAction(IconPack.CHANGE) {},
+                        AppBarAction(IconPack.DELETE) {}
                     )
                 )
             )

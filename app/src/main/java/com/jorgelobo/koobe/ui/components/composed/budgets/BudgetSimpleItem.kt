@@ -176,13 +176,13 @@ fun PreviewBudgetSimpleItem() {
                 id = 1,
                 categoryId = 1,
                 name = "Water",
-                icon = IconPack.WATER.icon
+                icon = IconPack.WATER
             )
 
             val category = Category(
                 id = 1,
                 name = "Home",
-                icon = IconPack.HOME.icon,
+                icon = IconPack.HOME,
                 color = "#FF5722",
                 type = TransactionType.EXPENSE
             )

@@ -1,10 +1,10 @@
 package com.jorgelobo.koobe.ui.components.composed.summary
 
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 
 data class CategorySummaryConfig(
-    val icon: ImageVector,
+    val icon: IconPack,
     val color: Color,
     val categoryName: String,
     val subcategoryName: String? = null,

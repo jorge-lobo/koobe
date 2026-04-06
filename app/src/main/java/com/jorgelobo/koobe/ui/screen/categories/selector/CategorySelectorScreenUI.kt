@@ -86,43 +86,43 @@ fun PreviewCategorySelectorScreen() {
         themeOption = ThemeOption.LIGHT
     ) {
         val mockCategories = listOf(
-            Category(1, "Home", IconPack.HOME.icon, "#FFB74D", TransactionType.EXPENSE),
-            Category(2, "Grocery", IconPack.GROCERY.icon, "#DAE067", TransactionType.EXPENSE),
-            Category(3, "Dining", IconPack.DINING.icon, "#FFA58A", TransactionType.EXPENSE),
+            Category(1, "Home", IconPack.HOME, "#FFB74D", TransactionType.EXPENSE),
+            Category(2, "Grocery", IconPack.GROCERY, "#DAE067", TransactionType.EXPENSE),
+            Category(3, "Dining", IconPack.DINING, "#FFA58A", TransactionType.EXPENSE),
             Category(
                 4,
                 "Transportation",
-                IconPack.TRANSPORTATION.icon,
+                IconPack.TRANSPORTATION,
                 "#3EB5A9",
                 TransactionType.EXPENSE
             ),
-            Category(5, "Health", IconPack.HEALTH.icon, "#BD5555", TransactionType.EXPENSE),
-            Category(6, "Apparel", IconPack.APPAREL.icon, "#BA68C8", TransactionType.EXPENSE),
-            Category(7, "Technology", IconPack.TECHNOLOGY.icon, "#6476D1", TransactionType.EXPENSE),
+            Category(5, "Health", IconPack.HEALTH, "#BD5555", TransactionType.EXPENSE),
+            Category(6, "Apparel", IconPack.APPAREL, "#BA68C8", TransactionType.EXPENSE),
+            Category(7, "Technology", IconPack.TECHNOLOGY, "#6476D1", TransactionType.EXPENSE),
             Category(
                 8,
                 "Entertainment",
-                IconPack.ENTERTAINMENT.icon,
+                IconPack.ENTERTAINMENT,
                 "#FFD54F",
                 TransactionType.EXPENSE
             ),
-            Category(9, "Education", IconPack.EDUCATION.icon, "#59BD5E", TransactionType.EXPENSE),
-            Category(10, "Travel", IconPack.TRAVEL.icon, "#5A9BE0", TransactionType.EXPENSE),
+            Category(9, "Education", IconPack.EDUCATION, "#59BD5E", TransactionType.EXPENSE),
+            Category(10, "Travel", IconPack.TRAVEL, "#5A9BE0", TransactionType.EXPENSE),
             Category(
                 11,
                 "Essentials",
-                IconPack.ESSENTIALS.icon,
+                IconPack.ESSENTIALS,
                 "#A1887F",
                 TransactionType.EXPENSE
             ),
-            Category(12, "Pets", IconPack.PETS.icon, "#F06292", TransactionType.EXPENSE),
-            Category(13, "Body Care", IconPack.BODY_CARE.icon, "#E5A8F0", TransactionType.EXPENSE),
-            Category(14, "Sports", IconPack.SPORTS.icon, "#B0E86F", TransactionType.EXPENSE),
-            Category(15, "Family", IconPack.FAMILY.icon, "#7DC3E3", TransactionType.EXPENSE),
+            Category(12, "Pets", IconPack.PETS, "#F06292", TransactionType.EXPENSE),
+            Category(13, "Body Care", IconPack.BODY_CARE, "#E5A8F0", TransactionType.EXPENSE),
+            Category(14, "Sports", IconPack.SPORTS, "#B0E86F", TransactionType.EXPENSE),
+            Category(15, "Family", IconPack.FAMILY, "#7DC3E3", TransactionType.EXPENSE),
             Category(
                 16,
                 "Miscellaneous",
-                IconPack.MISCELLANEOUS.icon,
+                IconPack.MISCELLANEOUS,
                 "#B0BEC5",
                 TransactionType.EXPENSE
             ),

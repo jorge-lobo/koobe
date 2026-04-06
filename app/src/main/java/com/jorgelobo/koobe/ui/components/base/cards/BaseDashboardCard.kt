@@ -23,7 +23,7 @@ import com.jorgelobo.koobe.ui.components.model.card.DashboardCardData
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.components.model.enums.DashboardCardType
 import com.jorgelobo.koobe.ui.components.model.enums.EmptyStateIconType
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.BorderDimens
 import com.jorgelobo.koobe.ui.theme.dimens.CardSize
@@ -44,14 +44,14 @@ fun BaseDashboardCard(
     val (label, icon, message, buttonLabel) = when (type) {
         DashboardCardType.BUDGETS -> DashboardCardData(
             label = stringResource(R.string.title_budgets),
-            emptyStateIcon = IconGeneral.WALLET.icon,
+            emptyStateIcon = IconPack.WALLET,
             emptyStateMessage = stringResource(R.string.empty_dashboard_budgets),
             addButtonLabel = stringResource(R.string.btn_add_budget),
         )
 
         DashboardCardType.SHORTCUTS -> DashboardCardData(
             label = stringResource(R.string.title_user_shortcuts),
-            emptyStateIcon = IconGeneral.EMPTY.icon,
+            emptyStateIcon = IconPack.EMPTY,
             emptyStateMessage = stringResource(R.string.empty_dashboard_shortcuts),
             addButtonLabel = stringResource(R.string.btn_add_shortcut)
         )
@@ -101,7 +101,7 @@ fun BaseDashboardCard(
                     ButtonConfig(
                         text = if (isEmptyState) buttonLabel else stringResource(R.string.btn_view_all),
                         type = ButtonType.TEXT,
-                        icon = if (isEmptyState) IconGeneral.ADD else null,
+                        icon = if (isEmptyState) IconPack.ADD else null,
                         onClick = onClick
                     )
                 )

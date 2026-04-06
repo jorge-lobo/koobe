@@ -21,7 +21,7 @@ import com.jorgelobo.koobe.domain.usecase.transaction.DeleteTransactionUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.ResolveTransactionDescriptionUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.SaveTransactionUseCase
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.mappers.toAmountAction
 import com.jorgelobo.koobe.ui.mappers.toTransaction
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
@@ -347,7 +347,7 @@ class TransactionEditorViewModel @Inject constructor(
                     TransactionEditorEvent.ShowSnackBar(
                         messageRes = R.string.snackBar_delete_transaction_error,
                         actionLabelRes = null,
-                        icon = IconGeneral.WARNING
+                        icon = IconPack.WARNING
                     )
                 )
             }
@@ -484,7 +484,7 @@ class TransactionEditorViewModel @Inject constructor(
             TransactionEditorEvent.ShowSnackBar(
                 messageRes = R.string.snackBar_message,
                 actionLabelRes = R.string.snackBar_action,
-                icon = IconGeneral.EDIT
+                icon = IconPack.EDIT
             )
         )
     }

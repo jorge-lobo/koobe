@@ -16,7 +16,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
@@ -31,7 +30,7 @@ import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 @Composable
 fun SelectableAvatar(
     type: AvatarType,
-    icon: ImageVector,
+    icon: IconPack,
     color: Color,
     modifier: Modifier = Modifier,
     onSelected: (Boolean) -> Unit = {}
@@ -77,7 +76,7 @@ fun PreviewASelectableAvatar() {
         ) {
             SelectableAvatar(
                 type = AvatarType.LARGE,
-                icon = IconPack.APPAREL.icon,
+                icon = IconPack.APPAREL,
                 color = AccentGold,
                 onSelected = { }
             )

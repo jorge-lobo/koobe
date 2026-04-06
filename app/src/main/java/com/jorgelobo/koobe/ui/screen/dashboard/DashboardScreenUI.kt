@@ -103,7 +103,7 @@ private fun sampleBudgetUiModels(): List<BudgetUiModel> {
     val categoryFood = Category(
         id = 1,
         name = "Dining",
-        icon = IconPack.DINING.icon,
+        icon = IconPack.DINING,
         color = "#FFB74D",
         type = TransactionType.EXPENSE
     )
@@ -112,7 +112,7 @@ private fun sampleBudgetUiModels(): List<BudgetUiModel> {
         id = 11,
         categoryId = 1,
         name = "Restaurant",
-        icon = IconPack.RESTAURANT.icon
+        icon = IconPack.RESTAURANT
     )
 
     val budget1 = Budget(
@@ -156,7 +156,7 @@ fun sampleShortcutUiModels(): List<ShortcutUiModel> {
     val shortcutElectricity = Shortcut(
         id = 1,
         name = "Electricity",
-        icon = IconPack.ELECTRICITY.icon,
+        icon = IconPack.ELECTRICITY,
         categoryId = 1,
         transactionType = TransactionType.EXPENSE,
         paymentMethod = PaymentMethodType.CASH,
@@ -168,7 +168,7 @@ fun sampleShortcutUiModels(): List<ShortcutUiModel> {
     val shortcutInternetTv = Shortcut(
         id = 2,
         name = "Internet & TV",
-        icon = IconPack.INTERNET_TV.icon,
+        icon = IconPack.INTERNET_TV,
         categoryId = 1,
         transactionType = TransactionType.EXPENSE,
         paymentMethod = PaymentMethodType.CASH,
@@ -180,7 +180,7 @@ fun sampleShortcutUiModels(): List<ShortcutUiModel> {
     val shortcutRestaurant = Shortcut(
         id = 3,
         name = "Restaurant",
-        icon = IconPack.RESTAURANT.icon,
+        icon = IconPack.RESTAURANT,
         categoryId = 2,
         transactionType = TransactionType.EXPENSE,
         paymentMethod = PaymentMethodType.CASH,
@@ -192,7 +192,7 @@ fun sampleShortcutUiModels(): List<ShortcutUiModel> {
     val shortcutCanteen = Shortcut(
         id = 4,
         name = "Canteen",
-        icon = IconPack.CANTEEN.icon,
+        icon = IconPack.CANTEEN,
         categoryId = 2,
         transactionType = TransactionType.EXPENSE,
         paymentMethod = PaymentMethodType.CASH,
@@ -204,7 +204,7 @@ fun sampleShortcutUiModels(): List<ShortcutUiModel> {
     val categoryHome = Category(
         id = 1,
         name = "Home",
-        icon = IconPack.HOME.icon,
+        icon = IconPack.HOME,
         color = "#FF5722",
         type = TransactionType.EXPENSE
     )
@@ -212,7 +212,7 @@ fun sampleShortcutUiModels(): List<ShortcutUiModel> {
     val categoryDining = Category(
         id = 2,
         name = "Dining",
-        icon = IconPack.DINING.icon,
+        icon = IconPack.DINING,
         color = "#FF5722",
         type = TransactionType.EXPENSE
     )

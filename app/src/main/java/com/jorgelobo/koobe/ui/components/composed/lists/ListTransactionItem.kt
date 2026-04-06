@@ -94,7 +94,7 @@ fun ListTransactionItem(
             )
 
             Icon(
-                imageVector = icon,
+                imageVector = icon.icon,
                 contentDescription = stringResource(R.string.cd_payment),
                 tint = AccentGold,
                 modifier = Modifier.size(IconSize.ExtraSmall)

@@ -29,8 +29,7 @@ import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
-import com.jorgelobo.koobe.ui.mappers.getIconFromName
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Height
@@ -78,7 +77,7 @@ fun AppSnackBar(
             config.icon?.let { iconName ->
                 IconButton(onClick = { config.onIconClick?.invoke() }) {
                     Icon(
-                        imageVector = getIconFromName(iconName),
+                        imageVector = iconName.icon,
                         contentDescription = stringResource(R.string.cd_edit),
                         tint = colors.snackBarIcon
                     )
@@ -103,7 +102,7 @@ fun SnackBarDemoScreen() {
                 val config = SnackBarConfig(
                     messageRes = R.string.snackBar_message,
                     actionLabelRes = R.string.snackBar_action,
-                    icon = IconGeneral.EDIT,
+                    icon = IconPack.EDIT,
                     onActionClick = { data.performAction() },
                     onIconClick = { scope.launch { data.dismiss() } }
                 )
@@ -154,7 +153,7 @@ fun PreviewSnackBars() {
                 config = SnackBarConfig(
                     messageRes = R.string.snackBar_message,
                     actionLabelRes = R.string.snackBar_action,
-                    icon = IconGeneral.EDIT,
+                    icon = IconPack.EDIT,
                     onActionClick = {},
                     onIconClick = {}
                 )

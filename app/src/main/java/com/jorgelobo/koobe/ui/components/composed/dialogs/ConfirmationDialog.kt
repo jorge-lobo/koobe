@@ -22,7 +22,7 @@ import com.jorgelobo.koobe.ui.components.base.dialogs.BaseDialog
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.ConfirmationType
 import com.jorgelobo.koobe.ui.components.model.enums.DeleteType
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
@@ -40,13 +40,13 @@ fun ConfirmationDialog(
     val (height, icon, confirmText) = when (config.type) {
         ConfirmationType.DELETE -> Triple(
             DialogSize.Confirmation.Delete,
-            IconGeneral.DELETE,
+            IconPack.DELETE,
             stringResource(R.string.btn_delete)
         )
 
         ConfirmationType.DISCARD -> Triple(
             DialogSize.Confirmation.Discard,
-            IconGeneral.DISCARD,
+            IconPack.DISCARD,
             stringResource(R.string.btn_discard)
         )
     }

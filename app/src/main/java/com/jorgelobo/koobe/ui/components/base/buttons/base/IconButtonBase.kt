@@ -5,18 +5,18 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.ui.components.model.enums.IconButtonType
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
-import com.jorgelobo.koobe.R
 
 @Composable
 fun IconButtonBase(
     onClick: () -> Unit,
     isEnabled: Boolean,
-    iconUrl: ImageVector,
+    icon: IconPack,
     type: IconButtonType
 ) {
     val iconColor = AppTheme.colors.iconColors
@@ -41,7 +41,7 @@ fun IconButtonBase(
         enabled = isEnabled
     ) {
         Icon(
-            imageVector = iconUrl,
+            imageVector = icon.icon,
             modifier = Modifier
                 .size(iconSize),
             contentDescription = stringResource(R.string.cd_button_icon),

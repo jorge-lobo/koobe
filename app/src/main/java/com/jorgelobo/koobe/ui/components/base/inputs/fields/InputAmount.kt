@@ -27,19 +27,19 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.common.MoneyText
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.BorderDimens
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
-import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.ui.theme.dimens.InputAmountSize
-import com.jorgelobo.koobe.R
-import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
+import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
 @Composable
 fun InputAmount(
@@ -95,7 +95,7 @@ fun InputAmount(
                 modifier = Modifier.size(IconSize.Large)
             ) {
                 Icon(
-                    imageVector = IconGeneral.RESET.icon,
+                    imageVector = IconPack.RESET.icon,
                     contentDescription = stringResource(R.string.cd_reset_amount),
                     tint = iconColor,
                     modifier = Modifier.size(IconSize.Medium)

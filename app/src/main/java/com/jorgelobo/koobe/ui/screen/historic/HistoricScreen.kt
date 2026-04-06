@@ -17,7 +17,7 @@ import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.components.composed.navigation.AppBottomNavigation
 import com.jorgelobo.koobe.ui.components.composed.navigation.BottomNavigationDefaults
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.periodFilter.PeriodFilterAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
@@ -57,12 +57,12 @@ fun HistoricScreen(
                 config = AppBarConfig(
                     headline = stringResource(R.string.headline_historic),
                     leadingAction = AppBarAction(
-                        icon = IconGeneral.BACK,
+                        icon = IconPack.BACK,
                         onClick = viewModel::onBackClick
                     ),
                     trailingActions = listOf(
                         AppBarAction(
-                            icon = IconGeneral.FILTER,
+                            icon = IconPack.FILTER,
                             onClick = { viewModel.onPeriodFilterAction(PeriodFilterAction.Open) }
                         )
                     )
