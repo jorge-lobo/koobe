@@ -178,7 +178,7 @@ class CategorySelectorViewModel @Inject constructor(
         val state = _uiState.value
 
         if (state.hasUnsavedChanges) {
-            onDiscardDialogAction(ConfirmationDialogAction.RequestClose)
+            onDiscardDialogAction(ConfirmationDialogAction.Open)
         } else {
             navigateBack()
         }

@@ -148,7 +148,7 @@ class SubcategoryEditorViewModel @Inject constructor(
         val state = uiState.value
 
         if (state.hasUnsavedChanges) {
-            onDiscardDialogAction(ConfirmationDialogAction.RequestClose)
+            onDiscardDialogAction(ConfirmationDialogAction.Open)
         } else {
             navigateBack()
         }

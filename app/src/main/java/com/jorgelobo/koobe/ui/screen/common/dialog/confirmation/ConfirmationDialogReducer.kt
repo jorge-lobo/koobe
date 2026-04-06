@@ -9,7 +9,7 @@ fun reduceConfirmationDialog(
     action: ConfirmationDialogAction
 ): Pair<ConfirmationDialogState, ConfirmationDialogEffect?> =
     when (action) {
-        ConfirmationDialogAction.RequestClose -> state.copy(visible = true) to null
+        ConfirmationDialogAction.Open -> state.copy(visible = true) to null
         ConfirmationDialogAction.Dismiss -> state.copy(visible = false) to null
         ConfirmationDialogAction.Confirm -> state.copy(visible = false) to ConfirmationDialogEffect.Confirmed
     }

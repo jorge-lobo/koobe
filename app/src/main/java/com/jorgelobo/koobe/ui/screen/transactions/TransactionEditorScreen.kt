@@ -73,7 +73,7 @@ fun TransactionEditorScreen(
         rememberUpdatedState(uiState.subcategory?.localizedName() ?: uiState.shortcut?.name)
 
     BackHandler {
-        viewModel.onDiscardDialogAction(ConfirmationDialogAction.RequestClose)
+        viewModel.onDiscardDialogAction(ConfirmationDialogAction.Open)
     }
 
     TransactionEditorEffects(
@@ -120,12 +120,12 @@ fun TransactionEditorScreen(
                     ),
                     leadingAction = AppBarAction(
                         icon = IconPack.CLOSE,
-                        onClick = { viewModel.onDiscardDialogAction(ConfirmationDialogAction.RequestClose) }
+                        onClick = { viewModel.onDiscardDialogAction(ConfirmationDialogAction.Open) }
                     ),
                     trailingActions = if (config.isEditMode) listOf(
                         AppBarAction(
                             IconPack.DELETE,
-                            onClick = { viewModel.onDeleteDialogAction(ConfirmationDialogAction.RequestClose) }
+                            onClick = { viewModel.onDeleteDialogAction(ConfirmationDialogAction.Open) }
                         )
                     ) else emptyList()
                 )
