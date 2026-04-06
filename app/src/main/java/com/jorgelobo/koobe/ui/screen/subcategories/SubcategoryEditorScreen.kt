@@ -13,6 +13,7 @@ import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
 @Composable
@@ -26,6 +27,13 @@ fun SubcategoryEditorScreen(
     SubcategoryEditorEffects(
         navController = navController,
         viewModel = viewModel
+    )
+
+    SubcategoryEditorDialogs(
+        state = uiState,
+        onDiscardDialogAction = { viewModel.onDiscardDialogAction(it) },
+        onDeleteDialogAction = { viewModel.onDeleteDialogAction(it) },
+        onIconSelectorAction = { viewModel.onIconSelectorAction(it) }
     )
 
     Scaffold(
@@ -55,7 +63,7 @@ fun SubcategoryEditorScreen(
             config = config,
             modifier = Modifier.padding(padding),
             onNameChanged = viewModel::onNameChanged,
-            onIconSelectorClick = {},
+            onIconSelectorClick = { viewModel.onIconSelectorAction(SelectorDialogAction.Open) },
             onCategoryChangeClick = {},
             onResetNameClick = viewModel::onResetName,
             onSaveClick = {}

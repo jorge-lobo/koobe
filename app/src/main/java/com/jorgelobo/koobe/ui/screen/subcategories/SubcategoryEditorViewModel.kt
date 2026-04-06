@@ -1,6 +1,5 @@
 package com.jorgelobo.koobe.ui.screen.subcategories
 
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -103,7 +102,10 @@ class SubcategoryEditorViewModel @Inject constructor(
             )
 
             val newState = base.copy(
-                subcategory = updatedSubcategory
+                subcategory = updatedSubcategory,
+                discardDialog = input.discardDialog ?: base.discardDialog,
+                deleteDialog = input.deleteDialog ?: base.deleteDialog,
+                iconDialog = input.iconSelectorDialog ?: base.iconDialog
             )
 
             newState.copy(
@@ -142,4 +144,72 @@ class SubcategoryEditorViewModel @Inject constructor(
         userInput.update { it.copy(categoryId = id) }
     }
 
+    fun onDiscardDialogAction(action: ConfirmationDialogAction) {
+        val (dialogState, effect) = reduceConfirmationDialog(
+            state = uiState.value.discardDialog,
+            action = action
+        )
+
+        userInput.update {
+            it.copy(discardDialog = dialogState)
+        }
+
+        when (effect) {
+            ConfirmationDialogEffect.Confirmed -> navigateBack()
+
+            null -> Unit
+        }
+    }
+
+    fun onDeleteDialogAction(action: ConfirmationDialogAction) {
+        val (dialogState, effect) = reduceConfirmationDialog(
+            state = uiState.value.deleteDialog,
+            action = action
+        )
+
+        userInput.update {
+            it.copy(deleteDialog = dialogState)
+        }
+
+        when (effect) {
+            ConfirmationDialogEffect.Confirmed -> {}
+
+            null -> Unit
+        }
+    }
+
+    fun onIconSelectorAction(action: SelectorDialogAction<IconPack>) {
+        val currentState = uiState.value
+
+        val baseState =
+            if (action is SelectorDialogAction.Open) {
+                currentState.iconDialog.copy(
+                    initial = currentState.subcategory.icon,
+                    selected = currentState.subcategory.icon
+                )
+            } else currentState.iconDialog
+
+        val (dialogState, effect) = reduceSelectorDialog(
+            state = baseState,
+            action = action
+        )
+
+        userInput.update {
+            it.copy(iconSelectorDialog = dialogState)
+        }
+
+        when (effect) {
+            is SelectorDialogEffect.Applied -> userInput.update { it.copy(icon = effect.value) }
+
+            null -> Unit
+        }
+    }
+
+    private fun navigateBack() {
+        emitEvent(SubcategoryEditorEvent.NavigateBack)
+    }
+
+    private fun emitEvent(event: SubcategoryEditorEvent) {
+        viewModelScope.launch { _events.emit(event) }
+    }
 }
