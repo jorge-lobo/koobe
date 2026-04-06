@@ -88,7 +88,6 @@ fun PreviewAvatarConfigurationDialog() {
             AvatarConfigurationDialog(
                 config = AvatarConfigurationDialogConfig(
                     type = AvatarConfigurationType.COLOR,
-                    onSelection = {},
                     onApply = {},
                     onCancel = {}
                 ),
