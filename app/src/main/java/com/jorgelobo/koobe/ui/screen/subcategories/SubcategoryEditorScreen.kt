@@ -45,7 +45,7 @@ fun SubcategoryEditorScreen(
                     ),
                     leadingAction = AppBarAction(
                         icon = IconPack.CLOSE,
-                        onClick = {}
+                        onClick = { viewModel.onCloseClick() }
                     ),
                     trailingActions = if (config.isEditMode) listOf(
                         AppBarAction(

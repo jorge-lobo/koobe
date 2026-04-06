@@ -144,6 +144,16 @@ class SubcategoryEditorViewModel @Inject constructor(
         userInput.update { it.copy(categoryId = id) }
     }
 
+    fun onCloseClick() {
+        val state = uiState.value
+
+        if (state.hasUnsavedChanges) {
+            onDiscardDialogAction(ConfirmationDialogAction.RequestClose)
+        } else {
+            navigateBack()
+        }
+    }
+
     fun onDiscardDialogAction(action: ConfirmationDialogAction) {
         val (dialogState, effect) = reduceConfirmationDialog(
             state = uiState.value.discardDialog,
