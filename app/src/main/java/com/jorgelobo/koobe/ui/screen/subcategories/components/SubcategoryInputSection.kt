@@ -17,7 +17,6 @@ import com.jorgelobo.koobe.ui.components.base.inputs.fields.InputSelector
 import com.jorgelobo.koobe.ui.components.base.inputs.fields.InputSelectorConfig
 import com.jorgelobo.koobe.ui.components.base.inputs.fields.SelectorIcon
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
-import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorUiState
@@ -56,7 +55,7 @@ fun SubcategoryInputSection(
 
             SelectorIcon(
                 onClick = onIconSelectorClick,
-                icon = if (isEditMode) state.subcategory.icon else IconPack.PLACEHOLDER,
+                icon = state.subcategory.icon,
                 iconTint = AppTheme.colors.iconColors.iconPrimary
             )
         }

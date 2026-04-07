@@ -14,7 +14,7 @@ data class SubcategoryEditorUiState(
     val subcategory: Subcategory,
     val inputState: InputState,
     val initialSnapshot: SubcategoryInitialSnapshot,
-    val iconDialog: SelectorDialogState<IconPack> = SelectorDialogState(initial = IconPack.EXTRA),
+    val iconDialog: SelectorDialogState<IconPack> = SelectorDialogState(),
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val isSaveButtonEnabled: Boolean = false,
