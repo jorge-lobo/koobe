@@ -11,8 +11,8 @@ data class Subcategory(
 
     companion object {
         fun empty(): Subcategory = Subcategory(
-            id = -1,
-            categoryId = -1,
+            id = 0,
+            categoryId = 0,
             name = "",
             icon = IconPack.PLACEHOLDER,
         )

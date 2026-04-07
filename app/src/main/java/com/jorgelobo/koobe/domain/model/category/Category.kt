@@ -15,7 +15,7 @@ data class Category(
 
     companion object {
         fun empty(): Category = Category(
-            id = -1,
+            id = 0,
             name = "",
             icon = IconPack.PLACEHOLDER,
             color = "",
