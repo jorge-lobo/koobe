@@ -7,6 +7,7 @@ import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
+import com.jorgelobo.koobe.domain.usecase.subcategory.SaveSubcategoryCaseUse
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
@@ -34,7 +35,8 @@ import javax.inject.Inject
 class SubcategoryEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     subcategoryRepository: SubcategoryRepository,
-    private val categoryRepository: CategoryRepository
+    private val categoryRepository: CategoryRepository,
+    private val saveSubcategory: SaveSubcategoryCaseUse
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<SubcategoryEditorEvent>()
@@ -84,7 +86,12 @@ class SubcategoryEditorViewModel @Inject constructor(
                 SubcategoryEditorUiState.initial(
                     config = config,
                     category = safeCategory,
-                    subcategory = Subcategory.empty()
+                    subcategory = Subcategory(
+                        id = 0,
+                        categoryId = safeCategory.id,
+                        name = "",
+                        icon = IconPack.PLACEHOLDER
+                    )
                 )
             }
         }
@@ -142,6 +149,26 @@ class SubcategoryEditorViewModel @Inject constructor(
 
     fun onCategoryChanged(id: Int) {
         userInput.update { it.copy(categoryId = id) }
+    }
+
+    fun onSaveClick() {
+        val state = uiState.value
+
+        if (state.subcategory.categoryId <= 0) {
+            return
+        }
+
+        viewModelScope.launch {
+            saveSubcategory(
+                subcategory = state.subcategory.copy(
+                    name = state.subcategory.name,
+                    icon = state.subcategory.icon,
+                    categoryId = state.subcategory.categoryId
+                ),
+                isEditMode = config.isEditMode
+            )
+            navigateBack()
+        }
     }
 
     fun onCloseClick() {
