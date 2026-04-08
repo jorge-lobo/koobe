@@ -22,11 +22,18 @@ fun SubcategoryEditorScreen(
     config: SubcategoryEditorConfig,
     viewModel: SubcategoryEditorViewModel = hiltViewModel()
 ) {
+    val snackBarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    var currentSnackBarConfig by remember { mutableStateOf<SnackBarConfig?>(null) }
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     SubcategoryEditorEffects(
         navController = navController,
-        viewModel = viewModel
+        viewModel = viewModel,
+        snackBarHostState = snackBarHostState,
+        scope = scope,
+        onSnackBarConfigChange = { currentSnackBarConfig = it }
     )
 
     SubcategoryEditorDialogs(
@@ -37,6 +44,18 @@ fun SubcategoryEditorScreen(
     )
 
     Scaffold(
+        snackbarHost = {
+            SnackbarHost(hostState = snackBarHostState) {
+                currentSnackBarConfig?.let { config ->
+                    Box(modifier = Modifier.padding(Spacing.Medium)) {
+                        AppSnackBar(
+                            config = config,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                    }
+                }
+            }
+        },
         topBar = {
             CommonAppBar(
                 config = AppBarConfig(
