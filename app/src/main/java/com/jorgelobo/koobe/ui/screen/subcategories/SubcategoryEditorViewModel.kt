@@ -7,6 +7,7 @@ import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
+import com.jorgelobo.koobe.domain.usecase.subcategory.DeleteSubcategoryUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.SaveSubcategoryCaseUse
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
@@ -15,6 +16,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmati
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
+import com.jorgelobo.koobe.R
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -232,7 +234,7 @@ class SubcategoryEditorViewModel @Inject constructor(
         }
 
         when (effect) {
-            ConfirmationDialogEffect.Confirmed -> {}
+            ConfirmationDialogEffect.Confirmed -> deleteSubcategory()
 
             null -> Unit
         }

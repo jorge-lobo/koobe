@@ -18,6 +18,7 @@ data class SubcategoryEditorUiState(
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val isSaveButtonEnabled: Boolean = false,
+    val showSnackBar: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 ) {
