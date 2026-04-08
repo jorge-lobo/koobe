@@ -10,5 +10,6 @@ data class SubcategoryInputState(
     val categoryId: Int? = null,
     val discardDialog: ConfirmationDialogState? = null,
     val deleteDialog: ConfirmationDialogState? = null,
-    val iconSelectorDialog: SelectorDialogState<IconPack>? = null
+    val iconSelectorDialog: SelectorDialogState<IconPack>? = null,
+    val isDeleting: Boolean? = null
 )

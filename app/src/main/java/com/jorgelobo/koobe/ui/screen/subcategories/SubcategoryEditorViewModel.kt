@@ -36,7 +36,8 @@ class SubcategoryEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     subcategoryRepository: SubcategoryRepository,
     private val categoryRepository: CategoryRepository,
-    private val saveSubcategory: SaveSubcategoryCaseUse
+    private val saveSubcategory: SaveSubcategoryCaseUse,
+    private val deleteSubcategory: DeleteSubcategoryUseCase
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<SubcategoryEditorEvent>()
@@ -168,6 +169,28 @@ class SubcategoryEditorViewModel @Inject constructor(
                 isEditMode = config.isEditMode
             )
             navigateBack()
+        }
+    }
+
+    private fun deleteSubcategory() {
+        val subcategory = uiState.value.subcategory
+
+        viewModelScope.launch {
+            runCatching {
+                userInput.update { it.copy(isDeleting = true) }
+                deleteSubcategory(subcategory)
+            }.onSuccess {
+                navigateBack()
+            }.onFailure {
+                userInput.update { it.copy(isDeleting = false) }
+                emitEvent(
+                    SubcategoryEditorEvent.ShowSnackBar(
+                        messageRes = R.string.snackBar_delete_subcategory_error,
+                        actionLabelRes = null,
+                        icon = IconPack.WARNING
+                    )
+                )
+            }
         }
     }
 
