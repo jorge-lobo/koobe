@@ -65,4 +65,16 @@ class TransactionRepositoryImpl @Inject constructor(
 
     private fun Flow<List<TransactionEntity>>.toDomainList() =
         map { list -> list.map { it.toDomain() } }
+
+    override suspend fun reassignSubcategory(
+        oldSubcategoryId: Int,
+        newSubcategoryId: Int,
+        newCategoryId: Int
+    ) {
+        dao.reassignSubcategory(
+            oldSubcategoryId,
+            newSubcategoryId,
+            newCategoryId
+        )
+    }
 }

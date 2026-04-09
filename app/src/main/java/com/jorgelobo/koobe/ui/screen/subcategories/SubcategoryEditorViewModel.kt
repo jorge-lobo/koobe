@@ -17,6 +17,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.usecase.subcategory.DeleteSubcategoryWithReassignUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -39,7 +40,7 @@ class SubcategoryEditorViewModel @Inject constructor(
     subcategoryRepository: SubcategoryRepository,
     private val categoryRepository: CategoryRepository,
     private val saveSubcategory: SaveSubcategoryCaseUse,
-    private val deleteSubcategory: DeleteSubcategoryUseCase
+    private val deleteSubcategory: DeleteSubcategoryWithReassignUseCase
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<SubcategoryEditorEvent>()

@@ -57,4 +57,19 @@ interface TransactionDao {
 
     @Query("SELECT * FROM transactions WHERE id = :id")
     fun getByIdFlow(id: Int): Flow<TransactionEntity?>
+
+    @Query(
+        """
+        UPDATE transactions
+        SET 
+            subcategoryId = :newSubcategoryId,
+            categoryId = :newCategoryId
+        WHERE subcategoryId = :oldSubcategoryId
+    """
+    )
+    suspend fun reassignSubcategory(
+        oldSubcategoryId: Int,
+        newSubcategoryId: Int,
+        newCategoryId: Int
+    )
 }
