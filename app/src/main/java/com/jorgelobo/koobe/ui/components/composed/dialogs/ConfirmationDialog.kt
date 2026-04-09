@@ -17,6 +17,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.dialogs.BaseDialog
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
@@ -117,9 +118,17 @@ fun DiscardDialog(
 @Composable
 fun DeleteDialog(
     type: DeleteType,
+    transactionType: TransactionType? = null,
     onConfirm: () -> Unit,
     onCancel: () -> Unit
 ) {
+
+    val subcategoryMessage = when (transactionType) {
+        TransactionType.EXPENSE -> stringResource(R.string.dialog_message_delete_expense_subcategory)
+        TransactionType.INCOME -> stringResource(R.string.dialog_message_delete_income_subcategory)
+        else -> stringResource(R.string.dialog_message_delete_subcategory_placeholder)
+    }
+    
     val (title, message, helper) = when (type) {
         DeleteType.BUDGET -> Triple(
             stringResource(R.string.dialog_headline_delete_budget),
@@ -141,7 +150,7 @@ fun DeleteDialog(
 
         DeleteType.SUBCATEGORY -> Triple(
             stringResource(R.string.dialog_headline_delete_subcategory),
-            stringResource(R.string.dialog_message_delete_subcategory),
+            subcategoryMessage,
             stringResource(R.string.dialog_confirmation_delete_subcategory)
         )
 

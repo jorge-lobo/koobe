@@ -104,7 +104,9 @@
     <string name="dialog_headline_delete_transaction">Delete transaction?</string>
     <string name="dialog_message_discard">If you cancel now, the information you\'ve entered will be lost.</string>
     <string name="dialog_message_delete_category">Transactions associated with this category will not be deleted. Instead, they will be moved to the "Miscellaneous" category.</string>
-    <string name="dialog_message_delete_subcategory">Transactions associated with this subcategory will not be deleted. Instead, they will be moved to the "Fees" subcategory.</string>
+    <string name="dialog_message_delete_expense_subcategory">Transactions associated with this subcategory will not be deleted. Instead, they will be moved to the "Unexpected" subcategory.</string>
+    <string name="dialog_message_delete_income_subcategory">Transactions associated with this subcategory will not be deleted. Instead, they will be moved to the "Other" subcategory.</string>
+    <string name="dialog_message_delete_subcategory_placeholder">Transactions associated with this subcategory will not be deleted. Instead, they will be moved to a default subcategory.</string>
     <string name="dialog_message_delete_shortcut">Deleting this shortcut will permanently remove it from your application. The transactions linked to it will remain unchanged.</string>
     <string name="dialog_message_delete_budget">Deleting this budget will permanently remove it from your application. The transactions linked to it will remain unchanged.</string>
     <string name="dialog_message_delete_transaction">Deleting this transaction will permanently remove it from your records. This action cannot be undone.</string>

@@ -28,6 +28,7 @@ fun SubcategoryEditorDialogs(
     if (state.deleteDialog.visible) {
         DeleteDialog(
             type = DeleteType.SUBCATEGORY,
+            transactionType = state.category.type,
             onConfirm = { onDeleteDialogAction(ConfirmationDialogAction.Confirm) },
             onCancel = { onDeleteDialogAction(ConfirmationDialogAction.Dismiss) }
         )
