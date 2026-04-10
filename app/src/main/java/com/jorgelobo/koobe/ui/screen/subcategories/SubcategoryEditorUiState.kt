@@ -3,9 +3,11 @@ package com.jorgelobo.koobe.ui.screen.subcategories
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.Subcategory
+import com.jorgelobo.koobe.domain.usecase.subcategory.DeleteSubcategoryWithReassignUseCase
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
+import com.jorgelobo.koobe.ui.screen.common.dialog.info.InfoDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
 
 data class SubcategoryEditorUiState(
@@ -17,6 +19,7 @@ data class SubcategoryEditorUiState(
     val iconDialog: SelectorDialogState<IconPack> = SelectorDialogState(),
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
+    val infoDialog: InfoDialogState = InfoDialogState(),
     val isSaveButtonEnabled: Boolean = false,
     val showSnackBar: Boolean = false,
     val isLoading: Boolean = false,
@@ -31,6 +34,14 @@ data class SubcategoryEditorUiState(
         get() = subcategory.name.isNotBlank() &&
                 subcategory.icon != IconPack.PLACEHOLDER &&
                 subcategory.categoryId > 0
+
+    val isDeleteEnabled: Boolean
+        get() = !subcategory.isProtected()
+
+    fun Subcategory.isProtected(): Boolean {
+        return id == DeleteSubcategoryWithReassignUseCase.EXPENSE_SUBCATEGORY_ID ||
+                id == DeleteSubcategoryWithReassignUseCase.INCOME_SUBCATEGORY_ID
+    }
 
     fun headlineRes(isEditMode: Boolean): Int {
         return if (isEditMode) {

@@ -24,6 +24,7 @@ import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.info.InfoDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -52,7 +53,8 @@ fun SubcategoryEditorScreen(
         state = uiState,
         onDiscardDialogAction = { viewModel.onDiscardDialogAction(it) },
         onDeleteDialogAction = { viewModel.onDeleteDialogAction(it) },
-        onIconSelectorAction = { viewModel.onIconSelectorAction(it) }
+        onIconSelectorAction = { viewModel.onIconSelectorAction(it) },
+        onInfoDialogAction = { viewModel.onInfoDialogAction(it) }
     )
 
     Scaffold(
@@ -79,10 +81,17 @@ fun SubcategoryEditorScreen(
                         onClick = { viewModel.onCloseClick() }
                     ),
                     trailingActions = if (config.isEditMode) listOf(
-                        AppBarAction(
-                            IconPack.DELETE,
-                            onClick = { viewModel.onDeleteDialogAction(ConfirmationDialogAction.Open) }
-                        )
+                        if (uiState.isDeleteEnabled) {
+                            AppBarAction(
+                                IconPack.DELETE,
+                                onClick = { viewModel.onDeleteDialogAction(ConfirmationDialogAction.Open) }
+                            )
+                        } else {
+                            AppBarAction(
+                                IconPack.INFO,
+                                onClick = { viewModel.onInfoDialogAction(InfoDialogAction.Open) }
+                            )
+                        }
                     ) else emptyList()
                 )
             )
