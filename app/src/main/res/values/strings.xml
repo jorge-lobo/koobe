@@ -26,6 +26,7 @@
     <string name="btn_create_category">Create category</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_apply">Apply</string>
+    <string name="btn_ok">OK</string>
     <string name="btn_delete">Delete</string>
     <string name="btn_discard">Discard</string>
     <string name="btn_repeat">Repeat</string>
@@ -102,6 +103,8 @@
     <string name="dialog_headline_delete_shortcut">Delete shortcut?</string>
     <string name="dialog_headline_delete_budget">Delete budget?</string>
     <string name="dialog_headline_delete_transaction">Delete transaction?</string>
+    <string name="dialog_headline_info_category">Default category</string>
+    <string name="dialog_headline_info_subcategory">Default subcategory</string>
     <string name="dialog_message_discard">If you cancel now, the information you\'ve entered will be lost.</string>
     <string name="dialog_message_delete_category">Transactions associated with this category will not be deleted. Instead, they will be moved to the "Miscellaneous" category.</string>
     <string name="dialog_message_delete_expense_subcategory">Transactions associated with this subcategory will not be deleted. Instead, they will be moved to the "Unexpected" subcategory.</string>
@@ -110,6 +113,8 @@
     <string name="dialog_message_delete_shortcut">Deleting this shortcut will permanently remove it from your application. The transactions linked to it will remain unchanged.</string>
     <string name="dialog_message_delete_budget">Deleting this budget will permanently remove it from your application. The transactions linked to it will remain unchanged.</string>
     <string name="dialog_message_delete_transaction">Deleting this transaction will permanently remove it from your records. This action cannot be undone.</string>
+    <string name="dialog_message_info_category">This category cannot be deleted.\nIt is used to store transactions when other categories are removed.</string>
+    <string name="dialog_message_info_subcategory">This subcategory cannot be deleted.\nIt is used to store transactions when other subcategories are removed.</string>
     <string name="dialog_confirmation_delete_category">Do you want to delete this category?</string>
     <string name="dialog_confirmation_delete_subcategory">Do you want to delete this subcategory?</string>
     <string name="dialog_confirmation_delete_shortcut">Do you want to delete this shortcut?</string>

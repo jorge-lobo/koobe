@@ -30,6 +30,7 @@ enum class IconPack(val icon: ImageVector) {
     RIGHT(RegularGroup.CaretRight),
     WARNING(RegularGroup.ExclamationMark),
     CHECK(RegularGroup.Check),
+    INFO(RegularGroup.Info),
 
     // Categories
     APPAREL(RegularGroup.CoatHanger),
