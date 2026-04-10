@@ -42,7 +42,7 @@ class SubcategoryEditorViewModel @Inject constructor(
     subcategoryRepository: SubcategoryRepository,
     private val categoryRepository: CategoryRepository,
     private val saveSubcategory: SaveSubcategoryCaseUse,
-    private val deleteSubcategory: DeleteSubcategoryWithReassignUseCase
+    private val deleteSubcategoryWithReassign: DeleteSubcategoryWithReassignUseCase
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<SubcategoryEditorEvent>()
@@ -66,7 +66,8 @@ class SubcategoryEditorViewModel @Inject constructor(
             ?.let { categoryRepository.getCategoryByIdFlow(it) }
             ?: flowOf(null)
 
-    private val userInput = MutableStateFlow(SubcategoryInputState())
+    private val formState = MutableStateFlow(SubcategoryFormState())
+    private val uiInternalState = MutableStateFlow(SubcategoryUiStateInternal())
 
     private val baseStateFlow: Flow<SubcategoryEditorUiState> =
         combine(
@@ -105,21 +106,23 @@ class SubcategoryEditorViewModel @Inject constructor(
     val uiState: StateFlow<SubcategoryEditorUiState> =
         combine(
             baseStateFlow,
-            userInput
-        ) { base, input ->
+            formState,
+            uiInternalState
+        ) { base, form, uiInternal ->
 
             val updatedSubcategory = base.subcategory.copy(
-                name = input.name ?: base.subcategory.name,
-                icon = input.icon ?: base.subcategory.icon,
-                categoryId = input.categoryId ?: base.subcategory.categoryId
+                name = form.name ?: base.subcategory.name,
+                icon = form.icon ?: base.subcategory.icon,
+                categoryId = form.categoryId ?: base.subcategory.categoryId
             )
 
             val newState = base.copy(
                 subcategory = updatedSubcategory,
-                discardDialog = input.discardDialog ?: base.discardDialog,
-                deleteDialog = input.deleteDialog ?: base.deleteDialog,
-                iconDialog = input.iconSelectorDialog ?: base.iconDialog,
-                infoDialog = input.infoDialog ?: base.infoDialog
+                discardDialog = uiInternal.discardDialog ?: base.discardDialog,
+                deleteDialog = uiInternal.deleteDialog ?: base.deleteDialog,
+                iconDialog = uiInternal.iconSelectorDialog ?: base.iconDialog,
+                infoDialog = uiInternal.infoDialog ?: base.infoDialog,
+                isDeleting = uiInternal.isDeleting ?: base.isDeleting
             )
 
             newState.copy(
@@ -143,19 +146,19 @@ class SubcategoryEditorViewModel @Inject constructor(
     }
 
     fun onNameChanged(name: String) {
-        userInput.update { it.copy(name = name) }
+        formState.update { it.copy(name = name) }
     }
 
     fun onResetName() {
-        userInput.update { it.copy(name = "") }
+        formState.update { it.copy(name = "") }
     }
 
     fun onIconSelected(icon: IconPack) {
-        userInput.update { it.copy(icon = icon) }
+        formState.update { it.copy(icon = icon) }
     }
 
     fun onCategoryChanged(id: Int) {
-        userInput.update { it.copy(categoryId = id) }
+        formState.update { it.copy(categoryId = id) }
     }
 
     fun onSaveClick() {
@@ -182,13 +185,14 @@ class SubcategoryEditorViewModel @Inject constructor(
         val subcategory = uiState.value.subcategory
 
         viewModelScope.launch {
+            uiInternalState.update { it.copy(isDeleting = true) }
+
             runCatching {
-                userInput.update { it.copy(isDeleting = true) }
-                deleteSubcategory(subcategory)
+                deleteSubcategoryWithReassign(subcategory)
             }.onSuccess {
                 navigateBack()
             }.onFailure {
-                userInput.update { it.copy(isDeleting = false) }
+                uiInternalState.update { it.copy(isDeleting = false) }
                 emitEvent(
                     SubcategoryEditorEvent.ShowSnackBar(
                         messageRes = R.string.snackBar_delete_subcategory_error,
@@ -216,7 +220,7 @@ class SubcategoryEditorViewModel @Inject constructor(
             action = action
         )
 
-        userInput.update {
+        uiInternalState.update {
             it.copy(discardDialog = dialogState)
         }
 
@@ -233,7 +237,7 @@ class SubcategoryEditorViewModel @Inject constructor(
             action = action
         )
 
-        userInput.update {
+        uiInternalState.update {
             it.copy(deleteDialog = dialogState)
         }
 
@@ -277,12 +281,12 @@ class SubcategoryEditorViewModel @Inject constructor(
             action = action
         )
 
-        userInput.update {
+        uiInternalState.update {
             it.copy(iconSelectorDialog = dialogState)
         }
 
         when (effect) {
-            is SelectorDialogEffect.Applied -> userInput.update { it.copy(icon = effect.value) }
+            is SelectorDialogEffect.Applied -> formState.update { it.copy(icon = effect.value) }
 
             null -> Unit
         }

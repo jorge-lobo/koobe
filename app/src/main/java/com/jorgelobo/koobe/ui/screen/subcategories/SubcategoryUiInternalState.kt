@@ -5,10 +5,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDial
 import com.jorgelobo.koobe.ui.screen.common.dialog.info.InfoDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
 
-data class SubcategoryInputState(
-    val name: String? = null,
-    val icon: IconPack? = null,
-    val categoryId: Int? = null,
+data class SubcategoryUiStateInternal(
     val discardDialog: ConfirmationDialogState? = null,
     val deleteDialog: ConfirmationDialogState? = null,
     val infoDialog: InfoDialogState? = null,

@@ -65,7 +65,7 @@ fun SubcategoryInputSection(
                 value = state.subcategory.localizedName(),
                 label = stringResource(R.string.label_name),
                 placeholder = stringResource(R.string.input_hint_name_subcategory),
-                state = state.inputState,
+                state = state.nameInputState,
                 onValueChange = onNameChanged,
                 onResetClick = onResetNameClick
             )

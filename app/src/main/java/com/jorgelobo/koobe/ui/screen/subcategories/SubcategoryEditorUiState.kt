@@ -3,7 +3,7 @@ package com.jorgelobo.koobe.ui.screen.subcategories
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.Subcategory
-import com.jorgelobo.koobe.domain.usecase.subcategory.DeleteSubcategoryWithReassignUseCase
+import com.jorgelobo.koobe.domain.model.category.isProtected
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
@@ -14,7 +14,7 @@ data class SubcategoryEditorUiState(
     val config: SubcategoryEditorConfig? = null,
     val category: Category,
     val subcategory: Subcategory,
-    val inputState: InputState,
+    val nameInputState: InputState,
     val initialSnapshot: SubcategoryInitialSnapshot,
     val iconDialog: SelectorDialogState<IconPack> = SelectorDialogState(),
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
@@ -22,9 +22,11 @@ data class SubcategoryEditorUiState(
     val infoDialog: InfoDialogState = InfoDialogState(),
     val isSaveButtonEnabled: Boolean = false,
     val showSnackBar: Boolean = false,
+    val isDeleting: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 ) {
+
     val hasUnsavedChanges: Boolean
         get() = subcategory.name != initialSnapshot.name ||
                 subcategory.icon != initialSnapshot.icon ||
@@ -36,12 +38,10 @@ data class SubcategoryEditorUiState(
                 subcategory.categoryId > 0
 
     val isDeleteEnabled: Boolean
-        get() = !subcategory.isProtected()
+        get() = !isSubcategoryProtected
 
-    fun Subcategory.isProtected(): Boolean {
-        return id == DeleteSubcategoryWithReassignUseCase.EXPENSE_SUBCATEGORY_ID ||
-                id == DeleteSubcategoryWithReassignUseCase.INCOME_SUBCATEGORY_ID
-    }
+    val isSubcategoryProtected: Boolean
+        get() = subcategory.isProtected()
 
     fun headlineRes(isEditMode: Boolean): Int {
         return if (isEditMode) {
@@ -52,6 +52,7 @@ data class SubcategoryEditorUiState(
     }
 
     companion object {
+
         fun initialEmpty(): SubcategoryEditorUiState {
             val emptySubcategory = Subcategory.empty()
             val emptyCategory = Category.empty()
@@ -59,7 +60,7 @@ data class SubcategoryEditorUiState(
             return SubcategoryEditorUiState(
                 subcategory = emptySubcategory,
                 category = emptyCategory,
-                inputState = InputState.DEFAULT,
+                nameInputState = InputState.DEFAULT,
                 initialSnapshot = SubcategoryInitialSnapshot(
                     name = "",
                     icon = emptySubcategory.icon,
@@ -77,7 +78,7 @@ data class SubcategoryEditorUiState(
                 config = config,
                 category = category,
                 subcategory = subcategory,
-                inputState = InputState.DEFAULT,
+                nameInputState = InputState.DEFAULT,
                 initialSnapshot = SubcategoryInitialSnapshot(
                     name = subcategory.name,
                     icon = subcategory.icon,
