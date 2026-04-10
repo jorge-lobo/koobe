@@ -11,7 +11,6 @@ import com.jorgelobo.koobe.ui.components.model.enums.DeleteType
 import com.jorgelobo.koobe.ui.components.model.enums.InfoType
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
-import com.jorgelobo.koobe.ui.screen.common.dialog.info.InfoDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 
 @Composable
@@ -19,7 +18,7 @@ fun SubcategoryEditorDialogs(
     state: SubcategoryEditorUiState,
     onDiscardDialogAction: (ConfirmationDialogAction) -> Unit,
     onDeleteDialogAction: (ConfirmationDialogAction) -> Unit,
-    onInfoDialogAction: (InfoDialogAction) -> Unit,
+    onInfoDialogClick: () -> Unit,
     onIconSelectorAction: (SelectorDialogAction<IconPack>) -> Unit
 ) {
     if (state.discardDialog.visible) {
@@ -37,11 +36,11 @@ fun SubcategoryEditorDialogs(
             onCancel = { onDeleteDialogAction(ConfirmationDialogAction.Dismiss) }
         )
     }
-    
+
     if (state.infoDialog.visible) {
         InfoDialog(
             type = InfoType.SUBCATEGORY,
-            onClick = { onInfoDialogAction(InfoDialogAction.Dismiss) }
+            onClick = onInfoDialogClick
         )
     }
 

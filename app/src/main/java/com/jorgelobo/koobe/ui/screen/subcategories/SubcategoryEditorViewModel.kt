@@ -14,9 +14,7 @@ import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
-import com.jorgelobo.koobe.ui.screen.common.dialog.info.InfoDialogAction
-import com.jorgelobo.koobe.ui.screen.common.dialog.info.InfoDialogEffect
-import com.jorgelobo.koobe.ui.screen.common.dialog.info.reduceInfoDialog
+import com.jorgelobo.koobe.ui.screen.common.dialog.info.InfoDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
@@ -248,21 +246,12 @@ class SubcategoryEditorViewModel @Inject constructor(
         }
     }
 
-    fun onInfoDialogAction(action: InfoDialogAction) {
-        val (dialogState, effect) = reduceInfoDialog(
-            state = uiState.value.infoDialog,
-            action = action
-        )
+    fun onInfoDialogOpen() {
+        uiInternalState.update { it.copy(infoDialog = InfoDialogState(visible = true)) }
+    }
 
-        userInput.update {
-            it.copy(infoDialog = dialogState)
-        }
-
-        when (effect) {
-            InfoDialogEffect.Dismiss -> Unit
-
-            null -> Unit
-        }
+    fun dismissInfoDialog() {
+        uiInternalState.update { it.copy(infoDialog = InfoDialogState(visible = false)) }
     }
 
     fun onIconSelectorAction(action: SelectorDialogAction<IconPack>) {
