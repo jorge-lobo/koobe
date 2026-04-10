@@ -2,6 +2,8 @@ package com.jorgelobo.koobe.domain.usecase.subcategory
 
 import androidx.room.withTransaction
 import com.jorgelobo.koobe.data.local.KoobeDatabase
+import com.jorgelobo.koobe.domain.model.category.PlaceholderCategories
+import com.jorgelobo.koobe.domain.model.category.PlaceholderSubcategories
 import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
@@ -15,14 +17,6 @@ class DeleteSubcategoryWithReassignUseCase @Inject constructor(
     private val database: KoobeDatabase
 ) {
 
-    companion object {
-        const val EXPENSE_CATEGORY_ID = 16
-        const val EXPENSE_SUBCATEGORY_ID = 79
-
-        const val INCOME_CATEGORY_ID = 22
-        const val INCOME_SUBCATEGORY_ID = 99
-    }
-
     suspend operator fun invoke(subcategory: Subcategory) {
 
         database.withTransaction {
@@ -34,11 +28,11 @@ class DeleteSubcategoryWithReassignUseCase @Inject constructor(
             // Reassign the subcategory to the fallback category
             val (newCategoryId, newSubcategoryId) = when (category.type) {
                 TransactionType.EXPENSE -> {
-                    EXPENSE_CATEGORY_ID to EXPENSE_SUBCATEGORY_ID
+                    PlaceholderCategories.EXPENSE_ID to PlaceholderSubcategories.EXPENSE_ID
                 }
 
                 TransactionType.INCOME -> {
-                    INCOME_CATEGORY_ID to INCOME_SUBCATEGORY_ID
+                    PlaceholderCategories.INCOME_ID to PlaceholderSubcategories.INCOME_ID
                 }
             }
 
