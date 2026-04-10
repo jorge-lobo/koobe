@@ -3,21 +3,23 @@ package com.jorgelobo.koobe.ui.screen.subcategories
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.Subcategory
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
-import com.jorgelobo.koobe.domain.usecase.subcategory.DeleteSubcategoryUseCase
+import com.jorgelobo.koobe.domain.usecase.subcategory.DeleteSubcategoryWithReassignUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.SaveSubcategoryCaseUse
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
+import com.jorgelobo.koobe.ui.screen.common.dialog.info.InfoDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.info.InfoDialogEffect
+import com.jorgelobo.koobe.ui.screen.common.dialog.info.reduceInfoDialog
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
-import com.jorgelobo.koobe.R
-import com.jorgelobo.koobe.domain.usecase.subcategory.DeleteSubcategoryWithReassignUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -116,7 +118,8 @@ class SubcategoryEditorViewModel @Inject constructor(
                 subcategory = updatedSubcategory,
                 discardDialog = input.discardDialog ?: base.discardDialog,
                 deleteDialog = input.deleteDialog ?: base.deleteDialog,
-                iconDialog = input.iconSelectorDialog ?: base.iconDialog
+                iconDialog = input.iconSelectorDialog ?: base.iconDialog,
+                infoDialog = input.infoDialog ?: base.infoDialog
             )
 
             newState.copy(
@@ -236,6 +239,23 @@ class SubcategoryEditorViewModel @Inject constructor(
 
         when (effect) {
             ConfirmationDialogEffect.Confirmed -> deleteSubcategory()
+
+            null -> Unit
+        }
+    }
+
+    fun onInfoDialogAction(action: InfoDialogAction) {
+        val (dialogState, effect) = reduceInfoDialog(
+            state = uiState.value.infoDialog,
+            action = action
+        )
+
+        userInput.update {
+            it.copy(infoDialog = dialogState)
+        }
+
+        when (effect) {
+            InfoDialogEffect.Dismiss -> Unit
 
             null -> Unit
         }
