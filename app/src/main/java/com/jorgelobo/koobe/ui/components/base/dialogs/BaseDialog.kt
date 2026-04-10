@@ -41,7 +41,7 @@ fun BaseDialog(
     showCancelButton: Boolean = true,
     onDismissRequest: () -> Unit,
     onConfirm: () -> Unit,
-    onCancel: () -> Unit,
+    onCancel: (() -> Unit)? = null,
     content: @Composable ColumnScope.() -> Unit
 ) {
     val colors = AppTheme.colors.containerColors
@@ -76,7 +76,7 @@ fun BaseDialog(
                             confirmTextColor = confirmTextColor,
                             isConfirmEnabled = enable,
                             onConfirmClick = onConfirm,
-                            onCancelClick = onCancel
+                            onCancelClick = onCancel ?: {}
                         ),
                         modifier = Modifier.padding(end = Spacing.Medium)
                     )

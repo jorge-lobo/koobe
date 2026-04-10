@@ -54,8 +54,7 @@ fun InfoDialog(
         enable = true,
         showCancelButton = false,
         onDismissRequest = onClick,
-        onConfirm = onClick,
-        onCancel = {}
+        onConfirm = onClick
     ) {
         Column(
             modifier = Modifier.fillMaxWidth(),
