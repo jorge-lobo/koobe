@@ -1,0 +1,6 @@
+package com.jorgelobo.koobe.domain.model.category
+
+fun Subcategory.isProtected(): Boolean {
+    return id == PlaceholderSubcategories.EXPENSE_ID ||
+            id == PlaceholderSubcategories.INCOME_ID
+}
