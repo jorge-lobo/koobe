@@ -2,8 +2,8 @@ package com.jorgelobo.koobe.ui.screen.subcategories
 
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
-import com.jorgelobo.koobe.domain.model.category.Subcategory
-import com.jorgelobo.koobe.domain.model.category.isProtected
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
+import com.jorgelobo.koobe.domain.model.subcategory.isProtected
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState

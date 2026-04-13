@@ -3,8 +3,8 @@ package com.jorgelobo.koobe.domain.usecase.subcategory
 import androidx.room.withTransaction
 import com.jorgelobo.koobe.data.local.KoobeDatabase
 import com.jorgelobo.koobe.domain.model.category.PlaceholderCategories
-import com.jorgelobo.koobe.domain.model.category.PlaceholderSubcategories
-import com.jorgelobo.koobe.domain.model.category.Subcategory
+import com.jorgelobo.koobe.domain.model.subcategory.PlaceholderSubcategories
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.TransactionRepository

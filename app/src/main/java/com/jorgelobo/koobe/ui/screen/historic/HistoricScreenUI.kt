@@ -11,8 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.CategoryHistory
-import com.jorgelobo.koobe.domain.model.category.Subcategory
-import com.jorgelobo.koobe.domain.model.category.SubcategoryHistory
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
+import com.jorgelobo.koobe.domain.model.subcategory.SubcategoryHistory
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType

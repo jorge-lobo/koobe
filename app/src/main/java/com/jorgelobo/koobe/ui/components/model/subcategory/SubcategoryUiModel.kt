@@ -1,7 +1,7 @@
 package com.jorgelobo.koobe.ui.components.model.subcategory
 
 import com.jorgelobo.koobe.domain.model.category.Category
-import com.jorgelobo.koobe.domain.model.category.Subcategory
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 
 data class SubcategoryUiModel(
     val subcategory: Subcategory,

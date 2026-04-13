@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.domain.model.category
+package com.jorgelobo.koobe.domain.model.subcategory
 
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 

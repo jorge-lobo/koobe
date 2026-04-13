@@ -1,6 +1,6 @@
 package com.jorgelobo.koobe.domain.usecase.subcategory
 
-import com.jorgelobo.koobe.domain.model.category.Subcategory
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import javax.inject.Inject

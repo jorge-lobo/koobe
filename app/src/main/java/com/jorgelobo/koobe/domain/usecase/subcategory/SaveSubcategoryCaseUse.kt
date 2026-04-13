@@ -1,6 +1,6 @@
 package com.jorgelobo.koobe.domain.usecase.subcategory
 
-import com.jorgelobo.koobe.domain.model.category.Subcategory
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import javax.inject.Inject
 
 class SaveSubcategoryCaseUse @Inject constructor(

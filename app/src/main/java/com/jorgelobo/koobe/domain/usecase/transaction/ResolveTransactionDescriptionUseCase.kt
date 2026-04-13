@@ -1,6 +1,6 @@
 package com.jorgelobo.koobe.domain.usecase.transaction
 
-import com.jorgelobo.koobe.domain.model.category.Subcategory
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.model.transaction.DescriptionResolution
 import com.jorgelobo.koobe.domain.model.transaction.DescriptionSource
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
