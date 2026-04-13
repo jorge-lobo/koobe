@@ -5,6 +5,9 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDial
 import com.jorgelobo.koobe.ui.screen.common.dialog.info.InfoDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
 
+/**
+ * Internal UI state for subcategory screen dialogs and transient flags.
+ */
 data class SubcategoryUiStateInternal(
     val discardDialog: ConfirmationDialogState? = null,
     val deleteDialog: ConfirmationDialogState? = null,

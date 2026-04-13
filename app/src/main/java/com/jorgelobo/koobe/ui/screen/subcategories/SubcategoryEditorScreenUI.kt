@@ -20,6 +20,9 @@ import com.jorgelobo.koobe.ui.screen.subcategories.components.SubcategorySaveBut
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
+/**
+ * Layout content for the Subcategory Editor screen.
+ */
 @Composable
 fun SubcategoryEditorScreenUI(
     state: SubcategoryEditorUiState,

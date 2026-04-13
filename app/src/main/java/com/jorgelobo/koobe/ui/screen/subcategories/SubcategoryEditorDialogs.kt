@@ -13,6 +13,9 @@ import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 
+/**
+ * Renders all dialogs for the Subcategory Editor screen based on [state].
+ */
 @Composable
 fun SubcategoryEditorDialogs(
     state: SubcategoryEditorUiState,

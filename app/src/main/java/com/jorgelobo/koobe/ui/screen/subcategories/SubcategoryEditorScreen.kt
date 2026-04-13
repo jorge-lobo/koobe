@@ -28,6 +28,9 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
+/**
+ * Screen for creating or editing a subcategory.
+ */
 @Composable
 fun SubcategoryEditorScreen(
     navController: NavController,

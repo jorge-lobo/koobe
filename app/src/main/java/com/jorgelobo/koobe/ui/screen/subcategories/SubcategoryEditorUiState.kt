@@ -10,6 +10,9 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDial
 import com.jorgelobo.koobe.ui.screen.common.dialog.info.InfoDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
 
+/**
+ * UI state for the Subcategory Editor screen.
+ */
 data class SubcategoryEditorUiState(
     val config: SubcategoryEditorConfig? = null,
     val category: Category,
@@ -27,22 +30,27 @@ data class SubcategoryEditorUiState(
     val errorMessage: String? = null
 ) {
 
+    /** True if the subcategory has been modified. */
     val hasUnsavedChanges: Boolean
         get() = subcategory.name != initialSnapshot.name ||
                 subcategory.icon != initialSnapshot.icon ||
                 subcategory.categoryId != initialSnapshot.categoryId
 
+    /** Validates if the subcategory can be saved. */
     val isValid: Boolean
         get() = subcategory.name.isNotBlank() &&
                 subcategory.icon != IconPack.PLACEHOLDER &&
                 subcategory.categoryId > 0
 
+    /** Whether deletion is allowed for this subcategory. */
     val isDeleteEnabled: Boolean
         get() = !isSubcategoryProtected
 
+    /** Whether this is a system-protected subcategory. */
     val isSubcategoryProtected: Boolean
         get() = subcategory.isProtected()
 
+    /** Returns the screen title based on mode. */
     fun headlineRes(isEditMode: Boolean): Int {
         return if (isEditMode) {
             R.string.headline_subcategory_editor
@@ -89,6 +97,9 @@ data class SubcategoryEditorUiState(
     }
 }
 
+/**
+ * Snapshot of the initial subcategory state used to detect changes.
+ */
 data class SubcategoryInitialSnapshot(
     val name: String,
     val icon: IconPack,

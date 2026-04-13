@@ -34,6 +34,14 @@ import kotlinx.serialization.json.Json
 import java.net.URLDecoder
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Subcategory Editor screen.
+ *
+ * Supports both creation and editing modes based on [SubcategoryEditorConfig].
+ * Manages form state, validation, unsaved changes, and dialog interactions.
+ *
+ * Emits navigation and UI events via [events].
+ */
 @HiltViewModel
 class SubcategoryEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
@@ -46,6 +54,9 @@ class SubcategoryEditorViewModel @Inject constructor(
     private val _events = MutableSharedFlow<SubcategoryEditorEvent>()
     val events = _events.asSharedFlow()
 
+    /**
+     * Screen configuration (edit/create mode and initial IDs).
+     */
     private val config: SubcategoryEditorConfig =
         savedStateHandle.get<String>("config")
             ?.let { URLDecoder.decode(it, "UTF-8") }
@@ -67,6 +78,13 @@ class SubcategoryEditorViewModel @Inject constructor(
     private val formState = MutableStateFlow(SubcategoryFormState())
     private val uiInternalState = MutableStateFlow(SubcategoryUiStateInternal())
 
+    /**
+     * Provides initial UI state from repository data.
+     *
+     * Handles:
+     * - Edit mode: loads existing subcategory
+     * - Create mode: initializes empty subcategory
+     */
     private val baseStateFlow: Flow<SubcategoryEditorUiState> =
         combine(
             subcategoryFlow,
@@ -101,6 +119,12 @@ class SubcategoryEditorViewModel @Inject constructor(
             }
         }
 
+    /**
+     * Combined UI state:
+     * - Base data (repository)
+     * - User input (form)
+     * - Transient UI state (dialogs, loading)
+     */
     val uiState: StateFlow<SubcategoryEditorUiState> =
         combine(
             baseStateFlow,
@@ -133,6 +157,17 @@ class SubcategoryEditorViewModel @Inject constructor(
                 initialValue = SubcategoryEditorUiState.initialEmpty()
             )
 
+    /**
+     * Determines whether the save action should be enabled based on the current state of the form.
+     *
+     * The save button is enabled if:
+     * 1. The current form data is valid (e.g., required fields are populated).
+     * 2. In edit mode: there are actual changes compared to the original data.
+     * 3. In creation mode: the data is valid.
+     *
+     * @param state The current UI state containing form values and validation logic.
+     * @return `true` if the subcategory can be saved, `false` otherwise.
+     */
     private fun computeSaveEnabled(state: SubcategoryEditorUiState): Boolean {
         val isValid = state.isValid
 
@@ -159,6 +194,9 @@ class SubcategoryEditorViewModel @Inject constructor(
         formState.update { it.copy(categoryId = id) }
     }
 
+    /**
+     * Saves the subcategory and navigates back on success.
+     */
     fun onSaveClick() {
         val state = uiState.value
 
@@ -179,6 +217,11 @@ class SubcategoryEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Deletes the subcategory and reassigns related data.
+     *
+     * Shows loading state and handles failure via snackbar.
+     */
     private fun deleteSubcategory() {
         val subcategory = uiState.value.subcategory
 
