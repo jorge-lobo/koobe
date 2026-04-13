@@ -120,7 +120,7 @@ class SubcategoryEditorViewModel @Inject constructor(
                 deleteDialog = uiInternal.deleteDialog ?: base.deleteDialog,
                 iconDialog = uiInternal.iconSelectorDialog ?: base.iconDialog,
                 infoDialog = uiInternal.infoDialog ?: base.infoDialog,
-                isDeleting = uiInternal.isDeleting ?: base.isDeleting
+                isDeleting = uiInternal.isDeleting
             )
 
             newState.copy(

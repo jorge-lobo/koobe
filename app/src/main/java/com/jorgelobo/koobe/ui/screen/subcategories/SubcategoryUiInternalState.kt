@@ -10,5 +10,5 @@ data class SubcategoryUiStateInternal(
     val deleteDialog: ConfirmationDialogState? = null,
     val infoDialog: InfoDialogState? = null,
     val iconSelectorDialog: SelectorDialogState<IconPack>? = null,
-    val isDeleting: Boolean? = null
+    val isDeleting: Boolean = false
 )
