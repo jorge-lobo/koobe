@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.ui.screen.subcategories
+package com.jorgelobo.koobe.ui.screen.subcategories.state
 
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 
