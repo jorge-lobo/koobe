@@ -301,14 +301,25 @@ class SubcategoryEditorViewModel @Inject constructor(
 
     fun onIconSelectorAction(action: SelectorDialogAction<IconPack>) {
         val currentState = uiState.value
+        val currentDialogState = uiInternalState.value.iconSelectorDialog ?: currentState.iconDialog
 
         val baseState =
-            if (action is SelectorDialogAction.Open) {
-                currentState.iconDialog.copy(
-                    initial = currentState.subcategory.icon,
-                    selected = currentState.subcategory.icon
-                )
-            } else currentState.iconDialog
+            when (action) {
+                is SelectorDialogAction.Open -> {
+                    currentDialogState.copy(
+                        initial = currentState.subcategory.icon,
+                        selected = currentState.subcategory.icon
+                    )
+                }
+
+                is SelectorDialogAction.Select -> {
+                    currentDialogState.copy(
+                        selected = action.item
+                    )
+                }
+
+                else -> currentDialogState
+            }
 
         val (dialogState, effect) = reduceSelectorDialog(
             state = baseState,
