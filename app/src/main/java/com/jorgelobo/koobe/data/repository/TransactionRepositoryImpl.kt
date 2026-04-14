@@ -77,4 +77,16 @@ class TransactionRepositoryImpl @Inject constructor(
             newCategoryId
         )
     }
+
+    override suspend fun reassignCategoryAndSubcategory(
+        oldCategoryId: Int,
+        newCategoryId: Int,
+        newSubcategoryId: Int
+    ) {
+        dao.reassignCategoryAndSubcategory(
+            oldCategoryId,
+            newCategoryId,
+            newSubcategoryId
+        )
+    }
 }

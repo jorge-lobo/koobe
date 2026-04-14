@@ -23,9 +23,16 @@ interface TransactionRepository {
     ): Flow<List<Transaction>>
 
     fun getTransactionByIdFlow(id: Int): Flow<Transaction?>
+
     suspend fun reassignSubcategory(
         oldSubcategoryId: Int,
         newSubcategoryId: Int,
         newCategoryId: Int
+    )
+
+    suspend fun reassignCategoryAndSubcategory(
+        oldCategoryId: Int,
+        newCategoryId: Int,
+        newSubcategoryId: Int
     )
 }

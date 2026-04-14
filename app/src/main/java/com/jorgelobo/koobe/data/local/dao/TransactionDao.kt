@@ -62,8 +62,23 @@ interface TransactionDao {
         """
         UPDATE transactions
         SET 
-            subcategoryId = :newSubcategoryId,
-            categoryId = :newCategoryId
+            categoryId = :newCategoryId,
+            subcategoryId = :newSubcategoryId
+        WHERE categoryId = :oldCategoryId
+    """
+    )
+    suspend fun reassignCategoryAndSubcategory(
+        oldCategoryId: Int,
+        newCategoryId: Int,
+        newSubcategoryId: Int
+    )
+
+    @Query(
+        """
+        UPDATE transactions
+        SET
+            categoryId = :newCategoryId,
+            subcategoryId = :newSubcategoryId            
         WHERE subcategoryId = :oldSubcategoryId
     """
     )
