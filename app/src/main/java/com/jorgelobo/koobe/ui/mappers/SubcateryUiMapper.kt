@@ -3,7 +3,7 @@ package com.jorgelobo.koobe.ui.mappers
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.jorgelobo.koobe.R
-import com.jorgelobo.koobe.domain.model.category.Subcategory
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 
 private val subcategoryNameMap = mapOf(
     "subcategory_rent" to R.string.subcategory_rent,

@@ -23,10 +23,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
-import com.jorgelobo.koobe.ui.mappers.getIconFromName
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.BorderDimens
@@ -34,8 +35,6 @@ import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.InputSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.date.DateUtils
-import com.jorgelobo.koobe.R
-import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 
 @Composable
 fun InputDate(
@@ -69,7 +68,7 @@ fun InputDate(
 
             IconButton(onClick = config.onIconClick) {
                 Icon(
-                    imageVector = getIconFromName(IconGeneral.CALENDAR),
+                    imageVector = IconPack.CALENDAR.icon,
                     contentDescription = stringResource(R.string.cd_calendar),
                     tint = colors.iconColors.iconPrimary,
                     modifier = Modifier.size(IconSize.Medium)

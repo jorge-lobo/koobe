@@ -3,19 +3,19 @@ package com.jorgelobo.koobe.ui.components.base.buttons.types
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
+import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonBase
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
-import com.jorgelobo.koobe.R
 
 @Composable
 fun ButtonSquare(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean,
-    iconUrl: ImageVector
+    icon: IconPack
 ) {
     val buttonColors = AppTheme.colors.buttonColors
     val iconColor = AppTheme.colors.iconColors
@@ -29,7 +29,7 @@ fun ButtonSquare(
         isEnabled = enabled
     ) {
         Icon(
-            imageVector = iconUrl,
+            imageVector = icon.icon,
             contentDescription = stringResource(R.string.cd_button_icon),
             tint = if (enabled) iconColor.iconPrimary else iconColor.iconDisabled
         )

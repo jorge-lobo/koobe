@@ -16,9 +16,16 @@ interface TransactionRepository {
         startDate: Long,
         endDate: Long
     ): Flow<List<Transaction>>
+
     fun getTransactionsByPeriod(
         startDate: Long,
         endDate: Long
     ): Flow<List<Transaction>>
+
     fun getTransactionByIdFlow(id: Int): Flow<Transaction?>
+    suspend fun reassignSubcategory(
+        oldSubcategoryId: Int,
+        newSubcategoryId: Int,
+        newCategoryId: Int
+    )
 }

@@ -23,7 +23,7 @@ import com.jorgelobo.koobe.ui.components.composed.grids.CategoriesGrid
 import com.jorgelobo.koobe.ui.components.composed.grids.CategoriesGridConfig
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.components.model.enums.UiState
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
@@ -96,7 +96,7 @@ fun CategorySelection(
                 enabled = true,
                 text = stringResource(R.string.btn_create_category),
                 textColor = AppTheme.colors.buttonColors.buttonTextDefault,
-                iconUrl = IconGeneral.ADD.icon
+                icon = IconPack.ADD
             )
         }
 

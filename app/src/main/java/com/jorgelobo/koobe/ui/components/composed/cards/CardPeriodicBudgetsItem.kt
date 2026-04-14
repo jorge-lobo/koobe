@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.budget.Budget
 import com.jorgelobo.koobe.domain.model.category.Category
-import com.jorgelobo.koobe.domain.model.category.Subcategory
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
@@ -230,12 +230,12 @@ fun PreviewCardPeriodicBudgetsItem() {
             )
 
             val categories = listOf(
-                Category(1, "Home", IconPack.HOME.icon, "#FF5722", TransactionType.EXPENSE)
+                Category(1, "Home", IconPack.HOME, "#FF5722", TransactionType.EXPENSE)
             )
 
             val subcategories = listOf(
-                Subcategory(1, 1, "Internet", IconPack.INTERNET_TV.icon),
-                Subcategory(2, 1, "Electricity", IconPack.ELECTRICITY.icon)
+                Subcategory(1, 1, "Internet", IconPack.INTERNET_TV),
+                Subcategory(2, 1, "Electricity", IconPack.ELECTRICITY)
             )
 
             val config = CardPeriodicBudgetsConfig(

@@ -69,7 +69,7 @@ fun PreviewShortcutsGrid() {
                 Shortcut(
                     id = 1,
                     name = "Electricity",
-                    icon = IconPack.ELECTRICITY.icon,
+                    icon = IconPack.ELECTRICITY,
                     categoryId = 1,
                     transactionType = TransactionType.EXPENSE,
                     paymentMethod = PaymentMethodType.CASH,
@@ -80,7 +80,7 @@ fun PreviewShortcutsGrid() {
                 Shortcut(
                     id = 2,
                     name = "Internet & TV",
-                    icon = IconPack.INTERNET_TV.icon,
+                    icon = IconPack.INTERNET_TV,
                     categoryId = 1,
                     transactionType = TransactionType.EXPENSE,
                     paymentMethod = PaymentMethodType.CASH,
@@ -91,7 +91,7 @@ fun PreviewShortcutsGrid() {
                 Shortcut(
                     id = 3,
                     name = "Restaurant",
-                    icon = IconPack.RESTAURANT.icon,
+                    icon = IconPack.RESTAURANT,
                     categoryId = 2,
                     transactionType = TransactionType.EXPENSE,
                     paymentMethod = PaymentMethodType.CASH,
@@ -102,7 +102,7 @@ fun PreviewShortcutsGrid() {
                 Shortcut(
                     id = 4,
                     name = "Canteen",
-                    icon = IconPack.CANTEEN.icon,
+                    icon = IconPack.CANTEEN,
                     categoryId = 2,
                     transactionType = TransactionType.EXPENSE,
                     paymentMethod = PaymentMethodType.CASH,
@@ -113,7 +113,7 @@ fun PreviewShortcutsGrid() {
             )
 
             val category =
-                Category(1, "Home", IconPack.HOME.icon, "#FFB74D", TransactionType.EXPENSE)
+                Category(1, "Home", IconPack.HOME, "#FFB74D", TransactionType.EXPENSE)
 
             ShortcutsGrid(
                 config = ShortcutsGridConfig(

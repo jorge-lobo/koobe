@@ -7,5 +7,5 @@ plugins {
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.compose.compiler) apply false
 
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.21"
+    id("com.autonomousapps.dependency-analysis") version "3.6.1"
 }

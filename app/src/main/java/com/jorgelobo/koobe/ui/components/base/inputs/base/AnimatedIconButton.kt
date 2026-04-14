@@ -12,14 +12,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
-import androidx.compose.ui.graphics.vector.ImageVector
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 
 @Composable
 fun AnimatedIconButton(
     modifier: Modifier = Modifier,
-    imageVector: ImageVector,
+    icon: IconPack,
     contentDescription: String? = null,
     onClick: () -> Unit,
     enabled: Boolean = true
@@ -48,7 +48,7 @@ fun AnimatedIconButton(
             .graphicsLayer(scaleX = scale, scaleY = scale)
     ) {
         Icon(
-            imageVector = imageVector,
+            imageVector = icon.icon,
             contentDescription = contentDescription,
             tint = iconColor,
             modifier = Modifier.size(IconSize.ExtraSmall)

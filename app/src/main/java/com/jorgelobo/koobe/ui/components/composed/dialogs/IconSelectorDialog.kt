@@ -20,9 +20,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
-import com.jorgelobo.koobe.data.local.icon.IconResolver
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
 import com.jorgelobo.koobe.ui.components.base.background.Background
@@ -30,6 +28,9 @@ import com.jorgelobo.koobe.ui.components.mappers.iconThemesMap
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarConfigurationType
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.AvatarSize
@@ -40,27 +41,23 @@ import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 @Composable
 fun IconSelectorDialog(
     modifier: Modifier = Modifier,
+    state: SelectorDialogState<IconPack>,
+    onAction: (SelectorDialogAction<IconPack>) -> Unit,
     config: AvatarConfigurationDialogConfig
 ) {
     val colors = AppTheme.colors
     val typography = AppTheme.typography.text
     val themes = iconThemesMap()
 
-    var selectedIcon by remember { mutableStateOf<ImageVector?>(null) }
-    val enable = selectedIcon != null
+    val selected = state.selected
+    val enable = selected != null
 
     AvatarConfigurationDialog(
         modifier = modifier,
         config = config.copy(
             type = AvatarConfigurationType.ICON,
-            onSelection = config.onSelection,
-            onApply = {
-                selectedIcon?.let { icon ->
-                    val iconName = IconResolver.findIconPackByVector(icon)?.name ?: ""
-                    config.onSelection(iconName)
-                }
-            },
-            onCancel = config.onCancel
+            onApply = { onAction(SelectorDialogAction.Apply) },
+            onCancel = { onAction(SelectorDialogAction.Cancel) }
         ),
         enable = enable
     ) {
@@ -70,6 +67,7 @@ fun IconSelectorDialog(
                 .wrapContentHeight()
         ) {
             themes.entries.forEach { (themeName, icons) ->
+
                 stickyHeader {
                     Text(
                         text = themeName,
@@ -92,14 +90,18 @@ fun IconSelectorDialog(
                         verticalArrangement = Arrangement.spacedBy(Spacing.Small),
                         userScrollEnabled = false
                     ) {
-                        items(icons) { icon: ImageVector ->
-                            val isSelected = icon == selectedIcon
+                        items(icons) { iconPack ->
+
+                            val isSelected = iconPack == selected
+
                             Avatar(
                                 type = AvatarType.MEDIUM,
-                                icon = icon,
+                                icon = iconPack,
                                 color = if (isSelected) colors.containerColors.containerSelected else colors.containerColors.containerSecondary,
                                 isSelected = isSelected,
-                                modifier = Modifier.clickable { selectedIcon = icon }
+                                modifier = Modifier.clickable {
+                                    onAction(SelectorDialogAction.Select(iconPack))
+                                }
                             )
                         }
                     }
@@ -129,10 +131,13 @@ fun PreviewIconSelectorDialog() {
                 IconSelectorDialog(
                     config = AvatarConfigurationDialogConfig(
                         type = AvatarConfigurationType.ICON,
-                        onSelection = {},
                         onApply = { showDialog = false },
                         onCancel = { showDialog = false }
-                    )
+                    ),
+                    state = SelectorDialogState(
+                        selected = IconPack.CREDIT_CARD
+                    ),
+                    onAction = {}
                 )
             }
         }

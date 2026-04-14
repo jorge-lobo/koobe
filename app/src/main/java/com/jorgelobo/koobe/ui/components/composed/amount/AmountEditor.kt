@@ -13,12 +13,12 @@ import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.inputs.fields.InputAmount
+import com.jorgelobo.koobe.ui.components.base.inputs.fields.InputAmountConfig
 import com.jorgelobo.koobe.ui.components.base.inputs.fields.SelectorCurrency
 import com.jorgelobo.koobe.ui.components.base.inputs.fields.SelectorPayment
 import com.jorgelobo.koobe.ui.components.composed.numericKeypad.NumericKeypad
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.base.inputs.fields.InputAmountConfig
-import com.jorgelobo.koobe.ui.components.model.icons.IconPayment
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.getCurrencyCode
@@ -77,7 +77,7 @@ fun PreviewAmountEditor() {
         ) {
             AmountEditor(
                 config = AmountEditorConfig(
-                    paymentIcon = IconPayment.CASH.icon,
+                    paymentIcon = IconPack.CASH,
                     currencyType = CurrencyType.EUR,
                     value = 120.00,
                     onResetClick = {},

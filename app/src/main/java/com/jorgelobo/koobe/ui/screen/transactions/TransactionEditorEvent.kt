@@ -1,7 +1,7 @@
 package com.jorgelobo.koobe.ui.screen.transactions
 
 import androidx.annotation.StringRes
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 
 /**
  * Represents one-off events emitted by [TransactionEditorViewModel] to the UI.
@@ -24,6 +24,6 @@ sealed interface TransactionEditorEvent {
     data class ShowSnackBar(
         @field:StringRes val messageRes: Int,
         @field:StringRes val actionLabelRes: Int? = null,
-        val icon: IconGeneral? = null
+        val icon: IconPack? = null
     ) : TransactionEditorEvent
 }

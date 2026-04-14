@@ -21,7 +21,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.constants.UiLabel
@@ -35,6 +34,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.UiState
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
@@ -46,7 +46,7 @@ fun AppRadioButton(
     onClick: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean,
-    icon: ImageVector? = null,
+    icon: IconPack? = null,
     label: String
 ) {
     val colors = AppTheme.colors.radioButtonColors
@@ -71,7 +71,7 @@ fun AppRadioButton(
 
         if (icon != null) {
             Icon(
-                imageVector = icon,
+                imageVector = icon.icon,
                 modifier = Modifier.size(IconSize.ExtraSmall),
                 contentDescription = label,
                 tint = AppTheme.colors.iconColors.iconPaymentMethod
@@ -106,7 +106,7 @@ fun <T> RadioGroup(
                 enabled = enabled,
                 selected = selected == option,
                 label = stringResource(option.toLabel()),
-                icon = config.icons[option]?.icon,
+                icon = config.icons[option],
                 onClick = {
                     if (enabled) {
                         selected = option

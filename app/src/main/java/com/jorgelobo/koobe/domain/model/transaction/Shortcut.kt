@@ -1,15 +1,15 @@
 package com.jorgelobo.koobe.domain.model.transaction
 
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 
 data class Shortcut(
     val id: Int,
     val name: String,
-    val icon: ImageVector,
+    val icon: IconPack,
     val categoryId: Int,
     val transactionType: TransactionType,
     val paymentMethod: PaymentMethodType,

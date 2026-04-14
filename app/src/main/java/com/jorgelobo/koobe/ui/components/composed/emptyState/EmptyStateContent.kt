@@ -12,18 +12,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.EmptyStateIconType
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
-import com.jorgelobo.koobe.ui.theme.dimens.IconSize
-import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.R
-import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
 import com.jorgelobo.koobe.ui.theme.color.LightThemeGrey2
+import com.jorgelobo.koobe.ui.theme.dimens.IconSize
+import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
 @Composable
 fun EmptyStateContent(
@@ -44,7 +44,7 @@ fun EmptyStateContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            imageVector = config.icon,
+            imageVector = config.icon.icon,
             contentDescription = null,
             tint = config.iconTint,
             modifier = Modifier.size(iconSize)
@@ -73,7 +73,7 @@ fun PreviewEmptyState() {
             EmptyStateContent(
                 config = EmptyStateContentConfig(
                     message = stringResource(R.string.empty_dashboard_shortcuts),
-                    icon = IconGeneral.EMPTY.icon,
+                    icon = IconPack.EMPTY,
                     iconTint = AccentCoral,
                     iconType = EmptyStateIconType.BACKGROUND
                 )
@@ -82,7 +82,7 @@ fun PreviewEmptyState() {
             EmptyStateContent(
                 config = EmptyStateContentConfig(
                     message = stringResource(R.string.empty_dashboard_shortcuts),
-                    icon = IconGeneral.EMPTY.icon,
+                    icon = IconPack.EMPTY,
                     iconTint = LightThemeGrey2,
                     iconType = EmptyStateIconType.CARD
                 )

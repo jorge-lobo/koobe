@@ -8,6 +8,8 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
     alias(libs.plugins.kotlinx.serialization)
+
+    id("com.autonomousapps.dependency-analysis")
 }
 
 android {
@@ -25,12 +27,6 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += mapOf("room.schemaLocation" to "$projectDir/schemas")
-            }
-        }
     }
 
     buildTypes {
@@ -43,20 +39,16 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
     kotlin {
         compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_1_8)
-            freeCompilerArgs.add("-XXLanguage:+PropertyParamAnnotationDefaultTargetMode")
+            jvmTarget.set(JvmTarget.JVM_17)
         }
     }
     buildFeatures {
         compose = true
-    }
-    composeOptions {
-        kotlinCompilerExtensionVersion = "2.2.0"
     }
     packaging {
         resources {
@@ -67,67 +59,74 @@ android {
 
 dependencies {
 
+    // Core Android / LifeCycle
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.appcompat)     // AppCompat 1.6+
+
+    // Compose (UI)
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
-    androidTestImplementation(platform(libs.androidx.compose.bom))
-    androidTestImplementation(libs.androidx.ui.test.junit4)
+    implementation(libs.androidx.foundation)    // Lazy Grid
+    implementation(libs.androidx.navigation.compose)
+
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
-    implementation(libs.kotlinx.coroutines.android)
+    androidTestImplementation(platform(libs.androidx.compose.bom))
+    androidTestImplementation(libs.androidx.ui.test.junit4)
 
-    // Retrofit
+    // Coroutines
+    implementation(libs.kotlinx.coroutines.android)
+    testImplementation(libs.kotlinx.coroutines.test)
+
+    // Network (Retrofit + OkHttp)
     implementation(libs.retrofit)
     implementation(libs.converter.gson)
-    implementation(libs.gson)
-
-    implementation(libs.threetenabp)
-    implementation(libs.androidx.swiperefreshlayout)
-
-    implementation(libs.androidx.navigation.compose)
-
     implementation(libs.okhttp)
 
-    // Glide
+    // Image loading
     implementation(libs.glide)
     ksp(libs.compiler)
 
-    // Lazy Grid
-    implementation(libs.androidx.foundation)
-
-    implementation(libs.accompanist.systemuicontroller)
-
-    // Hilt
+    // DI (Hilt)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
     implementation(libs.hilt.navigation.compose)
+    kapt(libs.hilt.compiler)
 
-    // Room
+    // Database (ROOM)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     ksp(libs.room.compiler)
 
-    // Phosphor Icons for Compose Multiplatform
-    implementation(libs.phosphor.icon)
-
-    // Datastore
+    // Storage (Datastore)
     implementation(libs.androidx.datastore.preferences)
-    implementation(libs.androidx.datastore.core)
 
-    // Json
+    // Serialization / Json
     implementation(libs.kotlinx.serialization.json)
 
-    // AppCompat 1.6+
-    implementation(libs.androidx.appcompat)
+    // UI Helpers
+    implementation(libs.accompanist.systemuicontroller)
+    implementation(libs.phosphor.icon)      // Phosphor Icons for Compose Multiplatform
+
+    // Testing (Unit)
+    testImplementation(libs.junit)
+    testImplementation(libs.mockk)
+    testImplementation(libs.turbine)
+
+    // Testing (Android)
+    androidTestImplementation(libs.androidx.junit)
+    androidTestImplementation(libs.androidx.espresso.core)
+    testImplementation(kotlin("test"))
+
+}
+
+ksp {
+    arg("room.schemaLocation", "$projectDir/schemas")
 }
 
 kapt {

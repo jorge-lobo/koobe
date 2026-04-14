@@ -1,13 +1,13 @@
 package com.jorgelobo.koobe.ui.components.mappers
 
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.components.model.icons.IconThemes
 
 @Composable
-fun iconThemesMap(): Map<String, List<ImageVector>> {
+fun iconThemesMap(): Map<String, List<IconPack>> {
     return mapOf(
         stringResource(R.string.arrows) to IconThemes.Arrows,
         stringResource(R.string.art) to IconThemes.Art,

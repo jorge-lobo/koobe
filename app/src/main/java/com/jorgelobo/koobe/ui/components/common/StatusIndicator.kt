@@ -15,9 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
@@ -25,8 +27,6 @@ import com.jorgelobo.koobe.ui.theme.color.AccentGold
 import com.jorgelobo.koobe.ui.theme.color.AccentMint
 import com.jorgelobo.koobe.ui.theme.dimens.Height
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.R
-import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 
 @Composable
 fun StatusIndicator(
@@ -45,7 +45,7 @@ fun StatusIndicator(
         label = "StatusIndicatorColor"
     )
 
-    val icon = if (percentage < 0.8) IconGeneral.CHECK.icon else IconGeneral.WARNING.icon
+    val icon = if (percentage < 0.8) IconPack.CHECK.icon else IconPack.WARNING.icon
 
     val iconColor = AppTheme.colors.iconColors.iconAvatar
 

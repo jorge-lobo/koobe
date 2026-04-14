@@ -48,7 +48,7 @@ fun ButtonAddTransaction(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = buttonData.icon,
+                imageVector = buttonData.icon.icon,
                 modifier = Modifier.size(IconSize.ExtraSmall),
                 contentDescription = buttonData.contextDescription,
                 tint = AppTheme.colors.iconColors.iconAvatar

@@ -1,8 +1,10 @@
 package com.jorgelobo.koobe.ui.components.composed.lists
 
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+
 sealed class ListItemConfig {
     data class CategoryInfoRow(
-        val avatar: String,
+        val avatar: IconPack,
         val name: String,
         val numberTransactions: Int,
         val amount: Double,
@@ -11,7 +13,7 @@ sealed class ListItemConfig {
     ) : ListItemConfig()
 
     data class SubcategoryInfoRow(
-        val avatar: String,
+        val avatar: IconPack,
         val name: String,
         val numberTransactions: Int,
         val amount: Double,
@@ -23,7 +25,7 @@ sealed class ListItemConfig {
         val date: String,
         val name: String,
         val amount: Double,
-        val paymentMethodIcon: String,
+        val paymentMethodIcon: IconPack,
         val onClick: () -> Unit
     ) : ListItemConfig()
 
@@ -37,7 +39,7 @@ sealed class ListItemConfig {
     ) : ListItemConfig()
 
     data class BudgetRow(
-        val avatar: String,
+        val avatar: IconPack,
         val name: String,
         val balance: Double,
         val dailyAverage: Double,

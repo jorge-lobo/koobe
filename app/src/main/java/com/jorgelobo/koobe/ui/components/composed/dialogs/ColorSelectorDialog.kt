@@ -25,13 +25,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
-import com.jorgelobo.koobe.common.extensions.toHexString
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.model.colors.AvatarColorPalette
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarConfigurationType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.AvatarSize
@@ -42,26 +43,22 @@ import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 @Composable
 fun ColorSelectorDialog(
     modifier: Modifier = Modifier,
+    state: SelectorDialogState<Color>,
+    onAction: (SelectorDialogAction<Color>) -> Unit,
     config: AvatarConfigurationDialogConfig
 ) {
     val shape = AppTheme.shapes.extraLarge
     val palette: List<Color> = AvatarColorPalette.colors
 
-    var selectedColor by remember { mutableStateOf<Color?>(null) }
+    val selectedColor = state.selected
     val enable = selectedColor != null
 
     AvatarConfigurationDialog(
         modifier = modifier,
         config = config.copy(
             type = AvatarConfigurationType.COLOR,
-            onSelection = config.onSelection,
-            onApply = {
-                selectedColor?.let { color ->
-                    val hex = color.toHexString()
-                    config.onSelection(hex)
-                }
-            },
-            onCancel = config.onCancel
+            onApply = { onAction(SelectorDialogAction.Apply) },
+            onCancel = { onAction(SelectorDialogAction.Cancel) }
         ),
         enable = enable
     ) {
@@ -74,6 +71,7 @@ fun ColorSelectorDialog(
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
             items(items = palette) { color ->
+
                 val isSelected = color == selectedColor
 
                 Box(
@@ -81,12 +79,12 @@ fun ColorSelectorDialog(
                         .size(AvatarSize.Large)
                         .clip(shape)
                         .background(color)
-                        .clickable { selectedColor = color },
+                        .clickable { onAction(SelectorDialogAction.Select(color)) },
                     contentAlignment = Alignment.Center
                 ) {
                     if (isSelected) {
                         Icon(
-                            imageVector = IconGeneral.CHECK.icon,
+                            imageVector = IconPack.CHECK.icon,
                             contentDescription = null,
                             tint = AppTheme.colors.iconColors.iconAvatar,
                             modifier = Modifier.size(IconSize.Medium)
@@ -116,9 +114,12 @@ fun PreviewColorSelectorDialog() {
 
             if (showDialog) {
                 ColorSelectorDialog(
+                    state = SelectorDialogState(
+                        selected = Color.Red
+                    ),
+                    onAction = {},
                     config = AvatarConfigurationDialogConfig(
                         type = AvatarConfigurationType.COLOR,
-                        onSelection = {},
                         onApply = { showDialog = false },
                         onCancel = { showDialog = false }
                     )

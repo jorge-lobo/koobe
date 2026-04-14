@@ -2,8 +2,8 @@ package com.jorgelobo.koobe.domain.usecase.historic
 
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.CategoryHistory
-import com.jorgelobo.koobe.domain.model.category.Subcategory
-import com.jorgelobo.koobe.domain.model.category.SubcategoryHistory
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
+import com.jorgelobo.koobe.domain.model.subcategory.SubcategoryHistory
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Transaction

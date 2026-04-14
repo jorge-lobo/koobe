@@ -13,7 +13,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
-import com.jorgelobo.koobe.domain.model.category.Subcategory
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
@@ -27,7 +27,6 @@ import com.jorgelobo.koobe.ui.components.composed.lists.ListSubcategoryItemConfi
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.theme.AppTheme
@@ -95,7 +94,7 @@ fun CardCategoryItem(
                     ButtonConfig(
                         text = stringResource(R.string.btn_add_subcategory),
                         type = ButtonType.TEXT,
-                        icon = IconGeneral.ADD,
+                        icon = IconPack.ADD,
                         onClick = onAddSubcategoryClick
                     )
                 )
@@ -122,27 +121,27 @@ fun PreviewCardCategoryItem() {
                 id = 1,
                 categoryId = 1,
                 name = "Water",
-                icon = IconPack.WATER.icon
+                icon = IconPack.WATER
             )
 
             val subcategory2 = Subcategory(
                 id = 2,
                 categoryId = 1,
                 name = "Internet & TV",
-                icon = IconPack.INTERNET_TV.icon
+                icon = IconPack.INTERNET_TV
             )
 
             val subcategory3 = Subcategory(
                 id = 3,
                 categoryId = 1,
                 name = "Appliances",
-                icon = IconPack.APPLIANCES.icon
+                icon = IconPack.APPLIANCES
             )
 
             val category = Category(
                 id = 1,
                 name = "Home",
-                icon = IconPack.HOME.icon,
+                icon = IconPack.HOME,
                 color = "#FF5722",
                 type = TransactionType.EXPENSE,
                 subcategories = listOf(subcategory1, subcategory2, subcategory3)

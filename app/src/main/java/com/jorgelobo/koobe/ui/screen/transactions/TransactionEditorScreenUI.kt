@@ -11,7 +11,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.category.Category
-import com.jorgelobo.koobe.domain.model.category.Subcategory
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
@@ -133,7 +133,7 @@ fun PreviewTransactionEditorScreen() {
         val category = Category(
             8,
             "Entertainment",
-            IconPack.ENTERTAINMENT.icon,
+            IconPack.ENTERTAINMENT,
             "#FFD54F",
             TransactionType.EXPENSE
         )
@@ -142,13 +142,13 @@ fun PreviewTransactionEditorScreen() {
             id = 5,
             categoryId = 8,
             name = "Movies",
-            icon = IconPack.CINEMA.icon
+            icon = IconPack.CINEMA
         )
 
         val shortcut = Shortcut(
             id = 2,
             name = "Football",
-            icon = IconPack.SPORTS.icon,
+            icon = IconPack.SPORTS,
             categoryId = 8,
             transactionType = TransactionType.EXPENSE,
             paymentMethod = PaymentMethodType.CASH,

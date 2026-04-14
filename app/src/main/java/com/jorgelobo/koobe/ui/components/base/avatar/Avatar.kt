@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.ui.components.base.background.Background
@@ -22,7 +21,7 @@ import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 fun Avatar(
     modifier: Modifier = Modifier,
     type: AvatarType,
-    icon: ImageVector,
+    icon: IconPack,
     color: Color,
     isSelected: Boolean = false
 ) {
@@ -53,7 +52,7 @@ fun PreviewAvatar() {
         ) {
             Avatar(
                 type = AvatarType.MEDIUM,
-                icon = IconPack.TRANSPORTATION.icon,
+                icon = IconPack.TRANSPORTATION,
                 color = AccentBlue,
                 isSelected = false
             )

@@ -26,7 +26,7 @@ import com.jorgelobo.koobe.ui.components.base.snackbar.SnackBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
@@ -73,7 +73,7 @@ fun TransactionEditorScreen(
         rememberUpdatedState(uiState.subcategory?.localizedName() ?: uiState.shortcut?.name)
 
     BackHandler {
-        viewModel.onDiscardDialogAction(ConfirmationDialogAction.RequestClose)
+        viewModel.onDiscardDialogAction(ConfirmationDialogAction.Open)
     }
 
     TransactionEditorEffects(
@@ -119,13 +119,13 @@ fun TransactionEditorScreen(
                         )
                     ),
                     leadingAction = AppBarAction(
-                        icon = IconGeneral.CLOSE,
-                        onClick = { viewModel.onDiscardDialogAction(ConfirmationDialogAction.RequestClose) }
+                        icon = IconPack.CLOSE,
+                        onClick = { viewModel.onDiscardDialogAction(ConfirmationDialogAction.Open) }
                     ),
                     trailingActions = if (config.isEditMode) listOf(
                         AppBarAction(
-                            IconGeneral.DELETE,
-                            onClick = { viewModel.onDeleteDialogAction(ConfirmationDialogAction.RequestClose) }
+                            IconPack.DELETE,
+                            onClick = { viewModel.onDeleteDialogAction(ConfirmationDialogAction.Open) }
                         )
                     ) else emptyList()
                 )

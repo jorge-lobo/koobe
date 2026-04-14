@@ -21,7 +21,7 @@ import com.jorgelobo.koobe.domain.usecase.transaction.DeleteTransactionUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.ResolveTransactionDescriptionUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.SaveTransactionUseCase
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.mappers.toAmountAction
 import com.jorgelobo.koobe.ui.mappers.toTransaction
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
@@ -116,7 +116,7 @@ class TransactionEditorViewModel @Inject constructor(
 
     private val userSettingsFlow = getUserSettings()
 
-    private val userInput = MutableStateFlow(UserInputState())
+    private val userInput = MutableStateFlow(TransactionInputState())
 
     /**
      * A [Flow] that combines external data sources (category, subcategory, shortcut, existing
@@ -172,7 +172,7 @@ class TransactionEditorViewModel @Inject constructor(
         combine(
             baseStateFlow,
             userInput
-        ) { base: TransactionEditorUiState, input: UserInputState ->
+        ) { base: TransactionEditorUiState, input: TransactionInputState ->
 
             val amountInput = input.amountInput ?: base.amountInput
 
@@ -347,7 +347,7 @@ class TransactionEditorViewModel @Inject constructor(
                     TransactionEditorEvent.ShowSnackBar(
                         messageRes = R.string.snackBar_delete_transaction_error,
                         actionLabelRes = null,
-                        icon = IconGeneral.WARNING
+                        icon = IconPack.WARNING
                     )
                 )
             }
@@ -484,7 +484,7 @@ class TransactionEditorViewModel @Inject constructor(
             TransactionEditorEvent.ShowSnackBar(
                 messageRes = R.string.snackBar_message,
                 actionLabelRes = R.string.snackBar_action,
-                icon = IconGeneral.EDIT
+                icon = IconPack.EDIT
             )
         )
     }

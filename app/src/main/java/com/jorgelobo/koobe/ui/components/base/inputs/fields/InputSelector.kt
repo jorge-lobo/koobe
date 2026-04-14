@@ -17,7 +17,7 @@ import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.inputs.base.AnimatedIconButton
 import com.jorgelobo.koobe.ui.components.base.inputs.base.BaseFieldContainer
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
-import com.jorgelobo.koobe.ui.components.model.icons.IconGeneral
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.SelectorSize
@@ -31,7 +31,7 @@ fun InputSelector(
     AppTheme.shapes
     val colors = AppTheme.colors
     val typography = AppTheme.typography.text
-    val icon = IconGeneral.DISCLOSURE.icon
+    val icon = IconPack.DISCLOSURE
 
     BaseFieldContainer(
         label = config.label,
@@ -50,7 +50,7 @@ fun InputSelector(
         Spacer(modifier = Modifier.weight(1f))
 
         AnimatedIconButton(
-            imageVector = icon,
+            icon = icon,
             contentDescription = stringResource(R.string.cd_disclosure),
             onClick = config.onClick
         )

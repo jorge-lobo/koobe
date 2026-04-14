@@ -1,161 +1,158 @@
 package com.jorgelobo.koobe.ui.components.model.icons
 
-import com.adamglin.phosphoricons.RegularGroup
-import com.adamglin.phosphoricons.regular.*
-
 object IconThemes {
 
     val Arrows = listOf(
-        RegularGroup.ArrowUp, RegularGroup.ArrowDown,
-        RegularGroup.ArrowLeft, RegularGroup.ArrowRight,
-        RegularGroup.ArrowsClockwise, RegularGroup.ArrowsCounterClockwise,
-        RegularGroup.ArrowBendDoubleUpRight, RegularGroup.ArrowBendDoubleUpLeft
+        IconPack.ARROW_UP, IconPack.ARROW_DOWN,
+        IconPack.ARROW_LEFT, IconPack.ARROW_RIGHT,
+        IconPack.ARROWS_CLOCKWISE, IconPack.ARROWS_COUNTER_CLOCKWISE,
+        IconPack.ARROW_BEND_DOUBLE_UP_RIGHT, IconPack.ARROW_BEND_DOUBLE_UP_LEFT
     )
 
     val Art = listOf(
-        RegularGroup.Palette, RegularGroup.PaintBrushHousehold,
-        RegularGroup.Pencil, RegularGroup.PenNib,
-        RegularGroup.Scissors, RegularGroup.Ruler,
-        RegularGroup.Eraser, RegularGroup.Swatches
+        IconPack.MUSEUM, IconPack.HOUSE_MAINTENANCE,
+        IconPack.PENCIL, IconPack.PEN_NIB,
+        IconPack.SCISSORS, IconPack.RULER,
+        IconPack.ERASER, IconPack.SWATCHES
     )
 
     val ClothingAndAccessories = listOf(
-        RegularGroup.CoatHanger, RegularGroup.TShirt,
-        RegularGroup.Handbag, RegularGroup.HighHeel,
-        RegularGroup.Sunglasses, RegularGroup.BaseballCap,
-        RegularGroup.Watch, RegularGroup.Tag
+        IconPack.APPAREL, IconPack.CLOTHING,
+        IconPack.APPAREL_ACCESSORIES, IconPack.FOOTWEAR,
+        IconPack.SUNGLASSES, IconPack.BASEBALL_CAP,
+        IconPack.WATCH, IconPack.USED_SALE
     )
 
     val FamilyAndPeople = listOf(
-        RegularGroup.User, RegularGroup.UsersThree,
-        RegularGroup.UsersFour, RegularGroup.HandHeart,
-        RegularGroup.Baby, RegularGroup.BabyCarriage,
-        RegularGroup.Handshake, RegularGroup.PersonSimpleRun
+        IconPack.USER, IconPack.FAMILY_SUPPORT,
+        IconPack.FAMILY, IconPack.DONATION,
+        IconPack.DAYCARE, IconPack.BABYSITTER,
+        IconPack.SUPPORT, IconPack.SPORT_ACTIVITY
     )
 
     val FinanceAndShopping = listOf(
-        RegularGroup.Wallet, RegularGroup.CreditCard,
-        RegularGroup.Money, RegularGroup.HandCoins,
-        RegularGroup.HandDeposit, RegularGroup.Receipt,
-        RegularGroup.CashRegister, RegularGroup.TrendUp
+        IconPack.WALLET, IconPack.CREDIT_CARD,
+        IconPack.SALARY, IconPack.SUBSIDY,
+        IconPack.LOANS, IconPack.FEES,
+        IconPack.SALES, IconPack.DIVIDENDS
     )
 
     val FoodAndDrink = listOf(
-        RegularGroup.BowlFood, RegularGroup.ForkKnife,
-        RegularGroup.Coffee, RegularGroup.Wine,
-        RegularGroup.CookingPot, RegularGroup.BowlSteam,
-        RegularGroup.Orange, RegularGroup.IceCream
+        IconPack.FOOD, IconPack.RESTAURANT,
+        IconPack.CAFE_SNACKS, IconPack.DRINKS,
+        IconPack.DINING, IconPack.CANTEEN,
+        IconPack.FOOD_ITEMS, IconPack.ICE_CREAM
     )
 
     val Health = listOf(
-        RegularGroup.Heartbeat, RegularGroup.Stethoscope,
-        RegularGroup.Pill, RegularGroup.Syringe,
-        RegularGroup.Tooth, RegularGroup.FirstAid,
-        RegularGroup.Wheelchair, RegularGroup.Shower
+        IconPack.HEALTH, IconPack.DOCTOR,
+        IconPack.MEDICATION, IconPack.VETERINARY,
+        IconPack.DENTIST, IconPack.FIRST_AID,
+        IconPack.PHYSIO, IconPack.BODY_CARE
     )
 
     val HomeAndLife = listOf(
-        RegularGroup.HouseLine, RegularGroup.Key,
-        RegularGroup.Armchair, RegularGroup.PaintBrushHousehold,
-        RegularGroup.Basket, RegularGroup.Plant,
-        RegularGroup.Drop, RegularGroup.Fire
+        IconPack.HOME, IconPack.RENT,
+        IconPack.FURNITURE, IconPack.HOUSE_MAINTENANCE,
+        IconPack.HOUSEHOLD, IconPack.PLANT,
+        IconPack.WATER, IconPack.GAS
     )
 
     val Logos = listOf(
-        RegularGroup.CurrencyBtc, RegularGroup.CurrencyEur,
-        RegularGroup.CurrencyDollar, RegularGroup.CurrencyGbp,
-        RegularGroup.Globe, RegularGroup.GlobeHemisphereEast,
-        RegularGroup.At, RegularGroup.HashStraight
+        IconPack.CRYPTO, IconPack.CURRENCY_EUR,
+        IconPack.CURRENCY_DOLLAR, IconPack.CURRENCY_GBP,
+        IconPack.GLOBE, IconPack.GLOBE_HEMISPHERE_EAST,
+        IconPack.AT_SYMBOL, IconPack.HASH_STRAIGHT
     )
 
     val MathAndScience = listOf(
-        RegularGroup.Calculator, RegularGroup.ChartLine,
-        RegularGroup.ChartPieSlice, RegularGroup.Flask,
-        RegularGroup.MagnifyingGlass, RegularGroup.Microscope,
-        RegularGroup.Function, RegularGroup.Percent
+        IconPack.CALCULATOR, IconPack.STOCKS,
+        IconPack.INVESTMENTS, IconPack.FLASK,
+        IconPack.INSPECTION, IconPack.MICROSCOPE,
+        IconPack.FUNCTION, IconPack.PERCENT
     )
 
     val MusicAndSound = listOf(
-        RegularGroup.MusicNotes, RegularGroup.Guitar,
-        RegularGroup.Microphone, RegularGroup.Headphones,
-        RegularGroup.Bell, RegularGroup.SpeakerHigh,
-        RegularGroup.VinylRecord, RegularGroup.Radio
+        IconPack.MUSIC, IconPack.GUITAR,
+        IconPack.MICROPHONE, IconPack.HEADPHONES,
+        IconPack.BELL, IconPack.SPEAKER_HIGH,
+        IconPack.VINYL_RECORD, IconPack.RADIO
     )
 
     val NatureAndAnimals = listOf(
-        RegularGroup.Sun, RegularGroup.Moon,
-        RegularGroup.Cloud, RegularGroup.Tree,
-        RegularGroup.PawPrint, RegularGroup.FlowerLotus,
-        RegularGroup.Leaf, RegularGroup.Drop
+        IconPack.TANNING, IconPack.MOON,
+        IconPack.CLOUD, IconPack.TREE,
+        IconPack.PETS, IconPack.SPA,
+        IconPack.LEAF, IconPack.WATER
     )
 
     val PhotoAndVideo = listOf(
-        RegularGroup.Camera, RegularGroup.VideoCamera,
-        RegularGroup.FilmSlate, RegularGroup.Image,
-        RegularGroup.Images, RegularGroup.Play,
-        RegularGroup.Record, RegularGroup.Folder
+        IconPack.TRAVEL_ACTIVITY, IconPack.VIDEO_CAMERA,
+        IconPack.CINEMA, IconPack.IMAGE,
+        IconPack.IMAGES, IconPack.PLAY,
+        IconPack.RECORD, IconPack.FOLDER
     )
 
     val PlacesAndBuildings = listOf(
-        RegularGroup.Buildings, RegularGroup.Bank,
-        RegularGroup.Storefront, RegularGroup.Church,
-        RegularGroup.Lighthouse, RegularGroup.BuildingApartment,
-        RegularGroup.House, RegularGroup.Factory
+        IconPack.CONDOMINIUM, IconPack.BANK_INTEREST,
+        IconPack.STOREFRONT, IconPack.CHURCH,
+        IconPack.LIGHTHOUSE, IconPack.RENTAL,
+        IconPack.HOUSE, IconPack.FACTORY
     )
 
     val Shapes = listOf(
-        RegularGroup.Circle, RegularGroup.Square,
-        RegularGroup.Triangle, RegularGroup.Hexagon,
-        RegularGroup.Octagon, RegularGroup.Star,
-        RegularGroup.Heart, RegularGroup.Diamond
+        IconPack.CIRCLE, IconPack.SQUARE,
+        IconPack.TRIANGLE, IconPack.HEXAGON,
+        IconPack.OCTAGON, IconPack.STAR,
+        IconPack.HEART, IconPack.DIAMOND
     )
 
     val SportAndLeisure = listOf(
-        RegularGroup.SoccerBall, RegularGroup.Basketball,
-        RegularGroup.Baseball, RegularGroup.PersonSimpleRun,
-        RegularGroup.PingPong, RegularGroup.Barbell,
-        RegularGroup.Bicycle, RegularGroup.Trophy
+        IconPack.SPORTS, IconPack.BASKETBALL,
+        IconPack.BASEBALL, IconPack.SPORT_ACTIVITY,
+        IconPack.SPORT_ACCESSORIES, IconPack.GYM,
+        IconPack.BICYCLE, IconPack.PRIZE
     )
 
     val Symbols = listOf(
-        RegularGroup.WarningCircle, RegularGroup.CheckCircle,
-        RegularGroup.Question, RegularGroup.ExclamationMark,
-        RegularGroup.Lock, RegularGroup.LockOpen,
-        RegularGroup.Shield, RegularGroup.Keyhole
+        IconPack.OTHER, IconPack.CHECK_CIRCLE,
+        IconPack.QUESTION, IconPack.EXTRA,
+        IconPack.LOCK, IconPack.LOCK_OPEN,
+        IconPack.GENERAL_INSURANCE, IconPack.KEYHOLE
     )
 
     val TechnologyAndCommunications = listOf(
-        RegularGroup.DesktopTower, RegularGroup.Laptop,
-        RegularGroup.DeviceMobile, RegularGroup.Broadcast,
-        RegularGroup.Usb, RegularGroup.Circuitry,
-        RegularGroup.Mouse, RegularGroup.Keyboard
+        IconPack.COMPUTER, IconPack.LAPTOP,
+        IconPack.PHONE, IconPack.INTERNET_TV,
+        IconPack.TECH_ACCESSORIES, IconPack.TECHNOLOGY,
+        IconPack.MOUSE, IconPack.KEYBOARD
     )
 
     val Time = listOf(
-        RegularGroup.Clock, RegularGroup.Hourglass,
-        RegularGroup.Calendar, RegularGroup.Alarm,
-        RegularGroup.ClockUser, RegularGroup.Watch,
-        RegularGroup.Timer, RegularGroup.SunHorizon
+        IconPack.CLOCK, IconPack.HOURGLASS,
+        IconPack.CALENDAR, IconPack.ALARM,
+        IconPack.OVERTIME, IconPack.WATCH,
+        IconPack.TIMER, IconPack.SUN_HORIZON
     )
 
     val Tools = listOf(
-        RegularGroup.Wrench, RegularGroup.Hammer,
-        RegularGroup.Screwdriver, RegularGroup.Toolbox,
-        RegularGroup.Gear, RegularGroup.Barricade,
-        RegularGroup.Lightbulb, RegularGroup.Scales
+        IconPack.TRANSPORT_MAINTENANCE, IconPack.HAMMER,
+        IconPack.SCREWDRIVER, IconPack.TOOLBOX,
+        IconPack.GEAR, IconPack.TOLLS,
+        IconPack.LIGHTBULB, IconPack.SCALES
     )
 
     val TransportAndTravel = listOf(
-        RegularGroup.Car, RegularGroup.Bus,
-        RegularGroup.Airplane, RegularGroup.SuitcaseRolling,
-        RegularGroup.Bicycle, RegularGroup.Van,
-        RegularGroup.Taxi, RegularGroup.MapPin
+        IconPack.TRANSPORTATION, IconPack.BUS,
+        IconPack.TRANSPORT, IconPack.TRAVEL,
+        IconPack.BICYCLE, IconPack.TRANSIT,
+        IconPack.TAXI_UBER, IconPack.MAP_PIN
     )
 
     val WorkAndBusiness = listOf(
-        RegularGroup.Briefcase, RegularGroup.ClipboardText,
-        RegularGroup.ChartBar, RegularGroup.Handshake,
-        RegularGroup.FileText, RegularGroup.UsersFour,
-        RegularGroup.OfficeChair, RegularGroup.Megaphone
+        IconPack.WORK, IconPack.CLIPBOARD_TEXT,
+        IconPack.CHART_BAR, IconPack.SUPPORT,
+        IconPack.FILE_TEXT, IconPack.FAMILY,
+        IconPack.OFFICE_CHAIR, IconPack.MEGAPHONE
     )
 }

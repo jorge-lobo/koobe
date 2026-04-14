@@ -7,13 +7,13 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.SortingType
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.ui.components.model.enums.UiState
-import com.jorgelobo.koobe.ui.components.model.icons.IconPayment
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 
 fun paymentMethodRadioButtonConfig(
     selected: PaymentMethodType,
     onOptionSelected: (PaymentMethodType) -> Unit
 ): RadioButtonConfig<PaymentMethodType> {
-    val iconMap = PaymentMethodType.entries.associateWith { IconPayment.valueOf(it.name) }
+    val iconMap = PaymentMethodType.entries.associateWith { IconPack.valueOf(it.name) }
 
     return RadioButtonConfig(
         options = PaymentMethodType.entries,

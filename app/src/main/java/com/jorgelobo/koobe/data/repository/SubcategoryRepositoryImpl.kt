@@ -4,7 +4,7 @@ import com.jorgelobo.koobe.data.local.dao.SubcategoryDao
 import com.jorgelobo.koobe.data.local.entity.SubcategoryEntity
 import com.jorgelobo.koobe.data.mapper.toDomain
 import com.jorgelobo.koobe.data.mapper.toEntity
-import com.jorgelobo.koobe.domain.model.category.Subcategory
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map

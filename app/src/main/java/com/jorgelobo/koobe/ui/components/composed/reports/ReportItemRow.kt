@@ -28,7 +28,6 @@ import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.ReportItemType
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
-import com.jorgelobo.koobe.ui.components.model.icons.IconPayment
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
@@ -50,7 +49,7 @@ fun ReportItemRow(
 
     val category = config.category
     val paymentMethod = config.paymentMethod
-    val defaultIcon = IconPack.EXTRA.icon
+    val defaultIcon = IconPack.EXTRA
     val defaultColor = colors.containerColors.avatarContainerDefault
 
     val (icon, color, name) = when (config.type) {
@@ -126,7 +125,7 @@ fun PreviewReportItemRow() {
             val category = Category(
                 id = 1,
                 name = "Home",
-                icon = IconPack.HOME.icon,
+                icon = IconPack.HOME,
                 color = "#FF5722",
                 type = TransactionType.EXPENSE,
                 subcategories = emptyList()
@@ -135,7 +134,7 @@ fun PreviewReportItemRow() {
             val paymentMethod = PaymentMethod(
                 type = PaymentMethodType.CARD,
                 name = "Card",
-                icon = IconPayment.CASH.icon,
+                icon = IconPack.CASH,
                 color = "#452136"
             )
 

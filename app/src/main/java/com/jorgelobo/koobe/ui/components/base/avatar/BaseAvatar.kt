@@ -52,7 +52,7 @@ fun BaseAvatar(
         contentAlignment = Alignment.Center
     ) {
         Icon(
-            imageVector = config.icon,
+            imageVector = config.icon.icon,
             contentDescription = stringResource(R.string.cd_avatar),
             tint = iconTint,
             modifier = Modifier.size(iconSize)

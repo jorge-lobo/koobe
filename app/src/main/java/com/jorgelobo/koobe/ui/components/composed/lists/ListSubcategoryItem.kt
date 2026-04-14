@@ -13,7 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.category.Category
-import com.jorgelobo.koobe.domain.model.category.Subcategory
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
@@ -89,7 +89,7 @@ fun PreviewListSubcategoryItem() {
             val category = Category(
                 id = 1,
                 name = "Home",
-                icon = IconPack.HOME.icon,
+                icon = IconPack.HOME,
                 color = "#FF5722",
                 type = TransactionType.EXPENSE
             )
@@ -98,7 +98,7 @@ fun PreviewListSubcategoryItem() {
                 id = 1,
                 categoryId = 1,
                 name = "Water",
-                icon = IconPack.WATER.icon
+                icon = IconPack.WATER
             )
 
             ListSubcategoryItem(

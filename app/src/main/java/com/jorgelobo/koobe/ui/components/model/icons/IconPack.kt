@@ -6,6 +6,32 @@ import com.adamglin.phosphoricons.regular.*
 
 enum class IconPack(val icon: ImageVector) {
 
+    // General
+    BACK(RegularGroup.ArrowLeft),
+    CLOSE(RegularGroup.X),
+    DELETE(RegularGroup.Trash),
+    DISCARD(RegularGroup.WarningCircle),
+    EDIT(RegularGroup.PencilSimple),
+    DISCLOSURE(RegularGroup.CaretRight),
+    EXPAND(RegularGroup.CaretDown),
+    COLLAPSE(RegularGroup.CaretUp),
+    RESET(RegularGroup.XCircle),
+    CHANGE(RegularGroup.ArrowsLeftRight),
+    ADD(RegularGroup.Plus),
+    MINUS(RegularGroup.Minus),
+    FILTER(RegularGroup.Faders),
+    SETTINGS(RegularGroup.Wrench),
+    SORT(RegularGroup.SortAscending),
+    BACKSPACE(RegularGroup.Backspace),
+    CALENDAR(RegularGroup.CalendarDots),
+    EMPTY(RegularGroup.Empty),
+    WALLET(RegularGroup.Wallet),
+    LEFT(RegularGroup.CaretLeft),
+    RIGHT(RegularGroup.CaretRight),
+    WARNING(RegularGroup.ExclamationMark),
+    CHECK(RegularGroup.Check),
+    INFO(RegularGroup.Info),
+
     // Categories
     APPAREL(RegularGroup.CoatHanger),
     BODY_CARE(RegularGroup.Shower),
@@ -129,6 +155,18 @@ enum class IconPack(val icon: ImageVector) {
     VETERINARY(RegularGroup.Syringe),
     WATER(RegularGroup.Drop),
 
+    // Payment Methods
+    CASH(RegularGroup.Coins),
+    CARD(RegularGroup.CreditCard),
+    TRANSFER(RegularGroup.ArrowsLeftRight),
+
+    // BottomNavigation
+    HOUSE_LINE(RegularGroup.HouseLine),
+    LIST_DASHES(RegularGroup.ListDashes),
+    CHART_LINE(RegularGroup.ChartLine),
+    GAUGE(RegularGroup.Gauge),
+    GEAR_SIX(RegularGroup.GearSix),
+
     // Themes
     ALARM(RegularGroup.Alarm),
     ARROW_BEND_DOUBLE_UP_LEFT(RegularGroup.ArrowBendDoubleUpLeft),
@@ -147,7 +185,6 @@ enum class IconPack(val icon: ImageVector) {
     BICYCLE(RegularGroup.Bicycle),
     BUS(RegularGroup.Bus),
     CALCULATOR(RegularGroup.Calculator),
-    CALENDAR(RegularGroup.Calendar),
     CHART_BAR(RegularGroup.ChartBar),
     CHECK_CIRCLE(RegularGroup.CheckCircle),
     CHURCH(RegularGroup.Church),
@@ -200,6 +237,7 @@ enum class IconPack(val icon: ImageVector) {
     PEN_NIB(RegularGroup.PenNib),
     PENCIL(RegularGroup.Pencil),
     PERCENT(RegularGroup.Percent),
+    PLACEHOLDER(RegularGroup.CircleDashed),
     PLANT(RegularGroup.Plant),
     PLAY(RegularGroup.Play),
     QUESTION(RegularGroup.Question),
@@ -223,7 +261,5 @@ enum class IconPack(val icon: ImageVector) {
     USER(RegularGroup.User),
     VIDEO_CAMERA(RegularGroup.VideoCamera),
     VINYL_RECORD(RegularGroup.VinylRecord),
-    WALLET(RegularGroup.Wallet),
     WATCH(RegularGroup.Watch),
-    WATCH_DEVICE(RegularGroup.Watch)
 }

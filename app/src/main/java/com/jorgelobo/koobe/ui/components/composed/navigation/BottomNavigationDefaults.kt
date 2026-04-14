@@ -2,34 +2,34 @@ package com.jorgelobo.koobe.ui.components.composed.navigation
 
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.ui.components.model.enums.BottomNavigationRoutes
-import com.jorgelobo.koobe.ui.components.model.icons.IconBottomNavigation
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 
 object BottomNavigationDefaults {
     val items = listOf(
         BottomNavItem(
             BottomNavigationRoutes.HOME.route,
             R.string.nav_home,
-            IconBottomNavigation.HOME.icon
+            IconPack.HOUSE_LINE
         ),
         BottomNavItem(
             BottomNavigationRoutes.HISTORIC.route,
             R.string.nav_historic,
-            IconBottomNavigation.HISTORIC.icon
+            IconPack.LIST_DASHES
         ),
         BottomNavItem(
             BottomNavigationRoutes.REPORTS.route,
             R.string.nav_reports,
-            IconBottomNavigation.REPORTS.icon
+            IconPack.CHART_LINE
         ),
         BottomNavItem(
             BottomNavigationRoutes.BUDGET_MANAGER.route,
             R.string.nav_budgets,
-            IconBottomNavigation.BUDGETS.icon
+            IconPack.GAUGE
         ),
         BottomNavItem(
             BottomNavigationRoutes.SETTINGS.route,
             R.string.nav_settings,
-            IconBottomNavigation.SETTINGS.icon
+            IconPack.GEAR_SIX
         ),
     )
 }
