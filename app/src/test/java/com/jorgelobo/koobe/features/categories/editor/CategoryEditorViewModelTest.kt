@@ -1,7 +1,6 @@
 package com.jorgelobo.koobe.features.categories.editor
 
 import androidx.lifecycle.SavedStateHandle
-import app.cash.turbine.test
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
@@ -14,9 +13,9 @@ import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
@@ -26,6 +25,8 @@ import org.junit.Before
 import java.net.URLEncoder
 import kotlin.test.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class CategoryEditorViewModelTest {
@@ -46,44 +47,190 @@ class CategoryEditorViewModelTest {
 
     @Test
     fun `create mode should initialize with empty category`() = runTest {
+        val viewModel = createViewModelCreateMode()
 
-        val viewModel = createViewModel(
-            config = CategoryEditorConfig(null),
-            categoryFlow = flowOf(Category.empty())
-        )
-
-        val state = viewModel.uiState.awaitSecondItem()
+        advanceUntilIdle()
+        val state = viewModel.uiState.value
 
         assertEquals("", state.category.name)
     }
 
     @Test
     fun `edit mode should emit category from flow`() = runTest {
+        val viewModel = createViewModelEditMode()
 
-        val viewModel = createViewModel(
-            config = CategoryEditorConfig(1),
-            categoryFlow = flowOf(fakeCategory())
-        )
-
-        val state = viewModel.uiState.first { it.category.name == "Food" }
+        advanceUntilIdle()
+        val state = viewModel.uiState.value
 
         assertEquals("Food", state.category.name)
     }
 
     @Test
     fun `name change intent should update category name`() = runTest {
-
-        val viewModel = createViewModel(config = CategoryEditorConfig(null))
+        val viewModel = createViewModelCreateMode()
 
         viewModel.onIntent(CategoryEditorIntent.State.NameChanged("New Name"))
 
-        val state = viewModel.uiState.first { it.category.name == "New Name" }
+        advanceUntilIdle()
+        val state = viewModel.uiState.value
 
         assertEquals("New Name", state.category.name)
     }
 
+    // endregion
+
+    // region Validation - Create Mode
+
+    @Test
+    fun `create mode should start with save disabled`() = runTest {
+        val viewModel = createViewModelCreateMode()
+
+        advanceUntilIdle()
+        val state = viewModel.uiState.value
+
+        assertFalse(state.isSaveButtonEnabled)
+    }
+
+    @Test
+    fun `create mode should enable save when valid`() = runTest {
+        val viewModel = createViewModelCreateMode()
+
+        viewModel.onIntent(CategoryEditorIntent.State.NameChanged("New Name"))
+        viewModel.onIntent(CategoryEditorIntent.State.IconSelected(IconPack.FOOD))
+        viewModel.onIntent(CategoryEditorIntent.State.ColorSelected("FF00FF"))
+        viewModel.onIntent(CategoryEditorIntent.State.TypeSelected(TransactionType.EXPENSE))
+
+        advanceUntilIdle()
+        val state = viewModel.uiState.value
+
+        assertTrue(state.isSaveButtonEnabled)
+    }
+
+    @Test
+    fun `create mode should disable save when name is blank`() = runTest {
+        val viewModel = createViewModelCreateMode()
+
+        viewModel.onIntent(CategoryEditorIntent.State.NameChanged(""))
+
+        advanceUntilIdle()
+        val state = viewModel.uiState.value
+
+        assertFalse(state.isSaveButtonEnabled)
+    }
+
+    @Test
+    fun `create mode should disable save when icon is placeholder`() = runTest {
+        val viewModel = createViewModelCreateMode()
+
+        viewModel.onIntent(CategoryEditorIntent.State.NameChanged("New Name"))
+        viewModel.onIntent(CategoryEditorIntent.State.ColorSelected("FF00FF"))
+
+        advanceUntilIdle()
+        val state = viewModel.uiState.value
+
+        assertFalse(state.isSaveButtonEnabled)
+    }
+
+    @Test
+    fun `create mode should disable save when color is blank`() = runTest {
+        val viewModel = createViewModelCreateMode()
+
+        viewModel.onIntent(CategoryEditorIntent.State.NameChanged("New Name"))
+        viewModel.onIntent(CategoryEditorIntent.State.IconSelected(IconPack.FOOD))
+
+        advanceUntilIdle()
+        val state = viewModel.uiState.value
+
+        assertFalse(state.isSaveButtonEnabled)
+    }
 
     // endregion
+
+    // region Validation - Edit Mode
+
+    @Test
+    fun `edit mode should keep save disabled when unchanged`() = runTest {
+        val viewModel = createViewModelEditMode()
+
+        advanceUntilIdle()
+        val state = viewModel.uiState.value
+
+        assertFalse(state.isSaveButtonEnabled)
+    }
+
+    @Test
+    fun `edit mode should enable save only after change`() = runTest {
+        val viewModel = createViewModelEditMode()
+
+        val initialState = viewModel.uiState.value
+
+        assertFalse(initialState.isSaveButtonEnabled)
+
+        viewModel.onIntent(CategoryEditorIntent.State.NameChanged("New Name"))
+
+        advanceUntilIdle()
+        val updatedState = viewModel.uiState.value
+
+        assertTrue(updatedState.isSaveButtonEnabled)
+    }
+
+    @Test
+    fun `edit mode should disable save when invalid`() = runTest {
+        val viewModel = createViewModelEditMode()
+
+        viewModel.onIntent(CategoryEditorIntent.State.NameChanged(""))
+
+        advanceUntilIdle()
+        val state = viewModel.uiState.value
+
+        assertFalse(state.isSaveButtonEnabled)
+    }
+
+    @Test
+    fun `edit mode should disable save when value is reverted`() = runTest {
+        val viewModel = createViewModelEditMode()
+
+        viewModel.onIntent(CategoryEditorIntent.State.NameChanged("New Name"))
+        advanceUntilIdle()
+        val initialState = viewModel.uiState.value
+
+        assertTrue(initialState.isSaveButtonEnabled)
+
+        viewModel.onIntent(CategoryEditorIntent.State.NameChanged("Food"))
+        advanceUntilIdle()
+        val updatedState = viewModel.uiState.value
+
+        assertFalse(updatedState.isSaveButtonEnabled)
+    }
+
+    // endregion
+
+    // region Validation - Edge Cases
+
+    @Test
+    fun `save should remain disabled until all required fields are valid`() = runTest {
+        val viewModel = createViewModelCreateMode()
+
+        viewModel.onIntent(CategoryEditorIntent.State.NameChanged("New Name"))
+        advanceUntilIdle()
+        val nameUpdatedState = viewModel.uiState.value
+
+        assertFalse(nameUpdatedState.isSaveButtonEnabled)
+
+        viewModel.onIntent(CategoryEditorIntent.State.IconSelected(IconPack.FOOD))
+        advanceUntilIdle()
+        val iconUpdatedState = viewModel.uiState.value
+
+        assertFalse(iconUpdatedState.isSaveButtonEnabled)
+
+        viewModel.onIntent(CategoryEditorIntent.State.ColorSelected("FF00FF"))
+        advanceUntilIdle()
+        val colorUpdatedState = viewModel.uiState.value
+
+        assertTrue(colorUpdatedState.isSaveButtonEnabled)
+    }
+
+    // end region
 
     // region Helpers
 
@@ -104,6 +251,15 @@ class CategoryEditorViewModelTest {
         )
     }
 
+    private fun createViewModelCreateMode() =
+        createViewModel(CategoryEditorConfig(null))
+
+    private fun createViewModelEditMode() =
+        createViewModel(
+            config = CategoryEditorConfig(1),
+            categoryFlow = flowOf(fakeCategory())
+        )
+
     private fun fakeCategory(id: Int = 1) = Category(
         id = id,
         name = "Food",
@@ -112,16 +268,6 @@ class CategoryEditorViewModelTest {
         type = TransactionType.EXPENSE,
         subcategories = emptyList()
     )
-
-    private suspend fun <T> Flow<T>.awaitSecondItem(): T {
-        var result: T? = null
-        test {
-            awaitItem()
-            result = awaitItem()
-            cancelAndIgnoreRemainingEvents()
-        }
-        return result ?: error("No item emitted")
-    }
 
     private fun encodeConfig(config: CategoryEditorConfig): String {
         return URLEncoder.encode(Json.encodeToString(config), "UTF-8")
