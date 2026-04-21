@@ -209,7 +209,10 @@
     <string name="snackBar_action">Use name</string>
     <string name="snackBar_message">No description added.\nUse subcategory name instead?</string>
     <string name="snackBar_delete_transaction_error">Failed to delete transaction.\nPlease try again.</string>
+    <string name="snackBar_delete_category_error">Failed to delete category.\nPlease try again.</string>
     <string name="snackBar_delete_subcategory_error">Failed to delete subcategory.\nPlease try again.</string>
+    <string name="snackBar_invalid_category">Invalid category.</string>
+    <string name="snackBar_invalid_subcategory">Invalid subcategory.</string>
 
     <!-- RadioButtons -->
     <string name="radio_cash">Cash</string>
