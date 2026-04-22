@@ -171,6 +171,8 @@
     <string name="empty_hint_budgets">Create budgets to control your spending by category.</string>
     <string name="empty_hint_transactions">Add transactions to keep track of your finances.</string>
     <string name="empty_hint_subcategories">Add subcategories to better organize your transactions.\nAdding subcategories is optional.</string>
+    <string name="empty_hint_subcategories_expenses">Add subcategories to better organize your expenses.\nThis step is optional.</string>
+    <string name="empty_hint_subcategories_income">Add subcategories to better organize your incomes.\nThis step is optional.</string>
 
     <!-- Input Hints -->
     <string name="input_hint_description">Enter a short description</string>
