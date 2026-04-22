@@ -1,5 +1,6 @@
 package com.jorgelobo.koobe.ui.screen.categories.editor
 
+import androidx.compose.ui.graphics.Color
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.category.isProtected
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
@@ -21,7 +22,7 @@ data class CategoryEditorUiState(
     val nameInputState: InputState,
     val initialSnapshot: CategoryInitialSnapshot,
     val iconDialog: SelectorDialogState<IconPack> = SelectorDialogState(),
-    val colorDialog: SelectorDialogState<String> = SelectorDialogState(),
+    val colorDialog: SelectorDialogState<Color> = SelectorDialogState(),
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val infoDialog: InfoDialogState = InfoDialogState(),
