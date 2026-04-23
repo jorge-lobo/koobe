@@ -1,10 +1,12 @@
 package com.jorgelobo.koobe.ui.screen.categories.editor
 
+import androidx.compose.ui.graphics.Color
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.core.model.resolve
+import com.jorgelobo.koobe.core.model.resolveToHex
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.usecase.category.DeleteCategoryWithReassignUseCase
@@ -86,7 +88,7 @@ class CategoryEditorViewModel @Inject constructor(
             val updatedCategory = base.category.copy(
                 name = form.name.resolve(base.category.name),
                 icon = form.icon.resolve(base.category.icon),
-                color = form.color.resolve(base.category.color),
+                color = form.color.resolveToHex(base.category.color),
                 type = form.type.resolve(base.category.type),
                 subcategories = form.subcategories.resolve(base.category.subcategories)
             )
@@ -258,7 +260,7 @@ class CategoryEditorViewModel @Inject constructor(
         )
     }
 
-    private fun handleColorSelectorDialog(action: SelectorDialogAction<String>) {
+    private fun handleColorSelectorDialog(action: SelectorDialogAction<Color>) {
         handleSelectorDialog(
             current = uiInternalState.value.colorSelectorDialog,
             action = action,

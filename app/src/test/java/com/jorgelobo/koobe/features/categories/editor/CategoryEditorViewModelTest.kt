@@ -1,6 +1,7 @@
 package com.jorgelobo.koobe.features.categories.editor
 
 import androidx.lifecycle.SavedStateHandle
+import com.jorgelobo.koobe.common.extensions.toColor
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
@@ -97,7 +98,7 @@ class CategoryEditorViewModelTest {
 
         viewModel.onIntent(CategoryEditorIntent.State.NameChanged("New Name"))
         viewModel.onIntent(CategoryEditorIntent.State.IconSelected(IconPack.FOOD))
-        viewModel.onIntent(CategoryEditorIntent.State.ColorSelected("FF00FF"))
+        viewModel.onIntent(CategoryEditorIntent.State.ColorSelected("#FF00FF".toColor()))
         viewModel.onIntent(CategoryEditorIntent.State.TypeSelected(TransactionType.EXPENSE))
 
         advanceUntilIdle()
@@ -123,7 +124,7 @@ class CategoryEditorViewModelTest {
         val viewModel = createViewModelCreateMode()
 
         viewModel.onIntent(CategoryEditorIntent.State.NameChanged("New Name"))
-        viewModel.onIntent(CategoryEditorIntent.State.ColorSelected("FF00FF"))
+        viewModel.onIntent(CategoryEditorIntent.State.ColorSelected("#FF00FF".toColor()))
 
         advanceUntilIdle()
         val state = viewModel.uiState.value
@@ -223,7 +224,7 @@ class CategoryEditorViewModelTest {
 
         assertFalse(iconUpdatedState.isSaveButtonEnabled)
 
-        viewModel.onIntent(CategoryEditorIntent.State.ColorSelected("FF00FF"))
+        viewModel.onIntent(CategoryEditorIntent.State.ColorSelected("#FF00FF".toColor()))
         advanceUntilIdle()
         val colorUpdatedState = viewModel.uiState.value
 
@@ -247,7 +248,9 @@ class CategoryEditorViewModelTest {
 
         return CategoryEditorViewModel(
             savedStateHandle = savedStateHandle,
-            categoryRepository = categoryRepository
+            categoryRepository = categoryRepository,
+            saveCategory = mockk(),
+            deleteCategoryWithReassign = mockk()
         )
     }
 
