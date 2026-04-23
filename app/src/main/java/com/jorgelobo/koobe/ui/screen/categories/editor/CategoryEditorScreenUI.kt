@@ -2,7 +2,6 @@ package com.jorgelobo.koobe.ui.screen.categories.editor
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -17,7 +16,6 @@ import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.ui.common.modifiers.clearFocusOnTap
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.categories.editor.components.CategoryEditorInputSection
-import com.jorgelobo.koobe.ui.screen.categories.editor.components.CategoryEditorActionButtons
 import com.jorgelobo.koobe.ui.screen.categories.editor.components.CategoryEditorSubcategoriesSection
 import com.jorgelobo.koobe.ui.screen.categories.editor.components.CategoryEditorToggleSection
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
@@ -32,7 +30,6 @@ fun CategoryEditorScreenUI(
     onResetNameClick: () -> Unit,
     onIconSelectorClick: () -> Unit,
     onColorSelectorClick: () -> Unit,
-    onSaveClick: () -> Unit,
     onAddSubcategoryClick: () -> Unit,
     onEditSubcategory: (subcategoryId: Int) -> Unit,
     onDeleteSubcategory: (subcategoryId: Int) -> Unit,
@@ -78,15 +75,6 @@ fun CategoryEditorScreenUI(
                 onAddSubcategoryClick = onAddSubcategoryClick
             )
         }
-
-        Spacer(modifier = Modifier.weight(1f))
-
-        CategoryEditorActionButtons(
-            state = state,
-            isEmpty = state.category.subcategories.isEmpty(),
-            onAddSubcategoryClick = onAddSubcategoryClick,
-            onSaveClick = onSaveClick
-        )
     }
 }
 
@@ -142,7 +130,6 @@ fun PreviewCategoryEditorScreen() {
             onResetNameClick = {},
             onIconSelectorClick = {},
             onColorSelectorClick = {},
-            onSaveClick = {},
             onAddSubcategoryClick = {},
             onEditSubcategory = {},
             onDeleteSubcategory = {},

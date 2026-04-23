@@ -23,6 +23,7 @@ import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.screen.categories.editor.components.CategoryEditorActionButtons
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
@@ -92,6 +93,14 @@ fun CategoryEditorScreen(
                 )
             )
         },
+        bottomBar = {
+            CategoryEditorActionButtons(
+                state = uiState,
+                isEmpty = uiState.category.subcategories.isEmpty(),
+                onAddSubcategoryClick = {},
+                onSaveClick = {}
+            )
+        },
         containerColor = AppTheme.colors.backgroundColors.screenBackground
     ) { padding ->
         CategoryEditorScreenUI(
@@ -102,7 +111,6 @@ fun CategoryEditorScreen(
             onResetNameClick = {},
             onIconSelectorClick = { },
             onColorSelectorClick = { },
-            onSaveClick = {},
             onAddSubcategoryClick = { },
             onEditSubcategory = { },
             onDeleteSubcategory = { },
