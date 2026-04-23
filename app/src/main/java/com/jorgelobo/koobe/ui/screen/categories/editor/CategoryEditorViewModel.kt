@@ -9,6 +9,7 @@ import com.jorgelobo.koobe.core.model.resolve
 import com.jorgelobo.koobe.core.model.resolveToHex
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
+import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.domain.usecase.category.DeleteCategoryWithReassignUseCase
 import com.jorgelobo.koobe.domain.usecase.category.SaveCategoryUseCase
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
@@ -45,6 +46,7 @@ import javax.inject.Inject
 class CategoryEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     categoryRepository: CategoryRepository,
+    subcategoryRepository: SubcategoryRepository,
     private val saveCategory: SaveCategoryUseCase,
     private val deleteCategoryWithReassign: DeleteCategoryWithReassignUseCase
 ) : ViewModel() {
@@ -60,8 +62,19 @@ class CategoryEditorViewModel @Inject constructor(
 
     private val categoryFlow: Flow<Category> =
         if (config.isEditMode) {
-            categoryRepository.getCategoryByIdFlow(config.categoryId!!)
-                .map { it ?: error("Category not found") }
+            val categoryId = config.categoryId
+
+            combine(
+                categoryRepository.getCategoryByIdFlow(categoryId!!),
+                subcategoryRepository.getSubcategoriesByCategoryId(categoryId)
+            ) { category, subcategories ->
+
+                val safeCategory = category ?: error("Category not found")
+
+                safeCategory.copy(
+                    subcategories = subcategories
+                )
+            }
         } else {
             flowOf(Category.empty())
         }
