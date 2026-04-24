@@ -18,7 +18,6 @@ import com.jorgelobo.koobe.R
 data class CategoryEditorUiState(
     val config: CategoryEditorConfig? = null,
     val category: Category,
-    val transactionTypeSelected: TransactionType? = null,
     val nameInputState: InputState,
     val initialSnapshot: CategoryInitialSnapshot,
     val iconDialog: SelectorDialogState<IconPack> = SelectorDialogState(),

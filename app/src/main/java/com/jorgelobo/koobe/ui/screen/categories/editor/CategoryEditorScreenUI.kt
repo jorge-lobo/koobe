@@ -24,7 +24,6 @@ import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 @Composable
 fun CategoryEditorScreenUI(
     state: CategoryEditorUiState,
-    config: CategoryEditorConfig,
     modifier: Modifier = Modifier,
     onNameChanged: (String) -> Unit,
     onResetNameClick: () -> Unit,
@@ -54,7 +53,6 @@ fun CategoryEditorScreenUI(
     ) {
         CategoryEditorInputSection(
             state = state,
-            config = config,
             onNameChanged = onNameChanged,
             onResetNameClick = onResetNameClick,
             onIconSelectorClick = onIconSelectorClick,
@@ -62,7 +60,7 @@ fun CategoryEditorScreenUI(
         )
 
         CategoryEditorToggleSection(
-            transactionTypeSelected = state.transactionTypeSelected ?: TransactionType.EXPENSE,
+            transactionTypeSelected = state.category.type,
             onTransactionTypeChange = onTransactionTypeChange
         )
 
@@ -125,7 +123,6 @@ fun PreviewCategoryEditorScreen() {
 
         CategoryEditorScreenUI(
             state = state,
-            config = config,
             onNameChanged = {},
             onResetNameClick = {},
             onIconSelectorClick = {},

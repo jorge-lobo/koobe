@@ -29,10 +29,9 @@ fun CategoryEditorActionButtons(
     onAddSubcategoryClick: () -> Unit,
     onSaveClick: () -> Unit
 ) {
-    val hintRes = when (state.transactionTypeSelected) {
+    val hintRes = when (state.category.type) {
         TransactionType.EXPENSE -> R.string.empty_hint_subcategories_expenses
         TransactionType.INCOME -> R.string.empty_hint_subcategories_income
-        null -> R.string.empty_hint_subcategories_expenses
     }
 
     Column(
