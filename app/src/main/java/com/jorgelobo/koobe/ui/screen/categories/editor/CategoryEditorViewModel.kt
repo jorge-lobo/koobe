@@ -69,7 +69,7 @@ class CategoryEditorViewModel @Inject constructor(
                 subcategoryRepository.getSubcategoriesByCategoryId(categoryId)
             ) { category, subcategories ->
 
-                val safeCategory = category ?: error("Category not found")
+                val safeCategory = category ?: return@combine Category.empty()
 
                 safeCategory.copy(
                     subcategories = subcategories
