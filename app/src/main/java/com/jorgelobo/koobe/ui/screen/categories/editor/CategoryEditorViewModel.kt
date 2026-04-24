@@ -25,6 +25,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
+import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -155,21 +156,23 @@ class CategoryEditorViewModel @Inject constructor(
 
     private fun handleAction(intent: CategoryEditorIntent.Action) {
         when (intent) {
-            is CategoryEditorIntent.Action.DiscardDialogAction -> handleDiscardDialog(intent.action)
+            is CategoryEditorIntent.Action.DiscardDialogAction ->
+                handleDiscardDialog(intent.action)
 
-            is CategoryEditorIntent.Action.DeleteDialogAction -> handleDeleteDialog(intent.action)
+            is CategoryEditorIntent.Action.DeleteDialogAction ->
+                handleDeleteDialog(intent.action)
 
-            is CategoryEditorIntent.Action.IconSelectorDialogAction -> handleIconSelectorDialog(
-                intent.action
-            )
+            is CategoryEditorIntent.Action.IconSelectorDialogAction ->
+                handleIconSelectorDialog(intent.action)
 
-            is CategoryEditorIntent.Action.ColorSelectorDialogAction -> handleColorSelectorDialog(
-                intent.action
-            )
+            is CategoryEditorIntent.Action.ColorSelectorDialogAction ->
+                handleColorSelectorDialog(intent.action)
+
+            is CategoryEditorIntent.Action.SubcategoryEditionAction ->
+                handleAddSubcategory(intent.subcategoryId)
 
             CategoryEditorIntent.Action.SaveClicked -> handleSave()
             CategoryEditorIntent.Action.CloseClicked -> handleClose()
-            CategoryEditorIntent.Action.AddSubcategoryClicked -> handleAddSubcategory()
             CategoryEditorIntent.Action.ShowInfoDialog -> handleInfoDialog(true)
             CategoryEditorIntent.Action.HideInfoDialog -> handleInfoDialog(false)
         }
@@ -206,8 +209,14 @@ class CategoryEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleAddSubcategory() {
-        navigateTo(Route.SubcategoryEditor.route)
+    private fun handleAddSubcategory(subcategoryId: Int?) {
+        val route = Route.SubcategoryEditor.create(
+            SubcategoryEditorConfig(
+                subcategoryId = subcategoryId,
+                categoryId = config.categoryId
+            )
+        )
+        navigateTo(route)
     }
 
     private fun deleteCategory() {
