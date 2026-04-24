@@ -16,7 +16,6 @@ import com.jorgelobo.koobe.ui.components.base.inputs.fields.InputFieldConfig
 import com.jorgelobo.koobe.ui.components.base.inputs.fields.SelectorColor
 import com.jorgelobo.koobe.ui.components.base.inputs.fields.SelectorIcon
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
-import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorUiState
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -27,20 +26,13 @@ import com.jorgelobo.koobe.ui.mappers.localizedName
 @Composable
 fun CategoryEditorInputSection(
     state: CategoryEditorUiState,
-    config: CategoryEditorConfig,
     onNameChanged: (String) -> Unit,
     onResetNameClick: () -> Unit,
     onIconSelectorClick: () -> Unit,
     onColorSelectorClick: () -> Unit
 ) {
-    val isEditMode = config.isEditMode
     val colors = AppTheme.colors
-
-    val avatarColor = if (isEditMode) {
-        state.category.resolvedColor()
-    } else {
-        colors.containerColors.avatarContainerDefault
-    }
+    val avatarColor = state.category.resolvedColor()
 
     Column(
         modifier = Modifier.fillMaxWidth(),
@@ -85,5 +77,4 @@ fun CategoryEditorInputSection(
             )
         )
     }
-
 }
