@@ -18,10 +18,10 @@ sealed interface CategoryEditorIntent {
     sealed interface Action : CategoryEditorIntent {
         object SaveClicked : Action
         object CloseClicked : Action
-        object AddSubcategoryClicked : Action
         object ShowInfoDialog : Action
         object HideInfoDialog : Action
 
+        data class SubcategoryEditionAction(val subcategoryId: Int?) : Action
         data class DeleteDialogAction(val action: ConfirmationDialogAction) : Action
         data class DiscardDialogAction(val action: ConfirmationDialogAction) : Action
         data class IconSelectorDialogAction(val action: SelectorDialogAction<IconPack>) : Action
