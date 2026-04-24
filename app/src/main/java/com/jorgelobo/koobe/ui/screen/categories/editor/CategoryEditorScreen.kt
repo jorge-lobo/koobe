@@ -24,6 +24,8 @@ import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.categories.editor.components.CategoryEditorActionButtons
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
@@ -49,11 +51,27 @@ fun CategoryEditorScreen(
 
     CategoryEditorDialogs(
         state = uiState,
-        onDiscardDialogAction = {},
-        onDeleteDialogAction = {},
-        onInfoDialogClick = {},
-        onIconSelectorAction = {},
-        onColorSelectorAction = {}
+        onDiscardDialogAction = {
+            viewModel.onIntent(
+                CategoryEditorIntent.Action.DiscardDialogAction(it)
+            )
+        },
+        onDeleteDialogAction = {
+            viewModel.onIntent(
+                CategoryEditorIntent.Action.DeleteDialogAction(it)
+            )
+        },
+        onInfoDialogClick = { viewModel.onIntent(CategoryEditorIntent.Action.HideInfoDialog) },
+        onIconSelectorAction = {
+            viewModel.onIntent(
+                CategoryEditorIntent.Action.IconSelectorDialogAction(it)
+            )
+        },
+        onColorSelectorAction = {
+            viewModel.onIntent(
+                CategoryEditorIntent.Action.ColorSelectorDialogAction(it)
+            )
+        }
     )
 
     Scaffold(
@@ -75,18 +93,24 @@ fun CategoryEditorScreen(
                     headline = stringResource(uiState.headlineRes(config.isEditMode)),
                     leadingAction = AppBarAction(
                         icon = IconPack.CLOSE,
-                        onClick = { }
+                        onClick = { viewModel.onIntent(CategoryEditorIntent.Action.CloseClicked) }
                     ),
                     trailingActions = if (config.isEditMode) listOf(
                         if (uiState.isDeleteEnabled) {
                             AppBarAction(
                                 icon = IconPack.DELETE,
-                                onClick = { }
+                                onClick = {
+                                    viewModel.onIntent(
+                                        CategoryEditorIntent.Action.DeleteDialogAction(
+                                            ConfirmationDialogAction.Open
+                                        )
+                                    )
+                                }
                             )
                         } else {
                             AppBarAction(
                                 icon = IconPack.INFO,
-                                onClick = { }
+                                onClick = { viewModel.onIntent(CategoryEditorIntent.Action.ShowInfoDialog) }
                             )
                         }
                     ) else emptyList()
@@ -97,24 +121,59 @@ fun CategoryEditorScreen(
             CategoryEditorActionButtons(
                 state = uiState,
                 isEmpty = uiState.category.subcategories.isEmpty(),
-                onAddSubcategoryClick = {},
-                onSaveClick = {}
+                onAddSubcategoryClick = {
+                    viewModel.onIntent(
+                        CategoryEditorIntent.Action.SubcategoryEditionAction(null)
+                    )
+                },
+                onSaveClick = { viewModel.onIntent(CategoryEditorIntent.Action.SaveClicked) }
             )
         },
         containerColor = AppTheme.colors.backgroundColors.screenBackground
     ) { padding ->
         CategoryEditorScreenUI(
             state = uiState,
-            config = config,
             modifier = Modifier.padding(padding),
-            onNameChanged = {},
-            onResetNameClick = {},
-            onIconSelectorClick = { },
-            onColorSelectorClick = { },
-            onAddSubcategoryClick = { },
-            onEditSubcategory = { },
-            onDeleteSubcategory = { },
-            onTransactionTypeChange = { }
+            onNameChanged = { viewModel.onIntent(CategoryEditorIntent.State.NameChanged(it)) },
+            onResetNameClick = { viewModel.onIntent(CategoryEditorIntent.State.NameChanged("")) },
+            onIconSelectorClick = {
+                viewModel.onIntent(
+                    CategoryEditorIntent.Action.IconSelectorDialogAction(
+                        SelectorDialogAction.Open
+                    )
+                )
+            },
+            onColorSelectorClick = {
+                viewModel.onIntent(
+                    CategoryEditorIntent.Action.ColorSelectorDialogAction(
+                        SelectorDialogAction.Open
+                    )
+                )
+            },
+            onAddSubcategoryClick = {
+                viewModel.onIntent(
+                    CategoryEditorIntent.Action.SubcategoryEditionAction(
+                        null
+                    )
+                )
+            },
+            onEditSubcategory = {
+                viewModel.onIntent(
+                    CategoryEditorIntent.Action.SubcategoryEditionAction(it)
+                )
+            },
+            onDeleteSubcategory = {
+                viewModel.onIntent(
+                    CategoryEditorIntent.Action.DeleteDialogAction(
+                        ConfirmationDialogAction.Open
+                    )
+                )
+            },
+            onTransactionTypeChange = {
+                viewModel.onIntent(
+                    CategoryEditorIntent.State.TypeSelected(it)
+                )
+            }
         )
     }
 }
