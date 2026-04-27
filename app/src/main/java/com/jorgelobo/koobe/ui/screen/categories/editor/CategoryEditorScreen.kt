@@ -162,11 +162,9 @@ fun CategoryEditorScreen(
                     CategoryEditorIntent.Action.SubcategoryEditionAction(it)
                 )
             },
-            onDeleteSubcategory = {
+            onDeleteSubcategory = { id ->
                 viewModel.onIntent(
-                    CategoryEditorIntent.Action.DeleteDialogAction(
-                        ConfirmationDialogAction.Open
-                    )
+                    CategoryEditorIntent.Action.RequestDeleteSubcategory(id)
                 )
             },
             onTransactionTypeChange = {

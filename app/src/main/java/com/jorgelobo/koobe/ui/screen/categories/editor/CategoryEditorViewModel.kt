@@ -5,6 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.core.model.FieldUpdate
 import com.jorgelobo.koobe.core.model.resolve
 import com.jorgelobo.koobe.core.model.resolveToHex
 import com.jorgelobo.koobe.domain.model.category.Category
@@ -12,6 +13,8 @@ import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.domain.usecase.category.DeleteCategoryWithReassignUseCase
 import com.jorgelobo.koobe.domain.usecase.category.SaveCategoryUseCase
+import com.jorgelobo.koobe.domain.usecase.subcategory.DeleteSubcategoryWithReassignUseCase
+import com.jorgelobo.koobe.ui.components.model.enums.DeleteType
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.editor.state.CategoryFormState
@@ -49,7 +52,8 @@ class CategoryEditorViewModel @Inject constructor(
     categoryRepository: CategoryRepository,
     subcategoryRepository: SubcategoryRepository,
     private val saveCategory: SaveCategoryUseCase,
-    private val deleteCategoryWithReassign: DeleteCategoryWithReassignUseCase
+    private val deleteCategoryWithReassign: DeleteCategoryWithReassignUseCase,
+    private val deleteSubcategoryWithReassign: DeleteSubcategoryWithReassignUseCase,
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<CategoryEditorEvent>()
@@ -109,6 +113,7 @@ class CategoryEditorViewModel @Inject constructor(
 
             base.copy(
                 category = updatedCategory,
+                deleteType = uiInternal.deleteType,
                 discardDialog = uiInternal.discardDialog,
                 deleteDialog = uiInternal.deleteDialog,
                 iconDialog = uiInternal.iconSelectorDialog,
@@ -170,6 +175,9 @@ class CategoryEditorViewModel @Inject constructor(
 
             is CategoryEditorIntent.Action.SubcategoryEditionAction ->
                 handleAddSubcategory(intent.subcategoryId)
+
+            is CategoryEditorIntent.Action.RequestDeleteSubcategory ->
+                requestDeleteSubcategory(intent.subcategoryId)
 
             CategoryEditorIntent.Action.SaveClicked -> handleSave()
             CategoryEditorIntent.Action.CloseClicked -> handleClose()
@@ -243,6 +251,58 @@ class CategoryEditorViewModel @Inject constructor(
         }
     }
 
+    private fun deleteSubcategory(subcategoryId: Int?) {
+        if (subcategoryId == null) return
+
+        viewModelScope.launch {
+            uiInternalState.update { it.copy(isDeleting = true) }
+
+            val subcategory =
+                uiState.value.category.subcategories.firstOrNull { it.id == subcategoryId }
+
+            if (subcategory == null) {
+                uiInternalState.update { it.copy(isDeleting = false) }
+                return@launch
+            }
+
+            runCatching {
+                deleteSubcategoryWithReassign(subcategory)
+            }.onSuccess {
+                formState.update { state ->
+                    state.copy(
+                        subcategories = FieldUpdate.Updated(
+                            uiState.value.category.subcategories.filterNot { it.id == subcategoryId }
+                        )
+                    )
+                }
+
+                uiInternalState.update { it.copy(isDeleting = false) }
+
+            }.onFailure {
+                uiInternalState.update { it.copy(isDeleting = false) }
+
+                emitEvent(
+                    CategoryEditorEvent.ShowSnackbar(
+                        messageRes = R.string.snackBar_delete_subcategory_error,
+                        actionLabelRes = null,
+                        icon = IconPack.WARNING
+                    )
+                )
+            }
+        }
+    }
+
+    private fun requestDeleteSubcategory(subcategoryId: Int) {
+        uiInternalState.update {
+            it.copy(
+                deleteType = DeleteType.SUBCATEGORY,
+                subcategoryToDelete = subcategoryId
+            )
+        }
+        handleDeleteDialog(ConfirmationDialogAction.Open)
+    }
+
+
     private fun handleDeleteDialog(action: ConfirmationDialogAction) {
         handleConfirmationDialog(
             current = uiInternalState.value.deleteDialog,
@@ -252,7 +312,13 @@ class CategoryEditorViewModel @Inject constructor(
                     currentState.copy(deleteDialog = newDialogState)
                 }
             },
-            onConfirmed = { deleteCategory() }
+            onConfirmed = {
+                when (uiInternalState.value.deleteType) {
+                    DeleteType.CATEGORY -> deleteCategory()
+                    DeleteType.SUBCATEGORY -> deleteSubcategory(uiInternalState.value.subcategoryToDelete)
+                    else -> Unit
+                }
+            }
         )
     }
 
