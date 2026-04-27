@@ -9,7 +9,6 @@ import com.jorgelobo.koobe.ui.components.composed.dialogs.DiscardDialog
 import com.jorgelobo.koobe.ui.components.composed.dialogs.IconSelectorDialog
 import com.jorgelobo.koobe.ui.components.composed.dialogs.InfoDialog
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarConfigurationType
-import com.jorgelobo.koobe.ui.components.model.enums.DeleteType
 import com.jorgelobo.koobe.ui.components.model.enums.InfoType
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
@@ -33,7 +32,7 @@ fun CategoryEditorDialogs(
 
     if (state.deleteDialog.visible) {
         DeleteDialog(
-            type = DeleteType.CATEGORY,
+            type = state.deleteType,
             transactionType = state.category.type,
             onConfirm = { onDeleteDialogAction(ConfirmationDialogAction.Confirm) },
             onCancel = { onDeleteDialogAction(ConfirmationDialogAction.Dismiss) }
