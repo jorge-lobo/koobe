@@ -21,7 +21,7 @@ data class CategoryEditorUiState(
     val category: Category,
     val nameInputState: InputState,
     val initialSnapshot: CategoryInitialSnapshot,
-    val deleteType: DeleteType = DeleteType.CATEGORY,
+    val deleteTarget: CategoryEditorDeleteTarget? = null,
     val iconDialog: SelectorDialogState<IconPack> = SelectorDialogState(),
     val colorDialog: SelectorDialogState<Color> = SelectorDialogState(),
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
@@ -55,6 +55,18 @@ data class CategoryEditorUiState(
     /** Whether deletion is allowed for this category */
     val isDeleteEnabled: Boolean
         get() = !isCategoryProtected
+
+    /**
+     * Maps the current delete target to its corresponding delete type.
+     *
+     * Throws an error if no valid delete target is set.
+     */
+    val deleteType: DeleteType?
+        get() = when (deleteTarget) {
+            is CategoryEditorDeleteTarget.Category -> DeleteType.CATEGORY
+            is CategoryEditorDeleteTarget.Subcategory -> DeleteType.SUBCATEGORY
+            else -> null
+        }
 
     /** Returns the headline for the screen based on mode */
     fun headlineRes(isEditMode: Boolean): Int {
