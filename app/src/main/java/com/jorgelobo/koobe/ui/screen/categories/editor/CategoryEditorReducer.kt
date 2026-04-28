@@ -46,6 +46,13 @@ object CategoryEditorReducer {
                     internal = currentInternal
                 )
             }
+
+            is CategoryEditorIntent.State.SubcategoriesChanged -> {
+                Result(
+                    form = currentForm.copy(subcategories = FieldUpdate.Updated(intent.subcategories)),
+                    internal = currentInternal
+                )
+            }
         }
     }
 }

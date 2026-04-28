@@ -30,9 +30,9 @@ fun CategoryEditorDialogs(
         )
     }
 
-    if (state.deleteDialog.visible) {
+    if (state.deleteDialog.visible && state.deleteType != null) {
         DeleteDialog(
-            type = state.deleteType,
+            type = state.deleteType!!,
             transactionType = state.category.type,
             onConfirm = { onDeleteDialogAction(ConfirmationDialogAction.Confirm) },
             onCancel = { onDeleteDialogAction(ConfirmationDialogAction.Dismiss) }

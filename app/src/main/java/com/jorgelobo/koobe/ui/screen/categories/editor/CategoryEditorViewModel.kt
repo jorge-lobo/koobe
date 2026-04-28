@@ -257,26 +257,19 @@ class CategoryEditorViewModel @Inject constructor(
         if (subcategoryId == null) return
 
         viewModelScope.launch {
+            val currentList = uiState.value.category.subcategories
+            val subcategory = currentList.firstOrNull { it.id == subcategoryId } ?: return@launch
+
             uiInternalState.update { it.copy(isDeleting = true) }
-
-            val subcategory =
-                uiState.value.category.subcategories.firstOrNull { it.id == subcategoryId }
-
-            if (subcategory == null) {
-                uiInternalState.update { it.copy(isDeleting = false) }
-                return@launch
-            }
 
             runCatching {
                 deleteSubcategoryWithReassign(subcategory)
             }.onSuccess {
-                formState.update { state ->
-                    state.copy(
-                        subcategories = FieldUpdate.Updated(
-                            uiState.value.category.subcategories.filterNot { it.id == subcategoryId }
-                        )
-                    )
-                }
+                val updatedList = currentList.filterNot { it.id == subcategoryId }
+
+                onIntent(
+                    CategoryEditorIntent.State.SubcategoriesChanged(updatedList)
+                )
 
                 uiInternalState.update { it.copy(isDeleting = false) }
 
