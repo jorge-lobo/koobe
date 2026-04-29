@@ -22,6 +22,7 @@ sealed interface CategoryEditorIntent {
         object CloseClicked : Action
         object ShowInfoDialog : Action
         object HideInfoDialog : Action
+        object RequestDeleteCategory : Action
 
         data class RequestDeleteSubcategory(val subcategoryId: Int) : Action
         data class SubcategoryEditionAction(val subcategoryId: Int?) : Action

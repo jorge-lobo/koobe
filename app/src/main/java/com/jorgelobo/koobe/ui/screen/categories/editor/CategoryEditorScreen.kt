@@ -24,7 +24,6 @@ import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.categories.editor.components.CategoryEditorActionButtons
-import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -100,11 +99,7 @@ fun CategoryEditorScreen(
                             AppBarAction(
                                 icon = IconPack.DELETE,
                                 onClick = {
-                                    viewModel.onIntent(
-                                        CategoryEditorIntent.Action.DeleteDialogAction(
-                                            ConfirmationDialogAction.Open
-                                        )
-                                    )
+                                    viewModel.onIntent(CategoryEditorIntent.Action.RequestDeleteCategory)
                                 }
                             )
                         } else {

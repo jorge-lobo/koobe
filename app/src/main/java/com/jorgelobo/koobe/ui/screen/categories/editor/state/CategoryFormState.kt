@@ -12,4 +12,11 @@ data class CategoryFormState(
     val color: FieldUpdate<Color> = FieldUpdate.Unchanged,
     val type: FieldUpdate<TransactionType> = FieldUpdate.Unchanged,
     val subcategories: FieldUpdate<List<Subcategory>> = FieldUpdate.Unchanged
-)
+) {
+    val hasChanges: Boolean
+        get() = name is FieldUpdate.Updated ||
+                icon is FieldUpdate.Updated ||
+                color is FieldUpdate.Updated ||
+                type is FieldUpdate.Updated ||
+                subcategories is FieldUpdate.Updated
+}

@@ -13,6 +13,7 @@ import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.domain.usecase.category.DeleteCategoryWithReassignUseCase
 import com.jorgelobo.koobe.domain.usecase.category.SaveCategoryUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.DeleteSubcategoryWithReassignUseCase
+import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.editor.state.CategoryFormState
@@ -57,6 +58,8 @@ class CategoryEditorViewModel @Inject constructor(
     private val _events = MutableSharedFlow<CategoryEditorEvent>()
     val events = _events.asSharedFlow()
 
+    private var initialSnapshot: CategoryInitialSnapshot? = null
+
     private val config: CategoryEditorConfig =
         savedStateHandle.get<String>("config")
             ?.let { URLDecoder.decode(it, "UTF-8") }
@@ -88,9 +91,21 @@ class CategoryEditorViewModel @Inject constructor(
     private val baseStateFlow: Flow<CategoryEditorUiState> =
         categoryFlow.map { category ->
 
-            CategoryEditorUiState.initial(
+            if (initialSnapshot == null) {
+                initialSnapshot = CategoryInitialSnapshot(
+                    name = category.name,
+                    icon = category.icon,
+                    color = category.color,
+                    type = category.type,
+                    subcategories = category.subcategories
+                )
+            }
+
+            CategoryEditorUiState(
                 config = config,
-                category = category
+                category = category,
+                nameInputState = InputState.DEFAULT,
+                initialSnapshot = initialSnapshot!!
             )
         }
 
@@ -106,7 +121,7 @@ class CategoryEditorViewModel @Inject constructor(
                 icon = form.icon.resolve(base.category.icon),
                 color = form.color.resolveToHex(base.category.color),
                 type = form.type.resolve(base.category.type),
-                subcategories = form.subcategories.resolve(base.category.subcategories)
+                subcategories = base.category.subcategories
             )
 
             base.copy(
@@ -118,9 +133,7 @@ class CategoryEditorViewModel @Inject constructor(
                 colorDialog = uiInternal.colorSelectorDialog,
                 infoDialog = uiInternal.infoDialog,
                 isDeleting = uiInternal.isDeleting,
-                isSaveButtonEnabled = computeSaveEnabled(
-                    base.copy(category = updatedCategory)
-                )
+                isSaveButtonEnabled = computeSaveEnabled(updatedCategory)
             )
         }
             .stateIn(
@@ -129,14 +142,22 @@ class CategoryEditorViewModel @Inject constructor(
                 initialValue = CategoryEditorUiState.initialEmpty()
             )
 
-    private fun computeSaveEnabled(state: CategoryEditorUiState): Boolean {
-        val isValid = state.isValid
+    private fun computeSaveEnabled(category: Category): Boolean {
+        val isValid =
+            category.name.isNotBlank() &&
+                    category.icon != IconPack.PLACEHOLDER &&
+                    category.color.isNotBlank()
 
-        return when {
-            !isValid -> false
-            config.isEditMode -> state.hasUnsavedChanges
-            else -> true
-        }
+        if (!isValid) return false
+        if (!config.isEditMode) return true
+
+        val initial = initialSnapshot ?: return false
+
+        return category.name != initial.name ||
+                category.icon != initial.icon ||
+                category.color != initial.color ||
+                category.type != initial.type ||
+                category.subcategories != initial.subcategories
     }
 
     fun onIntent(intent: CategoryEditorIntent) {
@@ -148,7 +169,8 @@ class CategoryEditorViewModel @Inject constructor(
                 val result = CategoryEditorReducer.reduce(
                     intent = intent,
                     currentForm = formState.value,
-                    currentInternal = uiInternalState.value
+                    currentInternal = uiInternalState.value,
+                    baseCategory = uiState.value.category
                 )
 
                 formState.value = result.form
@@ -162,12 +184,8 @@ class CategoryEditorViewModel @Inject constructor(
             is CategoryEditorIntent.Action.DiscardDialogAction ->
                 handleDiscardDialog(intent.action)
 
-            is CategoryEditorIntent.Action.DeleteDialogAction -> {
-                uiInternalState.update {
-                    it.copy(deleteTarget = CategoryEditorDeleteTarget.Category)
-                }
+            is CategoryEditorIntent.Action.DeleteDialogAction ->
                 handleDeleteDialog(intent.action)
-            }
 
             is CategoryEditorIntent.Action.IconSelectorDialogAction ->
                 handleIconSelectorDialog(intent.action)
@@ -180,6 +198,9 @@ class CategoryEditorViewModel @Inject constructor(
 
             is CategoryEditorIntent.Action.RequestDeleteSubcategory ->
                 requestDeleteSubcategory(intent.subcategoryId)
+
+            is CategoryEditorIntent.Action.RequestDeleteCategory ->
+                requestDeleteCategory()
 
             CategoryEditorIntent.Action.SaveClicked -> handleSave()
             CategoryEditorIntent.Action.CloseClicked -> handleClose()
@@ -212,7 +233,7 @@ class CategoryEditorViewModel @Inject constructor(
     }
 
     private fun handleClose() {
-        if (uiState.value.hasUnsavedChanges) {
+        if (formState.value.hasChanges) {
             handleDiscardDialog(ConfirmationDialogAction.Open)
         } else {
             navigateBack()
@@ -287,13 +308,17 @@ class CategoryEditorViewModel @Inject constructor(
         }
     }
 
+    private fun requestDeleteCategory() {
+        uiInternalState.update { it.copy(deleteTarget = CategoryEditorDeleteTarget.Category) }
+        handleDeleteDialog(ConfirmationDialogAction.Open)
+    }
+
     private fun requestDeleteSubcategory(subcategoryId: Int) {
         uiInternalState.update {
             it.copy(deleteTarget = CategoryEditorDeleteTarget.Subcategory(subcategoryId))
         }
         handleDeleteDialog(ConfirmationDialogAction.Open)
     }
-
 
     private fun handleDeleteDialog(action: ConfirmationDialogAction) {
         handleConfirmationDialog(

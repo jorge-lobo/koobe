@@ -34,14 +34,6 @@ data class CategoryEditorUiState(
     val errorMessage: String? = null
 ) {
 
-    /** True if the category ahs been modified */
-    val hasUnsavedChanges: Boolean
-        get() = category.name != initialSnapshot.name ||
-                category.icon != initialSnapshot.icon ||
-                category.color != initialSnapshot.color ||
-                category.type != initialSnapshot.type ||
-                category.subcategories != initialSnapshot.subcategories
-
     /** Validates if the category can be saved */
     val isValid: Boolean
         get() = category.name.isNotBlank() &&
