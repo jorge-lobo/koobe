@@ -17,7 +17,7 @@ import com.jorgelobo.koobe.ui.components.model.enums.DeleteType
  * UI state for the Category Editor screen.
  */
 data class CategoryEditorUiState(
-    val config: CategoryEditorConfig? = null,
+    val config: CategoryEditorConfig = CategoryEditorConfig(),
     val category: Category,
     val nameInputState: InputState,
     val initialSnapshot: CategoryInitialSnapshot,
@@ -27,7 +27,6 @@ data class CategoryEditorUiState(
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val infoDialog: InfoDialogState = InfoDialogState(),
-    val isSaveButtonEnabled: Boolean = false,
     val showSnackBar: Boolean = false,
     val isDeleting: Boolean = false,
     val isLoading: Boolean = false,
@@ -58,6 +57,27 @@ data class CategoryEditorUiState(
             is CategoryEditorDeleteTarget.Category -> DeleteType.CATEGORY
             is CategoryEditorDeleteTarget.Subcategory -> DeleteType.SUBCATEGORY
             else -> null
+        }
+
+    /**
+     * Determines whether the save action should be enabled.
+     *
+     * Enabled when the category is valid and:
+     * - in create mode, always enabled
+     * - in edit mode, only if there are changes compared to the initial snapshot
+     */
+    val isSaveEnabled: Boolean
+        get() {
+            if (!isValid) return false
+            if (!config.isEditMode) return true
+
+            val initial = initialSnapshot
+
+            return category.name != initial.name ||
+                    category.icon != initial.icon ||
+                    category.color != initial.color ||
+                    category.type != initial.type ||
+                    category.subcategories != initial.subcategories
         }
 
     /** Returns the headline for the screen based on mode */

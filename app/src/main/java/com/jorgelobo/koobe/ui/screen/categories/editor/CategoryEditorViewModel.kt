@@ -132,8 +132,7 @@ class CategoryEditorViewModel @Inject constructor(
                 iconDialog = uiInternal.iconSelectorDialog,
                 colorDialog = uiInternal.colorSelectorDialog,
                 infoDialog = uiInternal.infoDialog,
-                isDeleting = uiInternal.isDeleting,
-                isSaveButtonEnabled = computeSaveEnabled(updatedCategory)
+                isDeleting = uiInternal.isDeleting
             )
         }
             .stateIn(
@@ -141,24 +140,6 @@ class CategoryEditorViewModel @Inject constructor(
                 started = SharingStarted.Eagerly,
                 initialValue = CategoryEditorUiState.initialEmpty()
             )
-
-    private fun computeSaveEnabled(category: Category): Boolean {
-        val isValid =
-            category.name.isNotBlank() &&
-                    category.icon != IconPack.PLACEHOLDER &&
-                    category.color.isNotBlank()
-
-        if (!isValid) return false
-        if (!config.isEditMode) return true
-
-        val initial = initialSnapshot ?: return false
-
-        return category.name != initial.name ||
-                category.icon != initial.icon ||
-                category.color != initial.color ||
-                category.type != initial.type ||
-                category.subcategories != initial.subcategories
-    }
 
     fun onIntent(intent: CategoryEditorIntent) {
         when (intent) {

@@ -119,7 +119,7 @@ fun PreviewCategoryEditorScreen() {
         val state = CategoryEditorUiState.initial(
             config = config,
             category = if (isEditMode) category else emptyCategory
-        ).copy(isSaveButtonEnabled = false)
+        )
 
         CategoryEditorScreenUI(
             state = state,

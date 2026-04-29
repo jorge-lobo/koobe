@@ -5,6 +5,7 @@ import com.jorgelobo.koobe.common.extensions.toColor
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
+import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorIntent
@@ -33,6 +34,7 @@ import kotlin.test.assertTrue
 class CategoryEditorViewModelTest {
 
     private val categoryRepository: CategoryRepository = mockk()
+    private val subCategoryRepository: SubcategoryRepository = mockk()
 
     @Before
     fun setup() {
@@ -89,7 +91,7 @@ class CategoryEditorViewModelTest {
         advanceUntilIdle()
         val state = viewModel.uiState.value
 
-        assertFalse(state.isSaveButtonEnabled)
+        assertFalse(state.isSaveEnabled)
     }
 
     @Test
@@ -104,7 +106,7 @@ class CategoryEditorViewModelTest {
         advanceUntilIdle()
         val state = viewModel.uiState.value
 
-        assertTrue(state.isSaveButtonEnabled)
+        assertTrue(state.isSaveEnabled)
     }
 
     @Test
@@ -116,7 +118,7 @@ class CategoryEditorViewModelTest {
         advanceUntilIdle()
         val state = viewModel.uiState.value
 
-        assertFalse(state.isSaveButtonEnabled)
+        assertFalse(state.isSaveEnabled)
     }
 
     @Test
@@ -129,7 +131,7 @@ class CategoryEditorViewModelTest {
         advanceUntilIdle()
         val state = viewModel.uiState.value
 
-        assertFalse(state.isSaveButtonEnabled)
+        assertFalse(state.isSaveEnabled)
     }
 
     @Test
@@ -142,7 +144,7 @@ class CategoryEditorViewModelTest {
         advanceUntilIdle()
         val state = viewModel.uiState.value
 
-        assertFalse(state.isSaveButtonEnabled)
+        assertFalse(state.isSaveEnabled)
     }
 
     // endregion
@@ -156,7 +158,7 @@ class CategoryEditorViewModelTest {
         advanceUntilIdle()
         val state = viewModel.uiState.value
 
-        assertFalse(state.isSaveButtonEnabled)
+        assertFalse(state.isSaveEnabled)
     }
 
     @Test
@@ -165,14 +167,14 @@ class CategoryEditorViewModelTest {
 
         val initialState = viewModel.uiState.value
 
-        assertFalse(initialState.isSaveButtonEnabled)
+        assertFalse(initialState.isSaveEnabled)
 
         viewModel.onIntent(CategoryEditorIntent.State.NameChanged("New Name"))
 
         advanceUntilIdle()
         val updatedState = viewModel.uiState.value
 
-        assertTrue(updatedState.isSaveButtonEnabled)
+        assertTrue(updatedState.isSaveEnabled)
     }
 
     @Test
@@ -184,7 +186,7 @@ class CategoryEditorViewModelTest {
         advanceUntilIdle()
         val state = viewModel.uiState.value
 
-        assertFalse(state.isSaveButtonEnabled)
+        assertFalse(state.isSaveEnabled)
     }
 
     @Test
@@ -195,13 +197,13 @@ class CategoryEditorViewModelTest {
         advanceUntilIdle()
         val initialState = viewModel.uiState.value
 
-        assertTrue(initialState.isSaveButtonEnabled)
+        assertTrue(initialState.isSaveEnabled)
 
         viewModel.onIntent(CategoryEditorIntent.State.NameChanged("Food"))
         advanceUntilIdle()
         val updatedState = viewModel.uiState.value
 
-        assertFalse(updatedState.isSaveButtonEnabled)
+        assertFalse(updatedState.isSaveEnabled)
     }
 
     // endregion
@@ -216,19 +218,19 @@ class CategoryEditorViewModelTest {
         advanceUntilIdle()
         val nameUpdatedState = viewModel.uiState.value
 
-        assertFalse(nameUpdatedState.isSaveButtonEnabled)
+        assertFalse(nameUpdatedState.isSaveEnabled)
 
         viewModel.onIntent(CategoryEditorIntent.State.IconSelected(IconPack.FOOD))
         advanceUntilIdle()
         val iconUpdatedState = viewModel.uiState.value
 
-        assertFalse(iconUpdatedState.isSaveButtonEnabled)
+        assertFalse(iconUpdatedState.isSaveEnabled)
 
         viewModel.onIntent(CategoryEditorIntent.State.ColorSelected("#FF00FF".toColor()))
         advanceUntilIdle()
         val colorUpdatedState = viewModel.uiState.value
 
-        assertTrue(colorUpdatedState.isSaveButtonEnabled)
+        assertTrue(colorUpdatedState.isSaveEnabled)
     }
 
     // end region
@@ -249,8 +251,10 @@ class CategoryEditorViewModelTest {
         return CategoryEditorViewModel(
             savedStateHandle = savedStateHandle,
             categoryRepository = categoryRepository,
+            subcategoryRepository = subCategoryRepository,
             saveCategory = mockk(),
-            deleteCategoryWithReassign = mockk()
+            deleteCategoryWithReassign = mockk(),
+            deleteSubcategoryWithReassign = mockk()
         )
     }
 
