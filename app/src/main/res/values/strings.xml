@@ -215,6 +215,8 @@
     <string name="snackBar_delete_subcategory_error">Failed to delete subcategory.\nPlease try again.</string>
     <string name="snackBar_invalid_category">Invalid category.</string>
     <string name="snackBar_invalid_subcategory">Invalid subcategory.</string>
+    <string name="snackBar_save_category_error">Failed to save category.\nPlease try again.</string>
+    <string name="snackBar_save_subcategory_error">Failed to save subcategory.\nPlease try again.</string>
 
     <!-- RadioButtons -->
     <string name="radio_cash">Cash</string>

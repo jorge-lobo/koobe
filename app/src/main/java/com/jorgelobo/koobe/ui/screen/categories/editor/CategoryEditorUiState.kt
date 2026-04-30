@@ -27,9 +27,8 @@ data class CategoryEditorUiState(
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val infoDialog: InfoDialogState = InfoDialogState(),
-    val showSnackBar: Boolean = false,
     val isDeleting: Boolean = false,
-    val isLoading: Boolean = false,
+    val isSaving: Boolean = false,
     val errorMessage: String? = null
 ) {
 

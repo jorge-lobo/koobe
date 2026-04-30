@@ -14,5 +14,6 @@ data class CategoryUiStateInternal(
     val infoDialog: InfoDialogState = InfoDialogState(),
     val iconSelectorDialog: SelectorDialogState<IconPack> = SelectorDialogState(),
     val colorSelectorDialog: SelectorDialogState<Color> = SelectorDialogState(),
-    val isDeleting: Boolean = false
+    val isDeleting: Boolean = false,
+    val isSaving: Boolean = false
 )

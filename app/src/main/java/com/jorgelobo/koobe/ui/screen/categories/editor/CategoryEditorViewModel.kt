@@ -132,7 +132,8 @@ class CategoryEditorViewModel @Inject constructor(
                 iconDialog = uiInternal.iconSelectorDialog,
                 colorDialog = uiInternal.colorSelectorDialog,
                 infoDialog = uiInternal.infoDialog,
-                isDeleting = uiInternal.isDeleting
+                isDeleting = uiInternal.isDeleting,
+                isSaving = uiInternal.isSaving
             )
         }
             .stateIn(
@@ -196,7 +197,7 @@ class CategoryEditorViewModel @Inject constructor(
         if (!state.isValid) {
             emitEvent(
                 CategoryEditorEvent.ShowSnackbar(
-                    messageRes = R.string.snackBar_delete_category_error,
+                    messageRes = R.string.snackBar_save_category_error,
                     actionLabelRes = null,
                     icon = IconPack.WARNING
                 )
@@ -205,11 +206,28 @@ class CategoryEditorViewModel @Inject constructor(
         }
 
         viewModelScope.launch {
-            saveCategory(
-                category = state.category,
-                isEditMode = config.isEditMode
-            )
-            navigateBack()
+            uiInternalState.update { it.copy(isSaving = true) }
+
+            runCatching {
+                saveCategory(
+                    category = state.category,
+                    isEditMode = config.isEditMode
+                )
+            }.onSuccess {
+                uiInternalState.update { it.copy(isSaving = false) }
+                navigateBack()
+            }.onFailure {
+                uiInternalState.update { it.copy(isSaving = false) }
+
+                emitEvent(
+                    CategoryEditorEvent.ShowSnackbar(
+                        messageRes = R.string.snackBar_save_category_error,
+                        actionLabelRes = null,
+                        icon = IconPack.WARNING
+                    )
+                )
+            }
+
         }
     }
 
