@@ -10,6 +10,7 @@ import com.jorgelobo.koobe.core.model.resolveToHex
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
+import com.jorgelobo.koobe.domain.usecase.category.CategoryValidationException
 import com.jorgelobo.koobe.domain.usecase.category.DeleteCategoryWithReassignUseCase
 import com.jorgelobo.koobe.domain.usecase.category.SaveCategoryUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.DeleteSubcategoryWithReassignUseCase
@@ -216,18 +217,16 @@ class CategoryEditorViewModel @Inject constructor(
             }.onSuccess {
                 uiInternalState.update { it.copy(isSaving = false) }
                 navigateBack()
-            }.onFailure {
+            }.onFailure { error ->
+
                 uiInternalState.update { it.copy(isSaving = false) }
 
-                emitEvent(
-                    CategoryEditorEvent.ShowSnackbar(
-                        messageRes = R.string.snackBar_save_category_error,
-                        actionLabelRes = null,
-                        icon = IconPack.WARNING
-                    )
-                )
+                when (error) {
+                    is CategoryValidationException.EmptyName -> showSnackBar(R.string.snackBar_empty_name)
+                    is CategoryValidationException.DuplicateName -> showSnackBar(R.string.snackBar_duplicate_name)
+                    else -> showSnackBar(R.string.snackBar_save_category_error)
+                }
             }
-
         }
     }
 
@@ -415,6 +414,10 @@ class CategoryEditorViewModel @Inject constructor(
 
     private fun navigateTo(route: String) {
         emitEvent(CategoryEditorEvent.NavigateTo(route))
+    }
+
+    private fun showSnackBar(messageRes: Int) {
+        emitEvent(CategoryEditorEvent.ShowSnackbar(messageRes, null, IconPack.WARNING))
     }
 
     private fun emitEvent(event: CategoryEditorEvent) {
