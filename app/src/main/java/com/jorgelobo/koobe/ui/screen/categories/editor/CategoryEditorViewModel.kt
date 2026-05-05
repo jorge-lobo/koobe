@@ -10,12 +10,13 @@ import com.jorgelobo.koobe.core.model.resolveToHex
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
-import com.jorgelobo.koobe.domain.usecase.category.CategoryValidationException
 import com.jorgelobo.koobe.domain.usecase.category.DeleteCategoryWithReassignUseCase
 import com.jorgelobo.koobe.domain.usecase.category.SaveCategoryUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.DeleteSubcategoryWithReassignUseCase
+import com.jorgelobo.koobe.domain.validation.NameValidationException
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.mappers.toMessageRes
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.editor.state.CategoryFormState
 import com.jorgelobo.koobe.ui.screen.categories.editor.state.CategoryUiStateInternal
@@ -221,21 +222,10 @@ class CategoryEditorViewModel @Inject constructor(
 
                 uiInternalState.update { it.copy(isSaving = false) }
 
-                when (error) {
-                    is CategoryValidationException.EmptyName ->
-                        showSnackBar(R.string.snackBar_empty_name)
+                val messageRes = (error as? NameValidationException)?.toMessageRes()
+                    ?: R.string.snackBar_save_category_error
 
-                    is CategoryValidationException.DuplicateName ->
-                        showSnackBar(R.string.snackBar_duplicate_name)
-
-                    is CategoryValidationException.NameTooShort ->
-                        showSnackBar(R.string.snackBar_name_too_short)
-
-                    is CategoryValidationException.InvalidFirstCharacter ->
-                        showSnackBar(R.string.snackBar_invalid_first_character)
-
-                    else -> showSnackBar(R.string.snackBar_save_category_error)
-                }
+                showSnackBar(messageRes)
             }
         }
     }
