@@ -222,8 +222,18 @@ class CategoryEditorViewModel @Inject constructor(
                 uiInternalState.update { it.copy(isSaving = false) }
 
                 when (error) {
-                    is CategoryValidationException.EmptyName -> showSnackBar(R.string.snackBar_empty_name)
-                    is CategoryValidationException.DuplicateName -> showSnackBar(R.string.snackBar_duplicate_name)
+                    is CategoryValidationException.EmptyName ->
+                        showSnackBar(R.string.snackBar_empty_name)
+
+                    is CategoryValidationException.DuplicateName ->
+                        showSnackBar(R.string.snackBar_duplicate_name)
+
+                    is CategoryValidationException.NameTooShort ->
+                        showSnackBar(R.string.snackBar_name_too_short)
+
+                    is CategoryValidationException.InvalidFirstCharacter ->
+                        showSnackBar(R.string.snackBar_invalid_first_character)
+
                     else -> showSnackBar(R.string.snackBar_save_category_error)
                 }
             }

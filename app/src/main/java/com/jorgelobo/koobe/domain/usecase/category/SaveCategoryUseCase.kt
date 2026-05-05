@@ -19,15 +19,14 @@ class SaveCategoryUseCase @Inject constructor(
     ) {
 
         val rawName = category.name.trim()
+
+        validateName(rawName)
+
         val normalizedName = normalizeForComparison(rawName)
         val allCategories = categoryRepository.getAllCategories().first()
 
         val exists = allCategories.any {
             it.id != category.id && normalizeForComparison(it.name) == normalizedName
-        }
-
-        if (rawName.isBlank()) {
-            throw CategoryValidationException.EmptyName()
         }
 
         if (exists) {
@@ -46,5 +45,11 @@ class SaveCategoryUseCase @Inject constructor(
             .resolve(name)
             .trim()
             .lowercase()
+    }
+
+    private fun validateName(name: String) {
+        if (name.isBlank()) throw CategoryValidationException.EmptyName()
+        if (name.length < 3) throw CategoryValidationException.NameTooShort()
+        if (!name.first().isLetter()) throw CategoryValidationException.InvalidFirstCharacter()
     }
 }
