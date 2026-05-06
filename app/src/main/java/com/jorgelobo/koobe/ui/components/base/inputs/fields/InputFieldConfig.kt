@@ -7,6 +7,7 @@ data class InputFieldConfig(
     val value: String,
     val label: String,
     val placeholder: String? = null,
+    val errorMessage: String? = null,
     val icon: IconPack? = null,
     val isPassword: Boolean = false,
     val state: InputState = InputState.DEFAULT,
