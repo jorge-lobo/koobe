@@ -52,7 +52,7 @@ fun CategoryEditorEffects(
                     snackbarHostState.showSnackbar(
                         message = "",
                         actionLabel = null,
-                        duration = SnackbarDuration.Indefinite
+                        duration = SnackbarDuration.Short
                     )
                 }
             }
