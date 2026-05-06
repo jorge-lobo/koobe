@@ -1,6 +1,7 @@
 package com.jorgelobo.koobe.ui.screen.categories.editor.state
 
 import androidx.compose.ui.graphics.Color
+import com.jorgelobo.koobe.domain.validation.NameValidationException
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorDeleteTarget
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
@@ -15,5 +16,7 @@ data class CategoryUiStateInternal(
     val iconSelectorDialog: SelectorDialogState<IconPack> = SelectorDialogState(),
     val colorSelectorDialog: SelectorDialogState<Color> = SelectorDialogState(),
     val isDeleting: Boolean = false,
-    val isSaving: Boolean = false
+    val isSaving: Boolean = false,
+    val nameError: NameValidationException? = null,
+    val hasTriedToSave: Boolean = false
 )

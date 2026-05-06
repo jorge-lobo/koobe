@@ -11,6 +11,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDial
 import com.jorgelobo.koobe.ui.screen.common.dialog.info.InfoDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.validation.NameValidationException
 import com.jorgelobo.koobe.ui.components.model.enums.DeleteType
 
 /**
@@ -20,6 +21,7 @@ data class CategoryEditorUiState(
     val config: CategoryEditorConfig = CategoryEditorConfig(),
     val category: Category,
     val nameInputState: InputState,
+    val nameError: NameValidationException? = null,
     val initialSnapshot: CategoryInitialSnapshot,
     val deleteTarget: CategoryEditorDeleteTarget? = null,
     val iconDialog: SelectorDialogState<IconPack> = SelectorDialogState(),

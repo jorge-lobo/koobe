@@ -22,6 +22,7 @@ import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.resolvedColor
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.ui.mappers.localizedName
+import com.jorgelobo.koobe.ui.mappers.toInputMessageRes
 
 @Composable
 fun CategoryEditorInputSection(
@@ -71,6 +72,8 @@ fun CategoryEditorInputSection(
                 value = state.category.localizedName(),
                 label = stringResource(R.string.label_name),
                 placeholder = stringResource(R.string.input_hint_name_category),
+                errorMessage = state.nameError?.let { stringResource(it.toInputMessageRes()) },
+                icon = state.category.icon,
                 state = state.nameInputState,
                 onValueChange = onNameChanged,
                 onResetClick = onResetNameClick

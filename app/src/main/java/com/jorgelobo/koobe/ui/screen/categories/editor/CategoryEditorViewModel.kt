@@ -16,7 +16,7 @@ import com.jorgelobo.koobe.domain.usecase.subcategory.DeleteSubcategoryWithReass
 import com.jorgelobo.koobe.domain.validation.NameValidationException
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
-import com.jorgelobo.koobe.ui.mappers.toMessageRes
+import com.jorgelobo.koobe.ui.mappers.toSnackBarMessageRes
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.editor.state.CategoryFormState
 import com.jorgelobo.koobe.ui.screen.categories.editor.state.CategoryUiStateInternal
@@ -118,6 +118,13 @@ class CategoryEditorViewModel @Inject constructor(
             uiInternalState
         ) { base, form, uiInternal ->
 
+            val nameInputState =
+                if (uiInternal.hasTriedToSave && uiInternal.nameError != null) {
+                    InputState.ERROR
+                } else {
+                    InputState.DEFAULT
+                }
+
             val updatedCategory = base.category.copy(
                 name = form.name.resolve(base.category.name),
                 icon = form.icon.resolve(base.category.icon),
@@ -135,7 +142,9 @@ class CategoryEditorViewModel @Inject constructor(
                 colorDialog = uiInternal.colorSelectorDialog,
                 infoDialog = uiInternal.infoDialog,
                 isDeleting = uiInternal.isDeleting,
-                isSaving = uiInternal.isSaving
+                isSaving = uiInternal.isSaving,
+                nameInputState = nameInputState,
+                nameError = uiInternal.nameError
             )
         }
             .stateIn(
@@ -150,6 +159,16 @@ class CategoryEditorViewModel @Inject constructor(
             is CategoryEditorIntent.Action -> handleAction(intent)
 
             is CategoryEditorIntent.State -> {
+
+                if (intent is CategoryEditorIntent.State.NameChanged) {
+                    uiInternalState.update {
+                        it.copy(
+                            nameError = null,
+                            hasTriedToSave = false
+                        )
+                    }
+                }
+
                 val result = CategoryEditorReducer.reduce(
                     intent = intent,
                     currentForm = formState.value,
@@ -220,9 +239,18 @@ class CategoryEditorViewModel @Inject constructor(
                 navigateBack()
             }.onFailure { error ->
 
-                uiInternalState.update { it.copy(isSaving = false) }
+                val validationError = error as? NameValidationException
+                onIntent(CategoryEditorIntent.State.NameChanged(""))
 
-                val messageRes = (error as? NameValidationException)?.toMessageRes()
+                uiInternalState.update {
+                    it.copy(
+                        isSaving = false,
+                        nameError = validationError,
+                        hasTriedToSave = true
+                    )
+                }
+
+                val messageRes = validationError?.toSnackBarMessageRes()
                     ?: R.string.snackBar_save_category_error
 
                 showSnackBar(messageRes)
