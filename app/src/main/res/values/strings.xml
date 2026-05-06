@@ -182,7 +182,10 @@
 
     <!-- Input Warnings -->
     <string name="input_warning_description">Adding a description helps categorize your transactions better!</string>
-    <string name="input_warning_name">This name is already in use!</string>
+    <string name="input_warning_name_duplicate">This name is already in use!</string>
+    <string name="input_warning_name_invalid">Invalid name! Must start with a letter.</string>
+    <string name="input_warning_name_short">Invalid name! Must have at least 3 characters.</string>
+    <string name="input_warning_name_empty">Add a name for better identification.</string>
 
     <!-- Budget Card -->
     <string name="budget_header_daily">Daily budgets</string>
