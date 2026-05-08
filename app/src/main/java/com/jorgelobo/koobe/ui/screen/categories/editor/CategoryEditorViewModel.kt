@@ -130,7 +130,7 @@ class CategoryEditorViewModel @Inject constructor(
                 icon = form.icon.resolve(base.category.icon),
                 color = form.color.resolveToHex(base.category.color),
                 type = form.type.resolve(base.category.type),
-                subcategories = base.category.subcategories
+                subcategories = form.subcategories.resolve(base.category.subcategories)
             )
 
             base.copy(
