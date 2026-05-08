@@ -6,13 +6,22 @@ import androidx.core.graphics.toColorInt
 import com.jorgelobo.koobe.ui.theme.color.LightThemeGrey3
 
 fun Color.toHexString(): String {
-    return String.format("#%08x", this.toArgb())
+    return "#%08x".format(toArgb())
 }
 
 fun String?.toColor(): Color {
-    return this
-        ?.takeIf { it.isNotBlank() }
-        ?.runCatching { Color(toColorInt()) }
-        ?.getOrNull()
-        ?: LightThemeGrey3
+    val defaultColor = LightThemeGrey3
+
+    if (this.isNullOrBlank()) return defaultColor
+
+    return try {
+        Color(this.toColorInt())
+    } catch (_: Exception) {
+        try {
+            val colorLong = this.removePrefix("#").toULong(16).toLong()
+            Color(colorLong)
+        } catch (_: Exception) {
+            defaultColor
+        }
+    }
 }
