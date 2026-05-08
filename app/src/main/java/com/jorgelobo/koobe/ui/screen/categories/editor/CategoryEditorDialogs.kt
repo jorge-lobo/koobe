@@ -39,7 +39,7 @@ fun CategoryEditorDialogs(
         )
     }
 
-    if (state.iconDialog.visible) {
+    if (state.infoDialog.visible) {
         InfoDialog(
             type = InfoType.CATEGORY,
             onClick = onInfoDialogClick
