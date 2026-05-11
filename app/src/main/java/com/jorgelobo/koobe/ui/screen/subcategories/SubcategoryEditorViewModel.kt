@@ -4,6 +4,8 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.core.model.FieldUpdate
+import com.jorgelobo.koobe.core.model.resolve
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
@@ -135,9 +137,9 @@ class SubcategoryEditorViewModel @Inject constructor(
         ) { base, form, uiInternal ->
 
             val updatedSubcategory = base.subcategory.copy(
-                name = form.name ?: base.subcategory.name,
-                icon = form.icon ?: base.subcategory.icon,
-                categoryId = form.categoryId ?: base.subcategory.categoryId
+                name = form.name.resolve(base.subcategory.name),
+                icon = form.icon.resolve(base.subcategory.icon),
+                categoryId = form.categoryId.resolve(base.subcategory.categoryId)
             )
 
             val newState = base.copy(
@@ -181,19 +183,19 @@ class SubcategoryEditorViewModel @Inject constructor(
     }
 
     fun onNameChanged(name: String) {
-        formState.update { it.copy(name = name) }
+        formState.update { it.copy(name = FieldUpdate.Updated(name)) }
     }
 
     fun onResetName() {
-        formState.update { it.copy(name = "") }
+        formState.update { it.copy(name = FieldUpdate.Updated("")) }
     }
 
     fun onIconSelected(icon: IconPack) {
-        formState.update { it.copy(icon = icon) }
+        formState.update { it.copy(icon = FieldUpdate.Updated(icon)) }
     }
 
     fun onCategoryChanged(id: Int) {
-        formState.update { it.copy(categoryId = id) }
+        formState.update { it.copy(categoryId = FieldUpdate.Updated(id)) }
     }
 
     /**
@@ -331,7 +333,13 @@ class SubcategoryEditorViewModel @Inject constructor(
         }
 
         when (effect) {
-            is SelectorDialogEffect.Applied -> formState.update { it.copy(icon = effect.value) }
+            is SelectorDialogEffect.Applied -> formState.update {
+                it.copy(
+                    icon = FieldUpdate.Updated(
+                        effect.value
+                    )
+                )
+            }
 
             null -> Unit
         }
