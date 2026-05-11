@@ -2,10 +2,8 @@ package com.jorgelobo.koobe.domain.usecase.subcategory
 
 import androidx.room.withTransaction
 import com.jorgelobo.koobe.data.local.KoobeDatabase
-import com.jorgelobo.koobe.domain.model.category.PlaceholderCategories
-import com.jorgelobo.koobe.domain.model.subcategory.PlaceholderSubcategories
 import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
-import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.domain.model.transaction.toPlaceholderIds
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.TransactionRepository
 import javax.inject.Inject
@@ -30,18 +28,10 @@ class DeleteSubcategoryWithReassignUseCase @Inject constructor(
 
         database.withTransaction {
 
-            val category = categoryRepository.getCategoryById(subcategory.categoryId)
+            val currentCategory = categoryRepository.getCategoryById(subcategory.categoryId)
                 ?: error("Category not found")
 
-            val (newCategoryId, newSubcategoryId) = when (category.type) {
-                TransactionType.EXPENSE -> {
-                    PlaceholderCategories.EXPENSE_ID to PlaceholderSubcategories.EXPENSE_ID
-                }
-
-                TransactionType.INCOME -> {
-                    PlaceholderCategories.INCOME_ID to PlaceholderSubcategories.INCOME_ID
-                }
-            }
+            val (newCategoryId, newSubcategoryId) = currentCategory.type.toPlaceholderIds()
 
             require(subcategory.id != newSubcategoryId) {
                 "Cannot delete fallback subcategory"

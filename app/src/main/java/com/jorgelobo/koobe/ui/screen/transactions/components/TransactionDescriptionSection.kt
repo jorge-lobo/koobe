@@ -22,6 +22,7 @@ fun TransactionDescriptionSection(
             value = state.descriptionSource.asText(),
             label = stringResource(R.string.label_description),
             placeholder = stringResource(R.string.input_hint_description),
+            errorMessage = stringResource(R.string.input_warning_description),
             state = state.inputState,
             onValueChange = onDescriptionChange,
             onResetClick = onResetDescriptionClick

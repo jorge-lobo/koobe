@@ -25,6 +25,7 @@ import com.jorgelobo.koobe.ui.components.composed.buttons.EditDeleteActionsConfi
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.BorderDimens
@@ -63,7 +64,7 @@ fun CardSubcategoryItem(
         )
 
         Text(
-            text = subcategory.name,
+            text = subcategory.localizedName(),
             style = typography.titleMedium,
             color = colors.textColors.textPrimary,
             modifier = Modifier

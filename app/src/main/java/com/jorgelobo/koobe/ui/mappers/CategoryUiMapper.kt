@@ -1,9 +1,12 @@
 package com.jorgelobo.koobe.ui.mappers
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
 private val categoryNameMap = mapOf(
     "category_home" to R.string.category_home,
@@ -34,4 +37,13 @@ private val categoryNameMap = mapOf(
 fun Category.localizedName(): String {
     val resId = categoryNameMap[this.name]
     return resId?.let { stringResource(it) } ?: this.name
+}
+
+class CategoryNameResolver @Inject constructor(
+    @param:ApplicationContext private val context: Context
+) {
+    fun resolve(name: String): String {
+        val resId = categoryNameMap[name]
+        return resId?.let { context.getString(it) } ?: name
+    }
 }

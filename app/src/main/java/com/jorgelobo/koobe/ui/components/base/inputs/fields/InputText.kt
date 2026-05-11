@@ -122,9 +122,9 @@ fun AppInputText(
                         if (config.value.isEmpty()) {
                             config.placeholder?.let {
                                 Text(
-                                    text = when (config.state) {
-                                        InputState.DEFAULT -> it
-                                        InputState.ERROR -> stringResource(R.string.input_warning_description)
+                                    text = when {
+                                        config.state == InputState.ERROR && config.errorMessage != null -> config.errorMessage
+                                        else -> it
                                     },
                                     style = when (config.state) {
                                         InputState.DEFAULT -> typography.bodySmall.copy(
