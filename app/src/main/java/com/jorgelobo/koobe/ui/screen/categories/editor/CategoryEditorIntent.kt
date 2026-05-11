@@ -9,6 +9,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 
 sealed interface CategoryEditorIntent {
 
+    // Form field updates — handled synchronously by the Reducer.
     sealed interface State : CategoryEditorIntent {
         data class NameChanged(val name: String) : State
         data class IconSelected(val icon: IconPack) : State
@@ -17,6 +18,7 @@ sealed interface CategoryEditorIntent {
         data class SubcategoriesChanged(val subcategories: List<Subcategory>) : State
     }
 
+    // User actions — may trigger coroutines, navigation, or dialog side effects.
     sealed interface Action : CategoryEditorIntent {
         object SaveClicked : Action
         object CloseClicked : Action

@@ -7,6 +7,8 @@ import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.ui.screen.categories.editor.state.CategoryFormState
 import com.jorgelobo.koobe.ui.screen.categories.editor.state.CategoryUiStateInternal
 
+// Pure reducer for CategoryEditorIntent.State intents.
+// Produces a new Result without side effects; never emits events or launches coroutines.
 object CategoryEditorReducer {
 
     data class Result(
@@ -14,6 +16,8 @@ object CategoryEditorReducer {
         val internal: CategoryUiStateInternal
     )
 
+    // Applies the intent to the current form and internal state, returning the updated pair.
+    // Fields are only marked as Updated if the new value differs from the base category.
     fun reduce(
         intent: CategoryEditorIntent.State,
         currentForm: CategoryFormState,

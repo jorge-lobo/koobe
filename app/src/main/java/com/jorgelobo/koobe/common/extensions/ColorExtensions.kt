@@ -9,6 +9,8 @@ fun Color.toHexString(): String {
     return "#%08x".format(toArgb())
 }
 
+// Parses a hex colour string (e.g. "#FF0000") to a Color.
+// Returns LightThemeGrey3 if the string is null, blank, or unparseable.
 fun String?.toColor(): Color {
     val defaultColor = LightThemeGrey3
 

@@ -47,6 +47,15 @@ import kotlinx.serialization.json.Json
 import java.net.URLDecoder
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Category Editor screen, supporting both creation and edit modes.
+ *
+ * The operating mode is determined by [CategoryEditorConfig], deserialized from the `config`
+ * navigation argument in [SavedStateHandle]. A missing config is a programming error and throws
+ * immediately.
+ *
+ * Screen state is composed from persisted category data, unsaved form edits, and transient UI state.
+ */
 @HiltViewModel
 class CategoryEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
@@ -68,6 +77,8 @@ class CategoryEditorViewModel @Inject constructor(
             ?.let { Json.decodeFromString<CategoryEditorConfig>(it) }
             ?: error("Missing CategoryEditorConfig")
 
+    // Edit mode: combines live category data with its subcategories.
+    // Create mode: emits a single empty category.
     private val categoryFlow: Flow<Category> =
         if (config.isEditMode) {
             val categoryId = config.categoryId
@@ -111,6 +122,12 @@ class CategoryEditorViewModel @Inject constructor(
             )
         }
 
+    /**
+     * Reactive UI state observed by the screen.
+     *
+     * Composed from persisted category data, unsaved form edits, and transient UI state.
+     * The UI must recompose directly from this flow and never hold local copies.
+     */
     val uiState: StateFlow<CategoryEditorUiState> =
         combine(
             baseStateFlow,
@@ -153,6 +170,12 @@ class CategoryEditorViewModel @Inject constructor(
                 initialValue = CategoryEditorUiState.initialEmpty()
             )
 
+    /**
+     * Single entry point for all UI interactions.
+     *
+     * - [CategoryEditorIntent.State] → handled synchronously by [CategoryEditorReducer].
+     * - [CategoryEditorIntent.Action] → may trigger coroutines or navigation side effects.
+     */
     fun onIntent(intent: CategoryEditorIntent) {
         when (intent) {
 
@@ -182,6 +205,10 @@ class CategoryEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles action-based intents that trigger side effects, navigation, dialog interactions,
+     * or persistence operations.
+     */
     private fun handleAction(intent: CategoryEditorIntent.Action) {
         when (intent) {
             is CategoryEditorIntent.Action.DiscardDialogAction ->
@@ -212,6 +239,11 @@ class CategoryEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Persists the current category after validating the editor state.
+     *
+     * Validation failures are reflected in the form state to allow field-level error presentation.
+     */
     private fun handleSave() {
         val state = uiState.value
 
@@ -258,6 +290,11 @@ class CategoryEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Requests screen closure.
+     *
+     * Displays a discard confirmation dialog when unsaved changes exist.
+     */
     private fun handleClose() {
         if (formState.value.hasChanges) {
             handleDiscardDialog(ConfirmationDialogAction.Open)
@@ -267,6 +304,8 @@ class CategoryEditorViewModel @Inject constructor(
     }
 
     private fun handleAddSubcategory(subcategoryId: Int?) {
+
+        // null means creation; non-null means editing an existing subcategory
         val route = Route.SubcategoryEditor.create(
             SubcategoryEditorConfig(
                 subcategoryId = subcategoryId,
@@ -276,6 +315,10 @@ class CategoryEditorViewModel @Inject constructor(
         navigateTo(route)
     }
 
+    /**
+     * Deletes the current category and reassigns related data through the corresponding
+     * domain use case.
+     */
     private fun deleteCategory() {
         val category = uiState.value.category
 
@@ -300,6 +343,9 @@ class CategoryEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Deletes a subcategory and updates the local editor state after successful reassignment.
+     */
     private fun deleteSubcategory(subcategoryId: Int?) {
         if (subcategoryId == null) return
 
@@ -334,11 +380,17 @@ class CategoryEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Requests deletion confirmation for the current category.
+     */
     private fun requestDeleteCategory() {
         uiInternalState.update { it.copy(deleteTarget = CategoryEditorDeleteTarget.Category) }
         handleDeleteDialog(ConfirmationDialogAction.Open)
     }
 
+    /**
+     * Requests deletion confirmation for a subcategory.
+     */
     private fun requestDeleteSubcategory(subcategoryId: Int) {
         uiInternalState.update {
             it.copy(deleteTarget = CategoryEditorDeleteTarget.Subcategory(subcategoryId))
@@ -404,6 +456,9 @@ class CategoryEditorViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Centralizes confirmation dialog state transitions and confirmation effects.
+     */
     private fun handleConfirmationDialog(
         current: ConfirmationDialogState,
         action: ConfirmationDialogAction,
@@ -422,6 +477,9 @@ class CategoryEditorViewModel @Inject constructor(
         uiInternalState.update { it.copy(infoDialog = InfoDialogState(visible)) }
     }
 
+    /**
+     * Centralizes selector dialog state transitions and applied selections.
+     */
     private fun <T> handleSelectorDialog(
         current: SelectorDialogState<T>,
         action: SelectorDialogAction<T>,

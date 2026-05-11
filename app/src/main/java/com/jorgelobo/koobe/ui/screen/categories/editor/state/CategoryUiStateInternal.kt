@@ -8,6 +8,8 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDial
 import com.jorgelobo.koobe.ui.screen.common.dialog.info.InfoDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
 
+// Ephemeral UI state not derived from the repository — dialogs, loading flags, and validation state.
+// Never exposed directly to the screen.
 data class CategoryUiStateInternal(
     val deleteTarget: CategoryEditorDeleteTarget = CategoryEditorDeleteTarget.None,
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),

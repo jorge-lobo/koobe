@@ -16,6 +16,9 @@ import com.jorgelobo.koobe.ui.components.model.enums.DeleteType
 
 /**
  * UI state for the Category Editor screen.
+ *
+ * [initialSnapshot] captures the persisted category values at load time and is used to determine
+ * whether unsaved changes exist.
  */
 data class CategoryEditorUiState(
     val config: CategoryEditorConfig = CategoryEditorConfig(),
@@ -34,25 +37,18 @@ data class CategoryEditorUiState(
     val errorMessage: String? = null
 ) {
 
-    /** Validates if the category can be saved */
+    // Valid when name is not blank, icon is not a placeholder, and color is set.
     val isValid: Boolean
         get() = category.name.isNotBlank() &&
                 category.icon != IconPack.PLACEHOLDER &&
                 category.color.isNotBlank()
 
-    /** Whether the category is protected */
     val isCategoryProtected: Boolean
         get() = category.isProtected()
 
-    /** Whether deletion is allowed for this category */
     val isDeleteEnabled: Boolean
         get() = !isCategoryProtected
 
-    /**
-     * Maps the current delete target to its corresponding delete type.
-     *
-     * Throws an error if no valid delete target is set.
-     */
     val deleteType: DeleteType?
         get() = when (deleteTarget) {
             is CategoryEditorDeleteTarget.Category -> DeleteType.CATEGORY
@@ -61,11 +57,10 @@ data class CategoryEditorUiState(
         }
 
     /**
-     * Determines whether the save action should be enabled.
+     * Whether the save action should be enabled.
      *
-     * Enabled when the category is valid and:
-     * - in create mode, always enabled
-     * - in edit mode, only if there are changes compared to the initial snapshot
+     * Always enabled in create mode (as long as the form is valid).
+     * In edit mode, only enabled when the form is valid and differs from [initialSnapshot].
      */
     val isSaveEnabled: Boolean
         get() {
@@ -81,7 +76,7 @@ data class CategoryEditorUiState(
                     category.subcategories != initial.subcategories
         }
 
-    /** Returns the headline for the screen based on mode */
+    // Returns the screen title string resource based on the current mode.
     fun headlineRes(isEditMode: Boolean): Int {
         return if (isEditMode) {
             R.string.headline_category_editor
@@ -92,6 +87,7 @@ data class CategoryEditorUiState(
 
     companion object {
 
+        // Initial state before repository data is available; used as StateFlow's initial value.
         fun initialEmpty(): CategoryEditorUiState {
             val emptyCategory = Category.empty()
 
