@@ -4,7 +4,6 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.R
-import com.jorgelobo.koobe.core.model.FieldUpdate
 import com.jorgelobo.koobe.core.model.resolve
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
@@ -12,13 +11,17 @@ import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.domain.usecase.subcategory.DeleteSubcategoryWithReassignUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.SaveSubcategoryCaseUse
+import com.jorgelobo.koobe.domain.validation.NameValidationException
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.mappers.toSnackBarMessageRes
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
 import com.jorgelobo.koobe.ui.screen.common.dialog.info.InfoDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
 import com.jorgelobo.koobe.ui.screen.subcategories.state.SubcategoryFormState
 import com.jorgelobo.koobe.ui.screen.subcategories.state.SubcategoryUiStateInternal
@@ -144,10 +147,11 @@ class SubcategoryEditorViewModel @Inject constructor(
 
             val newState = base.copy(
                 subcategory = updatedSubcategory,
-                discardDialog = uiInternal.discardDialog ?: base.discardDialog,
-                deleteDialog = uiInternal.deleteDialog ?: base.deleteDialog,
-                iconDialog = uiInternal.iconSelectorDialog ?: base.iconDialog,
-                infoDialog = uiInternal.infoDialog ?: base.infoDialog,
+                discardDialog = uiInternal.discardDialog,
+                deleteDialog = uiInternal.deleteDialog,
+                iconDialog = uiInternal.iconSelectorDialog,
+                infoDialog = uiInternal.infoDialog,
+                isSaving = uiInternal.isSaving,
                 isDeleting = uiInternal.isDeleting
             )
 
@@ -182,41 +186,93 @@ class SubcategoryEditorViewModel @Inject constructor(
         }
     }
 
-    fun onNameChanged(name: String) {
-        formState.update { it.copy(name = FieldUpdate.Updated(name)) }
+    fun onIntent(intent: SubcategoryEditorIntent) {
+        when (intent) {
+
+            is SubcategoryEditorIntent.Action -> handleAction(intent)
+
+            is SubcategoryEditorIntent.State -> {
+
+                val result = SubcategoryEditorReducer.reduce(
+                    intent = intent,
+                    currentForm = formState.value,
+                    currentInternal = uiInternalState.value,
+                    baseSubcategory = uiState.value.subcategory
+                )
+
+                formState.value = result.form
+                uiInternalState.value = result.internal
+            }
+        }
     }
 
-    fun onResetName() {
-        formState.update { it.copy(name = FieldUpdate.Updated("")) }
+    private fun handleAction(intent: SubcategoryEditorIntent.Action) {
+        when (intent) {
+            is SubcategoryEditorIntent.Action.DiscardDialogAction ->
+                handleDiscardDialog(intent.action)
+
+            is SubcategoryEditorIntent.Action.DeleteDialogAction ->
+                handleDeleteDialog(intent.action)
+
+            is SubcategoryEditorIntent.Action.IconSelectorDialogAction ->
+                handleIconSelectorDialog(intent.action)
+
+            SubcategoryEditorIntent.Action.SaveClicked -> handleSave()
+            SubcategoryEditorIntent.Action.CloseClicked -> handleClose()
+            SubcategoryEditorIntent.Action.ShowInfoDialog -> handleInfoDialog(true)
+            SubcategoryEditorIntent.Action.HideInfoDialog -> handleInfoDialog(false)
+            SubcategoryEditorIntent.Action.RequestDeleteSubcategory -> deleteSubcategory()
+        }
     }
 
-    fun onIconSelected(icon: IconPack) {
-        formState.update { it.copy(icon = FieldUpdate.Updated(icon)) }
-    }
-
-    fun onCategoryChanged(id: Int) {
-        formState.update { it.copy(categoryId = FieldUpdate.Updated(id)) }
-    }
-
-    /**
-     * Saves the subcategory and navigates back on success.
-     */
-    fun onSaveClick() {
+    private fun handleSave() {
         val state = uiState.value
 
-        if (state.subcategory.categoryId <= 0) {
+        if (!state.isValid) {
+            emitEvent(
+                SubcategoryEditorEvent.ShowSnackBar(
+                    messageRes = R.string.snackBar_save_subcategory_error,
+                    actionLabelRes = null,
+                    icon = IconPack.WARNING
+                )
+            )
             return
         }
 
         viewModelScope.launch {
-            saveSubcategory(
-                subcategory = state.subcategory.copy(
-                    name = state.subcategory.name,
-                    icon = state.subcategory.icon,
-                    categoryId = state.subcategory.categoryId
-                ),
-                isEditMode = config.isEditMode
-            )
+            uiInternalState.update { it.copy(isSaving = true) }
+
+            runCatching {
+                saveSubcategory(
+                    subcategory = state.subcategory,
+                    isEditMode = config.isEditMode
+                )
+            }.onSuccess {
+                uiInternalState.update { it.copy(isSaving = false) }
+                navigateBack()
+            }.onFailure { error ->
+
+                val validationError = error as? NameValidationException
+                onIntent(SubcategoryEditorIntent.State.NameChanged(""))
+
+                uiInternalState.update {
+                    it.copy(
+                        isSaving = false,
+                    )
+                }
+
+                val messageRes = validationError?.toSnackBarMessageRes()
+                    ?: R.string.snackBar_save_subcategory_error
+
+                showSnackBar(messageRes)
+            }
+        }
+    }
+
+    private fun handleClose() {
+        if (formState.value.hasChanges) {
+            handleDiscardDialog(ConfirmationDialogAction.Open)
+        } else {
             navigateBack()
         }
     }
@@ -235,6 +291,7 @@ class SubcategoryEditorViewModel @Inject constructor(
             runCatching {
                 deleteSubcategoryWithReassign(subcategory)
             }.onSuccess {
+                uiInternalState.update { it.copy(isDeleting = false) }
                 navigateBack()
             }.onFailure {
                 uiInternalState.update { it.copy(isDeleting = false) }
@@ -249,104 +306,89 @@ class SubcategoryEditorViewModel @Inject constructor(
         }
     }
 
-    fun onCloseClick() {
-        val state = uiState.value
-
-        if (state.hasUnsavedChanges) {
-            onDiscardDialogAction(ConfirmationDialogAction.Open)
-        } else {
-            navigateBack()
-        }
-    }
-
-    fun onDiscardDialogAction(action: ConfirmationDialogAction) {
-        val (dialogState, effect) = reduceConfirmationDialog(
-            state = uiState.value.discardDialog,
-            action = action
-        )
-
-        uiInternalState.update {
-            it.copy(discardDialog = dialogState)
-        }
-
-        when (effect) {
-            ConfirmationDialogEffect.Confirmed -> navigateBack()
-
-            null -> Unit
-        }
-    }
-
-    fun onDeleteDialogAction(action: ConfirmationDialogAction) {
-        val (dialogState, effect) = reduceConfirmationDialog(
-            state = uiState.value.deleteDialog,
-            action = action
-        )
-
-        uiInternalState.update {
-            it.copy(deleteDialog = dialogState)
-        }
-
-        when (effect) {
-            ConfirmationDialogEffect.Confirmed -> deleteSubcategory()
-
-            null -> Unit
-        }
-    }
-
-    fun onInfoDialogOpen() {
-        uiInternalState.update { it.copy(infoDialog = InfoDialogState(visible = true)) }
-    }
-
-    fun dismissInfoDialog() {
-        uiInternalState.update { it.copy(infoDialog = InfoDialogState(visible = false)) }
-    }
-
-    fun onIconSelectorAction(action: SelectorDialogAction<IconPack>) {
-        val currentState = uiState.value
-        val currentDialogState = uiInternalState.value.iconSelectorDialog ?: currentState.iconDialog
-
-        val baseState =
-            when (action) {
-                is SelectorDialogAction.Open -> {
-                    currentDialogState.copy(
-                        initial = currentState.subcategory.icon,
-                        selected = currentState.subcategory.icon
-                    )
+    private fun handleDeleteDialog(action: ConfirmationDialogAction) {
+        handleConfirmationDialog(
+            current = uiInternalState.value.deleteDialog,
+            action = action,
+            updateState = { newDialogState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(deleteDialog = newDialogState)
                 }
-
-                is SelectorDialogAction.Select -> {
-                    currentDialogState.copy(
-                        selected = action.item
-                    )
-                }
-
-                else -> currentDialogState
-            }
-
-        val (dialogState, effect) = reduceSelectorDialog(
-            state = baseState,
-            action = action
+            },
+            onConfirmed = { deleteSubcategory() }
         )
+    }
 
-        uiInternalState.update {
-            it.copy(iconSelectorDialog = dialogState)
+    private fun handleDiscardDialog(action: ConfirmationDialogAction) {
+        handleConfirmationDialog(
+            current = uiInternalState.value.discardDialog,
+            action = action,
+            updateState = { newDialogState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(discardDialog = newDialogState)
+                }
+            },
+            onConfirmed = { navigateBack() }
+        )
+    }
+
+    private fun handleIconSelectorDialog(action: SelectorDialogAction<IconPack>) {
+        handleSelectorDialog(
+            current = uiInternalState.value.iconSelectorDialog,
+            action = action,
+            updateState = { newDialogState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(iconSelectorDialog = newDialogState)
+                }
+            },
+            onApplied = { onIntent(SubcategoryEditorIntent.State.IconSelected(it)) }
+        )
+    }
+
+    private fun handleInfoDialog(visible: Boolean) {
+        uiInternalState.update { it.copy(infoDialog = InfoDialogState(visible)) }
+    }
+
+    private fun handleConfirmationDialog(
+        current: ConfirmationDialogState,
+        action: ConfirmationDialogAction,
+        updateState: (ConfirmationDialogState) -> Unit,
+        onConfirmed: () -> Unit
+    ) {
+        val (newState, effect) = reduceConfirmationDialog(current, action)
+        updateState(newState)
+
+        if (effect is ConfirmationDialogEffect.Confirmed) {
+            onConfirmed()
         }
+    }
 
-        when (effect) {
-            is SelectorDialogEffect.Applied -> formState.update {
-                it.copy(
-                    icon = FieldUpdate.Updated(
-                        effect.value
-                    )
-                )
-            }
+    private fun <T> handleSelectorDialog(
+        current: SelectorDialogState<T>,
+        action: SelectorDialogAction<T>,
+        updateState: (SelectorDialogState<T>) -> Unit,
+        onApplied: (T) -> Unit
+    ) {
+        val (newState, effect) = reduceSelectorDialog(current, action)
+        updateState(newState)
 
-            null -> Unit
+        (effect as? SelectorDialogEffect.Applied)?.let {
+            onApplied(it.value)
         }
     }
 
     private fun navigateBack() {
         emitEvent(SubcategoryEditorEvent.NavigateBack)
+    }
+
+    private fun showSnackBar(messageRes: Int) {
+        emitEvent(
+            SubcategoryEditorEvent.ShowSnackBar(
+                messageRes,
+                null,
+                IconPack.WARNING
+            )
+        )
     }
 
     private fun emitEvent(event: SubcategoryEditorEvent) {
