@@ -14,7 +14,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
  * UI state for the Subcategory Editor screen.
  */
 data class SubcategoryEditorUiState(
-    val config: SubcategoryEditorConfig? = null,
+    val config: SubcategoryEditorConfig = SubcategoryEditorConfig(),
     val category: Category,
     val subcategory: Subcategory,
     val nameInputState: InputState,
@@ -25,6 +25,7 @@ data class SubcategoryEditorUiState(
     val infoDialog: InfoDialogState = InfoDialogState(),
     val isSaveButtonEnabled: Boolean = false,
     val showSnackBar: Boolean = false,
+    val isSaving: Boolean = false,
     val isDeleting: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null
