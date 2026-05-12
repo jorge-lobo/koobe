@@ -23,7 +23,6 @@ import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarAction
 import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
-import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
@@ -53,10 +52,28 @@ fun SubcategoryEditorScreen(
 
     SubcategoryEditorDialogs(
         state = uiState,
-        onDiscardDialogAction = { viewModel.onDiscardDialogAction(it) },
-        onDeleteDialogAction = { viewModel.onDeleteDialogAction(it) },
-        onIconSelectorAction = { viewModel.onIconSelectorAction(it) },
-        onInfoDialogClick = { viewModel.dismissInfoDialog() }
+        onDiscardDialogAction = {
+            viewModel.onIntent(
+                SubcategoryEditorIntent.Action.DiscardDialogAction(
+                    it
+                )
+            )
+        },
+        onDeleteDialogAction = {
+            viewModel.onIntent(
+                SubcategoryEditorIntent.Action.DeleteDialogAction(
+                    it
+                )
+            )
+        },
+        onIconSelectorAction = {
+            viewModel.onIntent(
+                SubcategoryEditorIntent.Action.IconSelectorDialogAction(
+                    it
+                )
+            )
+        },
+        onInfoDialogClick = { viewModel.onIntent(SubcategoryEditorIntent.Action.HideInfoDialog) }
     )
 
     Scaffold(
@@ -80,18 +97,18 @@ fun SubcategoryEditorScreen(
                     ),
                     leadingAction = AppBarAction(
                         icon = IconPack.CLOSE,
-                        onClick = { viewModel.onCloseClick() }
+                        onClick = { viewModel.onIntent(SubcategoryEditorIntent.Action.CloseClicked) }
                     ),
                     trailingActions = if (config.isEditMode) listOf(
                         if (uiState.isDeleteEnabled) {
                             AppBarAction(
                                 IconPack.DELETE,
-                                onClick = { viewModel.onDeleteDialogAction(ConfirmationDialogAction.Open) }
+                                onClick = { viewModel.onIntent(SubcategoryEditorIntent.Action.RequestDeleteSubcategory) }
                             )
                         } else {
                             AppBarAction(
                                 IconPack.INFO,
-                                onClick = { viewModel.onInfoDialogOpen() }
+                                onClick = { viewModel.onIntent(SubcategoryEditorIntent.Action.ShowInfoDialog) }
                             )
                         }
                     ) else emptyList()
@@ -104,11 +121,17 @@ fun SubcategoryEditorScreen(
             state = uiState,
             config = config,
             modifier = Modifier.padding(padding),
-            onNameChanged = viewModel::onNameChanged,
-            onIconSelectorClick = { viewModel.onIconSelectorAction(SelectorDialogAction.Open) },
+            onNameChanged = { viewModel.onIntent(SubcategoryEditorIntent.State.NameChanged(it)) },
+            onIconSelectorClick = {
+                viewModel.onIntent(
+                    SubcategoryEditorIntent.Action.IconSelectorDialogAction(
+                        SelectorDialogAction.Open
+                    )
+                )
+            },
             onCategoryChangeClick = {},
-            onResetNameClick = viewModel::onResetName,
-            onSaveClick = viewModel::onSaveClick,
+            onResetNameClick = { viewModel.onIntent(SubcategoryEditorIntent.State.NameChanged("")) },
+            onSaveClick = { viewModel.onIntent(SubcategoryEditorIntent.Action.SaveClicked) },
         )
     }
 }
