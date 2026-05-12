@@ -221,7 +221,8 @@ class SubcategoryEditorViewModel @Inject constructor(
             SubcategoryEditorIntent.Action.CloseClicked -> handleClose()
             SubcategoryEditorIntent.Action.ShowInfoDialog -> handleInfoDialog(true)
             SubcategoryEditorIntent.Action.HideInfoDialog -> handleInfoDialog(false)
-            SubcategoryEditorIntent.Action.RequestDeleteSubcategory -> deleteSubcategory()
+            SubcategoryEditorIntent.Action.RequestDeleteSubcategory ->
+                handleDeleteDialog(ConfirmationDialogAction.Open)
         }
     }
 
