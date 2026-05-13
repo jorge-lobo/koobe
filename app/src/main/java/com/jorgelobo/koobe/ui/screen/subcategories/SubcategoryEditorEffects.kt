@@ -9,9 +9,8 @@ import com.jorgelobo.koobe.ui.components.base.snackbar.SnackBarConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-/**
- * Handles one-off UI effects (navigation and snackBars) from [SubcategoryEditorViewModel].
- */
+// Collects one-shot events from the ViewModel and dispatches them to navigation, snackBars,
+// or other side effects.
 @Composable
 fun SubcategoryEditorEffects(
     navController: NavController,
@@ -51,7 +50,7 @@ fun SubcategoryEditorEffects(
                     snackBarHostState.showSnackbar(
                         message = "",
                         actionLabel = null,
-                        duration = SnackbarDuration.Indefinite
+                        duration = SnackbarDuration.Short
                     )
                 }
             }

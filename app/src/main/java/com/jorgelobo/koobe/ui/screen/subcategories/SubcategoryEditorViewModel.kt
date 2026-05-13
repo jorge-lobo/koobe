@@ -12,6 +12,7 @@ import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.domain.usecase.subcategory.DeleteSubcategoryWithReassignUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.SaveSubcategoryCaseUse
 import com.jorgelobo.koobe.domain.validation.NameValidationException
+import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.mappers.toSnackBarMessageRes
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
@@ -42,12 +43,14 @@ import java.net.URLDecoder
 import javax.inject.Inject
 
 /**
- * ViewModel for the Subcategory Editor screen.
+ * ViewModel for the Subcategory Editor screen, supporting both creation and edit modes.
  *
- * Supports both creation and editing modes based on [SubcategoryEditorConfig].
- * Manages form state, validation, unsaved changes, and dialog interactions.
+ * The operation mode is determined by [SubcategoryEditorConfig], deserialized frm the `config`
+ * navigation argument in [SavedStateHandle]. A missing config is a programing error and throws
+ * immediately.
  *
- * Emits navigation and UI events via [events].
+ * Screen state is composed from persisted subcategory data, unsaved form edita, and transient
+ * UI state.
  */
 @HiltViewModel
 class SubcategoryEditorViewModel @Inject constructor(
@@ -61,9 +64,8 @@ class SubcategoryEditorViewModel @Inject constructor(
     private val _events = MutableSharedFlow<SubcategoryEditorEvent>()
     val events = _events.asSharedFlow()
 
-    /**
-     * Screen configuration (edit/create mode and initial IDs).
-     */
+    private var initialSnapshot: SubcategoryInitialSnapshot? = null
+
     private val config: SubcategoryEditorConfig =
         savedStateHandle.get<String>("config")
             ?.let { URLDecoder.decode(it, "UTF-8") }
@@ -85,13 +87,6 @@ class SubcategoryEditorViewModel @Inject constructor(
     private val formState = MutableStateFlow(SubcategoryFormState())
     private val uiInternalState = MutableStateFlow(SubcategoryUiStateInternal())
 
-    /**
-     * Provides initial UI state from repository data.
-     *
-     * Handles:
-     * - Edit mode: loads existing subcategory
-     * - Create mode: initializes empty subcategory
-     */
     private val baseStateFlow: Flow<SubcategoryEditorUiState> =
         combine(
             subcategoryFlow,
@@ -99,38 +94,35 @@ class SubcategoryEditorViewModel @Inject constructor(
         ) { subcategory, category ->
 
             val safeCategory = category ?: Category.empty()
+            val safeSubcategory = subcategory ?: Subcategory(
+                id = 0,
+                categoryId = safeCategory.id,
+                name = "",
+                icon = IconPack.PLACEHOLDER
+            )
 
-            if (config.isEditMode) {
-                if (subcategory == null) {
-                    SubcategoryEditorUiState.initialEmpty().copy(
-                        errorMessage = "Subcategory not found"
-                    )
-                } else {
-                    SubcategoryEditorUiState.initial(
-                        config = config,
-                        category = safeCategory,
-                        subcategory = subcategory
-                    )
-                }
-            } else {
-                SubcategoryEditorUiState.initial(
-                    config = config,
-                    category = safeCategory,
-                    subcategory = Subcategory(
-                        id = 0,
-                        categoryId = safeCategory.id,
-                        name = "",
-                        icon = IconPack.PLACEHOLDER
-                    )
+            if (initialSnapshot == null) {
+                initialSnapshot = SubcategoryInitialSnapshot(
+                    name = safeSubcategory.name,
+                    icon = safeSubcategory.icon,
+                    categoryId = safeSubcategory.categoryId
                 )
             }
+
+            SubcategoryEditorUiState(
+                config = config,
+                category = safeCategory,
+                subcategory = safeSubcategory,
+                nameInputState = InputState.DEFAULT,
+                initialSnapshot = initialSnapshot!!
+            )
         }
 
     /**
-     * Combined UI state:
-     * - Base data (repository)
-     * - User input (form)
-     * - Transient UI state (dialogs, loading)
+     * Reactive UI state observed by the screen.
+     *
+     * Composed from persisted subcategory data, unsaved form edits, and transient UI state.
+     * The UI must recompose directly from this flow and never hold local copies.
      */
     val uiState: StateFlow<SubcategoryEditorUiState> =
         combine(
@@ -139,24 +131,29 @@ class SubcategoryEditorViewModel @Inject constructor(
             uiInternalState
         ) { base, form, uiInternal ->
 
+            val nameInputState =
+                if (uiInternal.hasTriedToSave && uiInternal.nameError != null) {
+                    InputState.ERROR
+                } else {
+                    InputState.DEFAULT
+                }
+
             val updatedSubcategory = base.subcategory.copy(
                 name = form.name.resolve(base.subcategory.name),
                 icon = form.icon.resolve(base.subcategory.icon),
                 categoryId = form.categoryId.resolve(base.subcategory.categoryId)
             )
 
-            val newState = base.copy(
+            base.copy(
                 subcategory = updatedSubcategory,
                 discardDialog = uiInternal.discardDialog,
                 deleteDialog = uiInternal.deleteDialog,
                 iconDialog = uiInternal.iconSelectorDialog,
                 infoDialog = uiInternal.infoDialog,
                 isSaving = uiInternal.isSaving,
-                isDeleting = uiInternal.isDeleting
-            )
-
-            newState.copy(
-                isSaveButtonEnabled = computeSaveEnabled(newState)
+                isDeleting = uiInternal.isDeleting,
+                nameInputState = nameInputState,
+                nameError = uiInternal.nameError
             )
         }
             .stateIn(
@@ -166,32 +163,26 @@ class SubcategoryEditorViewModel @Inject constructor(
             )
 
     /**
-     * Determines whether the save action should be enabled based on the current state of the form.
+     * Single entry point for all UI interactions.
      *
-     * The save button is enabled if:
-     * 1. The current form data is valid (e.g., required fields are populated).
-     * 2. In edit mode: there are actual changes compared to the original data.
-     * 3. In creation mode: the data is valid.
-     *
-     * @param state The current UI state containing form values and validation logic.
-     * @return `true` if the subcategory can be saved, `false` otherwise.
+     * - [SubcategoryEditorIntent.State] → handled synchronously by [SubcategoryEditorReducer].
+     * - [SubcategoryEditorIntent.Action] → may trigger coroutines or navigation side effects.
      */
-    private fun computeSaveEnabled(state: SubcategoryEditorUiState): Boolean {
-        val isValid = state.isValid
-
-        return when {
-            !isValid -> false
-            config.isEditMode -> state.hasUnsavedChanges
-            else -> true
-        }
-    }
-
     fun onIntent(intent: SubcategoryEditorIntent) {
         when (intent) {
 
             is SubcategoryEditorIntent.Action -> handleAction(intent)
 
             is SubcategoryEditorIntent.State -> {
+
+                if (intent is SubcategoryEditorIntent.State.NameChanged) {
+                    uiInternalState.update {
+                        it.copy(
+                            nameError = null,
+                            hasTriedToSave = false
+                        )
+                    }
+                }
 
                 val result = SubcategoryEditorReducer.reduce(
                     intent = intent,
@@ -206,6 +197,10 @@ class SubcategoryEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles action-based intents that trigger side effects, navigation, dialog interactions,
+     * or persistence operations.
+     */
     private fun handleAction(intent: SubcategoryEditorIntent.Action) {
         when (intent) {
             is SubcategoryEditorIntent.Action.DiscardDialogAction ->
@@ -226,6 +221,11 @@ class SubcategoryEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Persists the current subcategory after validating the editor state.
+     *
+     * Validation failures are reflected in the form state to allow field-level error presentation.
+     */
     private fun handleSave() {
         val state = uiState.value
 
@@ -259,6 +259,8 @@ class SubcategoryEditorViewModel @Inject constructor(
                 uiInternalState.update {
                     it.copy(
                         isSaving = false,
+                        nameError = validationError,
+                        hasTriedToSave = true
                     )
                 }
 
@@ -270,6 +272,11 @@ class SubcategoryEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Requests screen closure.
+     *
+     * Displays a discard confirmation dialog when unsaved changes exist.
+     */
     private fun handleClose() {
         if (formState.value.hasChanges) {
             handleDiscardDialog(ConfirmationDialogAction.Open)
@@ -350,6 +357,9 @@ class SubcategoryEditorViewModel @Inject constructor(
         uiInternalState.update { it.copy(infoDialog = InfoDialogState(visible)) }
     }
 
+    /**
+     * Centralizes confirmation dialog state transitions and confirmation effects.
+     */
     private fun handleConfirmationDialog(
         current: ConfirmationDialogState,
         action: ConfirmationDialogAction,
@@ -364,6 +374,9 @@ class SubcategoryEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Centralizes selector dialog state transitions and applied selections.
+     */
     private fun <T> handleSelectorDialog(
         current: SelectorDialogState<T>,
         action: SelectorDialogAction<T>,

@@ -4,6 +4,7 @@ import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.model.subcategory.isProtected
+import com.jorgelobo.koobe.domain.validation.NameValidationException
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
@@ -12,46 +13,61 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
 
 /**
  * UI state for the Subcategory Editor screen.
+ *
+ * [initialSnapshot] captures the persisted subcategory values at load time and is used to determine
+ * whether unsaved changes exist.
  */
 data class SubcategoryEditorUiState(
     val config: SubcategoryEditorConfig = SubcategoryEditorConfig(),
     val category: Category,
     val subcategory: Subcategory,
     val nameInputState: InputState,
+    val nameError: NameValidationException? = null,
     val initialSnapshot: SubcategoryInitialSnapshot,
     val iconDialog: SelectorDialogState<IconPack> = SelectorDialogState(),
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val infoDialog: InfoDialogState = InfoDialogState(),
-    val isSaveButtonEnabled: Boolean = false,
-    val showSnackBar: Boolean = false,
     val isSaving: Boolean = false,
     val isDeleting: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null
 ) {
 
-    /** True if the subcategory has been modified. */
-    val hasUnsavedChanges: Boolean
-        get() = subcategory.name != initialSnapshot.name ||
-                subcategory.icon != initialSnapshot.icon ||
-                subcategory.categoryId != initialSnapshot.categoryId
-
-    /** Validates if the subcategory can be saved. */
+    // Valid when name is not blank, icon is not a placeholder, and category is not empty
     val isValid: Boolean
         get() = subcategory.name.isNotBlank() &&
                 subcategory.icon != IconPack.PLACEHOLDER &&
                 subcategory.categoryId > 0
 
-    /** Whether deletion is allowed for this subcategory. */
     val isDeleteEnabled: Boolean
         get() = !isSubcategoryProtected
 
-    /** Whether this is a system-protected subcategory. */
     val isSubcategoryProtected: Boolean
         get() = subcategory.isProtected()
 
-    /** Returns the screen title based on mode. */
+    /**
+     * Whether the save action should be enabled.
+     *
+     * Always enabled in create mode (as long as the form is valid).
+     * In edit mode, only enabled when the form is valid and differs from [initialSnapshot].
+     */
+    val isSaveEnabled: Boolean
+        get() {
+            if (!isValid) return false
+
+            return if (config.isEditMode) {
+                val initial = initialSnapshot
+
+                subcategory.name != initial.name ||
+                        subcategory.icon != initial.icon ||
+                        subcategory.categoryId != initial.categoryId
+            } else {
+                true
+            }
+        }
+
+    // Returns the screen title string resource based on the current mode.
     fun headlineRes(isEditMode: Boolean): Int {
         return if (isEditMode) {
             R.string.headline_subcategory_editor
@@ -62,6 +78,7 @@ data class SubcategoryEditorUiState(
 
     companion object {
 
+        // Initial state before repository data is available; used as StateFlow's initial value.
         fun initialEmpty(): SubcategoryEditorUiState {
             val emptySubcategory = Subcategory.empty()
             val emptyCategory = Category.empty()
