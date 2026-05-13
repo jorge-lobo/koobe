@@ -1,9 +1,12 @@
 package com.jorgelobo.koobe.ui.mappers
 
+import android.content.Context
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
+import dagger.hilt.android.qualifiers.ApplicationContext
+import javax.inject.Inject
 
 private val subcategoryNameMap = mapOf(
     "subcategory_rent" to R.string.subcategory_rent,
@@ -109,4 +112,13 @@ private val subcategoryNameMap = mapOf(
 fun Subcategory.localizedName(): String {
     val resId = subcategoryNameMap[this.name]
     return resId?.let { stringResource(it) } ?: this.name
+}
+
+class SubcategoryNameResolver @Inject constructor(
+    @param:ApplicationContext private val context: Context
+) {
+    fun resolve(name: String): String {
+        val resId = subcategoryNameMap[name]
+        return resId?.let { context.getString(it) } ?: name
+    }
 }
