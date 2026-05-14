@@ -203,7 +203,7 @@ class SubcategoryEditorViewModelTest {
         advanceUntilIdle()
         val state = viewModel.uiState.value
 
-        assertTrue(state.isSaveButtonEnabled)
+        assertTrue(state.isSaveEnabled)
     }
 
     @Test
@@ -216,7 +216,7 @@ class SubcategoryEditorViewModelTest {
         advanceUntilIdle()
         val state = viewModel.uiState.value
 
-        assertFalse(state.isSaveButtonEnabled)
+        assertFalse(state.isSaveEnabled)
     }
 
     @Test
@@ -228,7 +228,7 @@ class SubcategoryEditorViewModelTest {
         advanceUntilIdle()
         val state = viewModel.uiState.value
 
-        assertTrue(state.isSaveButtonEnabled)
+        assertTrue(state.isSaveEnabled)
     }
 
     @Test
@@ -240,7 +240,7 @@ class SubcategoryEditorViewModelTest {
         advanceUntilIdle()
         val state = viewModel.uiState.value
 
-        assertFalse(state.isSaveButtonEnabled)
+        assertFalse(state.isSaveEnabled)
     }
 
     // endregion
@@ -317,7 +317,7 @@ class SubcategoryEditorViewModelTest {
         advanceUntilIdle()
         val state = viewModel.uiState.value
 
-        assertFalse(state.isSaveButtonEnabled)
+        assertFalse(state.isSaveEnabled)
     }
 
     @Test
@@ -330,7 +330,7 @@ class SubcategoryEditorViewModelTest {
         advanceUntilIdle()
         val state = viewModel.uiState.value
 
-        assertFalse(state.isSaveButtonEnabled)
+        assertFalse(state.isSaveEnabled)
     }
 
     // endregion

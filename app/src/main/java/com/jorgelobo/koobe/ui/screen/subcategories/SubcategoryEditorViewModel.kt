@@ -94,6 +94,29 @@ class SubcategoryEditorViewModel @Inject constructor(
         ) { subcategory, category ->
 
             val safeCategory = category ?: Category.empty()
+
+            if (config.isEditMode && subcategory == null ) {
+                val emptySubcategory = Subcategory.empty()
+
+                if (initialSnapshot == null) {
+                    initialSnapshot = SubcategoryInitialSnapshot(
+                        name = "",
+                        icon = emptySubcategory.icon,
+                        categoryId = emptySubcategory.categoryId
+                    )
+
+                }
+
+                return@combine SubcategoryEditorUiState(
+                    config = config,
+                    category = safeCategory,
+                    subcategory = subcategory ?: Subcategory.empty(),
+                    nameInputState = InputState.DEFAULT,
+                    initialSnapshot = initialSnapshot!!,
+                    errorMessage = "Subcategory not found"
+                )
+            }
+
             val safeSubcategory = subcategory ?: Subcategory(
                 id = 0,
                 categoryId = safeCategory.id,
