@@ -129,7 +129,7 @@ fun SubcategoryEditorScreen(
                     )
                 )
             },
-            onCategoryChangeClick = {},
+            onCategoryChangeClick = { viewModel.onIntent(SubcategoryEditorIntent.Action.ChangeCategoryClicked) },
             onResetNameClick = { viewModel.onIntent(SubcategoryEditorIntent.State.NameChanged("")) },
             onSaveClick = { viewModel.onIntent(SubcategoryEditorIntent.Action.SaveClicked) },
         )

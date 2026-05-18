@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.core.model.FieldUpdate
 import com.jorgelobo.koobe.core.model.resolve
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
@@ -15,6 +16,10 @@ import com.jorgelobo.koobe.domain.validation.NameValidationException
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.mappers.toSnackBarMessageRes
+import com.jorgelobo.koobe.ui.navigation.Route
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
@@ -27,6 +32,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
 import com.jorgelobo.koobe.ui.screen.subcategories.state.SubcategoryFormState
 import com.jorgelobo.koobe.ui.screen.subcategories.state.SubcategoryUiStateInternal
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -34,6 +40,8 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -72,6 +80,9 @@ class SubcategoryEditorViewModel @Inject constructor(
             ?.let { Json.decodeFromString<SubcategoryEditorConfig>(it) }
             ?: error("Missing SubcategoryEditorConfig")
 
+    private val formState = MutableStateFlow(SubcategoryFormState())
+    private val uiInternalState = MutableStateFlow(SubcategoryUiStateInternal())
+
     private val subcategoryFlow: Flow<Subcategory?> =
         if (config.isEditMode) {
             subcategoryRepository.getSubcategoryByIdFlow(config.subcategoryId!!)
@@ -79,13 +90,25 @@ class SubcategoryEditorViewModel @Inject constructor(
             flowOf(null)
         }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     private val categoryFlow: Flow<Category?> =
-        config.categoryId
-            ?.let { categoryRepository.getCategoryByIdFlow(it) }
-            ?: flowOf(null)
+        combine(
+            subcategoryFlow,
+            formState
+        ) { subcategory, form ->
 
-    private val formState = MutableStateFlow(SubcategoryFormState())
-    private val uiInternalState = MutableStateFlow(SubcategoryUiStateInternal())
+            when (val categoryUpdate = form.categoryId) {
+                is FieldUpdate.Updated -> categoryUpdate.value
+                FieldUpdate.Unchanged -> subcategory?.categoryId ?: config.categoryId
+            }
+        }
+            .distinctUntilChanged()
+            .flatMapLatest { categoryId ->
+
+                categoryId?.let {
+                    categoryRepository.getCategoryByIdFlow(it)
+                } ?: flowOf(null)
+            }
 
     private val baseStateFlow: Flow<SubcategoryEditorUiState> =
         combine(
@@ -95,7 +118,7 @@ class SubcategoryEditorViewModel @Inject constructor(
 
             val safeCategory = category ?: Category.empty()
 
-            if (config.isEditMode && subcategory == null ) {
+            if (config.isEditMode && subcategory == null) {
                 val emptySubcategory = Subcategory.empty()
 
                 if (initialSnapshot == null) {
@@ -104,7 +127,6 @@ class SubcategoryEditorViewModel @Inject constructor(
                         icon = emptySubcategory.icon,
                         categoryId = emptySubcategory.categoryId
                     )
-
                 }
 
                 return@combine SubcategoryEditorUiState(
@@ -241,6 +263,8 @@ class SubcategoryEditorViewModel @Inject constructor(
             SubcategoryEditorIntent.Action.HideInfoDialog -> handleInfoDialog(false)
             SubcategoryEditorIntent.Action.RequestDeleteSubcategory ->
                 handleDeleteDialog(ConfirmationDialogAction.Open)
+
+            SubcategoryEditorIntent.Action.ChangeCategoryClicked -> handleChangeCategory()
         }
     }
 
@@ -306,6 +330,20 @@ class SubcategoryEditorViewModel @Inject constructor(
         } else {
             navigateBack()
         }
+    }
+
+    private fun handleChangeCategory() {
+
+        val route = Route.CategorySelector.create(
+            CategorySelectorConfig(
+                mode = CategorySelectorMode.EDIT_SUBCATEGORY,
+                target = CategorySelectorTarget.SUBCATEGORY_EDITOR,
+                initialTransactionType = uiState.value.category.type,
+                initialCategoryId = uiState.value.subcategory.categoryId,
+                initialSubcategoryId = uiState.value.subcategory.id
+            )
+        )
+        navigateTo(route)
     }
 
     /**
@@ -416,6 +454,10 @@ class SubcategoryEditorViewModel @Inject constructor(
 
     private fun navigateBack() {
         emitEvent(SubcategoryEditorEvent.NavigateBack)
+    }
+
+    private fun navigateTo(route: String) {
+        emitEvent(SubcategoryEditorEvent.NavigateTo(route))
     }
 
     private fun showSnackBar(messageRes: Int) {

@@ -20,6 +20,7 @@ sealed interface SubcategoryEditorIntent {
         object ShowInfoDialog : Action
         object HideInfoDialog : Action
         object RequestDeleteSubcategory : Action
+        object ChangeCategoryClicked : Action
 
         data class DiscardDialogAction(val action: ConfirmationDialogAction) : Action
         data class DeleteDialogAction(val action: ConfirmationDialogAction) : Action

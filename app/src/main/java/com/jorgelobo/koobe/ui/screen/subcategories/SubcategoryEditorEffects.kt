@@ -6,6 +6,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
 import com.jorgelobo.koobe.ui.components.base.snackbar.SnackBarConfig
+import com.jorgelobo.koobe.ui.navigation.NavResultKeys
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -55,5 +56,22 @@ fun SubcategoryEditorEffects(
                 }
             }
         }
+    }
+
+    LaunchedEffect(navController) {
+        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+
+        savedStateHandle
+            ?.getStateFlow<Int?>(NavResultKeys.SELECTED_CATEGORY_ID, null)
+            ?.collect { categoryId ->
+
+                if (categoryId != null) {
+                    viewModel.onIntent(
+                        SubcategoryEditorIntent.State.CategoryChanged(categoryId)
+                    )
+
+                    savedStateHandle.remove<Int>(NavResultKeys.SELECTED_CATEGORY_ID)
+                }
+            }
     }
 }
