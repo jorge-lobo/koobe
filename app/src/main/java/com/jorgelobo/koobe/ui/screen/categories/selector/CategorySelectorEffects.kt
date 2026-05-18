@@ -3,6 +3,7 @@ package com.jorgelobo.koobe.ui.screen.categories.selector
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
+import com.jorgelobo.koobe.ui.navigation.NavResultKeys
 import com.jorgelobo.koobe.ui.navigation.navigateClearingCurrent
 
 /**
@@ -38,6 +39,14 @@ fun CategorySelectorEffects(
 
                 is CategorySelectorEvent.NavigateAndReplace ->
                     navController.navigateClearingCurrent(event.route)
+
+                is CategorySelectorEvent.ReturnResult -> {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(NavResultKeys.SELECTED_CATEGORY_ID, event.categoryId)
+
+                    navController.popBackStack()
+                }
             }
         }
     }

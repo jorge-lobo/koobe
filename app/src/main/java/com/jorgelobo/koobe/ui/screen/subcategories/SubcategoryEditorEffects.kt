@@ -6,12 +6,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavController
 import com.jorgelobo.koobe.ui.components.base.snackbar.SnackBarConfig
+import com.jorgelobo.koobe.ui.navigation.NavResultKeys
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
-/**
- * Handles one-off UI effects (navigation and snackBars) from [SubcategoryEditorViewModel].
- */
+// Collects one-shot events from the ViewModel and dispatches them to navigation, snackBars,
+// or other side effects.
 @Composable
 fun SubcategoryEditorEffects(
     navController: NavController,
@@ -51,10 +51,27 @@ fun SubcategoryEditorEffects(
                     snackBarHostState.showSnackbar(
                         message = "",
                         actionLabel = null,
-                        duration = SnackbarDuration.Indefinite
+                        duration = SnackbarDuration.Short
                     )
                 }
             }
         }
+    }
+
+    LaunchedEffect(navController) {
+        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+
+        savedStateHandle
+            ?.getStateFlow<Int?>(NavResultKeys.SELECTED_CATEGORY_ID, null)
+            ?.collect { categoryId ->
+
+                if (categoryId != null) {
+                    viewModel.onIntent(
+                        SubcategoryEditorIntent.State.CategoryChanged(categoryId)
+                    )
+
+                    savedStateHandle.remove<Int>(NavResultKeys.SELECTED_CATEGORY_ID)
+                }
+            }
     }
 }

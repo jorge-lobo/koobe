@@ -8,4 +8,5 @@ sealed interface CategorySelectorEvent {
     object NavigateBack : CategorySelectorEvent
     data class NavigateTo(val route: String) : CategorySelectorEvent
     data class NavigateAndReplace(val route: String) : CategorySelectorEvent
+    data class ReturnResult(val categoryId: Int) : CategorySelectorEvent
 }

@@ -20,9 +20,6 @@ import com.jorgelobo.koobe.ui.screen.subcategories.components.SubcategorySaveBut
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
-/**
- * Layout content for the Subcategory Editor screen.
- */
 @Composable
 fun SubcategoryEditorScreenUI(
     state: SubcategoryEditorUiState,
@@ -94,11 +91,11 @@ fun PreviewSubcategoryEditorScreen() {
             config = config,
             category = category,
             subcategory = if (isEditMode) subcategory else emptySubcategory
-        ).copy(isSaveButtonEnabled = false)
+        )
 
         SubcategoryEditorScreenUI(
             state = state,
-            config = state.config!!,
+            config = state.config,
             onNameChanged = {},
             onIconSelectorClick = {},
             onCategoryChangeClick = {},
