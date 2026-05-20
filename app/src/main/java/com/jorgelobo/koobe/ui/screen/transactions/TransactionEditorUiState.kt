@@ -33,7 +33,7 @@ data class TransactionEditorUiState(
     val category: Category,
     val subcategory: Subcategory? = null,
     val shortcut: Shortcut? = null,
-    val descriptionSource: DescriptionSource? = null,
+    val descriptionSource: DescriptionSource = DescriptionSource.Empty,
     val inputState: InputState,
     val date: Date = DateUtils.currentDate,
     val language: AppLanguage = AppLanguage.ENGLISH,
