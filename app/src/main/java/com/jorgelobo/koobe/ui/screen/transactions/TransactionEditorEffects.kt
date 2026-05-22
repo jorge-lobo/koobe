@@ -49,6 +49,8 @@ fun TransactionEditorEffects(
                     }
                 }
 
+                is TransactionEditorEvent.NavigateTo -> navController.navigate(event.route)
+
                 is TransactionEditorEvent.ShowSnackBar -> {
                     onSnackBarConfigChange(
                         SnackBarConfig(
@@ -57,7 +59,7 @@ fun TransactionEditorEffects(
                             icon = event.icon,
                             onActionClick = {
                                 autoFillDescriptionState.value?.let {
-                                    viewModel.onSnackBarActionClick(it)
+                                    viewModel.onIntent(TransactionEditorIntent.State.DescriptionInputChanged(it))
                                 }
                                 scope.launch {
                                     snackBarHostState.currentSnackbarData?.dismiss()

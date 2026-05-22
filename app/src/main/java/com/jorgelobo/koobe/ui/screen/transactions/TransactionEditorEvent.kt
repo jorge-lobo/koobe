@@ -11,8 +11,8 @@ import com.jorgelobo.koobe.ui.components.model.icons.IconPack
  */
 sealed interface TransactionEditorEvent {
 
-    /** Signals that the editor should exit and return to the originating screen. */
     data object ExitToOrigin : TransactionEditorEvent
+    data class NavigateTo(val route: String) : TransactionEditorEvent
 
     /**
      * Requests showing a snackBar in the UI.
