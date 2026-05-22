@@ -29,7 +29,6 @@ import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
-import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
@@ -70,7 +69,7 @@ fun TransactionEditorScreen(
         rememberUpdatedState(uiState.subcategory?.localizedName() ?: uiState.shortcut?.name)
 
     BackHandler {
-        viewModel.onDiscardDialogAction(ConfirmationDialogAction.Open)
+        viewModel.onIntent(TransactionEditorIntent.Action.CloseClicked)
     }
 
     TransactionEditorEffects(

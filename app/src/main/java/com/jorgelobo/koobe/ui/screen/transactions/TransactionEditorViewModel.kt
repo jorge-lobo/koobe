@@ -357,41 +357,6 @@ class TransactionEditorViewModel @Inject constructor(
         }
     }
 
-    fun onDiscardDialogAction(action: ConfirmationDialogAction) {
-        val (dialogState, effect) = reduceConfirmationDialog(
-            state = uiState.value.discardDialog,
-            action = action
-        )
-
-        uiInternalState.update {
-            it.copy(discardDialog = dialogState)
-        }
-
-        when (effect) {
-            ConfirmationDialogEffect.Confirmed -> navigateBack()
-
-            null -> Unit
-        }
-    }
-
-    fun onDeleteDialogAction(action: ConfirmationDialogAction) {
-        val (dialogState, effect) = reduceConfirmationDialog(
-            state = uiState.value.deleteDialog,
-            action = action
-        )
-
-        uiInternalState.update {
-            it.copy(deleteDialog = dialogState)
-        }
-
-        when (effect) {
-            ConfirmationDialogEffect.Confirmed -> deleteCurrentTransaction()
-
-            null -> Unit
-        }
-    }
-
-
     private fun saveTransaction(description: String) {
         val state = uiState.value
 
