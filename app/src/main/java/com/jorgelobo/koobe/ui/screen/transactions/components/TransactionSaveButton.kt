@@ -21,7 +21,7 @@ fun TransactionSaveButton(
         ButtonConfig(
             text = stringResource(R.string.btn_save),
             type = ButtonType.PRIMARY,
-            state = if (state.isSaveButtonEnabled) UiState.ENABLED else UiState.DISABLED,
+            state = if (state.isSaveEnabled && !state.isLoading) UiState.ENABLED else UiState.DISABLED,
             onClick = onSaveClick
         )
     )

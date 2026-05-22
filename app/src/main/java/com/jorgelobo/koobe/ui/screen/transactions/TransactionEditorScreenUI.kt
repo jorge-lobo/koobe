@@ -170,10 +170,9 @@ fun PreviewTransactionEditorScreen() {
                 paymentMethodType = PaymentMethodType.CASH,
                 currencyType = CurrencyType.EUR,
                 amount = 0.0,
-                isSaveButtonEnabled = false,
                 isLoading = false,
                 errorMessage = null,
-                initialSnapshot = InitialSnapshot(
+                transactionInitialSnapshot = TransactionInitialSnapshot(
                     category = category,
                     subcategory = subcategory,
                     shortcut = shortcut,

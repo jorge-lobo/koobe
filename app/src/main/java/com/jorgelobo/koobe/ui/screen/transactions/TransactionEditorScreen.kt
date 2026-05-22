@@ -28,16 +28,13 @@ import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.mappers.localizedName
-import com.jorgelobo.koobe.ui.navigation.Route
-import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
-import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
-import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
+import com.jorgelobo.koobe.utils.date.DateUtils
 
 /**
  * The main Composable for the Transaction Editor screen.
@@ -89,11 +86,31 @@ fun TransactionEditorScreen(
     TransactionEditorDialogs(
         state = uiState,
         sheetState = sheetState,
-        onDiscardDialogAction = { viewModel.onDiscardDialogAction(it) },
-        onDeleteDialogAction = { viewModel.onDeleteDialogAction(it) },
-        onCurrencySelectorDialogAction = { viewModel.onCurrencySelectorDialogAction(it) },
-        onDatePickerDialogAction = { viewModel.onDatePickerDialogAction(it) },
-        onPaymentSelectorAction = { viewModel.onPaymentSelectorAction(it) }
+        onDiscardDialogAction = {
+            viewModel.onIntent(
+                TransactionEditorIntent.Action.DiscardDialogUpdated(it)
+            )
+        },
+        onDeleteDialogAction = {
+            viewModel.onIntent(
+                TransactionEditorIntent.Action.DeleteDialogUpdated(it)
+            )
+        },
+        onCurrencySelectorDialogAction = {
+            viewModel.onIntent(
+                TransactionEditorIntent.Action.CurrencySelectorDialogUpdated(it)
+            )
+        },
+        onDatePickerDialogAction = {
+            viewModel.onIntent(
+                TransactionEditorIntent.Action.DatePickerDialogUpdated(it)
+            )
+        },
+        onPaymentSelectorAction = {
+            viewModel.onIntent(
+                TransactionEditorIntent.Action.PaymentMethodSelectorUpdated(it)
+            )
+        }
     )
 
     Scaffold(
@@ -120,12 +137,12 @@ fun TransactionEditorScreen(
                     ),
                     leadingAction = AppBarAction(
                         icon = IconPack.CLOSE,
-                        onClick = { viewModel.onDiscardDialogAction(ConfirmationDialogAction.Open) }
+                        onClick = { viewModel.onIntent(TransactionEditorIntent.Action.CloseClicked) }
                     ),
                     trailingActions = if (config.isEditMode) listOf(
                         AppBarAction(
                             IconPack.DELETE,
-                            onClick = { viewModel.onDeleteDialogAction(ConfirmationDialogAction.Open) }
+                            onClick = { viewModel.onIntent(TransactionEditorIntent.Action.RequestDeleteTransaction) }
                         )
                     ) else emptyList()
                 )
@@ -136,28 +153,46 @@ fun TransactionEditorScreen(
         TransactionEditorScreenUI(
             state = uiState,
             modifier = Modifier.padding(padding),
-            onChangeClick = {
-                navController.navigate(
-                    Route.CategorySelector.create(
-                        CategorySelectorConfig(
-                            mode = CategorySelectorMode.EDIT_TRANSACTION,
-                            target = CategorySelectorTarget.TRANSACTION_EDITOR,
-                            initialTransactionType = config.transactionType
-                        )
+            onChangeClick = { viewModel.onIntent(TransactionEditorIntent.Action.ChangeCategoryClicked) },
+            onTodayClick = { viewModel.onIntent(TransactionEditorIntent.State.DateChanged(DateUtils.currentDate)) },
+            onDatePickClick = {
+                viewModel.onIntent(
+                    TransactionEditorIntent.Action.DatePickerDialogUpdated(
+                        DatePickerDialogAction.Open
                     )
                 )
             },
-            onTodayClick = { viewModel.onTodayClick() },
-            onDatePickClick = { viewModel.onDatePickerDialogAction(DatePickerDialogAction.Open) },
-            onDescriptionChange = { viewModel.onDescriptionChanged(it) },
-            onResetDescriptionClick = { viewModel.onResetDescription() },
-            onResetAmountClick = { viewModel.onResetAmount() },
-            onPaymentSelectorClick = { viewModel.onPaymentSelectorAction(SelectorSheetAction.Open) },
-            onCurrencySelectorClick = {
-                viewModel.onCurrencySelectorDialogAction(SelectorDialogAction.Open)
+            onDescriptionChange = {
+                viewModel.onIntent(
+                    TransactionEditorIntent.State.DescriptionInputChanged(
+                        it
+                    )
+                )
             },
-            onKeyClick = { viewModel.onAmountKeyPressed(it) },
-            onSaveClick = { viewModel.onSaveClick() }
+            onResetDescriptionClick = {
+                viewModel.onIntent(
+                    TransactionEditorIntent.State.DescriptionInputChanged(
+                        ""
+                    )
+                )
+            },
+            onResetAmountClick = { viewModel.onIntent(TransactionEditorIntent.State.AmountResetClicked) },
+            onPaymentSelectorClick = {
+                viewModel.onIntent(
+                    TransactionEditorIntent.Action.PaymentMethodSelectorUpdated(
+                        SelectorSheetAction.Open
+                    )
+                )
+            },
+            onCurrencySelectorClick = {
+                viewModel.onIntent(
+                    TransactionEditorIntent.Action.CurrencySelectorDialogUpdated(
+                        SelectorDialogAction.Open
+                    )
+                )
+            },
+            onKeyClick = { viewModel.onIntent(TransactionEditorIntent.State.AmountKeyPressed(it)) },
+            onSaveClick = { viewModel.onIntent(TransactionEditorIntent.Action.SaveClicked) }
         )
     }
 }
