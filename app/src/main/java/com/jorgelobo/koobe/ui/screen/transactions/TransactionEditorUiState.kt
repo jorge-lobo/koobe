@@ -41,7 +41,6 @@ data class TransactionEditorUiState(
     val currencyType: CurrencyType = CurrencyType.EUR,
     val amountInput: String = "0",
     val amount: Double = 0.0,
-    val isSaveButtonEnabled: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val transactionInitialSnapshot: TransactionInitialSnapshot,
@@ -56,19 +55,30 @@ data class TransactionEditorUiState(
         language = language
     )
 ) {
-    /**
-     * Checks if any field in the UI state differs from the initial snapshot.
-     * Used to determine if the Save button should be enabled or if discard confirmation is needed.
-     */
-    val hasUnsavedChanges: Boolean
-        get() = category.id != initialSnapshot.category.id ||
-                subcategory?.id != initialSnapshot.subcategory?.id ||
-                shortcut?.id != initialSnapshot.shortcut?.id ||
-                descriptionSource != initialSnapshot.descriptionSource ||
-                !DateUtils.isSameDay(date, initialSnapshot.date) ||
-                paymentMethodType != initialSnapshot.paymentMethodType ||
-                currencyType != initialSnapshot.currencyType ||
-                amount != initialSnapshot.amount
+    val isValid: Boolean
+        get() = category.id > 0 && amount > 0
+
+    val isSaveEnabled: Boolean
+        get() {
+            val config = config ?: return false
+
+            if (!isValid) return false
+
+            return if (config.isEditMode) {
+                val initial = transactionInitialSnapshot
+
+                category.id != initial.category.id ||
+                        subcategory?.id != initial.subcategory?.id ||
+                        shortcut?.id != initial.shortcut?.id ||
+                        descriptionSource != initial.descriptionSource ||
+                        !DateUtils.isSameDay(date, initial.date) ||
+                        paymentMethodType != initial.paymentMethodType ||
+                        currencyType != initial.currencyType ||
+                        amount != initial.amount
+            } else {
+                true
+            }
+        }
 
     /**
      * Returns the string resource ID for the screen headline based on edit mode and transaction type.
