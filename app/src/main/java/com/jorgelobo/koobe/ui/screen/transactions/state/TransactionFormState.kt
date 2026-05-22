@@ -12,4 +12,11 @@ data class TransactionFormState(
     val date: FieldUpdate<Date> = FieldUpdate.Unchanged,
     val paymentMethod: FieldUpdate<PaymentMethodType> = FieldUpdate.Unchanged,
     val currency: FieldUpdate<CurrencyType> = FieldUpdate.Unchanged,
-)
+) {
+    val hasChanges: Boolean
+        get() = description is FieldUpdate.Updated ||
+                amountInput is FieldUpdate.Updated ||
+                date is FieldUpdate.Updated ||
+                paymentMethod is FieldUpdate.Updated ||
+                currency is FieldUpdate.Updated
+}
