@@ -44,7 +44,7 @@ data class TransactionEditorUiState(
     val isSaveButtonEnabled: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
-    val initialSnapshot: InitialSnapshot,
+    val transactionInitialSnapshot: TransactionInitialSnapshot,
     val showSnackBar: Boolean = false,
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
@@ -102,7 +102,7 @@ data class TransactionEditorUiState(
                 originalTransaction = null,
                 inputState = InputState.DEFAULT,
                 isLoading = true,
-                initialSnapshot = InitialSnapshot(
+                transactionInitialSnapshot = TransactionInitialSnapshot(
                     category = emptyCategory,
                     subcategory = null,
                     shortcut = null,
@@ -138,7 +138,7 @@ data class TransactionEditorUiState(
                 shortcut = shortcut,
                 descriptionSource = DescriptionSource.Empty,
                 inputState = InputState.DEFAULT,
-                initialSnapshot = InitialSnapshot(
+                transactionInitialSnapshot = TransactionInitialSnapshot(
                     category = category,
                     subcategory = subcategory,
                     shortcut = shortcut,
@@ -179,7 +179,7 @@ data class TransactionEditorUiState(
                 currencyType = transaction.currency,
                 amount = transaction.amount,
                 amountInput = transaction.amount.toString(),
-                initialSnapshot = InitialSnapshot(
+                transactionInitialSnapshot = TransactionInitialSnapshot(
                     category = category,
                     subcategory = subcategory,
                     shortcut = shortcut,
@@ -207,7 +207,7 @@ data class TransactionEditorUiState(
 /**
  * Snapshot of the initial transaction state used to detect unsaved changes.
  */
-data class InitialSnapshot(
+data class TransactionInitialSnapshot(
     val category: Category,
     val subcategory: Subcategory?,
     val shortcut: Shortcut?,

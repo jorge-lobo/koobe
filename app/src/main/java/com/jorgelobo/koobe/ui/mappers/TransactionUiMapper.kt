@@ -22,7 +22,7 @@ fun TransactionEditorUiState.toTransaction(
         id = config.transactionId,
         date = date,
         description = resolvedDescription.trim(),
-        type = initialSnapshot.transactionType,
+        type = transactionInitialSnapshot.transactionType,
         categoryId = category.id,
         subcategoryId = subcategory?.id,
         amount = amount,
