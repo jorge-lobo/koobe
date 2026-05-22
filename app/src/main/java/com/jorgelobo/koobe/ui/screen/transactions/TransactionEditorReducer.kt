@@ -88,6 +88,18 @@ object TransactionEditorReducer {
                     internal = currentInternal
                 )
             }
+
+            is TransactionEditorIntent.State.AmountResetClicked -> {
+                Result(
+                    form = currentForm.copy(
+                        amountInput = updateIfChanged(
+                            "0.0",
+                            baseState.amountInput
+                        )
+                    ),
+                    internal = currentInternal
+                )
+            }
         }
     }
 }

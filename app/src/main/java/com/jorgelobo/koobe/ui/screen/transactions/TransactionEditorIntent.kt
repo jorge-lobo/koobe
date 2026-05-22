@@ -17,6 +17,8 @@ sealed interface TransactionEditorIntent {
         data class DateChanged(val date: Date) : State
         data class CurrencyChanged(val currency: CurrencyType) : State
         data class PaymentMethodChanged(val method: PaymentMethodType) : State
+
+        data object AmountResetClicked : State
     }
 
     sealed interface Action : TransactionEditorIntent {
