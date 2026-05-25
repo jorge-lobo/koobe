@@ -73,7 +73,9 @@ fun TransactionEditorDialogs(
             config = OptionSelectorDialogConfig(
                 type = OptionSelectorType.CURRENCY,
                 title = stringResource(R.string.dialog_headline_currency_selector),
-                selectedCurrency = state.currencyDialog.selected ?: state.currencyDialog.initial,
+                selectedCurrency = state.currencyDialog.selected
+                    ?: state.currencyDialog.initial
+                    ?: CurrencyType.EUR,
                 onConfirm = { onCurrencySelectorDialogAction(SelectorDialogAction.Apply) },
                 onCancel = { onCurrencySelectorDialogAction(SelectorDialogAction.Cancel) },
                 onCurrencySelected = { onCurrencySelectorDialogAction(SelectorDialogAction.Select(it)) }
