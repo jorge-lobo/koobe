@@ -25,6 +25,7 @@ import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetState
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.reduceSelectorSheet
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
@@ -301,18 +302,18 @@ class TransactionEditorViewModel @Inject constructor(
     }
 
     private fun handlePaymentMethodSelectorSheet(action: SelectorSheetAction<PaymentMethodType>) {
-        val newState = reduceSelectorSheet(
-            state = uiInternalState.value.paymentMethodSelector,
-            action = action
+        handleSelectorSheet(
+            current = uiInternalState.value.paymentMethodSelector,
+            action = action,
+            updateState = { newState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(paymentMethodSelector = newState)
+                }
+            },
+            onApplied = {
+                onIntent(TransactionEditorIntent.State.PaymentMethodChanged(it))
+            }
         )
-
-        uiInternalState.update {
-            it.copy(paymentMethodSelector = newState)
-        }
-
-        if (action is SelectorSheetAction.Select) {
-            onIntent(TransactionEditorIntent.State.PaymentMethodChanged(action.item))
-        }
     }
 
     private fun handleDatePickerDialog(action: DatePickerDialogAction) {
@@ -397,6 +398,24 @@ class TransactionEditorViewModel @Inject constructor(
 
         (effect as? SelectorDialogEffect.Applied)?.let {
             onApplied(it.value)
+        }
+    }
+
+    private fun <T> handleSelectorSheet(
+        current: SelectorSheetState<T>,
+        action: SelectorSheetAction<T>,
+        updateState: (SelectorSheetState<T>) -> Unit,
+        onApplied: (T) -> Unit
+    ) {
+        val newState = reduceSelectorSheet(
+            state = current,
+            action = action
+        )
+
+        updateState(newState)
+
+        if (action is SelectorSheetAction.Select) {
+            onApplied(action.item)
         }
     }
 
