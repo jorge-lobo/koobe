@@ -25,19 +25,14 @@ import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
-import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetState
-import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.reduceSelectorSheet
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.handleSelectorSheet
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
-import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
-import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
-import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.handleConfirmationDialog
 import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.reduceDatePickerDialog
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
-import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
-import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
-import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.handleSelectorDialog
 import com.jorgelobo.koobe.ui.screen.transactions.state.TransactionFormState
 import com.jorgelobo.koobe.ui.screen.transactions.state.TransactionUiStateInternal
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -370,52 +365,6 @@ class TransactionEditorViewModel @Inject constructor(
                 isEditorMode = config.isEditMode
             )
             navigateBack()
-        }
-    }
-
-    private fun handleConfirmationDialog(
-        current: ConfirmationDialogState,
-        action: ConfirmationDialogAction,
-        updateState: (ConfirmationDialogState) -> Unit,
-        onConfirmed: () -> Unit
-    ) {
-        val (newState, effect) = reduceConfirmationDialog(current, action)
-        updateState(newState)
-
-        if (effect is ConfirmationDialogEffect.Confirmed) {
-            onConfirmed()
-        }
-    }
-
-    private fun <T> handleSelectorDialog(
-        current: SelectorDialogState<T>,
-        action: SelectorDialogAction<T>,
-        updateState: (SelectorDialogState<T>) -> Unit,
-        onApplied: (T) -> Unit
-    ) {
-        val (newState, effect) = reduceSelectorDialog(current, action)
-        updateState(newState)
-
-        (effect as? SelectorDialogEffect.Applied)?.let {
-            onApplied(it.value)
-        }
-    }
-
-    private fun <T> handleSelectorSheet(
-        current: SelectorSheetState<T>,
-        action: SelectorSheetAction<T>,
-        updateState: (SelectorSheetState<T>) -> Unit,
-        onApplied: (T) -> Unit
-    ) {
-        val newState = reduceSelectorSheet(
-            state = current,
-            action = action
-        )
-
-        updateState(newState)
-
-        if (action is SelectorSheetAction.Select) {
-            onApplied(action.item)
         }
     }
 
