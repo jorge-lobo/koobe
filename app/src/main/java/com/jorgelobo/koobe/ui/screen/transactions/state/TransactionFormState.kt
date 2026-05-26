@@ -12,6 +12,7 @@ data class TransactionFormState(
     val date: FieldUpdate<Date> = FieldUpdate.Unchanged,
     val paymentMethod: FieldUpdate<PaymentMethodType> = FieldUpdate.Unchanged,
     val currency: FieldUpdate<CurrencyType> = FieldUpdate.Unchanged,
+    val amountKeypadTouched: Boolean = false
 ) {
     val hasChanges: Boolean
         get() = description is FieldUpdate.Updated ||

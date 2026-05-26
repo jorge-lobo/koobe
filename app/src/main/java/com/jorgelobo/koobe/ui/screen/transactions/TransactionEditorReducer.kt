@@ -1,5 +1,6 @@
 package com.jorgelobo.koobe.ui.screen.transactions
 
+import com.jorgelobo.koobe.core.model.FieldUpdate
 import com.jorgelobo.koobe.core.model.resolve
 import com.jorgelobo.koobe.core.model.updateIfChanged
 import com.jorgelobo.koobe.domain.amount.reduceAmountInput
@@ -36,7 +37,11 @@ object TransactionEditorReducer {
             }
 
             is TransactionEditorIntent.State.AmountKeyPressed -> {
-                val currentAmount = currentForm.amountInput.resolve(baseState.amountInput)
+                val isEditMode = baseState.config?.isEditMode == true
+                val shouldReset = isEditMode && !currentForm.amountKeypadTouched
+                val currentAmount =
+                    if (shouldReset) "0"
+                    else currentForm.amountInput.resolve(baseState.amountInput)
                 val updatedAmount = reduceAmountInput(
                     currentAmount,
                     intent.key.toAmountAction()
@@ -44,10 +49,8 @@ object TransactionEditorReducer {
 
                 Result(
                     form = currentForm.copy(
-                        amountInput = updateIfChanged(
-                            updatedAmount,
-                            baseState.amountInput
-                        )
+                        amountInput = FieldUpdate.Updated(updatedAmount),
+                        amountKeypadTouched = true
                     ),
                     internal = currentInternal
                 )
@@ -92,10 +95,8 @@ object TransactionEditorReducer {
             is TransactionEditorIntent.State.AmountResetClicked -> {
                 Result(
                     form = currentForm.copy(
-                        amountInput = updateIfChanged(
-                            "0.0",
-                            baseState.amountInput
-                        )
+                        amountInput = FieldUpdate.Updated("0"),
+                        amountKeypadTouched = true
                     ),
                     internal = currentInternal
                 )
