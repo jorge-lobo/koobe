@@ -30,7 +30,8 @@ enum class CategorySelectorMode(
     val showToggle: Boolean,
     val requiresSubcategorySelection: Boolean,
     val showActionButton: Boolean,
-    val actionButtonLabelRes: Int? = null
+    val actionButtonLabelRes: Int? = null,
+    val returnsResult: Boolean
 ) {
     // Transaction-related modes
     CREATE_TRANSACTION(
@@ -39,7 +40,8 @@ enum class CategorySelectorMode(
         showToggle = false,
         requiresSubcategorySelection = true,
         showActionButton = false,
-        actionButtonLabelRes = null
+        actionButtonLabelRes = null,
+        returnsResult = false
     ),
     EDIT_TRANSACTION(
         headlineRes = R.string.headline_category_changer,
@@ -47,7 +49,8 @@ enum class CategorySelectorMode(
         showToggle = true,
         requiresSubcategorySelection = true,
         showActionButton = false,
-        actionButtonLabelRes = null
+        actionButtonLabelRes = null,
+        returnsResult = true
     ),
 
     // Subcategory editing
@@ -57,7 +60,8 @@ enum class CategorySelectorMode(
         showToggle = true,
         requiresSubcategorySelection = false,
         showActionButton = true,
-        actionButtonLabelRes = R.string.btn_change
+        actionButtonLabelRes = R.string.btn_change,
+        returnsResult = true
     ),
 
     // Shortcut-related modes
@@ -67,7 +71,8 @@ enum class CategorySelectorMode(
         showToggle = true,
         requiresSubcategorySelection = false,
         showActionButton = true,
-        actionButtonLabelRes = R.string.btn_continue
+        actionButtonLabelRes = R.string.btn_continue,
+        returnsResult = false
     ),
     EDIT_SHORTCUT(
         headlineRes = R.string.headline_category_changer,
@@ -75,7 +80,8 @@ enum class CategorySelectorMode(
         showToggle = true,
         requiresSubcategorySelection = false,
         showActionButton = true,
-        actionButtonLabelRes = R.string.btn_change
+        actionButtonLabelRes = R.string.btn_change,
+        returnsResult = true
     ),
 
     // Budget-related modes
@@ -85,7 +91,8 @@ enum class CategorySelectorMode(
         showToggle = true,
         requiresSubcategorySelection = true,
         showActionButton = false,
-        actionButtonLabelRes = null
+        actionButtonLabelRes = null,
+        returnsResult = false
     ),
     EDIT_BUDGET(
         headlineRes = R.string.headline_category_changer,
@@ -93,7 +100,8 @@ enum class CategorySelectorMode(
         showToggle = true,
         requiresSubcategorySelection = true,
         showActionButton = false,
-        actionButtonLabelRes = null
+        actionButtonLabelRes = null,
+        returnsResult = true
     ),
 
     // Fallback / generic mode
@@ -103,6 +111,7 @@ enum class CategorySelectorMode(
         showToggle = false,
         requiresSubcategorySelection = false,
         showActionButton = false,
-        actionButtonLabelRes = null
+        actionButtonLabelRes = null,
+        returnsResult = false
     )
 }

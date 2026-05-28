@@ -8,9 +8,6 @@ import com.jorgelobo.koobe.ui.components.base.inputs.fields.InputFieldConfig
 import com.jorgelobo.koobe.ui.mappers.asText
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorUiState
 
-/**
- * Input field for the transaction description with reset button.
- */
 @Composable
 fun TransactionDescriptionSection(
     state: TransactionEditorUiState,

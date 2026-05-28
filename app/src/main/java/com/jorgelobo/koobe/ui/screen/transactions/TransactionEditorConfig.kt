@@ -4,22 +4,14 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import kotlinx.serialization.Serializable
 
 /**
- * Configuration for [TransactionEditorViewModel] and the transaction editor screen.
+ * Configuration for the Transaction Editor screen.
  *
- * Holds all IDs and parameters needed to initialize the editor, including:
- * - The transaction being edited (if any)
- * - The associated category, subcategory, or shortcut
- * - The transaction type (e.g., expense or income)
- * - The origin route for navigation purposes
- *
- * @property transactionId The ID of the transaction being edited, or null for new transactions.
- * @property categoryId The ID of the selected category.
- * @property subcategoryId Optional ID of the selected subcategory.
- * @property shortcutId Optional ID of the selected shortcut.
- * @property transactionType Initial transaction type; defaults to [TransactionType.EXPENSE].
- * @property originRoute The route to return to after editing is complete.
- *
- * @property isEditMode True if the editor is in edit mode (i.e., editing an existing transaction).
+ * @property transactionId Transaction identifier. When `null`, the editor operates in create mode.
+ * @property categoryId Selected category identifier.
+ * @property subcategoryId Selected subcategory identifier, if any.
+ * @property shortcutId Shortcut identifier used to prefill the editor, if any.
+ * @property transactionType Transaction type.
+ * @property originRoute Route from which the editor was opened.
  */
 @Serializable
 data class TransactionEditorConfig(
@@ -30,6 +22,7 @@ data class TransactionEditorConfig(
     val transactionType: TransactionType = TransactionType.EXPENSE,
     val originRoute: String
 ) {
+    /** `true` when editing an existing transaction; `false` when creating a new one. */
     val isEditMode: Boolean
         get() = transactionId != null
 }

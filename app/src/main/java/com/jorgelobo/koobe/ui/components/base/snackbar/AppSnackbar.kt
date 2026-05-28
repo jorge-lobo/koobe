@@ -92,7 +92,7 @@ fun SnackBarDemoScreen() {
     val snackBarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
-    val snackBarMessage = stringResource(R.string.snackBar_message)
+    val snackBarMessage = stringResource(R.string.snackBar_empty_description)
     val snackBarAction = stringResource(R.string.snackBar_action)
     val demoButtonLabel = stringResource(R.string.btn_save)
 
@@ -100,7 +100,7 @@ fun SnackBarDemoScreen() {
         snackbarHost = {
             SnackbarHost(hostState = snackBarHostState) { data ->
                 val config = SnackBarConfig(
-                    messageRes = R.string.snackBar_message,
+                    messageRes = R.string.snackBar_empty_description,
                     actionLabelRes = R.string.snackBar_action,
                     icon = IconPack.EDIT,
                     onActionClick = { data.performAction() },
@@ -151,7 +151,7 @@ fun PreviewSnackBars() {
         ) {
             AppSnackBar(
                 config = SnackBarConfig(
-                    messageRes = R.string.snackBar_message,
+                    messageRes = R.string.snackBar_empty_description,
                     actionLabelRes = R.string.snackBar_action,
                     icon = IconPack.EDIT,
                     onActionClick = {},

@@ -36,7 +36,7 @@ class ResolveTransactionDescriptionUseCase @Inject constructor() {
      * @return A [DescriptionResolution] indicating how the description should be handled.
      */
     fun resolve(
-        descriptionSource: DescriptionSource?,
+        descriptionSource: DescriptionSource,
         subcategory: Subcategory?,
         shortcut: Shortcut?
     ): DescriptionResolution {

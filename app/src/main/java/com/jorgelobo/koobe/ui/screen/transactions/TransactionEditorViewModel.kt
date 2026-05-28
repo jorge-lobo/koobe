@@ -1,16 +1,14 @@
 package com.jorgelobo.koobe.ui.screen.transactions
 
-import android.net.Uri
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.R
-import com.jorgelobo.koobe.domain.amount.reduceAmountInput
+import com.jorgelobo.koobe.core.model.resolve
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.transaction.DescriptionResolution
-import com.jorgelobo.koobe.domain.model.transaction.DescriptionSource
 import com.jorgelobo.koobe.domain.model.transaction.Transaction
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
@@ -20,27 +18,27 @@ import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.DeleteTransactionUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.ResolveTransactionDescriptionUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.SaveTransactionUseCase
-import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
-import com.jorgelobo.koobe.ui.mappers.toAmountAction
 import com.jorgelobo.koobe.ui.mappers.toTransaction
+import com.jorgelobo.koobe.ui.navigation.Route
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
-import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.reduceSelectorSheet
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.handleSelectorSheet
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
-import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
-import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.handleConfirmationDialog
 import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.reduceDatePickerDialog
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
-import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
-import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
-import com.jorgelobo.koobe.utils.date.DateUtils
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.handleSelectorDialog
+import com.jorgelobo.koobe.ui.screen.transactions.state.TransactionFormState
+import com.jorgelobo.koobe.ui.screen.transactions.state.TransactionUiStateInternal
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
@@ -50,23 +48,14 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
+import java.net.URLDecoder
 import javax.inject.Inject
 
 /**
  * ViewModel responsible for managing the state and business logic of the Transaction Editor screen.
  *
- * This ViewModel handles:
- * - Loading initial data for categories, subcategories, shortcuts, and existing transactions.
- * - Managing complex UI state including date selection, amount input via a custom keypad,
- *   currency selection, and payment methods.
- * - Resolving transaction descriptions automatically based on selected subcategories or shortcuts.
- * - Validating form requirements and determining unsaved changes to enable/disable the save action.
- * - Persisting new or edited transactions via [SaveTransactionUseCase].
- * - Deleting existing transactions via [DeleteTransactionUseCase].
- * - Emitting one-off UI events such as navigation and SnackBar notifications via [events].
- *
- * @property events A [SharedFlow] of [TransactionEditorEvent] for handling UI side-effects.
- * @property uiState A [StateFlow] of [TransactionEditorUiState] representing the current screen state.
+ * It combines repository data, user settings, and UI intents into a single reactive state,
+ * while exposing one-off events such as navigation and snackbars through [events].
  */
 @HiltViewModel
 class TransactionEditorViewModel @Inject constructor(
@@ -81,22 +70,24 @@ class TransactionEditorViewModel @Inject constructor(
     private val deleteTransaction: DeleteTransactionUseCase
 ) : ViewModel() {
 
+    /** Stream of one-off UI events such as navigation and snackbar requests. */
     private val _events = MutableSharedFlow<TransactionEditorEvent>()
     val events = _events.asSharedFlow()
 
-    /**
-     * Configuration settings for the transaction editor, retrieved from the [SavedStateHandle].
-     *
-     * This object contains the initial parameters required to initialize the editor,
-     * such as whether it's in edit mode, the transaction ID, and associated category,
-     * subcategory, or shortcut identifiers.
-     */
+    /** Editor configuration decoded from navigation arguments. */
     private val config: TransactionEditorConfig =
         savedStateHandle.get<String>("config")
-            ?.let { Uri.decode(it) }
+            ?.let { URLDecoder.decode(it, "UTF-8") }
             ?.let { Json.decodeFromString<TransactionEditorConfig>(it) }
             ?: error("Missing TransactionEditorConfig")
 
+    /** Mutable form state representing user input changes. */
+    private val formState = MutableStateFlow(TransactionFormState())
+
+    /** Mutable internal UI state for dialogs and transient UI flags. */
+    private val uiInternalState = MutableStateFlow(TransactionUiStateInternal())
+
+    /** Flow of the transaction being edited, or null in create mode. */
     private val transactionFlow: Flow<Transaction?> =
         if (config.isEditMode) {
             transactionRepository.getTransactionByIdFlow(config.transactionId!!)
@@ -116,16 +107,7 @@ class TransactionEditorViewModel @Inject constructor(
 
     private val userSettingsFlow = getUserSettings()
 
-    private val userInput = MutableStateFlow(TransactionInputState())
-
-    /**
-     * A [Flow] that combines external data sources (category, subcategory, shortcut, existing
-     * transaction, and user settings) to produce the baseline [TransactionEditorUiState].
-     *
-     * This flow determines the initial state of the editor, distinguishing between
-     * creation mode and edit mode, and serves as the foundation upon which
-     * [userInput] changes are applied.
-     */
+    /** Base state derived from repositories and user settings. */
     private val baseStateFlow: Flow<TransactionEditorUiState> =
         combine(
             categoryFlow,
@@ -162,37 +144,37 @@ class TransactionEditorViewModel @Inject constructor(
         }
 
     /**
-     * The combined and observable state of the Transaction Editor screen.
+     * Main UI state exposed to the screen.
      *
-     * This property merges [baseStateFlow] (containing data from repositories and settings)
-     * with [userInput] (containing temporary changes made by the user). It calculates
-     * the final UI state, including form validation and the enabled status of the save action.
+     * Combines base state, form state, and internal UI state into a single immutable state object.
      */
     val uiState: StateFlow<TransactionEditorUiState> =
         combine(
             baseStateFlow,
-            userInput
-        ) { base: TransactionEditorUiState, input: TransactionInputState ->
+            formState,
+            uiInternalState
+        ) { base, form, uiInternal ->
 
-            val amountInput = input.amountInput ?: base.amountInput
+            val updatedDescription = form.description.resolve(base.descriptionSource)
+            val updatedAmountInput = form.amountInput.resolve(base.amountInput)
+            val updatedDate = form.date.resolve(base.date)
+            val updatedPaymentMethod = form.paymentMethod.resolve(base.paymentMethodType)
+            val updatedCurrency = form.currency.resolve(base.currencyType)
+            val updatedAmount = updatedAmountInput.toDoubleOrNull() ?: base.amount
 
-            val newState = base.copy(
-                descriptionSource = input.descriptionSource ?: base.descriptionSource,
-                amountInput = amountInput,
-                amount = amountInput.toDoubleOrNull() ?: base.amount,
-                date = input.date ?: base.date,
-                paymentMethodType = input.paymentMethodType ?: base.paymentMethodType,
-                currencyType = input.currencyType ?: base.currencyType,
-                discardDialog = input.discardDialog ?: base.discardDialog,
-                deleteDialog = input.deleteDialog ?: base.deleteDialog,
-                currencyDialog = input.currencyDialog ?: base.currencyDialog,
-                paymentMethodSelector = input.paymentMethodSelector ?: base.paymentMethodSelector,
-                datePickerDialog = input.datePickerDialog ?: base.datePickerDialog,
-                isLoading = input.isDeleting ?: base.isLoading
-            )
-
-            newState.copy(
-                isSaveButtonEnabled = computeSaveEnabled(newState)
+            base.copy(
+                descriptionSource = updatedDescription,
+                amountInput = updatedAmountInput,
+                amount = updatedAmount,
+                date = updatedDate,
+                paymentMethodType = updatedPaymentMethod,
+                currencyType = updatedCurrency,
+                discardDialog = uiInternal.discardDialog,
+                deleteDialog = uiInternal.deleteDialog,
+                currencyDialog = uiInternal.currencyDialog,
+                paymentMethodSelector = uiInternal.paymentMethodSelector,
+                datePickerDialog = uiInternal.datePickerDialog,
+                isLoading = uiInternal.isDeleting
             )
         }
             .stateIn(
@@ -201,110 +183,52 @@ class TransactionEditorViewModel @Inject constructor(
                 initialValue = TransactionEditorUiState.initialEmpty()
             )
 
-    // ─────────────────────────────
-    // Save button logic
-    // ─────────────────────────────
+    /** Entry point for all UI intents coming from the screen. */
+    fun onIntent(intent: TransactionEditorIntent) {
+        when (intent) {
 
-    /**
-     * Determines whether the save action should be enabled based on the current [state].
-     *
-     * In edit mode, saving is enabled only if there are unsaved changes.
-     * In creation mode, saving is enabled as long as the amount is greater than zero.
-     *
-     * @param state The current UI state of the transaction editor.
-     * @return True if the transaction can be saved, false otherwise.
-     */
-    private fun computeSaveEnabled(state: TransactionEditorUiState): Boolean {
-        return if (config.isEditMode) {
-            state.hasUnsavedChanges
-        } else {
-            state.amount > 0
+            is TransactionEditorIntent.Action -> handleAction(intent)
+
+            is TransactionEditorIntent.State -> {
+
+                val result = TransactionEditorReducer.reduce(
+                    intent = intent,
+                    currentForm = formState.value,
+                    currentInternal = uiInternalState.value,
+                    baseState = uiState.value
+                )
+
+                formState.value = result.form
+                uiInternalState.value = result.internal
+            }
         }
     }
 
-    // ─────────────────────────────
-    // User actions – Date
-    // ─────────────────────────────
+    private fun handleAction(intent: TransactionEditorIntent.Action) {
+        when (intent) {
+            is TransactionEditorIntent.Action.DiscardDialogUpdated -> handleDiscardDialog(intent.action)
 
-    fun onTodayClick() {
-        userInput.update {
-            it.copy(date = DateUtils.currentDate)
+            is TransactionEditorIntent.Action.DeleteDialogUpdated -> handleDeleteDialog(intent.action)
+
+            is TransactionEditorIntent.Action.DatePickerDialogUpdated ->
+                handleDatePickerDialog(intent.action)
+
+            is TransactionEditorIntent.Action.CurrencySelectorDialogUpdated ->
+                handleCurrencySelectorDialog(intent.action)
+
+            is TransactionEditorIntent.Action.PaymentMethodSelectorUpdated ->
+                handlePaymentMethodSelectorSheet(intent.action)
+
+            TransactionEditorIntent.Action.SaveClicked -> handleSave()
+            TransactionEditorIntent.Action.CloseClicked -> handleClose()
+            TransactionEditorIntent.Action.ChangeCategoryClicked -> handleChangeCategory()
+            TransactionEditorIntent.Action.RequestDeleteTransaction ->
+                handleDeleteDialog(ConfirmationDialogAction.Open)
         }
     }
 
-    fun onDatePickerDialogAction(action: DatePickerDialogAction) {
-        val (dialogState, effect) = reduceDatePickerDialog(
-            state = uiState.value.datePickerDialog,
-            action = action
-        )
-
-        userInput.update {
-            it.copy(datePickerDialog = dialogState)
-        }
-
-        when (effect) {
-            is DatePickerDialogEffect.Confirmed ->
-                userInput.update {
-                    it.copy(date = effect.date)
-                }
-
-            null -> Unit
-        }
-    }
-
-    // ─────────────────────────────
-    // User actions – Description
-    // ─────────────────────────────
-
-    fun onDescriptionChanged(text: String) {
-        userInput.update {
-            it.copy(descriptionSource = DescriptionSource.TextDescription(text))
-        }
-    }
-
-    fun onResetDescription() {
-        userInput.update {
-            it.copy(descriptionSource = DescriptionSource.Empty)
-        }
-    }
-
-    fun onSnackBarActionClick(resolvedDescription: String) {
-        autoFillDescription(resolvedDescription)
-    }
-
-    // ─────────────────────────────
-    // User actions – Amount
-    // ─────────────────────────────
-
-    fun onAmountKeyPressed(key: KeypadKey) {
-        userInput.update { input ->
-            val current = input.amountInput ?: uiState.value.amountInput
-            val newInput = reduceAmountInput(current, key.toAmountAction())
-
-            input.copy(amountInput = newInput)
-        }
-    }
-
-    fun onResetAmount() {
-        userInput.update {
-            it.copy(amountInput = "0")
-        }
-    }
-
-    // ─────────────────────────────
-    // User actions – Save
-    // ─────────────────────────────
-
-    /**
-     * Handles the click event on the save button.
-     *
-     * It attempts to resolve the transaction description based on the current user input,
-     * selected subcategory, or shortcut. Depending on the [DescriptionResolution] result:
-     * - **Resolved**: Saves the transaction immediately using the resolved description.
-     * - **RequireUserChoice**: Triggers a SnackBar to let the user choose or confirm a description.
-     * - **Missing**: Does nothing (aborts the save process).
-     */
-    fun onSaveClick() {
+    /** Handles save flow including description resolution and validation. */
+    private fun handleSave() {
         val state = uiState.value
 
         when (val result = resolveTransactionDescription.resolve(
@@ -314,150 +238,141 @@ class TransactionEditorViewModel @Inject constructor(
         )) {
             is DescriptionResolution.Resolved -> saveTransaction(result.text)
 
-            is DescriptionResolution.RequireUserChoice -> showSnackBar()
+            is DescriptionResolution.RequireUserChoice ->
+                showSnackBar(
+                    messageRes = R.string.snackBar_empty_description,
+                    actionLabelRes = R.string.snackBar_action,
+                    icon = IconPack.EDIT
+                )
 
             DescriptionResolution.Missing -> Unit
         }
     }
 
-    // ─────────────────────────────
-    // User actions – Delete
-    // ─────────────────────────────
+    /** Handles navigation or discard confirmation depending on unsaved changes. */
+    private fun handleClose() {
+        if (formState.value.hasChanges) {
+            handleDiscardDialog(ConfirmationDialogAction.Open)
+        } else {
+            navigateBack()
+        }
+    }
 
-    /**
-     * Deletes the current transaction from the repository and manages the UI state during the process.
-     *
-     * This function checks for the existence of an original transaction, updates the [userInput]
-     * to reflect a loading state, and invokes the [deleteTransaction] use case.
-     * - On success: Triggers navigation back to the previous screen.
-     * - On failure: Resets the loading state and emits a SnackBar event to notify the user of the error.
-     */
+    /** Navigates to category selector screen. */
+    private fun handleChangeCategory() {
+        val state = uiState.value
+        val mode = if (config.isEditMode) {
+            CategorySelectorMode.EDIT_TRANSACTION
+        } else {
+            CategorySelectorMode.CREATE_TRANSACTION
+        }
+
+        val route = Route.CategorySelector.create(
+            CategorySelectorConfig(
+                mode = mode,
+                target = CategorySelectorTarget.TRANSACTION_EDITOR,
+                initialTransactionType = state.category.type,
+                initialCategoryId = state.category.id,
+                initialSubcategoryId = state.subcategory?.id
+            )
+        )
+        navigateTo(route)
+    }
+
+    private fun handleDiscardDialog(action: ConfirmationDialogAction) {
+        handleConfirmationDialog(
+            current = uiInternalState.value.discardDialog,
+            action = action,
+            updateState = { newDialogState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(discardDialog = newDialogState)
+                }
+            },
+            onConfirmed = { navigateBack() }
+        )
+    }
+
+    private fun handleDeleteDialog(action: ConfirmationDialogAction) {
+        handleConfirmationDialog(
+            current = uiInternalState.value.deleteDialog,
+            action = action,
+            updateState = { newDialogState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(deleteDialog = newDialogState)
+                }
+            },
+            onConfirmed = { deleteCurrentTransaction() }
+        )
+    }
+
+    private fun handleCurrencySelectorDialog(action: SelectorDialogAction<CurrencyType>) {
+        handleSelectorDialog(
+            current = uiInternalState.value.currencyDialog,
+            action = action,
+            updateState = { newDialogState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(currencyDialog = newDialogState)
+                }
+            },
+            onApplied = { onIntent(TransactionEditorIntent.State.CurrencyChanged(it)) }
+        )
+    }
+
+    private fun handlePaymentMethodSelectorSheet(action: SelectorSheetAction<PaymentMethodType>) {
+        handleSelectorSheet(
+            current = uiInternalState.value.paymentMethodSelector,
+            action = action,
+            updateState = { newState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(paymentMethodSelector = newState)
+                }
+            },
+            onApplied = {
+                onIntent(TransactionEditorIntent.State.PaymentMethodChanged(it))
+            }
+        )
+    }
+
+    private fun handleDatePickerDialog(action: DatePickerDialogAction) {
+        val (newState, effect) = reduceDatePickerDialog(
+            state = uiInternalState.value.datePickerDialog,
+            action = action
+        )
+
+        uiInternalState.update {
+            it.copy(datePickerDialog = newState)
+        }
+
+        when (effect) {
+            is DatePickerDialogEffect.Confirmed -> {
+                onIntent(TransactionEditorIntent.State.DateChanged(effect.date))
+            }
+
+            null -> Unit
+        }
+    }
+
     private fun deleteCurrentTransaction() {
         val transaction = uiState.value.originalTransaction ?: return
 
         viewModelScope.launch {
+            uiInternalState.update { it.copy(isDeleting = true) }
+
             runCatching {
-                userInput.update { it.copy(isDeleting = true) }
                 deleteTransaction(transaction)
             }.onSuccess {
+                uiInternalState.update { it.copy(isDeleting = false) }
                 navigateBack()
             }.onFailure {
-                userInput.update { it.copy(isDeleting = false) }
-                emitEvent(
-                    TransactionEditorEvent.ShowSnackBar(
-                        messageRes = R.string.snackBar_delete_transaction_error,
-                        actionLabelRes = null,
-                        icon = IconPack.WARNING
-                    )
+
+                uiInternalState.update { it.copy(isDeleting = false) }
+                showSnackBar(
+                    messageRes = R.string.snackBar_delete_transaction_error,
+                    actionLabelRes = null,
+                    icon = IconPack.WARNING
                 )
             }
         }
-    }
-
-    // ─────────────────────────────
-    // User actions – Dialogs / Sheets
-    // ─────────────────────────────
-
-    fun onDiscardDialogAction(action: ConfirmationDialogAction) {
-        val (dialogState, effect) = reduceConfirmationDialog(
-            state = uiState.value.discardDialog,
-            action = action
-        )
-
-        userInput.update {
-            it.copy(discardDialog = dialogState)
-        }
-
-        when (effect) {
-            ConfirmationDialogEffect.Confirmed -> navigateBack()
-
-            null -> Unit
-        }
-    }
-
-    fun onDeleteDialogAction(action: ConfirmationDialogAction) {
-        val (dialogState, effect) = reduceConfirmationDialog(
-            state = uiState.value.deleteDialog,
-            action = action
-        )
-
-        userInput.update {
-            it.copy(deleteDialog = dialogState)
-        }
-
-        when (effect) {
-            ConfirmationDialogEffect.Confirmed -> deleteCurrentTransaction()
-
-            null -> Unit
-        }
-    }
-
-    fun onCurrencySelectorDialogAction(action: SelectorDialogAction<CurrencyType>) {
-        val currentState = uiState.value
-
-        val baseState =
-            if (action is SelectorDialogAction.Open) {
-                currentState.currencyDialog.copy(
-                    initial = currentState.currencyType,
-                    selected = currentState.currencyType
-                )
-            } else currentState.currencyDialog
-
-        val (dialogState, effect) = reduceSelectorDialog(
-            state = baseState,
-            action = action
-        )
-
-        userInput.update {
-            it.copy(currencyDialog = dialogState)
-        }
-
-        when (effect) {
-            is SelectorDialogEffect.Applied ->
-                userInput.update {
-                    it.copy(currencyType = effect.value)
-                }
-
-            null -> Unit
-        }
-    }
-
-    fun onPaymentSelectorAction(
-        action: SelectorSheetAction<PaymentMethodType>
-    ) {
-        val currentState = uiState.value
-
-        val baseState =
-            if (action is SelectorSheetAction.Open) {
-                currentState.paymentMethodSelector.copy(
-                    selected = currentState.paymentMethodType,
-                )
-            } else currentState.paymentMethodSelector
-
-        val newState = reduceSelectorSheet(
-            state = baseState,
-            action = action
-        )
-
-        userInput.update {
-            it.copy(
-                paymentMethodSelector = newState,
-                paymentMethodType = newState.selected
-            )
-        }
-    }
-
-    // ─────────────────────────────
-    // Internal business logic
-    // ─────────────────────────────
-
-    // Automatically fills the description and proceeds with saving the transaction
-    private fun autoFillDescription(text: String) {
-        userInput.update {
-            it.copy(descriptionSource = DescriptionSource.TextDescription(text))
-        }
-
-        saveTransaction(text)
     }
 
     private fun saveTransaction(description: String) {
@@ -475,22 +390,22 @@ class TransactionEditorViewModel @Inject constructor(
         }
     }
 
-    // ─────────────────────────────
-    // Side effects / Events
-    // ─────────────────────────────
-
-    private fun showSnackBar() {
+    private fun showSnackBar(messageRes: Int, actionLabelRes: Int? = null, icon: IconPack) {
         emitEvent(
             TransactionEditorEvent.ShowSnackBar(
-                messageRes = R.string.snackBar_message,
-                actionLabelRes = R.string.snackBar_action,
-                icon = IconPack.EDIT
+                messageRes,
+                actionLabelRes,
+                icon
             )
         )
     }
 
     private fun navigateBack() {
         emitEvent(TransactionEditorEvent.ExitToOrigin)
+    }
+
+    private fun navigateTo(route: String) {
+        emitEvent(TransactionEditorEvent.NavigateTo(route))
     }
 
     private fun emitEvent(event: TransactionEditorEvent) {

@@ -19,13 +19,33 @@ import com.jorgelobo.koobe.utils.date.DateUtils
 import java.util.Date
 
 /**
- * Represents the UI state for the Transaction Editor screen.
+ * Represents the complete UI state of the Transaction Editor screen.
  *
- * This state manages all data required to render the transaction creation or editing interface,
- * including selection data (category, subcategory, shortcut), transaction details (amount,
- * date, currency, payment method), and the visibility/state of various UI components
- * like dialogs and bottom sheets.
+ * This state aggregates all user-editable fields, selected entities, dialog states, and derived
+ * properties required to render and manage the screen.
  *
+ * @property config Editor configuration defining mode and navigation context.
+ * @property originalTransaction Original transaction when editing an existing entry.
+ * @property category Selected category.
+ * @property subcategory Selected subcategory, if any.
+ * @property shortcut Optional shortcut used to prefill the form.
+ * @property descriptionSource Source of the transaction description.
+ * @property inputState Input validation and UI state for text fields.
+ * @property date Selected transaction date.
+ * @property language Current UI language used for date formatting.
+ * @property paymentMethodType Selected payment method.
+ * @property currencyType Selected currency.
+ * @property amountInput Raw amount input as string (keypad representation).
+ * @property amount Parsed numeric amount.
+ * @property isLoading Indicates whether the screen is in a loading state.
+ * @property errorMessage Optional error message to display.
+ * @property transactionInitialSnapshot Snapshot used to detect changes in edit mode.
+ * @property showSnackBar Controls snackbar visibility trigger.
+ * @property discardDialog State of discard confirmation dialog.
+ * @property deleteDialog State of delete confirmation dialog.
+ * @property currencyDialog State of currency selector dialog.
+ * @property paymentMethodSelector State of payment method selector bottom sheet.
+ * @property datePickerDialog State of date picker dialog.
  */
 data class TransactionEditorUiState(
     val config: TransactionEditorConfig? = null,
@@ -33,7 +53,7 @@ data class TransactionEditorUiState(
     val category: Category,
     val subcategory: Subcategory? = null,
     val shortcut: Shortcut? = null,
-    val descriptionSource: DescriptionSource? = null,
+    val descriptionSource: DescriptionSource = DescriptionSource.Empty,
     val inputState: InputState,
     val date: Date = DateUtils.currentDate,
     val language: AppLanguage = AppLanguage.ENGLISH,
@@ -41,10 +61,9 @@ data class TransactionEditorUiState(
     val currencyType: CurrencyType = CurrencyType.EUR,
     val amountInput: String = "0",
     val amount: Double = 0.0,
-    val isSaveButtonEnabled: Boolean = false,
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
-    val initialSnapshot: InitialSnapshot,
+    val transactionInitialSnapshot: TransactionInitialSnapshot,
     val showSnackBar: Boolean = false,
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
@@ -56,25 +75,44 @@ data class TransactionEditorUiState(
         language = language
     )
 ) {
-    /**
-     * Checks if any field in the UI state differs from the initial snapshot.
-     * Used to determine if the Save button should be enabled or if discard confirmation is needed.
-     */
-    val hasUnsavedChanges: Boolean
-        get() = category.id != initialSnapshot.category.id ||
-                subcategory?.id != initialSnapshot.subcategory?.id ||
-                shortcut?.id != initialSnapshot.shortcut?.id ||
-                descriptionSource != initialSnapshot.descriptionSource ||
-                !DateUtils.isSameDay(date, initialSnapshot.date) ||
-                paymentMethodType != initialSnapshot.paymentMethodType ||
-                currencyType != initialSnapshot.currencyType ||
-                amount != initialSnapshot.amount
+
+    /** Returns `true` if the current state represents a valid transaction. */
+    val isValid: Boolean
+        get() = category.id > 0 && amount > 0
 
     /**
-     * Returns the string resource ID for the screen headline based on edit mode and transaction type.
+     * Indicates whether the save action should be enabled.
+     *
+     * In edit mode, returns `true` only if at least one field differs from the initial snapshot.
+     * In create mode, returns `true` as long as the state is valid.
+     */
+    val isSaveEnabled: Boolean
+        get() {
+            val config = config ?: return false
+
+            if (!isValid) return false
+
+            return if (config.isEditMode) {
+                val initial = transactionInitialSnapshot
+
+                category.id != initial.category.id ||
+                        subcategory?.id != initial.subcategory?.id ||
+                        shortcut?.id != initial.shortcut?.id ||
+                        descriptionSource != initial.descriptionSource ||
+                        !DateUtils.isSameDay(date, initial.date) ||
+                        paymentMethodType != initial.paymentMethodType ||
+                        currencyType != initial.currencyType ||
+                        amount != initial.amount
+            } else {
+                true
+            }
+        }
+
+    /**
+     * Returns the string resource ID for the screen headline based on mode and transaction type.
      *
      * @param isEditMode Whether the editor is in edit mode.
-     * @param transactionType The type of the transaction (Expense or Income).
+     * @param transactionType The type of transaction (Expense or Income).
      */
     fun headlineRes(isEditMode: Boolean, transactionType: TransactionType): Int =
         if (isEditMode) {
@@ -91,9 +129,7 @@ data class TransactionEditorUiState(
 
     companion object {
 
-        /**
-         * Returns an empty/loading UI state with default values.
-         */
+        /** Returns an initial loading state with default values. */
         fun initialEmpty(): TransactionEditorUiState {
             val emptyCategory = Category.empty()
 
@@ -102,7 +138,7 @@ data class TransactionEditorUiState(
                 originalTransaction = null,
                 inputState = InputState.DEFAULT,
                 isLoading = true,
-                initialSnapshot = InitialSnapshot(
+                transactionInitialSnapshot = TransactionInitialSnapshot(
                     category = emptyCategory,
                     subcategory = null,
                     shortcut = null,
@@ -120,9 +156,7 @@ data class TransactionEditorUiState(
             )
         }
 
-        /**
-         * Returns a fully initialized UI state with provided configuration and preselected items.
-         */
+        /** Returns an initial state for creating a new transaction. */
         fun initial(
             config: TransactionEditorConfig,
             category: Category,
@@ -138,7 +172,7 @@ data class TransactionEditorUiState(
                 shortcut = shortcut,
                 descriptionSource = DescriptionSource.Empty,
                 inputState = InputState.DEFAULT,
-                initialSnapshot = InitialSnapshot(
+                transactionInitialSnapshot = TransactionInitialSnapshot(
                     category = category,
                     subcategory = subcategory,
                     shortcut = shortcut,
@@ -156,6 +190,7 @@ data class TransactionEditorUiState(
             )
         }
 
+        /** Returns an initial state populated from an existing transaction (edit mode). */
         fun initialFromTransaction(
             config: TransactionEditorConfig,
             transaction: Transaction,
@@ -179,7 +214,7 @@ data class TransactionEditorUiState(
                 currencyType = transaction.currency,
                 amount = transaction.amount,
                 amountInput = transaction.amount.toString(),
-                initialSnapshot = InitialSnapshot(
+                transactionInitialSnapshot = TransactionInitialSnapshot(
                     category = category,
                     subcategory = subcategory,
                     shortcut = shortcut,
@@ -205,9 +240,11 @@ data class TransactionEditorUiState(
 }
 
 /**
- * Snapshot of the initial transaction state used to detect unsaved changes.
+ * Snapshot of the initial transaction state used to detect unsaved changes in edit mode.
+ *
+ * This immutable structure is used as a reference baseline for comparison with the current state.
  */
-data class InitialSnapshot(
+data class TransactionInitialSnapshot(
     val category: Category,
     val subcategory: Subcategory?,
     val shortcut: Shortcut?,

@@ -188,9 +188,15 @@ class CategorySelectorViewModel @Inject constructor(
         val state = _uiState.value
 
         if (!state.isPrimaryActionEnabled) return
+
+        val route = config.target.toRoute(config, state)
         val categoryId = state.selectedCategoryId ?: return
 
-        emitEvent(CategorySelectorEvent.ReturnResult(categoryId))
+        if (config.mode.returnsResult) {
+            navBackWithResult(categoryId)
+        } else {
+            navigateAndReplace(route)
+        }
     }
 
     fun onSubcategoryEditorRequested() {
@@ -360,6 +366,14 @@ class CategorySelectorViewModel @Inject constructor(
 
     private fun navigateTo(route: String) {
         emitEvent(CategorySelectorEvent.NavigateTo(route))
+    }
+
+    private fun navBackWithResult(categoryId: Int) {
+        emitEvent(CategorySelectorEvent.ReturnResult(categoryId))
+    }
+
+    private fun navigateAndReplace(route: String) {
+        emitEvent(CategorySelectorEvent.NavigateAndReplace(route))
     }
 
     private fun navigateBack() {

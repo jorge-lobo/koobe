@@ -21,14 +21,10 @@ import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
-import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
-import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
-import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.handleConfirmationDialog
 import com.jorgelobo.koobe.ui.screen.common.dialog.info.InfoDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
-import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogEffect
-import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
-import com.jorgelobo.koobe.ui.screen.common.dialog.selector.reduceSelectorDialog
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.handleSelectorDialog
 import com.jorgelobo.koobe.ui.screen.subcategories.state.SubcategoryFormState
 import com.jorgelobo.koobe.ui.screen.subcategories.state.SubcategoryUiStateInternal
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -416,40 +412,6 @@ class SubcategoryEditorViewModel @Inject constructor(
 
     private fun handleInfoDialog(visible: Boolean) {
         uiInternalState.update { it.copy(infoDialog = InfoDialogState(visible)) }
-    }
-
-    /**
-     * Centralizes confirmation dialog state transitions and confirmation effects.
-     */
-    private fun handleConfirmationDialog(
-        current: ConfirmationDialogState,
-        action: ConfirmationDialogAction,
-        updateState: (ConfirmationDialogState) -> Unit,
-        onConfirmed: () -> Unit
-    ) {
-        val (newState, effect) = reduceConfirmationDialog(current, action)
-        updateState(newState)
-
-        if (effect is ConfirmationDialogEffect.Confirmed) {
-            onConfirmed()
-        }
-    }
-
-    /**
-     * Centralizes selector dialog state transitions and applied selections.
-     */
-    private fun <T> handleSelectorDialog(
-        current: SelectorDialogState<T>,
-        action: SelectorDialogAction<T>,
-        updateState: (SelectorDialogState<T>) -> Unit,
-        onApplied: (T) -> Unit
-    ) {
-        val (newState, effect) = reduceSelectorDialog(current, action)
-        updateState(newState)
-
-        (effect as? SelectorDialogEffect.Applied)?.let {
-            onApplied(it.value)
-        }
     }
 
     private fun navigateBack() {
