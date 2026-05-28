@@ -11,21 +11,18 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
 /**
- * Composable that observes side effects emitted by [TransactionEditorViewModel] and triggers
- * corresponding UI actions such as navigation or snackBars.
+ * Collects and reacts to one-off side effects emitted by [TransactionEditorViewModel].
  *
- * This function does not display UI itself, but instead reacts to one-off events:
- * - Navigates back to the origin screen when [TransactionEditorEvent.ExitToOrigin] is emitted
- * - Shows a snackBar when [TransactionEditorEvent.ShowSnackBar] is emitted, handling
- *   action and icon clicks to optionally auto-fill the transaction description.
+ * This composable handles navigation events and snackbar presentations, ensuring they are
+ * executed outside of the normal UI state flow.
  *
- * @param navController Controller used for navigation between screens.
- * @param config The transaction editor configuration.
- * @param viewModel The [TransactionEditorViewModel] providing state and events.
- * @param snackBarHostState The host state to display snackBars.
- * @param scope CoroutineScope used for launching snackBar dismissal or other side effects.
- * @param autoFillDescriptionState A state holding the text to auto-fill when the snackBar action is clicked.
- * @param onSnackBarConfigChange Callback triggered whenever the snackBar configuration changes.
+ * @property navController Navigation controller used to perform screen navigation actions.
+ * @property config Editor configuration containing navigation origin and mode information.
+ * @property viewModel ViewModel emitting editor events.
+ * @property snackBarHostState Host state used to display snackbars.
+ * @property scope Coroutine scope used for snackbar and UI side-effect operations.
+ * @property autoFillDescriptionState Holds an optional description used for autofill actions.
+ * @property onSnackBarConfigChange Callback used to update snackbar configuration state.
  */
 @Composable
 fun TransactionEditorEffects(

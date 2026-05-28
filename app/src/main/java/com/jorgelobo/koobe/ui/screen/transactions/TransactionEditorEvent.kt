@@ -4,22 +4,29 @@ import androidx.annotation.StringRes
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 
 /**
- * Represents one-off events emitted by [TransactionEditorViewModel] to the UI.
+ * One-off events emitted by the Transaction Editor ViewModel to be handled by the UI layer.
  *
- * These events are typically used for navigation, snackBars, or other transient UI effects that
- * should not be stored in the state.
+ * These events represent actions that should not be part of the persistent UI state,
+ * such as navigation or transient UI feedback.
  */
 sealed interface TransactionEditorEvent {
 
+    /** Closes the editor and navigates back to the origin screen. */
     data object ExitToOrigin : TransactionEditorEvent
+
+    /**
+     * Requests navigation to a specific route.
+     *
+     * @property route Destination navigation route.
+     */
     data class NavigateTo(val route: String) : TransactionEditorEvent
 
     /**
      * Requests showing a snackBar in the UI.
      *
-     * @param messageRes The string resource ID for the main message.
-     * @param actionLabelRes Optional string resource ID for the action button.
-     * @param icon Optional icon to display in the snackBar.
+     * @property messageRes String resource ID for the main message.
+     * @property actionLabelRes Optional string resource ID for the action button.
+     * @property icon Optional icon to display in the snackBar.
      */
     data class ShowSnackBar(
         @field:StringRes val messageRes: Int,

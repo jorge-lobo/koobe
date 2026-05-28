@@ -7,9 +7,6 @@ import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorUiState
 import com.jorgelobo.koobe.utils.resolvedColor
 
-/**
- * Displays the selected category, subcategory/shortcut, and allows changing it.
- */
 @Composable
 fun TransactionCategorySection(
     state: TransactionEditorUiState,

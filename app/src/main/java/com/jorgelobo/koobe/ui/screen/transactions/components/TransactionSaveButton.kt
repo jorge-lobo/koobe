@@ -9,9 +9,6 @@ import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.components.model.enums.UiState
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorUiState
 
-/**
- * Primary save button, enabled or disabled based on state.isSaveButtonEnabled.
- */
 @Composable
 fun TransactionSaveButton(
     state: TransactionEditorUiState,

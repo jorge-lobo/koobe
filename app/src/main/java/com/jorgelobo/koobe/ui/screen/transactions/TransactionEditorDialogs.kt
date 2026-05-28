@@ -24,23 +24,18 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogAc
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 
 /**
- * Composable that displays all dialogs and bottom sheets for the transaction editor.
+ * Hosts all dialogs and bottom sheets used by the Transaction Editor screen.
  *
- * This function observes the [TransactionEditorUiState] and conditionally shows:
- * - A discard confirmation dialog
- * - Currency selection dialog
- * - Date picker dialog
- * - Payment method selection bottom sheet
+ * Each dialog is rendered based on the corresponding visibility flag in [state],
+ * and user actions are propagated through the provided callbacks.
  *
- * All user interactions are propagated back via callback lambdas, which are typically handled
- * by the [TransactionEditorViewModel].
- *
- * @param state The current UI state of the transaction editor.
- * @param sheetState The [SheetState] used for the modal bottom sheet.
- * @param onDiscardDialogAction Callback for handling confirmation dialog actions.
- * @param onCurrencySelectorDialogAction Callback for handling currency selection dialog actions.
- * @param onDatePickerDialogAction Callback for handling date picker dialog actions.
- * @param onPaymentSelectorAction Callback for handling payment method selection actions.
+ * @property state UI state controlling visibility and data for each dialog.
+ * @property sheetState Material sheet state used by bottom sheet components.
+ * @property onDiscardDialogAction Handles discard confirmation dialog actions.
+ * @property onDeleteDialogAction Handles delete confirmation dialog actions.
+ * @property onCurrencySelectorDialogAction Handles currency selector dialog actions.
+ * @property onDatePickerDialogAction Handles date picker dialog actions.
+ * @property onPaymentSelectorAction Handles payment method selector bottom sheet actions.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

@@ -9,8 +9,15 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.datePicker.DatePickerDialogAc
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import java.util.Date
 
+/**
+ * User intents for the Transaction Editor screen.
+ *
+ * This sealed interface represents all possible user actions and UI-driven state changes
+ * that are sent to the ViewModel for processing.
+ */
 sealed interface TransactionEditorIntent {
 
+    /** Intents that directly update or modify the editor state. */
     sealed interface State : TransactionEditorIntent {
         data class DescriptionInputChanged(val description: String) : State
         data class AmountKeyPressed(val key: KeypadKey) : State
@@ -21,6 +28,7 @@ sealed interface TransactionEditorIntent {
         data object AmountResetClicked : State
     }
 
+    /** Intents representing user actions or UI events that trigger side effects or flows. */
     sealed interface Action : TransactionEditorIntent {
         data object SaveClicked : Action
         data object CloseClicked : Action

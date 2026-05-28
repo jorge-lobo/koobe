@@ -9,13 +9,33 @@ import com.jorgelobo.koobe.ui.mappers.toAmountAction
 import com.jorgelobo.koobe.ui.screen.transactions.state.TransactionFormState
 import com.jorgelobo.koobe.ui.screen.transactions.state.TransactionUiStateInternal
 
+/**
+ * Pure reducer responsible for transforming Transaction Editor state based on State intents.
+ *
+ * This reducer takes the current form and internal state and produces a new immutable state
+ * without side effects.
+ */
 object TransactionEditorReducer {
 
+    /**
+     * Result of a reduction, containing updated form and internal UI state.
+     *
+     * @property form Updated form state.
+     * @property internal Updated internal UI state.
+     */
     data class Result(
         val form: TransactionFormState,
         val internal: TransactionUiStateInternal
     )
 
+    /**
+     * Applies a [TransactionEditorIntent.State] to the current state and returns a new state.
+     *
+     * @param intent User intent representing a state change.
+     * @param currentForm Current form state before reduction.
+     * @param currentInternal Current internal UI state before reduction.
+     * @param baseState Base UI state used for reference comparisons and defaults.
+     */
     fun reduce(
         intent: TransactionEditorIntent.State,
         currentForm: TransactionFormState,

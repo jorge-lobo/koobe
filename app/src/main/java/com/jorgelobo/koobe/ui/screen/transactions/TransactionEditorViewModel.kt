@@ -51,6 +51,12 @@ import kotlinx.serialization.json.Json
 import java.net.URLDecoder
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the state and business logic of the Transaction Editor screen.
+ *
+ * It combines repository data, user settings, and UI intents into a single reactive state,
+ * while exposing one-off events such as navigation and snackbars through [events].
+ */
 @HiltViewModel
 class TransactionEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
@@ -64,18 +70,24 @@ class TransactionEditorViewModel @Inject constructor(
     private val deleteTransaction: DeleteTransactionUseCase
 ) : ViewModel() {
 
+    /** Stream of one-off UI events such as navigation and snackbar requests. */
     private val _events = MutableSharedFlow<TransactionEditorEvent>()
     val events = _events.asSharedFlow()
 
+    /** Editor configuration decoded from navigation arguments. */
     private val config: TransactionEditorConfig =
         savedStateHandle.get<String>("config")
             ?.let { URLDecoder.decode(it, "UTF-8") }
             ?.let { Json.decodeFromString<TransactionEditorConfig>(it) }
             ?: error("Missing TransactionEditorConfig")
 
+    /** Mutable form state representing user input changes. */
     private val formState = MutableStateFlow(TransactionFormState())
+
+    /** Mutable internal UI state for dialogs and transient UI flags. */
     private val uiInternalState = MutableStateFlow(TransactionUiStateInternal())
 
+    /** Flow of the transaction being edited, or null in create mode. */
     private val transactionFlow: Flow<Transaction?> =
         if (config.isEditMode) {
             transactionRepository.getTransactionByIdFlow(config.transactionId!!)
@@ -95,6 +107,7 @@ class TransactionEditorViewModel @Inject constructor(
 
     private val userSettingsFlow = getUserSettings()
 
+    /** Base state derived from repositories and user settings. */
     private val baseStateFlow: Flow<TransactionEditorUiState> =
         combine(
             categoryFlow,
@@ -130,6 +143,11 @@ class TransactionEditorViewModel @Inject constructor(
             }
         }
 
+    /**
+     * Main UI state exposed to the screen.
+     *
+     * Combines base state, form state, and internal UI state into a single immutable state object.
+     */
     val uiState: StateFlow<TransactionEditorUiState> =
         combine(
             baseStateFlow,
@@ -165,6 +183,7 @@ class TransactionEditorViewModel @Inject constructor(
                 initialValue = TransactionEditorUiState.initialEmpty()
             )
 
+    /** Entry point for all UI intents coming from the screen. */
     fun onIntent(intent: TransactionEditorIntent) {
         when (intent) {
 
@@ -208,6 +227,7 @@ class TransactionEditorViewModel @Inject constructor(
         }
     }
 
+    /** Handles save flow including description resolution and validation. */
     private fun handleSave() {
         val state = uiState.value
 
@@ -229,6 +249,7 @@ class TransactionEditorViewModel @Inject constructor(
         }
     }
 
+    /** Handles navigation or discard confirmation depending on unsaved changes. */
     private fun handleClose() {
         if (formState.value.hasChanges) {
             handleDiscardDialog(ConfirmationDialogAction.Open)
@@ -237,6 +258,7 @@ class TransactionEditorViewModel @Inject constructor(
         }
     }
 
+    /** Navigates to category selector screen. */
     private fun handleChangeCategory() {
         val state = uiState.value
         val mode = if (config.isEditMode) {

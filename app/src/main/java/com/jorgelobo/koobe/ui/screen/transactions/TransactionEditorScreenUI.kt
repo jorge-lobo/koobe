@@ -34,31 +34,6 @@ import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.date.DateUtils
 
-/**
- * Composable that renders the main UI of the Transaction Editor screen.
- *
- * It displays the following sections:
- * 1. Category summary with change button
- * 2. Transaction date with "Today" button and date picker
- * 3. Description input with reset functionality
- * 4. Amount editor with payment method, currency selector, and keypad
- * 5. Save button
- *
- * Each section is modularized into private composables for clarity.
- *
- * @param state The current UI state of the transaction editor.
- * @param modifier Optional [Modifier] for layout adjustments.
- * @param onChangeClick Callback when the user taps the category/subcategory change button.
- * @param onTodayClick Callback when the "Today" button is clicked to set the current date.
- * @param onDatePickClick Callback when the user opens the date picker dialog.
- * @param onDescriptionChange Callback when the description text is modified.
- * @param onResetDescriptionClick Callback when the description reset button is clicked.
- * @param onResetAmountClick Callback when the amount reset button is clicked.
- * @param onPaymentSelectorClick Callback when the payment method selector is opened.
- * @param onCurrencySelectorClick Callback when the currency selector is opened.
- * @param onKeyClick Callback when a keypad key is pressed to input the transaction amount.
- * @param onSaveClick Callback when the user taps the Save button.
- */
 @Composable
 fun TransactionEditorScreenUI(
     state: TransactionEditorUiState,
