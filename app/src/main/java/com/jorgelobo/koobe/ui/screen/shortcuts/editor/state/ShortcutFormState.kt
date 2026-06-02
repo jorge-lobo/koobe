@@ -13,7 +13,8 @@ data class ShortcutFormState(
     val repeat: FieldUpdate<Boolean> = FieldUpdate.Unchanged,
     val repeatFrequency: FieldUpdate<PeriodType?> = FieldUpdate.Unchanged,
     val paymentMethod: FieldUpdate<PaymentMethodType> = FieldUpdate.Unchanged,
-    val currency: FieldUpdate<CurrencyType> = FieldUpdate.Unchanged
+    val currency: FieldUpdate<CurrencyType> = FieldUpdate.Unchanged,
+    val amountKeypadTouched: Boolean = false
 ) {
     val hasChanges: Boolean
         get() = name is FieldUpdate.Updated ||
