@@ -53,16 +53,6 @@ object ShortcutEditorReducer {
                 )
             }
 
-            ShortcutEditorIntent.State.AmountResetClicked -> {
-                Result(
-                    form = currentForm.copy(
-                        amountInput = FieldUpdate.Unchanged,
-                        amountKeypadTouched = false
-                    ),
-                    internal = currentInternal
-                )
-            }
-
             is ShortcutEditorIntent.State.CurrencyChanged -> {
                 Result(
                     form = currentForm.copy(

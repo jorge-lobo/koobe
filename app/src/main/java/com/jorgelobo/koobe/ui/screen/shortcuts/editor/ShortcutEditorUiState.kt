@@ -113,7 +113,7 @@ data class ShortcutEditorUiState(
                     icon = IconPack.PLACEHOLDER,
                     amount = 0.0,
                     repeat = false,
-                    repeatFrequency = PeriodType.DAILY,
+                    repeatFrequency = null,
                     paymentMethodType = PaymentMethodType.CASH,
                     currencyType = CurrencyType.EUR
                 ),
