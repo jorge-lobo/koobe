@@ -5,9 +5,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.core.model.resolve
 import com.jorgelobo.koobe.domain.model.category.Category
+import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
+import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
+import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.state.ShortcutFormState
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.state.ShortcutUiStateInternal
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -29,7 +36,7 @@ class ShortcutEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     shortcutRepository: ShortcutRepository,
     categoryRepository: CategoryRepository
-): ViewModel() {
+) : ViewModel() {
 
     private val _events = MutableSharedFlow<ShortcutEditorEvent>()
     val events = _events.asSharedFlow()
@@ -120,4 +127,57 @@ class ShortcutEditorViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5000),
                 initialValue = ShortcutEditorUiState.initialEmpty()
             )
+
+    fun onIntent(intent: ShortcutEditorIntent) {
+        when (intent) {
+            is ShortcutEditorIntent.Action -> handleAction(intent)
+            is ShortcutEditorIntent.State -> reduceState(intent)
+        }
+    }
+
+    private fun reduceState(intent: ShortcutEditorIntent.State) {
+        val result = ShortcutEditorReducer.reduce(
+            intent = intent,
+            currentForm = formState.value,
+            currentInternal = uiInternalState.value,
+            baseState = uiState.value
+        )
+
+        formState.value = result.form
+        uiInternalState.value = result.internal
+    }
+
+    private fun handleAction(intent: ShortcutEditorIntent.Action) {
+        when (intent) {
+            is ShortcutEditorIntent.Action.DiscardDialogUpdated -> handleDiscardDialog(intent.action)
+
+            is ShortcutEditorIntent.Action.DeleteDialogUpdated -> handleDeleteDialog(intent.action)
+
+            is ShortcutEditorIntent.Action.IconSelectDialogUpdated -> handleIconSelectDialog(intent.action)
+
+            is ShortcutEditorIntent.Action.CurrencyDialogUpdated -> handleCurrencyDialog(intent.action)
+
+            is ShortcutEditorIntent.Action.PeriodSelectorUpdated -> handlePeriodSelectorSheet(intent.action)
+
+            is ShortcutEditorIntent.Action.PaymentMethodSelectorUpdated -> handlePaymentMethodSelectorSheet(
+                intent.action
+            )
+
+            ShortcutEditorIntent.Action.SaveClicked -> handleSave()
+            ShortcutEditorIntent.Action.CloseClicked -> handleClose()
+            ShortcutEditorIntent.Action.ChangeCategoryClicked -> handleChangeCategory()
+            ShortcutEditorIntent.Action.RequestDeleteShortcut ->
+                handleDeleteDialog(ConfirmationDialogAction.Open)
+        }
+    }
+
+    private fun handleSave() {}
+    private fun handleClose() {}
+    private fun handleChangeCategory() {}
+    private fun handleDiscardDialog(action: ConfirmationDialogAction) {}
+    private fun handleDeleteDialog(action: ConfirmationDialogAction) {}
+    private fun handleIconSelectDialog(action: SelectorDialogAction<IconPack>) {}
+    private fun handleCurrencyDialog(action: SelectorDialogAction<CurrencyType>) {}
+    private fun handlePaymentMethodSelectorSheet(action: SelectorSheetAction<PaymentMethodType>) {}
+    private fun handlePeriodSelectorSheet(action: SelectorSheetAction<PeriodType>) {}
 }
