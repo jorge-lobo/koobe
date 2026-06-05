@@ -34,7 +34,7 @@ object ShortcutEditorReducer {
             }
 
             is ShortcutEditorIntent.State.AmountKeyPressed -> {
-                val isEditMode = baseState.config?.isEditMode == true
+                val isEditMode = baseState.config is ShortcutEditorConfig.Edit
                 val shouldReset = isEditMode && !currentForm.amountKeypadTouched
                 val currentAmount =
                     if (shouldReset) "0"
