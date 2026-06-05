@@ -24,7 +24,7 @@ data class ShortcutEditorUiState(
     val amountInput: String = "0",
     val amount: Double = 0.0,
     val repeat: Boolean = false,
-    val repeatFrequency: PeriodType? = PeriodType.DAILY,
+    val repeatFrequency: PeriodType? = null,
     val shortcutInitialSnapshot: ShortcutInitialSnapshot,
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
@@ -45,27 +45,28 @@ data class ShortcutEditorUiState(
 
             if (!isValid) return false
 
-            return if (config.isEditMode) {
-                val initial = shortcutInitialSnapshot
+            return when (config) {
+                is ShortcutEditorConfig.Create -> true
 
-                category.id != initial.category.id ||
-                        name != initial.name ||
-                        icon != initial.icon ||
-                        amount != initial.amount ||
-                        repeat != initial.repeat ||
-                        repeatFrequency != initial.repeatFrequency ||
-                        paymentMethodType != initial.paymentMethodType ||
-                        currencyType != initial.currencyType
-            } else {
-                true
+                is ShortcutEditorConfig.Edit -> {
+                    val initial = shortcutInitialSnapshot
+
+                    category.id != initial.category.id ||
+                            name != initial.name ||
+                            icon != initial.icon ||
+                            amount != initial.amount ||
+                            repeat != initial.repeat ||
+                            repeatFrequency != initial.repeatFrequency ||
+                            paymentMethodType != initial.paymentMethodType ||
+                            currencyType != initial.currencyType
+                }
             }
         }
 
-    fun headlineRes(isEditMode: Boolean): Int =
-        if (isEditMode) {
-            R.string.headline_shortcut_editor
-        } else {
-            R.string.headline_shortcut_creator
+    val headlineRes: Int
+        get() = when (config) {
+            is ShortcutEditorConfig.Create -> R.string.headline_shortcut_creator
+            else -> R.string.headline_shortcut_editor
         }
 
     companion object {
@@ -74,7 +75,6 @@ data class ShortcutEditorUiState(
 
             return ShortcutEditorUiState(
                 category = emptyCategory,
-                originalShortcut = null,
                 inputState = InputState.DEFAULT,
                 isLoading = true,
                 shortcutInitialSnapshot = ShortcutInitialSnapshot(
@@ -83,7 +83,7 @@ data class ShortcutEditorUiState(
                     icon = IconPack.PLACEHOLDER,
                     amount = 0.0,
                     repeat = false,
-                    repeatFrequency = PeriodType.DAILY,
+                    repeatFrequency = null,
                     paymentMethodType = PaymentMethodType.CASH,
                     currencyType = CurrencyType.EUR
                 ),
@@ -104,7 +104,6 @@ data class ShortcutEditorUiState(
         ): ShortcutEditorUiState {
             return ShortcutEditorUiState(
                 config = config,
-                originalShortcut = null,
                 category = category,
                 inputState = InputState.DEFAULT,
                 shortcutInitialSnapshot = ShortcutInitialSnapshot(
