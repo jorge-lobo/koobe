@@ -123,7 +123,7 @@ class DashboardViewModel @Inject constructor(
 
     fun onShortcutItemClick(item: ShortcutUiModel) {
         val route = Route.ShortcutEditor.create(
-            ShortcutEditorConfig(shortcutId = item.shortcut.id)
+            ShortcutEditorConfig.Edit(shortcutId = item.shortcut.id)
         )
 
         navigateTo(route)
@@ -133,7 +133,13 @@ class DashboardViewModel @Inject constructor(
         val route = if (hasShortcuts) {
             Route.ShortcutManager.route
         } else {
-            Route.ShortcutEditor.create(ShortcutEditorConfig(shortcutId = null))
+            Route.CategorySelector.create(
+                CategorySelectorConfig(
+                    mode = CategorySelectorMode.CREATE_SHORTCUT,
+                    target = CategorySelectorTarget.SHORTCUT_EDITOR,
+                    initialTransactionType = TransactionType.EXPENSE
+                )
+            )
         }
 
         navigateTo(route)

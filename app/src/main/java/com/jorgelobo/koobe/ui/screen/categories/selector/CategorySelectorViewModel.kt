@@ -215,13 +215,14 @@ class CategorySelectorViewModel @Inject constructor(
     fun onShortcutEditorRequested() {
         val state = _uiState.value
 
+        val config = if (state.selectedShortcutId != null) {
+            ShortcutEditorConfig.Edit(shortcutId = requireNotNull(state.selectedShortcutId))
+        } else {
+            ShortcutEditorConfig.Create(categoryId = requireNotNull(state.selectedCategoryId))
+        }
+
         navigateTo(
-            Route.ShortcutEditor.create(
-                ShortcutEditorConfig(
-                    shortcutId = state.selectedShortcutId,
-                    categoryId = state.selectedCategoryId
-                )
-            )
+            Route.ShortcutEditor.create(config)
         )
     }
 

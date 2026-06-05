@@ -112,10 +112,11 @@ fun CategorySelectorTarget.toRoute(
     )
 
     CategorySelectorTarget.SHORTCUT_EDITOR -> Route.ShortcutEditor.create(
-        ShortcutEditorConfig(
-            shortcutId = config.shortcutId,
-            categoryId = uiState.selectedCategoryId
-        )
+        if (config.shortcutId != null) {
+            ShortcutEditorConfig.Edit(shortcutId = config.shortcutId)
+        } else {
+            ShortcutEditorConfig.Create(categoryId = requireNotNull(uiState.selectedCategoryId))
+        }
     )
 
     CategorySelectorTarget.SUBCATEGORY_EDITOR -> Route.SubcategoryEditor.create(

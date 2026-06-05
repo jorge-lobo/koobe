@@ -18,6 +18,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.state.ShortcutFormState
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.state.ShortcutUiStateInternal
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,7 +26,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.serialization.json.Json
 import java.net.URLDecoder
@@ -54,13 +57,29 @@ class ShortcutEditorViewModel @Inject constructor(
 
     // Data Sources
     private val shortcutFlow: Flow<Shortcut?> =
-        if (config.isEditMode) {
-            shortcutRepository.getShortcutByIdFlow(config.shortcutId!!)
-        } else {
-            flowOf(null)
+        when (config) {
+            is ShortcutEditorConfig.Create -> flowOf(null)
+            is ShortcutEditorConfig.Edit -> shortcutRepository.getShortcutByIdFlow(config.shortcutId)
         }
 
-    private val categoryFlow = categoryRepository.getCategoryByIdFlow(config.categoryId)
+    private val categoryIdFlow: Flow<Int?> =
+        shortcutFlow.map { shortcut ->
+            when (config) {
+                is ShortcutEditorConfig.Create -> config.categoryId
+                is ShortcutEditorConfig.Edit -> shortcut?.categoryId
+            }
+        }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val categoryFlow: Flow<Category?> =
+        categoryIdFlow.flatMapLatest { categoryId ->
+            if (categoryId != null) {
+                categoryRepository.getCategoryByIdFlow(categoryId)
+            } else {
+                flowOf(null)
+            }
+        }
+
 
     // Base State
 
@@ -69,19 +88,26 @@ class ShortcutEditorViewModel @Inject constructor(
             shortcutFlow,
             categoryFlow
         ) { shortcut, category ->
-            val safeCategory = category ?: Category.empty()
 
-            if (config.isEditMode && shortcut != null) {
-                ShortcutEditorUiState.initialFromShortcut(
-                    config = config,
-                    shortcut = shortcut,
-                    category = safeCategory,
-                )
-            } else {
-                ShortcutEditorUiState.initial(
-                    config = config,
-                    category = safeCategory
-                )
+            if (category == null) {
+                return@combine ShortcutEditorUiState.initialEmpty()
+            }
+
+            when {
+                config is ShortcutEditorConfig.Edit && shortcut != null -> {
+                    ShortcutEditorUiState.initialFromShortcut(
+                        config = config,
+                        shortcut = shortcut,
+                        category = category,
+                    )
+                }
+
+                else -> {
+                    ShortcutEditorUiState.initial(
+                        config = config,
+                        category = category
+                    )
+                }
             }
         }
 
@@ -149,19 +175,23 @@ class ShortcutEditorViewModel @Inject constructor(
 
     private fun handleAction(intent: ShortcutEditorIntent.Action) {
         when (intent) {
-            is ShortcutEditorIntent.Action.DiscardDialogUpdated -> handleDiscardDialog(intent.action)
+            is ShortcutEditorIntent.Action.DiscardDialogUpdated ->
+                handleDiscardDialog(intent.action)
 
-            is ShortcutEditorIntent.Action.DeleteDialogUpdated -> handleDeleteDialog(intent.action)
+            is ShortcutEditorIntent.Action.DeleteDialogUpdated ->
+                handleDeleteDialog(intent.action)
 
-            is ShortcutEditorIntent.Action.IconSelectDialogUpdated -> handleIconSelectDialog(intent.action)
+            is ShortcutEditorIntent.Action.IconSelectDialogUpdated ->
+                handleIconSelectDialog(intent.action)
 
-            is ShortcutEditorIntent.Action.CurrencyDialogUpdated -> handleCurrencyDialog(intent.action)
+            is ShortcutEditorIntent.Action.CurrencyDialogUpdated ->
+                handleCurrencyDialog(intent.action)
 
-            is ShortcutEditorIntent.Action.PeriodSelectorUpdated -> handlePeriodSelectorSheet(intent.action)
+            is ShortcutEditorIntent.Action.PeriodSelectorUpdated ->
+                handlePeriodSelectorSheet(intent.action)
 
-            is ShortcutEditorIntent.Action.PaymentMethodSelectorUpdated -> handlePaymentMethodSelectorSheet(
-                intent.action
-            )
+            is ShortcutEditorIntent.Action.PaymentMethodSelectorUpdated ->
+                handlePaymentMethodSelectorSheet(intent.action)
 
             ShortcutEditorIntent.Action.SaveClicked -> handleSave()
             ShortcutEditorIntent.Action.CloseClicked -> handleClose()
