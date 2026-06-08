@@ -35,24 +35,22 @@ fun ShortcutEditorScreen(
                         icon = IconPack.CLOSE,
                         onClick = {}
                     ),
-                    trailingActions = when (config) {
-                        is ShortcutEditorConfig.Create -> listOf(
+                    trailingActions = buildList {
+                        add(
                             AppBarAction(
                                 IconPack.CHANGE,
                                 onClick = {}
                             )
                         )
 
-                        is ShortcutEditorConfig.Edit -> listOf(
-                            AppBarAction(
-                                IconPack.CHANGE,
-                                onClick = {}
-                            ),
-                            AppBarAction(
-                                IconPack.DELETE,
-                                onClick = {}
+                        if (config is ShortcutEditorConfig.Edit) {
+                            add(
+                                AppBarAction(
+                                    IconPack.DELETE,
+                                    onClick = {}
+                                )
                             )
-                        )
+                        }
                     }
                 )
             )
