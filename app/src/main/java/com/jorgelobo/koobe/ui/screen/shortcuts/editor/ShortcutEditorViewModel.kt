@@ -12,6 +12,10 @@ import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.navigation.Route
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
@@ -30,6 +34,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import java.net.URLDecoder
 import javax.inject.Inject
@@ -203,11 +208,44 @@ class ShortcutEditorViewModel @Inject constructor(
 
     private fun handleSave() {}
     private fun handleClose() {}
-    private fun handleChangeCategory() {}
+
+    private fun handleChangeCategory() {
+        val state = uiState.value
+        val mode = when (config) {
+            is ShortcutEditorConfig.Create -> CategorySelectorMode.CREATE_SHORTCUT
+            is ShortcutEditorConfig.Edit -> CategorySelectorMode.EDIT_SHORTCUT
+        }
+
+        val route = Route.CategorySelector.create(
+            CategorySelectorConfig(
+                mode = mode,
+                target = CategorySelectorTarget.SHORTCUT_EDITOR,
+                initialTransactionType = state.category.type
+            )
+        )
+        navigateTo(route)
+    }
+
     private fun handleDiscardDialog(action: ConfirmationDialogAction) {}
     private fun handleDeleteDialog(action: ConfirmationDialogAction) {}
     private fun handleIconSelectDialog(action: SelectorDialogAction<IconPack>) {}
     private fun handleCurrencyDialog(action: SelectorDialogAction<CurrencyType>) {}
     private fun handlePaymentMethodSelectorSheet(action: SelectorSheetAction<PaymentMethodType>) {}
     private fun handlePeriodSelectorSheet(action: SelectorSheetAction<PeriodType>) {}
+
+    private fun showSnackBar(messageRes: Int, actionRes: Int? = null, icon: IconPack) {
+        emitEvent(ShortcutEditorEvent.ShowSnackbar(messageRes, actionRes, icon))
+    }
+
+    private fun navigateBack() {
+        emitEvent(ShortcutEditorEvent.NavigateBack)
+    }
+
+    private fun navigateTo(route: String) {
+        emitEvent(ShortcutEditorEvent.NavigateTo(route))
+    }
+
+    private fun emitEvent(event: ShortcutEditorEvent) {
+        viewModelScope.launch { _events.emit(event) }
+    }
 }
