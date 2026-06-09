@@ -17,8 +17,11 @@ import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.handleSelectorSheet
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.handleConfirmationDialog
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.selector.handleSelectorDialog
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.state.ShortcutFormState
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.state.ShortcutUiStateInternal
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -34,6 +37,7 @@ import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.serialization.json.Json
 import java.net.URLDecoder
@@ -187,10 +191,10 @@ class ShortcutEditorViewModel @Inject constructor(
                 handleDeleteDialog(intent.action)
 
             is ShortcutEditorIntent.Action.IconSelectDialogUpdated ->
-                handleIconSelectDialog(intent.action)
+                handleIconSelectorDialog(intent.action)
 
             is ShortcutEditorIntent.Action.CurrencyDialogUpdated ->
-                handleCurrencyDialog(intent.action)
+                handleCurrencySelectorDialog(intent.action)
 
             is ShortcutEditorIntent.Action.PeriodSelectorUpdated ->
                 handlePeriodSelectorSheet(intent.action)
@@ -206,8 +210,17 @@ class ShortcutEditorViewModel @Inject constructor(
         }
     }
 
-    private fun handleSave() {}
-    private fun handleClose() {}
+    private fun handleSave() {
+
+    }
+
+    private fun handleClose() {
+        if (formState.value.hasChanges) {
+            handleDiscardDialog(ConfirmationDialogAction.Open)
+        } else {
+            navigateBack()
+        }
+    }
 
     private fun handleChangeCategory() {
         val state = uiState.value
@@ -226,15 +239,94 @@ class ShortcutEditorViewModel @Inject constructor(
         navigateTo(route)
     }
 
-    private fun handleDiscardDialog(action: ConfirmationDialogAction) {}
-    private fun handleDeleteDialog(action: ConfirmationDialogAction) {}
-    private fun handleIconSelectDialog(action: SelectorDialogAction<IconPack>) {}
-    private fun handleCurrencyDialog(action: SelectorDialogAction<CurrencyType>) {}
-    private fun handlePaymentMethodSelectorSheet(action: SelectorSheetAction<PaymentMethodType>) {}
-    private fun handlePeriodSelectorSheet(action: SelectorSheetAction<PeriodType>) {}
+    private fun handleDiscardDialog(action: ConfirmationDialogAction) {
+        handleConfirmationDialog(
+            current = uiInternalState.value.discardDialog,
+            action = action,
+            updateState = { newDialogState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(discardDialog = newDialogState)
+                }
+            },
+            onConfirmed = { navigateBack() }
+        )
+    }
 
-    private fun showSnackBar(messageRes: Int, actionRes: Int? = null, icon: IconPack) {
-        emitEvent(ShortcutEditorEvent.ShowSnackbar(messageRes, actionRes, icon))
+    private fun handleDeleteDialog(action: ConfirmationDialogAction) {
+        handleConfirmationDialog(
+            current = uiInternalState.value.deleteDialog,
+            action = action,
+            updateState = { newDialogState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(deleteDialog = newDialogState)
+                }
+            },
+            onConfirmed = { deleteCurrentShortcut() }
+        )
+    }
+
+    private fun handleIconSelectorDialog(action: SelectorDialogAction<IconPack>) {
+        handleSelectorDialog(
+            current = uiInternalState.value.iconSelectDialog,
+            action = action,
+            updateState = { newDialogState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(iconSelectDialog = newDialogState)
+                }
+            },
+            onApplied = { onIntent(ShortcutEditorIntent.State.IconChanged(it)) }
+        )
+    }
+
+    private fun handleCurrencySelectorDialog(action: SelectorDialogAction<CurrencyType>) {
+        handleSelectorDialog(
+            current = uiInternalState.value.currencyDialog,
+            action = action,
+            updateState = { newDialogState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(currencyDialog = newDialogState)
+                }
+            },
+            onApplied = { onIntent(ShortcutEditorIntent.State.CurrencyChanged(it)) }
+        )
+    }
+
+    private fun handlePaymentMethodSelectorSheet(action: SelectorSheetAction<PaymentMethodType>) {
+        handleSelectorSheet(
+            current = uiInternalState.value.paymentMethodSelector,
+            action = action,
+            updateState = { newState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(paymentMethodSelector = newState)
+                }
+            },
+            onApplied = {
+                onIntent(ShortcutEditorIntent.State.PaymentMethodChanged(it))
+            }
+        )
+    }
+
+    private fun handlePeriodSelectorSheet(action: SelectorSheetAction<PeriodType>) {
+        handleSelectorSheet(
+            current = uiInternalState.value.periodSelector,
+            action = action,
+            updateState = { newState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(periodSelector = newState)
+                }
+            },
+            onApplied = {
+                onIntent(ShortcutEditorIntent.State.RepeatPeriodChanged(it))
+            }
+        )
+    }
+
+    private fun deleteCurrentShortcut() {
+
+    }
+
+    private fun showSnackBar(messageRes: Int) {
+        emitEvent(ShortcutEditorEvent.ShowSnackbar(messageRes, null, IconPack.WARNING))
     }
 
     private fun navigateBack() {
