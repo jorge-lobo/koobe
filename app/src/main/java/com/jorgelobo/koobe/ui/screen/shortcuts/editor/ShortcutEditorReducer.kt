@@ -122,6 +122,18 @@ object ShortcutEditorReducer {
                     internal = currentInternal
                 )
             }
+
+            is ShortcutEditorIntent.State.CategoryChanged -> {
+                Result(
+                    form = currentForm.copy(
+                        categoryId = updateIfChanged(
+                            intent.categoryId,
+                            baseState.category.id
+                        )
+                    ),
+                    internal = currentInternal
+                )
+            }
         }
     }
 }

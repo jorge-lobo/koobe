@@ -9,6 +9,7 @@ import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 data class ShortcutFormState(
     val name: FieldUpdate<String> = FieldUpdate.Unchanged,
     val icon: FieldUpdate<IconPack> = FieldUpdate.Unchanged,
+    val categoryId: FieldUpdate<Int> = FieldUpdate.Unchanged,
     val amountInput: FieldUpdate<String> = FieldUpdate.Unchanged,
     val repeat: FieldUpdate<Boolean> = FieldUpdate.Unchanged,
     val repeatFrequency: FieldUpdate<PeriodType?> = FieldUpdate.Unchanged,
@@ -19,6 +20,7 @@ data class ShortcutFormState(
     val hasChanges: Boolean
         get() = name is FieldUpdate.Updated ||
                 icon is FieldUpdate.Updated ||
+                categoryId is FieldUpdate.Updated ||
                 amountInput is FieldUpdate.Updated ||
                 repeat is FieldUpdate.Updated ||
                 repeatFrequency is FieldUpdate.Updated ||

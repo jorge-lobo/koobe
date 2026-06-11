@@ -51,7 +51,7 @@ data class ShortcutEditorUiState(
                 is ShortcutEditorConfig.Edit -> {
                     val initial = shortcutInitialSnapshot
 
-                    category.id != initial.category.id ||
+                    category.id != initial.categoryId ||
                             name != initial.name ||
                             icon != initial.icon ||
                             amount != initial.amount ||
@@ -78,7 +78,7 @@ data class ShortcutEditorUiState(
                 inputState = InputState.DEFAULT,
                 isLoading = true,
                 shortcutInitialSnapshot = ShortcutInitialSnapshot(
-                    category = emptyCategory,
+                    categoryId = emptyCategory.id,
                     name = "",
                     icon = IconPack.PLACEHOLDER,
                     amount = 0.0,
@@ -107,7 +107,7 @@ data class ShortcutEditorUiState(
                 category = category,
                 inputState = InputState.DEFAULT,
                 shortcutInitialSnapshot = ShortcutInitialSnapshot(
-                    category = category,
+                    categoryId = category.id,
                     name = "",
                     icon = IconPack.PLACEHOLDER,
                     amount = 0.0,
@@ -146,7 +146,7 @@ data class ShortcutEditorUiState(
                 paymentMethodType = shortcut.paymentMethod,
                 currencyType = shortcut.currency,
                 shortcutInitialSnapshot = ShortcutInitialSnapshot(
-                    category = category,
+                    categoryId = category.id,
                     name = shortcut.name,
                     icon = shortcut.icon,
                     amount = shortcut.amount,
@@ -169,7 +169,7 @@ data class ShortcutEditorUiState(
 }
 
 data class ShortcutInitialSnapshot(
-    val category: Category,
+    val categoryId: Int,
     val name: String,
     val icon: IconPack,
     val amount: Double,

@@ -71,24 +71,26 @@ class ShortcutEditorViewModel @Inject constructor(
             is ShortcutEditorConfig.Edit -> shortcutRepository.getShortcutByIdFlow(config.shortcutId)
         }
 
-    private val categoryIdFlow: Flow<Int?> =
-        shortcutFlow.map { shortcut ->
-            when (config) {
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val categoryFlow: Flow<Category?> =
+        combine(
+            shortcutFlow,
+            formState
+        ) { shortcut, form ->
+
+            val baseCategoryId = when (config) {
                 is ShortcutEditorConfig.Create -> config.categoryId
                 is ShortcutEditorConfig.Edit -> shortcut?.categoryId
             }
-        }
 
-    @OptIn(ExperimentalCoroutinesApi::class)
-    private val categoryFlow: Flow<Category?> =
-        categoryIdFlow.flatMapLatest { categoryId ->
-            if (categoryId != null) {
-                categoryRepository.getCategoryByIdFlow(categoryId)
-            } else {
-                flowOf(null)
+            baseCategoryId?.let {
+                form.categoryId.resolve(it)
             }
         }
-
+            .filterNotNull()
+            .flatMapLatest { categoryId ->
+                categoryRepository.getCategoryByIdFlow(categoryId)
+            }
 
     // Base State
 

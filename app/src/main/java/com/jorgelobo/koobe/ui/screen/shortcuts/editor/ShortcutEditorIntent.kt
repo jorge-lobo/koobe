@@ -6,7 +6,6 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
-import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetState
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 
@@ -19,6 +18,7 @@ sealed interface ShortcutEditorIntent {
         data class PaymentMethodChanged(val paymentMethod: PaymentMethodType) : State
         data class RepeatChanged(val repeat: Boolean) : State
         data class RepeatPeriodChanged(val period: PeriodType) : State
+        data class CategoryChanged(val categoryId: Int) : State
 
         data object AmountResetClicked : State
     }
