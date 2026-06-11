@@ -116,7 +116,7 @@ fun PreviewShortcutEditorScreen() {
                 repeat = false,
                 repeatFrequency = PeriodType.MONTHLY,
                 shortcutInitialSnapshot = ShortcutInitialSnapshot(
-                    category = category,
+                    categoryId = category.id,
                     name = "name",
                     icon = IconPack.CALENDAR,
                     amount = 10.0,
@@ -127,16 +127,16 @@ fun PreviewShortcutEditorScreen() {
                 ),
                 discardDialog = ConfirmationDialogState(visible = false),
                 deleteDialog = ConfirmationDialogState(visible = false),
-                iconSelectDialog = SelectorDialogState(
+                iconSelectorDialog = SelectorDialogState(
                     visible = false,
                     selected = IconPack.CALENDAR
                 ),
-                currencyDialog = SelectorDialogState(visible = false, selected = CurrencyType.EUR),
-                paymentMethodSelector = SelectorSheetState(
+                currencySelectorDialog = SelectorDialogState(visible = false, selected = CurrencyType.EUR),
+                paymentMethodSelectorSheet = SelectorSheetState(
                     visible = false,
                     selected = PaymentMethodType.CASH
                 ),
-                periodSelector = SelectorSheetState(visible = false, selected = PeriodType.MONTHLY)
+                periodSelectorSheet = SelectorSheetState(visible = false, selected = PeriodType.MONTHLY)
             ),
             onIconSelectorClick = {},
             onNameChanged = {},

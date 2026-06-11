@@ -28,10 +28,10 @@ data class ShortcutEditorUiState(
     val shortcutInitialSnapshot: ShortcutInitialSnapshot,
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
-    val iconSelectDialog: SelectorDialogState<IconPack> = SelectorDialogState(),
-    val currencyDialog: SelectorDialogState<CurrencyType> = SelectorDialogState(),
-    val paymentMethodSelector: SelectorSheetState<PaymentMethodType>,
-    val periodSelector: SelectorSheetState<PeriodType>,
+    val iconSelectorDialog: SelectorDialogState<IconPack> = SelectorDialogState(),
+    val currencySelectorDialog: SelectorDialogState<CurrencyType> = SelectorDialogState(),
+    val paymentMethodSelectorSheet: SelectorSheetState<PaymentMethodType>,
+    val periodSelectorSheet: SelectorSheetState<PeriodType>,
     val isLoading: Boolean = false,
     val isSaving: Boolean = false,
     val isDeleting: Boolean = false
@@ -87,11 +87,11 @@ data class ShortcutEditorUiState(
                     paymentMethodType = PaymentMethodType.CASH,
                     currencyType = CurrencyType.EUR
                 ),
-                paymentMethodSelector = SelectorSheetState(
+                paymentMethodSelectorSheet = SelectorSheetState(
                     visible = false,
                     selected = PaymentMethodType.CASH
                 ),
-                periodSelector = SelectorSheetState(
+                periodSelectorSheet = SelectorSheetState(
                     visible = false,
                     selected = PeriodType.DAILY
                 )
@@ -116,11 +116,11 @@ data class ShortcutEditorUiState(
                     paymentMethodType = PaymentMethodType.CASH,
                     currencyType = CurrencyType.EUR
                 ),
-                paymentMethodSelector = SelectorSheetState(
+                paymentMethodSelectorSheet = SelectorSheetState(
                     visible = false,
                     selected = PaymentMethodType.CASH
                 ),
-                periodSelector = SelectorSheetState(
+                periodSelectorSheet = SelectorSheetState(
                     visible = false,
                     selected = PeriodType.DAILY
                 )
@@ -155,11 +155,11 @@ data class ShortcutEditorUiState(
                     paymentMethodType = shortcut.paymentMethod,
                     currencyType = shortcut.currency
                 ),
-                paymentMethodSelector = SelectorSheetState(
+                paymentMethodSelectorSheet = SelectorSheetState(
                     visible = false,
                     selected = shortcut.paymentMethod
                 ),
-                periodSelector = SelectorSheetState(
+                periodSelectorSheet = SelectorSheetState(
                     visible = false,
                     selected = shortcut.period ?: PeriodType.DAILY
                 )

@@ -33,9 +33,9 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -150,10 +150,10 @@ class ShortcutEditorViewModel @Inject constructor(
                 repeatFrequency = updatedRepeatFrequency,
                 discardDialog = uiInternal.discardDialog,
                 deleteDialog = uiInternal.deleteDialog,
-                iconSelectDialog = uiInternal.iconSelectDialog,
-                currencyDialog = uiInternal.currencyDialog,
-                paymentMethodSelector = uiInternal.paymentMethodSelector,
-                periodSelector = uiInternal.periodSelector,
+                iconSelectorDialog = uiInternal.iconSelectDialog,
+                currencySelectorDialog = uiInternal.currencyDialog,
+                paymentMethodSelectorSheet = uiInternal.paymentMethodSelector,
+                periodSelectorSheet = uiInternal.periodSelector,
                 isSaving = uiInternal.isSaving,
                 isDeleting = uiInternal.isDeleting,
                 isLoading = uiInternal.isSaving || uiInternal.isDeleting
