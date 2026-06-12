@@ -187,6 +187,9 @@
     <string name="input_warning_name_short">Invalid name! Must have at least 3 characters.</string>
     <string name="input_warning_name_empty">Add a name for better identification.</string>
 
+    <!-- Fallback Messages -->
+    <string name="fallback_select_repeat_period">Select repeat period</string>
+
     <!-- Budget Card -->
     <string name="budget_header_daily">Daily budgets</string>
     <string name="budget_header_weekly">Weekly budgets</string>

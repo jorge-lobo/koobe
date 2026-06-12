@@ -32,7 +32,9 @@ fun ShortcutPeriodSection(
         if (isChecked) {
             SelectorPeriod(
                 onClick = onPeriodSelectorClick,
-                value = state.repeatFrequency.toString()
+                value = stringResource(
+                    state.repeatFrequency?.toLabel() ?: R.string.fallback_select_repeat_period
+                )
             )
         }
 
