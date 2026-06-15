@@ -11,6 +11,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
+import com.jorgelobo.koobe.domain.usecase.shortcut.SaveShortcutUseCase
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
@@ -24,6 +25,8 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.handleSelectorDialog
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.state.ShortcutFormState
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.state.ShortcutUiStateInternal
+import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.ui.mappers.toShortcut
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -47,7 +50,8 @@ import javax.inject.Inject
 class ShortcutEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     shortcutRepository: ShortcutRepository,
-    categoryRepository: CategoryRepository
+    categoryRepository: CategoryRepository,
+    private val saveShortcut: SaveShortcutUseCase
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<ShortcutEditorEvent>()
@@ -213,7 +217,31 @@ class ShortcutEditorViewModel @Inject constructor(
     }
 
     private fun handleSave() {
+        val state = uiState.value
 
+        if (!state.isValid) {
+            showSnackBar(R.string.snackBar_save_shortcut_error)
+            return
+        }
+
+        viewModelScope.launch {
+            uiInternalState.update { it.copy(isSaving = true) }
+
+            runCatching {
+                saveShortcut(
+                    shortcut = state.toShortcut(config),
+                    config = config
+                )
+            }.onSuccess {
+                uiInternalState.update { it.copy(isSaving = false) }
+                navigateBack()
+            }.onFailure { error ->
+
+                uiInternalState.update {
+                    it.copy(isSaving = false)
+                }
+            }
+        }
     }
 
     private fun handleClose() {
