@@ -26,6 +26,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.handleSelectorDialog
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.state.ShortcutFormState
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.state.ShortcutUiStateInternal
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.usecase.shortcut.DeleteShortcutUseCase
 import com.jorgelobo.koobe.domain.validation.NameValidationException
 import com.jorgelobo.koobe.ui.mappers.toShortcut
 import com.jorgelobo.koobe.ui.mappers.toSnackBarMessageRes
@@ -53,7 +54,8 @@ class ShortcutEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     shortcutRepository: ShortcutRepository,
     categoryRepository: CategoryRepository,
-    private val saveShortcut: SaveShortcutUseCase
+    private val saveShortcut: SaveShortcutUseCase,
+    private val deleteShortcut: DeleteShortcutUseCase
 ) : ViewModel() {
 
     private val _events = MutableSharedFlow<ShortcutEditorEvent>()
@@ -243,9 +245,11 @@ class ShortcutEditorViewModel @Inject constructor(
                 onIntent(ShortcutEditorIntent.State.NameChanged(""))
 
                 uiInternalState.update {
-                    it.copy(isSaving = false,
+                    it.copy(
+                        isSaving = false,
                         nameError = validationError,
-                        hasTriedToSave = true)
+                        hasTriedToSave = true
+                    )
                 }
 
                 val messageRes = validationError?.toSnackBarMessageRes()
@@ -364,7 +368,21 @@ class ShortcutEditorViewModel @Inject constructor(
     }
 
     private fun deleteCurrentShortcut() {
+        val shortcut = uiState.value.toShortcut(config)
 
+        viewModelScope.launch {
+            uiInternalState.update { it.copy(isDeleting = true) }
+
+            runCatching {
+                deleteShortcut(shortcut)
+            }.onSuccess {
+                uiInternalState.update { it.copy(isDeleting = false) }
+                navigateBack()
+            }.onFailure {
+                uiInternalState.update { it.copy(isDeleting = false) }
+                showSnackBar(messageRes = R.string.snackBar_delete_shortcut_error)
+            }
+        }
     }
 
     private fun showSnackBar(messageRes: Int) {
