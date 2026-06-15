@@ -26,7 +26,9 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.selector.handleSelectorDialog
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.state.ShortcutFormState
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.state.ShortcutUiStateInternal
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.validation.NameValidationException
 import com.jorgelobo.koobe.ui.mappers.toShortcut
+import com.jorgelobo.koobe.ui.mappers.toSnackBarMessageRes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
@@ -237,9 +239,19 @@ class ShortcutEditorViewModel @Inject constructor(
                 navigateBack()
             }.onFailure { error ->
 
+                val validationError = error as? NameValidationException
+                onIntent(ShortcutEditorIntent.State.NameChanged(""))
+
                 uiInternalState.update {
-                    it.copy(isSaving = false)
+                    it.copy(isSaving = false,
+                        nameError = validationError,
+                        hasTriedToSave = true)
                 }
+
+                val messageRes = validationError?.toSnackBarMessageRes()
+                    ?: R.string.snackBar_save_shortcut_error
+
+                showSnackBar(messageRes)
             }
         }
     }
