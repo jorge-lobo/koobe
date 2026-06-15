@@ -188,7 +188,7 @@
     <string name="input_warning_name_empty">Add a name for better identification.</string>
 
     <!-- Fallback Messages -->
-    <string name="fallback_select_repeat_period">Select repeat period</string>
+    <string name="fallback_select_repeat_period">Select period</string>
 
     <!-- Budget Card -->
     <string name="budget_header_daily">Daily budgets</string>

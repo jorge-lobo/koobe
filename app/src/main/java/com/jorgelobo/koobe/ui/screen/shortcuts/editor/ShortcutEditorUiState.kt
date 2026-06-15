@@ -24,7 +24,7 @@ data class ShortcutEditorUiState(
     val amountInput: String = "0",
     val amount: Double = 0.0,
     val repeat: Boolean = false,
-    val repeatFrequency: PeriodType? = PeriodType.DAILY,
+    val repeatFrequency: PeriodType? = null,
     val shortcutInitialSnapshot: ShortcutInitialSnapshot,
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
