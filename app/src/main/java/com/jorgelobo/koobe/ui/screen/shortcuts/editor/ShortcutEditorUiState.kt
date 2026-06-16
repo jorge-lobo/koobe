@@ -37,7 +37,10 @@ data class ShortcutEditorUiState(
     val isDeleting: Boolean = false
 ) {
     val isValid: Boolean
-        get() = name.isNotBlank() && amount > 0 && icon != IconPack.PLACEHOLDER
+        get() = name.isNotBlank() &&
+                amount > 0 &&
+                icon != IconPack.PLACEHOLDER &&
+                (!repeat || repeatFrequency != null)
 
     val isSaveEnabled: Boolean
         get() {
