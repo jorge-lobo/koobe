@@ -106,7 +106,7 @@ fun PreviewShortcutEditorScreen() {
         ShortcutEditorScreenUI(
             state = ShortcutEditorUiState(
                 category = category,
-                inputState = InputState.DEFAULT,
+                nameInputState = InputState.DEFAULT,
                 paymentMethodType = PaymentMethodType.CASH,
                 currencyType = CurrencyType.EUR,
                 name = "name",

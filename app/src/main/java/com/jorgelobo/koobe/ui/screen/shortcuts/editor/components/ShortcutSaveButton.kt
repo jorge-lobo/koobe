@@ -19,6 +19,8 @@ fun ShortcutSaveSection(
     state: ShortcutEditorUiState,
     onSaveClick: () -> Unit
 ) {
+    val isEnabled = state.isSaveEnabled && !state.isSaving && !state.isDeleting
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -28,7 +30,7 @@ fun ShortcutSaveSection(
             ButtonConfig(
                 text = stringResource(R.string.btn_save),
                 type = ButtonType.PRIMARY,
-                state = if (state.isSaveEnabled && !state.isLoading) UiState.ENABLED else UiState.DISABLED,
+                state = if (isEnabled) UiState.ENABLED else UiState.DISABLED,
                 onClick = onSaveClick
             )
         )

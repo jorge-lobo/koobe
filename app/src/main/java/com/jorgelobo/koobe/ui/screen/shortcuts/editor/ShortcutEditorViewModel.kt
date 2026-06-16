@@ -28,6 +28,7 @@ import com.jorgelobo.koobe.ui.screen.shortcuts.editor.state.ShortcutUiStateInter
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.usecase.shortcut.DeleteShortcutUseCase
 import com.jorgelobo.koobe.domain.validation.NameValidationException
+import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.mappers.toShortcut
 import com.jorgelobo.koobe.ui.mappers.toSnackBarMessageRes
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -138,6 +139,14 @@ class ShortcutEditorViewModel @Inject constructor(
             formState,
             uiInternalState
         ) { base, form, uiInternal ->
+
+            val nameInputState =
+                if (uiInternal.hasTriedToSave && uiInternal.nameError != null) {
+                    InputState.ERROR
+                } else {
+                    InputState.DEFAULT
+                }
+
             val updatedName = form.name.resolve(base.name)
             val updatedIcon = form.icon.resolve(base.icon)
             val updatedAmountInput = form.amountInput.resolve(base.amountInput)
@@ -148,6 +157,7 @@ class ShortcutEditorViewModel @Inject constructor(
             val updatedRepeatFrequency = form.repeatFrequency.resolve(base.repeatFrequency)
 
             base.copy(
+                nameInputState = nameInputState,
                 name = updatedName,
                 icon = updatedIcon,
                 amountInput = updatedAmountInput,
@@ -164,7 +174,7 @@ class ShortcutEditorViewModel @Inject constructor(
                 periodSelectorSheet = uiInternal.periodSelector,
                 isSaving = uiInternal.isSaving,
                 isDeleting = uiInternal.isDeleting,
-                isLoading = uiInternal.isSaving || uiInternal.isDeleting
+                hasNameError = uiInternal.nameError != null
             )
         }
             .stateIn(
@@ -181,6 +191,15 @@ class ShortcutEditorViewModel @Inject constructor(
     }
 
     private fun reduceState(intent: ShortcutEditorIntent.State) {
+        if (intent is ShortcutEditorIntent.State.NameChanged) {
+            uiInternalState.update {
+                it.copy(
+                    nameError = null,
+                    hasTriedToSave = false
+                )
+            }
+        }
+
         val result = ShortcutEditorReducer.reduce(
             intent = intent,
             currentForm = formState.value,
@@ -368,7 +387,7 @@ class ShortcutEditorViewModel @Inject constructor(
     }
 
     private fun deleteCurrentShortcut() {
-        val shortcut = uiState.value.toShortcut(config)
+        val shortcut = uiState.value.originalShortcut ?: return
 
         viewModelScope.launch {
             uiInternalState.update { it.copy(isDeleting = true) }

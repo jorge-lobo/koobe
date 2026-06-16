@@ -18,7 +18,7 @@ fun ShortcutNameSection(
             value = state.name,
             label = stringResource(R.string.label_name),
             placeholder = stringResource(R.string.input_hint_name_shortcut),
-            state = state.inputState,
+            state = state.nameInputState,
             onValueChange = onNameChanged,
             onResetClick = onResetNameClick
         )

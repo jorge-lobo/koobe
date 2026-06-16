@@ -16,7 +16,7 @@ data class ShortcutEditorUiState(
     val config: ShortcutEditorConfig? = null,
     val originalShortcut: Shortcut? = null,
     val category: Category,
-    val inputState: InputState,
+    val nameInputState: InputState,
     val paymentMethodType: PaymentMethodType = PaymentMethodType.CASH,
     val currencyType: CurrencyType = CurrencyType.EUR,
     val name: String = "",
@@ -32,7 +32,7 @@ data class ShortcutEditorUiState(
     val currencySelectorDialog: SelectorDialogState<CurrencyType> = SelectorDialogState(),
     val paymentMethodSelectorSheet: SelectorSheetState<PaymentMethodType>,
     val periodSelectorSheet: SelectorSheetState<PeriodType>,
-    val isLoading: Boolean = false,
+    val hasNameError: Boolean = false,
     val isSaving: Boolean = false,
     val isDeleting: Boolean = false
 ) {
@@ -75,8 +75,7 @@ data class ShortcutEditorUiState(
 
             return ShortcutEditorUiState(
                 category = emptyCategory,
-                inputState = InputState.DEFAULT,
-                isLoading = true,
+                nameInputState = InputState.DEFAULT,
                 shortcutInitialSnapshot = ShortcutInitialSnapshot(
                     categoryId = emptyCategory.id,
                     name = "",
@@ -105,7 +104,7 @@ data class ShortcutEditorUiState(
             return ShortcutEditorUiState(
                 config = config,
                 category = category,
-                inputState = InputState.DEFAULT,
+                nameInputState = InputState.DEFAULT,
                 shortcutInitialSnapshot = ShortcutInitialSnapshot(
                     categoryId = category.id,
                     name = "",
@@ -136,7 +135,7 @@ data class ShortcutEditorUiState(
                 config = config,
                 originalShortcut = shortcut,
                 category = category,
-                inputState = InputState.DEFAULT,
+                nameInputState = InputState.DEFAULT,
                 name = shortcut.name,
                 icon = shortcut.icon,
                 amountInput = shortcut.amount.toString(),
