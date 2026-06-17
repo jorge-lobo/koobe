@@ -57,7 +57,7 @@ fun ShortcutEditorEffects(
     }
 
     LaunchedEffect(navController) {
-        val savedStateHandle = navController.previousBackStackEntry?.savedStateHandle
+        val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
 
         savedStateHandle
             ?.getStateFlow<Int?>(NavResultKeys.SELECTED_CATEGORY_ID, null)
