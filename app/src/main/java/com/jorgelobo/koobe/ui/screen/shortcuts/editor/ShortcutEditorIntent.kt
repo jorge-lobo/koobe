@@ -31,7 +31,7 @@ sealed interface ShortcutEditorIntent {
 
         data class DiscardDialogUpdated(val action: ConfirmationDialogAction) : Action
         data class DeleteDialogUpdated(val action: ConfirmationDialogAction) : Action
-        data class IconSelectDialogUpdated(val action: SelectorDialogAction<IconPack>) : Action
+        data class IconSelectorDialogUpdated(val action: SelectorDialogAction<IconPack>) : Action
         data class CurrencyDialogUpdated(val action: SelectorDialogAction<CurrencyType>) : Action
         data class PeriodSelectorUpdated(val action: SelectorSheetAction<PeriodType>) : Action
         data class PaymentMethodSelectorUpdated(val action: SelectorSheetAction<PaymentMethodType>) :

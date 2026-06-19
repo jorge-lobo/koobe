@@ -219,7 +219,7 @@ class ShortcutEditorViewModel @Inject constructor(
             is ShortcutEditorIntent.Action.DeleteDialogUpdated ->
                 handleDeleteDialog(intent.action)
 
-            is ShortcutEditorIntent.Action.IconSelectDialogUpdated ->
+            is ShortcutEditorIntent.Action.IconSelectorDialogUpdated ->
                 handleIconSelectorDialog(intent.action)
 
             is ShortcutEditorIntent.Action.CurrencyDialogUpdated ->

@@ -75,7 +75,7 @@ fun ShortcutEditorScreen(
         },
         onIconSelectorDialogAction = {
             viewModel.onIntent(
-                ShortcutEditorIntent.Action.IconSelectDialogUpdated(
+                ShortcutEditorIntent.Action.IconSelectorDialogUpdated(
                     it
                 )
             )
@@ -157,7 +157,7 @@ fun ShortcutEditorScreen(
             modifier = Modifier.padding(padding),
             onIconSelectorClick = {
                 viewModel.onIntent(
-                    ShortcutEditorIntent.Action.IconSelectDialogUpdated(
+                    ShortcutEditorIntent.Action.IconSelectorDialogUpdated(
                         SelectorDialogAction.Open
                     )
                 )
