@@ -10,6 +10,8 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDial
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 
 sealed interface ShortcutEditorIntent {
+
+    // Form field updates — handled synchronously by the Reducer.
     sealed interface State : ShortcutEditorIntent {
         data class NameChanged(val name: String) : State
         data class IconChanged(val icon: IconPack) : State
@@ -23,6 +25,7 @@ sealed interface ShortcutEditorIntent {
         data object AmountResetClicked : State
     }
 
+    // User actions — may trigger coroutines, navigation, or dialog side effects.
     sealed interface Action : ShortcutEditorIntent {
         data object SaveClicked : Action
         data object CloseClicked : Action

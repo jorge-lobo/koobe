@@ -25,6 +25,23 @@ import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAc
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogAction
 
+/**
+ * Composable function that manages and displays various dialogs and bottom sheets used within the
+ * Shortcut Editor screen.
+ *
+ * It observes the [state] to determine which UI component (discard dialog, delete dialog,
+ * icon selector, currency selector, or list sheets) should be visible and handles the respective
+ * user actions.
+ *
+ * @param state The current UI state of the shortcut editor.
+ * @param sheetState The state used to control the modal bottom sheets.
+ * @param onDiscardDialogAction Callback triggered for actions within the discard changes dialog.
+ * @param onDeleteDialogAction Callback triggered for actions within the shortcut deletion dialog.
+ * @param onIconSelectorDialogAction Callback triggered for actions within the icon selection dialog.
+ * @param onCurrencyDialogAction Callback triggered for actions within the currency selection dialog.
+ * @param onPeriodSelectorAction Callback triggered for actions within the period selection bottom sheet.
+ * @param onPaymentMethodSelectorAction Callback triggered for actions within the payment method selection bottom sheet.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShortcutEditorDialogs(

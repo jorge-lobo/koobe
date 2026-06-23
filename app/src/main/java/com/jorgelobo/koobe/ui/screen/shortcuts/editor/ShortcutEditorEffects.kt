@@ -10,6 +10,12 @@ import com.jorgelobo.koobe.ui.navigation.NavResultKeys
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * Handles side effects for the Shortcut Editor screen, including navigation, snackbar messages,
+ * and monitoring for results returned from other screens via the navigation back stack.
+ *
+ * @param navController The navigation controller used for screen transitions.
+ */
 @Composable
 fun ShortcutEditorEffects(
     navController: NavController,

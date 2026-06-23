@@ -32,6 +32,17 @@ import com.jorgelobo.koobe.ui.screen.shortcuts.editor.components.ShortcutSaveSec
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
+/**
+ * Composable screen that allows users to create or edit shortcuts.
+ *
+ * This screen provides a form to manage shortcut details such as name, icon, amount, currency,
+ * and recurrence settings. It handles its own state via [ShortcutEditorViewModel] and manages
+ * various interaction dialogs for selectors and confirmations.
+ *
+ * @param navController The navigation controller used to handle screen transitions.
+ * @param config Configuration identifying whether the screen is in create or edit mode.
+ * @param viewModel The business logic handler for managing shortcut data and user intents.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShortcutEditorScreen(

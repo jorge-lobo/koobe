@@ -50,6 +50,24 @@ import kotlinx.serialization.json.Json
 import java.net.URLDecoder
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the state and business logic of the Shortcut Editor screen.
+ *
+ * This ViewModel orchestrates the creation and editing of shortcuts, including loading existing
+ * data, handling user input, validating changes, and persisting updates through use cases.
+ *
+ * It manages shortcut properties such as name, icon, amount, payment method, currency, and
+ * recurrence settings, while coordinating category selection and various UI components including
+ * dialogs, selectors, and bottom sheets.
+ *
+ * One-off UI effects such as navigation and snackbar messages are exposed through [events].
+ *
+ * @property savedStateHandle Handle to saved state used to retrieve [ShortcutEditorConfig].
+ * @property shortcutRepository Repository for shortcut data operations.
+ * @property categoryRepository Repository for category data operations.
+ * @property saveShortcut Use case for creating or updating a shortcut.
+ * @property deleteShortcut Use case for deleting a shortcut.
+ */
 @HiltViewModel
 class ShortcutEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
@@ -59,6 +77,9 @@ class ShortcutEditorViewModel @Inject constructor(
     private val deleteShortcut: DeleteShortcutUseCase
 ) : ViewModel() {
 
+    /**
+     * Emits one-off UI events such as navigation actions and snackbar messages.
+     */
     private val _events = MutableSharedFlow<ShortcutEditorEvent>()
     val events = _events.asSharedFlow()
 
@@ -74,6 +95,7 @@ class ShortcutEditorViewModel @Inject constructor(
     private val uiInternalState = MutableStateFlow(ShortcutUiStateInternal())
 
     // Data Sources
+
     private val shortcutFlow: Flow<Shortcut?> =
         when (config) {
             is ShortcutEditorConfig.Create -> flowOf(null)
@@ -133,6 +155,12 @@ class ShortcutEditorViewModel @Inject constructor(
 
     // Public UI State
 
+    /**
+     * Combined UI state exposed to the screen.
+     *
+     * This state merges persisted data, user edits, and transient UI state into a single
+     * immutable representation consumed by the UI.
+     */
     val uiState: StateFlow<ShortcutEditorUiState> =
         combine(
             baseStateFlow,
@@ -183,6 +211,16 @@ class ShortcutEditorViewModel @Inject constructor(
                 initialValue = ShortcutEditorUiState.initialEmpty()
             )
 
+
+    /**
+     * Processes incoming user intents to update the UI state or perform specific actions.
+     *
+     * This function acts as the central entry point for all user interactions, delegating
+     * intents to either [handleAction] for side-effect-heavy operations or [reduceState] for
+     * synchronous state updates.
+     *
+     * @param intent The [ShortcutEditorIntent] representing the user action or state change.
+     */
     fun onIntent(intent: ShortcutEditorIntent) {
         when (intent) {
             is ShortcutEditorIntent.Action -> handleAction(intent)

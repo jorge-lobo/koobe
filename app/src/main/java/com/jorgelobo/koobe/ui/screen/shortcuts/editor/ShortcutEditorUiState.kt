@@ -12,6 +12,13 @@ import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetSt
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
 import com.jorgelobo.koobe.ui.screen.common.dialog.selector.SelectorDialogState
 
+/**
+ * Represents the UI state for the Shortcut Editor screen, supporting both the creation of new
+ * shortcuts and the modification of existing ones.
+ *
+ * This state manages input fields, validation logic, and the visibility of various selection
+ * dialogs and bottom sheets required for configuring a transaction shortcut.
+ */
 data class ShortcutEditorUiState(
     val config: ShortcutEditorConfig? = null,
     val originalShortcut: Shortcut? = null,
@@ -36,12 +43,20 @@ data class ShortcutEditorUiState(
     val isSaving: Boolean = false,
     val isDeleting: Boolean = false
 ) {
+
+    // Indicates whether the shortcut data is valid for saving.
     val isValid: Boolean
         get() = name.isNotBlank() &&
                 amount > 0 &&
                 icon != IconPack.PLACEHOLDER &&
                 (!repeat || repeatFrequency != null)
 
+    /**
+     * Indicates whether the current state allows saving the shortcut.
+     *
+     * Returns true if the inputs are valid and, in the case of editing an existing shortcut, if any
+     * changes have been made compared to the initial snapshot.
+     */
     val isSaveEnabled: Boolean
         get() {
             val config = config ?: return false
@@ -66,6 +81,7 @@ data class ShortcutEditorUiState(
             }
         }
 
+    // Returns the screen title string resource based on the current mode.
     val headlineRes: Int
         get() = when (config) {
             is ShortcutEditorConfig.Create -> R.string.headline_shortcut_creator
@@ -170,6 +186,22 @@ data class ShortcutEditorUiState(
     }
 }
 
+/**
+ * A data snapshot representing the initial state of a [Shortcut] when the editor is opened.
+ *
+ * This class is used to track changes by comparing the current input values in [ShortcutEditorUiState]
+ * against these initial values, enabling the system to determine if the "Save" action should be
+ * enabled based on whether any modifications have been made.
+ *
+ * @property categoryId The unique identifier of the category initially assigned.
+ * @property name The initial name of the shortcut.
+ * @property icon The initial icon selected for the shortcut.
+ * @property amount The initial monetary value.
+ * @property repeat The initial boolean state indicating if the transaction is recurring.
+ * @property repeatFrequency The initial frequency (e.g., Daily, Monthly) if the shortcut is recurring.
+ * @property paymentMethodType The initial payment method (e.g., Cash, Credit Card).
+ * @property currencyType The initial currency used for the amount.
+ */
 data class ShortcutInitialSnapshot(
     val categoryId: Int,
     val name: String,
