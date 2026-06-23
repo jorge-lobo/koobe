@@ -187,6 +187,9 @@
     <string name="input_warning_name_short">Invalid name! Must have at least 3 characters.</string>
     <string name="input_warning_name_empty">Add a name for better identification.</string>
 
+    <!-- Fallback Messages -->
+    <string name="fallback_select_repeat_period">Select period</string>
+
     <!-- Budget Card -->
     <string name="budget_header_daily">Daily budgets</string>
     <string name="budget_header_weekly">Weekly budgets</string>
@@ -216,11 +219,13 @@
     <string name="snackBar_delete_transaction_error">Failed to delete transaction.\nPlease try again.</string>
     <string name="snackBar_delete_category_error">Failed to delete category.\nPlease try again.</string>
     <string name="snackBar_delete_subcategory_error">Failed to delete subcategory.\nPlease try again.</string>
+    <string name="snackBar_delete_shortcut_error">Failed to delete shortcut.\nPlease try again.</string>
     <string name="snackBar_invalid_category">Invalid category.</string>
     <string name="snackBar_invalid_subcategory">Invalid subcategory.</string>
     <string name="snackBar_save_category_error">Failed to save category.\nPlease try again.</string>
     <string name="snackBar_save_subcategory_error">Failed to save subcategory.\nPlease try again.</string>
     <string name="snackBar_save_transaction_error">Failed to save transaction.\nPlease try again.</string>
+    <string name="snackBar_save_shortcut_error">Failed to save shortcut.\nPlease try again.</string>
     <string name="snackBar_empty_name">Name cannot be empty.</string>
     <string name="snackBar_duplicate_name">Name already exists.</string>
     <string name="snackBar_name_too_short">Name must have at least 3 characters.</string>
