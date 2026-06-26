@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.jorgelobo.koobe.data.local.entity.ShortcutEntity
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -29,6 +30,9 @@ interface ShortcutDao {
 
     @Query("SELECT * FROM shortcuts ORDER BY categoryId ASC")
     fun getAllOrderedByCategory(): Flow<List<ShortcutEntity>>
+
+    @Query("SELECT * FROM shortcuts WHERE transactionType = :type ORDER BY name ASC")
+    fun getAllByType(type: TransactionType): Flow<List<ShortcutEntity>>
 
     @Query("SELECT * FROM shortcuts WHERE id = :id")
     suspend fun getById(id: Int): ShortcutEntity?
