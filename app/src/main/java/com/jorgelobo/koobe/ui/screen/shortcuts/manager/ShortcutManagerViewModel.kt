@@ -74,6 +74,33 @@ class ShortcutManagerViewModel @Inject constructor(
         }
     }
 
+    fun onTransactionTypeChange(type: TransactionType) {
+        updateState {
+            copy(
+                transactionTypeSelected = type,
+                isLoading = true
+            )
+        }
+    }
+
+    fun onBackClick() {
+        navigateBack()
+    }
+
+    private fun navigateTo(route: String) {
+        emitEvent(ShortcutManagerEvent.NavigateTo(route))
+    }
+
+    private fun navigateBack() {
+        emitEvent(ShortcutManagerEvent.NavigateBack)
+    }
+
+    private fun emitEvent(event: ShortcutManagerEvent) {
+        viewModelScope.launch {
+            _events.emit(event)
+        }
+    }
+
     private fun updateState(reducer: ShortcutManagerUiState.() -> ShortcutManagerUiState) {
         _uiState.update { it.reducer() }
     }
