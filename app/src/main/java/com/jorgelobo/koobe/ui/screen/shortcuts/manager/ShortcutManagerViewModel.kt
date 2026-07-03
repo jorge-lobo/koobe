@@ -3,6 +3,7 @@ package com.jorgelobo.koobe.ui.screen.shortcuts.manager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.domain.usecase.category.GetCategoryByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.GetAllShortcutsByTypeUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -12,17 +13,18 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class ShortcutManagerViewModel @Inject constructor(
-    private val getAllShortcuts: GetAllShortcutsByTypeUseCase
+    private val getAllShortcuts: GetAllShortcutsByTypeUseCase,
+    private val getCategoryById: GetCategoryByIdUseCase
 ) : ViewModel() {
-
-    private val selectedType = MutableStateFlow(TransactionType.EXPENSE)
 
     private val _uiState = MutableStateFlow(
         ShortcutManagerUiState(
@@ -35,6 +37,8 @@ class ShortcutManagerViewModel @Inject constructor(
     private val _events = MutableSharedFlow<ShortcutManagerEvent>()
     val events = _events.asSharedFlow()
 
+
+
     init {
         collectShortcuts()
     }
@@ -42,7 +46,9 @@ class ShortcutManagerViewModel @Inject constructor(
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun collectShortcuts() {
         viewModelScope.launch {
-            selectedType
+            _uiState
+                .map { it.transactionTypeSelected }
+                .distinctUntilChanged()
                 .flatMapLatest { type ->
                     updateState {
                         copy(
@@ -64,9 +70,20 @@ class ShortcutManagerViewModel @Inject constructor(
                         }
                 }
                 .collect { shortcuts ->
+
+                    val shortcutItems = shortcuts.mapNotNull { shortcut ->
+                        val category = getCategoryById(shortcut.categoryId)
+                            ?: return@mapNotNull null
+
+                        ShortcutItemUi(
+                            shortcut = shortcut,
+                            category = category
+                        )
+                    }
+
                     updateState {
                         copy(
-                            shortcutItems = shortcuts,
+                            shortcutItems = shortcutItems,
                             isLoading = false
                         )
                     }
