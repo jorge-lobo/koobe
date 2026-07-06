@@ -47,7 +47,7 @@ fun ShortcutManagerScreen(
                         ),
                         AppBarAction(
                             icon = IconPack.ADD,
-                            onClick = {}
+                            onClick = viewModel::onAddShortcutClick
                         )
                     )
                 )
@@ -69,6 +69,8 @@ fun ShortcutManagerScreen(
             onTransactionTypeChanged = viewModel::onTransactionTypeChange,
             onEditShortcut = {},
             onDeleteShortcut = {}
+            onEditShortcut = { viewModel.onEditShortcut(it) },
+            onDeleteShortcut = { viewModel.onDeleteShortcutClick(it) }
         )
     }
 }

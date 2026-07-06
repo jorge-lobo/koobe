@@ -37,8 +37,6 @@ class ShortcutManagerViewModel @Inject constructor(
     private val _events = MutableSharedFlow<ShortcutManagerEvent>()
     val events = _events.asSharedFlow()
 
-
-
     init {
         collectShortcuts()
     }
@@ -102,6 +100,23 @@ class ShortcutManagerViewModel @Inject constructor(
 
     fun onBackClick() {
         navigateBack()
+    }
+    fun onAddShortcutClick() {
+        val route = Route.CategorySelector.create(
+            CategorySelectorConfig(
+                mode = CategorySelectorMode.CREATE_SHORTCUT,
+                target = CategorySelectorTarget.SHORTCUT_EDITOR,
+                initialTransactionType = uiState.value.transactionTypeSelected
+            )
+        )
+        navigateTo(route)
+    }
+
+    fun onEditShortcut(shortcutId: Int) {
+        val route = Route.ShortcutEditor.create(
+            ShortcutEditorConfig.Edit(shortcutId)
+        )
+        navigateTo(route)
     }
 
     private fun navigateTo(route: String) {
