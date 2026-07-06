@@ -5,6 +5,14 @@ import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoryByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.GetAllShortcutsByTypeUseCase
+import com.jorgelobo.koobe.ui.navigation.Route
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
+import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -101,6 +109,7 @@ class ShortcutManagerViewModel @Inject constructor(
     fun onBackClick() {
         navigateBack()
     }
+
     fun onAddShortcutClick() {
         val route = Route.CategorySelector.create(
             CategorySelectorConfig(
@@ -117,6 +126,38 @@ class ShortcutManagerViewModel @Inject constructor(
             ShortcutEditorConfig.Edit(shortcutId)
         )
         navigateTo(route)
+    }
+
+    fun onDeleteShortcutClick(shortcutId: Int) {
+        updateState {
+            copy(
+                deleteDialog = deleteDialog.copy(
+                    visible = true,
+                    targetId = shortcutId
+                )
+            )
+        }
+    }
+
+    fun onDeleteDialogAction(action: ConfirmationDialogAction) {
+        val (dialogState, effect) = reduceConfirmationDialog(
+            state = uiState.value.deleteDialog,
+            action = action
+        )
+
+        updateState {
+            copy(deleteDialog = dialogState)
+        }
+
+        when (effect) {
+            ConfirmationDialogEffect.Confirmed -> deleteShortcut()
+
+            null -> Unit
+        }
+    }
+
+    private fun deleteShortcut() {
+        // TODO: Delete shortcut
     }
 
     private fun navigateTo(route: String) {

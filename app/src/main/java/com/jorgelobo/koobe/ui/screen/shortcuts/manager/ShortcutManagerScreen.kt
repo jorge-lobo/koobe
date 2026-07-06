@@ -31,6 +31,11 @@ fun ShortcutManagerScreen(
         viewModel = viewModel
     )
 
+    ShortcutManagerDialogs(
+        state = uiState,
+        onDeleteDialogAction = viewModel::onDeleteDialogAction
+    )
+
     Scaffold(
         topBar = {
             CommonAppBar(
@@ -67,8 +72,6 @@ fun ShortcutManagerScreen(
             state = uiState,
             transactionTypeSelected = uiState.transactionTypeSelected,
             onTransactionTypeChanged = viewModel::onTransactionTypeChange,
-            onEditShortcut = {},
-            onDeleteShortcut = {}
             onEditShortcut = { viewModel.onEditShortcut(it) },
             onDeleteShortcut = { viewModel.onDeleteShortcutClick(it) }
         )
