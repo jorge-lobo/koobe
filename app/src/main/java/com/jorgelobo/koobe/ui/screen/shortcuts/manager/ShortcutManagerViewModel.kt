@@ -4,7 +4,9 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoryByIdUseCase
+import com.jorgelobo.koobe.domain.usecase.shortcut.DeleteShortcutUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.GetAllShortcutsByTypeUseCase
+import com.jorgelobo.koobe.domain.usecase.shortcut.GetShortcutByIdUseCase
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
@@ -31,7 +33,9 @@ import javax.inject.Inject
 @HiltViewModel
 class ShortcutManagerViewModel @Inject constructor(
     private val getAllShortcuts: GetAllShortcutsByTypeUseCase,
-    private val getCategoryById: GetCategoryByIdUseCase
+    private val getCategoryById: GetCategoryByIdUseCase,
+    private val getShortcutById: GetShortcutByIdUseCase,
+    private val deleteShortcut: DeleteShortcutUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(
@@ -150,14 +154,25 @@ class ShortcutManagerViewModel @Inject constructor(
         }
 
         when (effect) {
-            ConfirmationDialogEffect.Confirmed -> deleteShortcut()
+            ConfirmationDialogEffect.Confirmed -> performDeleteShortcut()
 
             null -> Unit
         }
     }
 
-    private fun deleteShortcut() {
-        // TODO: Delete shortcut
+    private fun performDeleteShortcut() {
+        viewModelScope.launch {
+            val id = uiState.value.deleteDialog.targetId ?: return@launch
+            val shortcut = getShortcutById(id) ?: return@launch
+
+            runCatching {
+                deleteShortcut(shortcut)
+            }.onFailure { error ->
+                updateState {
+                    copy(errorMessage = error.message)
+                }
+            }
+        }
     }
 
     private fun navigateTo(route: String) {
