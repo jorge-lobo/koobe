@@ -2,8 +2,9 @@ package com.jorgelobo.koobe.ui.screen.shortcuts.manager
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
-import com.jorgelobo.koobe.domain.usecase.category.GetCategoryByIdUseCase
+import com.jorgelobo.koobe.domain.usecase.category.GetAllCategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.DeleteShortcutUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.GetAllShortcutsByTypeUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.GetShortcutByIdUseCase
@@ -23,6 +24,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.map
@@ -33,7 +35,7 @@ import javax.inject.Inject
 @HiltViewModel
 class ShortcutManagerViewModel @Inject constructor(
     private val getAllShortcuts: GetAllShortcutsByTypeUseCase,
-    private val getCategoryById: GetCategoryByIdUseCase,
+    private val getAllCategories: GetAllCategoriesUseCase,
     private val getShortcutById: GetShortcutByIdUseCase,
     private val deleteShortcut: DeleteShortcutUseCase
 ) : ViewModel() {
@@ -60,6 +62,7 @@ class ShortcutManagerViewModel @Inject constructor(
                 .map { it.transactionTypeSelected }
                 .distinctUntilChanged()
                 .flatMapLatest { type ->
+
                     updateState {
                         copy(
                             transactionTypeSelected = type,
@@ -67,8 +70,26 @@ class ShortcutManagerViewModel @Inject constructor(
                             errorMessage = null
                         )
                     }
-                    getAllShortcuts(type)
+
+                    combine(
+                        getAllShortcuts(type),
+                        getAllCategories()
+                    ) { shortcuts, categories ->
+                        val categoriesById = categories.associateBy(Category::id)
+
+                        shortcuts.mapNotNull { shortcut ->
+
+                            val category = categoriesById[shortcut.categoryId]
+                                ?: return@mapNotNull null
+
+                            ShortcutItemUi(
+                                shortcut = shortcut,
+                                category = category
+                            )
+                        }
+                    }
                         .catch { error ->
+
                             updateState {
                                 copy(
                                     isLoading = false,
@@ -79,17 +100,7 @@ class ShortcutManagerViewModel @Inject constructor(
                             emit(emptyList())
                         }
                 }
-                .collect { shortcuts ->
-
-                    val shortcutItems = shortcuts.mapNotNull { shortcut ->
-                        val category = getCategoryById(shortcut.categoryId)
-                            ?: return@mapNotNull null
-
-                        ShortcutItemUi(
-                            shortcut = shortcut,
-                            category = category
-                        )
-                    }
+                .collect { shortcutItems ->
 
                     updateState {
                         copy(
