@@ -125,7 +125,7 @@ fun PreviewListSelectorBottomSheet() {
             ListSelectorBottomSheet(
                 sheetState = sheetState,
                 config = ListSelectorBottomSheetConfig.Sorting(
-                    selected = SortingType.ALPHABETICAL,
+                    selected = SortingType.NAME_ASC,
                     onItemSelected = {}
                 ),
                 onDismiss = {}

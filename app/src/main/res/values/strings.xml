@@ -243,9 +243,11 @@
     <string name="radio_pound">GBP</string>
     <string name="radio_english">English</string>
     <string name="radio_portuguese">Portuguese</string>
-    <string name="radio_alphabetical">By name</string>
+    <string name="radio_name_asc">By name (A -> Z)</string>
+    <string name="radio_name_desc">By name (Z -> A)</string>
     <string name="radio_category">By category</string>
-    <string name="radio_amount">By amount</string>
+    <string name="radio_amount_asc">By amount (low -> high)</string>
+    <string name="radio_amount_desc">By amount (high -> low)</string>
 
     <!-- Currency Symbols -->
     <string name="currency_euro">€</string>
