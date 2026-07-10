@@ -3,6 +3,7 @@ package com.jorgelobo.koobe.ui.screen.shortcuts.manager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.domain.model.category.Category
+import com.jorgelobo.koobe.domain.model.constants.enums.SortingType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.usecase.category.GetAllCategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.DeleteShortcutUseCase
@@ -12,9 +13,10 @@ import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.handleSelectorSheet
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
-import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
-import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.handleConfirmationDialog
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -124,6 +126,12 @@ class ShortcutManagerViewModel @Inject constructor(
         navigateBack()
     }
 
+    fun onSortingClick() {
+        updateState {
+            copy(sortingSelector = sortingSelector.copy(visible = true))
+        }
+    }
+
     fun onAddShortcutClick() {
         val route = Route.CategorySelector.create(
             CategorySelectorConfig(
@@ -154,20 +162,29 @@ class ShortcutManagerViewModel @Inject constructor(
     }
 
     fun onDeleteDialogAction(action: ConfirmationDialogAction) {
-        val (dialogState, effect) = reduceConfirmationDialog(
-            state = uiState.value.deleteDialog,
-            action = action
+        handleConfirmationDialog(
+            current = uiState.value.deleteDialog,
+            action = action,
+            updateState = { newState ->
+                updateState {
+                    copy(deleteDialog = newState)
+                }
+            },
+            onConfirmed = { performDeleteShortcut() }
         )
+    }
 
-        updateState {
-            copy(deleteDialog = dialogState)
-        }
-
-        when (effect) {
-            ConfirmationDialogEffect.Confirmed -> performDeleteShortcut()
-
-            null -> Unit
-        }
+    fun onSortingDialogAction(action: SelectorSheetAction<SortingType>) {
+        handleSelectorSheet(
+            current = uiState.value.sortingSelector,
+            action = action,
+            updateState = { newState ->
+                updateState {
+                    copy(sortingSelector = newState)
+                }
+            },
+            onApplied = { }
+        )
     }
 
     private fun performDeleteShortcut() {

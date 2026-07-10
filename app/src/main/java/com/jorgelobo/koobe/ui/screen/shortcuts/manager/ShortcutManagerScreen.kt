@@ -1,7 +1,9 @@
 package com.jorgelobo.koobe.ui.screen.shortcuts.manager
 
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -18,12 +20,14 @@ import com.jorgelobo.koobe.ui.components.composed.navigation.BottomNavigationDef
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShortcutManagerScreen(
     navController: NavController,
     config: ShortcutManagerConfig,
     viewModel: ShortcutManagerViewModel = hiltViewModel()
 ) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ShortcutManagerEffects(
@@ -33,7 +37,9 @@ fun ShortcutManagerScreen(
 
     ShortcutManagerDialogs(
         state = uiState,
-        onDeleteDialogAction = viewModel::onDeleteDialogAction
+        sheetState = sheetState,
+        onDeleteDialogAction = viewModel::onDeleteDialogAction,
+        onSortingDialogAction = { viewModel.onSortingDialogAction(it) }
     )
 
     Scaffold(
@@ -48,7 +54,7 @@ fun ShortcutManagerScreen(
                     trailingActions = listOf(
                         AppBarAction(
                             icon = IconPack.FILTER,
-                            onClick = {}
+                            onClick = viewModel::onSortingClick
                         ),
                         AppBarAction(
                             icon = IconPack.ADD,
