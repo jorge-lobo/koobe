@@ -59,9 +59,9 @@ class ShortcutManagerViewModel @Inject constructor(
     private fun collectShortcuts() {
         viewModelScope.launch {
             _uiState
-                .map { it.transactionTypeSelected }
+                .map { it.transactionTypeSelected to it.sortingSelector.selected }
                 .distinctUntilChanged()
-                .flatMapLatest { type ->
+                .flatMapLatest { (type, sorting) ->
 
                     updateState {
                         copy(
@@ -75,6 +75,7 @@ class ShortcutManagerViewModel @Inject constructor(
                         getAllShortcuts(type),
                         getAllCategories()
                     ) { shortcuts, categories ->
+
                         val categoriesById = categories.associateBy(Category::id)
 
                         shortcuts.mapNotNull { shortcut ->
@@ -82,11 +83,9 @@ class ShortcutManagerViewModel @Inject constructor(
                             val category = categoriesById[shortcut.categoryId]
                                 ?: return@mapNotNull null
 
-                            ShortcutItemUi(
-                                shortcut = shortcut,
-                                category = category
-                            )
+                            ShortcutItemUi(shortcut, category)
                         }
+                            .sortedBy(sorting)
                     }
                         .catch { error ->
 
