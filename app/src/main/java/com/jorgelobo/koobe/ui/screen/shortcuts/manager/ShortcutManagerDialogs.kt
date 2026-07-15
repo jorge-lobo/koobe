@@ -12,6 +12,15 @@ import com.jorgelobo.koobe.ui.components.model.enums.DeleteType
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 
+/**
+ * Composable function that manages the display of overlay UI elements such as dialogs and
+ * bottom sheets for the Shortcut Manager screen.
+ *
+ * @param state The current UI state containing visibility flags and data for the dialogs.
+ * @param sheetState The state used to control the modal bottom sheet.
+ * @param onDeleteDialogAction Callback handled when a user interacts with the delete confirmation dialog.
+ * @param onSortingDialogAction Callback handled when a user selects a sorting option or dismisses the sorting sheet.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShortcutManagerDialogs(

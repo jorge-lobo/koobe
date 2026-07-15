@@ -20,6 +20,14 @@ import com.jorgelobo.koobe.ui.components.composed.navigation.BottomNavigationDef
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
+/**
+ * Composable function that represents the Shortcut Manager screen.
+ * This screen allows users to view, add, edit, delete, and sort their shortcuts.
+ *
+ * @param navController The navigation controller used to handle navigation events.
+ * @param config Configuration object containing routing information and navigation callbacks.
+ * @param viewModel The ViewModel that manages the UI state and business logic for this screen.
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShortcutManagerScreen(

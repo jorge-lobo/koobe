@@ -34,6 +34,18 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+/**
+ * ViewModel for the Shortcut Manager screen.
+ *
+ * Manages the state and business logic for displaying, sorting, and deleting transaction
+ * shortcuts. It coordinates shortcut and category data, exposes UI state, and emits one-off
+ * events such as navigation.
+ *
+ * @property getAllShortcuts Use case to retrieve shortcuts filtered by [TransactionType].
+ * @property getAllCategories Use case to fetch all categories for mapping shortcuts to their UI representation.
+ * @property getShortcutById Use case to retrieve a specific shortcut by its unique identifier.
+ * @property deleteShortcut Use case to remove an existing shortcut.
+ */
 @HiltViewModel
 class ShortcutManagerViewModel @Inject constructor(
     private val getAllShortcuts: GetAllShortcutsByTypeUseCase,
@@ -42,21 +54,41 @@ class ShortcutManagerViewModel @Inject constructor(
     private val deleteShortcut: DeleteShortcutUseCase
 ) : ViewModel() {
 
+    /**
+     * Internal mutable state flow that holds the current [ShortcutManagerUiState].
+     * This represents the single source of truth for the screen's state.
+     */
     private val _uiState = MutableStateFlow(
         ShortcutManagerUiState(
             transactionTypeSelected = TransactionType.EXPENSE,
             isLoading = true
         )
     )
+
+    /**
+     * Immutable UI state exposed to the screen.
+     */
     val uiState: StateFlow<ShortcutManagerUiState> = _uiState.asStateFlow()
 
+    /**
+     * A private [MutableSharedFlow] used to emit one-time events, such as navigation or
+     * displaying transient UI messages.
+     */
     private val _events = MutableSharedFlow<ShortcutManagerEvent>()
+
+    /**
+     * Emits one-off UI events such as navigation.
+     */
     val events = _events.asSharedFlow()
 
     init {
         collectShortcuts()
     }
 
+    /**
+     * Collects and combines shortcut and category data based on the current transaction type
+     * and sorting selection, updating the UI state reactively.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     private fun collectShortcuts() {
         viewModelScope.launch {
@@ -113,6 +145,11 @@ class ShortcutManagerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Updates the selected transaction type and triggers a reload of the shortcut list.
+     *
+     * @param type The new [TransactionType] to filter the shortcuts by.
+     */
     fun onTransactionTypeChange(type: TransactionType) {
         updateState {
             copy(
@@ -132,6 +169,12 @@ class ShortcutManagerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles the click event for adding a new shortcut.
+     *
+     * Triggers navigation to the category selector screen, passing a configuration that specifies
+     * the shortcut creation mode and the currently selected transaction type.
+     */
     fun onAddShortcutClick() {
         val route = Route.CategorySelector.create(
             CategorySelectorConfig(
@@ -143,6 +186,11 @@ class ShortcutManagerViewModel @Inject constructor(
         navigateTo(route)
     }
 
+    /**
+     * Triggers navigation to the shortcut editor screen to modify an existing shortcut.
+     *
+     * @param shortcutId The unique identifier of the shortcut to be edited.
+     */
     fun onEditShortcut(shortcutId: Int) {
         val route = Route.ShortcutEditor.create(
             ShortcutEditorConfig.Edit(shortcutId)
@@ -150,6 +198,14 @@ class ShortcutManagerViewModel @Inject constructor(
         navigateTo(route)
     }
 
+    /**
+     * Handles the click event for deleting a shortcut.
+     *
+     * It updates the UI state to display a confirmation dialog, storing the ID of the
+     * shortcut intended for deletion.
+     *
+     * @param shortcutId The unique identifier of the shortcut to be deleted.
+     */
     fun onDeleteShortcutClick(shortcutId: Int) {
         updateState {
             copy(
@@ -161,6 +217,14 @@ class ShortcutManagerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles actions dispatched from the shortcut deletion confirmation dialog.
+     *
+     * This method coordinates the dialog state transitions based on the user's input and
+     * triggers the shortcut deletion process if the confirmation action is received.
+     *
+     * @param action The specific [ConfirmationDialogAction] performed by the user.
+     */
     fun onDeleteDialogAction(action: ConfirmationDialogAction) {
         handleConfirmationDialog(
             current = uiState.value.deleteDialog,
@@ -174,7 +238,15 @@ class ShortcutManagerViewModel @Inject constructor(
         )
     }
 
-    fun onSortingDialogAction(action: SelectorSheetAction<SortingType>) {
+    /**
+     * Handles actions from the sorting bottom sheet, such as selecting a [SortingType],
+     * dismissing the sheet, or applying the selection.
+     *
+     * This method updates the UI state's sorting selector using the provided [action] via the
+     * [handleSelectorSheet] utility.
+     *
+     * @param action The action performed within the sorting selector sheet.
+     */
     fun onSortingSheetAction(action: SelectorSheetAction<SortingType>) {
         handleSelectorSheet(
             current = uiState.value.sortingSelector,
