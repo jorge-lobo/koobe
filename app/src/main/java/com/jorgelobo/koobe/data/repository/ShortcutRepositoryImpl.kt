@@ -3,6 +3,7 @@ package com.jorgelobo.koobe.data.repository
 import com.jorgelobo.koobe.data.local.dao.ShortcutDao
 import com.jorgelobo.koobe.data.mapper.toDomain
 import com.jorgelobo.koobe.data.mapper.toEntity
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import kotlinx.coroutines.flow.Flow
@@ -20,6 +21,11 @@ class ShortcutRepositoryImpl @Inject constructor(
 
     override fun getShortcutsByCategoryId(categoryId: Int): Flow<List<Shortcut>> =
         dao.getByCategoryId(categoryId).map { list ->
+            list.map { it.toDomain() }
+        }
+
+    override fun getShortcutsByType(type: TransactionType): Flow<List<Shortcut>> =
+        dao.getAllByType(type).map { list ->
             list.map { it.toDomain() }
         }
 

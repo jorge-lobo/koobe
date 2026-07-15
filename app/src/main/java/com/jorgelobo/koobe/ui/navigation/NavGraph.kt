@@ -26,6 +26,7 @@ import com.jorgelobo.koobe.ui.screen.settings.SettingsConfig
 import com.jorgelobo.koobe.ui.screen.settings.SettingsScreen
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorScreen
+import com.jorgelobo.koobe.ui.screen.shortcuts.manager.ShortcutManagerConfig
 import com.jorgelobo.koobe.ui.screen.shortcuts.manager.ShortcutManagerScreen
 import com.jorgelobo.koobe.ui.screen.splash.SplashScreen
 import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorConfig
@@ -158,7 +159,22 @@ fun NavGraph(
         }
 
         // Shortcuts
-        composable(Route.ShortcutManager.route) { ShortcutManagerScreen(navController) }
+        composable(Route.ShortcutManager.route) {
+            ShortcutManagerScreen(
+                navController = navController,
+                config = ShortcutManagerConfig(
+                    currentRoute = Route.ShortcutManager.route,
+                    onRouteSelected = { route ->
+                        if (route != Route.ShortcutManager.route) {
+                            navController.navigate(route) {
+                                popUpTo(Route.ShortcutManager.route)
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                )
+            )
+        }
 
         composable(
             route = "shortcut_editor/{config}",

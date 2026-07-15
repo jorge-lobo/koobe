@@ -72,7 +72,7 @@ enum class CategorySelectorMode(
         requiresSubcategorySelection = false,
         showActionButton = true,
         actionButtonLabelRes = R.string.btn_continue,
-        returnsResult = true
+        returnsResult = false
     ),
     EDIT_SHORTCUT(
         headlineRes = R.string.headline_category_changer,
