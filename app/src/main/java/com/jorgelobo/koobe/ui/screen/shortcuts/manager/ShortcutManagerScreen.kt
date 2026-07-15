@@ -39,7 +39,7 @@ fun ShortcutManagerScreen(
         state = uiState,
         sheetState = sheetState,
         onDeleteDialogAction = viewModel::onDeleteDialogAction,
-        onSortingDialogAction = { viewModel.onSortingDialogAction(it) }
+        onSortingDialogAction = { viewModel.onSortingSheetAction(it) }
     )
 
     Scaffold(

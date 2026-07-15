@@ -175,6 +175,7 @@ class ShortcutManagerViewModel @Inject constructor(
     }
 
     fun onSortingDialogAction(action: SelectorSheetAction<SortingType>) {
+    fun onSortingSheetAction(action: SelectorSheetAction<SortingType>) {
         handleSelectorSheet(
             current = uiState.value.sortingSelector,
             action = action,

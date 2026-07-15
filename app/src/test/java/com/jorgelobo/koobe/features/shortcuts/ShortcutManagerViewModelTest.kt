@@ -217,7 +217,7 @@ class ShortcutManagerViewModelTest {
         viewModel.onSortingClick()
         advanceUntilIdle()
 
-        viewModel.onSortingDialogAction(SelectorSheetAction.Dismiss)
+        viewModel.onSortingSheetAction(SelectorSheetAction.Dismiss)
         advanceUntilIdle()
 
         assertFalse(viewModel.uiState.value.sortingSelector.visible)
@@ -230,7 +230,7 @@ class ShortcutManagerViewModelTest {
         viewModel.onSortingClick()
         advanceUntilIdle()
 
-        viewModel.onSortingDialogAction(SelectorSheetAction.Select(SortingType.NAME_ASC))
+        viewModel.onSortingSheetAction(SelectorSheetAction.Select(SortingType.NAME_ASC))
         advanceUntilIdle()
 
         assertEquals(
