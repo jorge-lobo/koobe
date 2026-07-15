@@ -23,6 +23,7 @@ import io.mockk.runs
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.launch
@@ -61,19 +62,30 @@ class ShortcutManagerViewModelTest {
 
     @Test
     fun `initial state should load expense shortcuts`() = runTest {
-        coEvery { getAllShortcuts(TransactionType.EXPENSE) } returns flowOf(emptyList())
+        every { getAllShortcuts(TransactionType.EXPENSE) } returns flowOf(emptyList())
+        every { getAllCategories() } returns flowOf(emptyList())
 
-        val viewModel = createViewModel()
-
+        val viewModel = buildViewModel()
         val state = viewModel.uiState.first { !it.isLoading }
 
         assertEquals(TransactionType.EXPENSE, state.transactionTypeSelected)
         assertTrue(state.shortcutItems.isEmpty())
     }
 
+    @Test
+    fun `loading shortcuts failure should set error message`() = runTest {
+        every { getAllShortcuts(any()) } returns flow { throw RuntimeException("Error") }
+        every { getAllCategories() } returns flowOf(emptyList())
+
+        val viewModel = buildViewModel()
+        val state = viewModel.uiState.first { !it.isLoading }
+
+        assertEquals("Error", state.errorMessage)
+    }
+
     // endregion
 
-    // region Transaction Type
+    // region User Actions
 
     @Test
     fun `changing transaction type should update state`() = runTest {
@@ -87,10 +99,6 @@ class ShortcutManagerViewModelTest {
             viewModel.uiState.value.transactionTypeSelected
         )
     }
-
-    // endregion
-
-    // region Navigation
 
     @Test
     fun `back click should navigate back`() = runTest {
@@ -173,6 +181,21 @@ class ShortcutManagerViewModelTest {
         assertEquals("Delete failed", viewModel.uiState.value.errorMessage)
     }
 
+    @Test
+    fun `delete with invalid id should not call delete`() = runTest {
+        coEvery { getShortcutById(any()) } returns null
+
+        val viewModel = createViewModel()
+
+        viewModel.onDeleteShortcutClick(5)
+        advanceUntilIdle()
+
+        viewModel.onDeleteDialogAction(ConfirmationDialogAction.Confirm)
+        advanceUntilIdle()
+
+        coVerify(exactly = 0) { deleteShortcut(any()) }
+    }
+
     // endregion
 
     // region Sorting
@@ -221,17 +244,18 @@ class ShortcutManagerViewModelTest {
     // region Helpers
 
     private fun createViewModel(): ShortcutManagerViewModel {
-
         every { getAllShortcuts(any()) } returns flowOf(emptyList())
         every { getAllCategories() } returns flowOf(emptyList())
 
-        return ShortcutManagerViewModel(
-            getAllShortcuts = getAllShortcuts,
-            getAllCategories = getAllCategories,
-            getShortcutById = getShortcutById,
-            deleteShortcut = deleteShortcut
-        )
+        return buildViewModel()
     }
+
+    private fun buildViewModel() = ShortcutManagerViewModel(
+        getAllShortcuts = getAllShortcuts,
+        getAllCategories = getAllCategories,
+        getShortcutById = getShortcutById,
+        deleteShortcut = deleteShortcut
+    )
 
     private fun fakeShortcut(id: Int = 2, categoryId: Int = 1, name: String = "Bread") = Shortcut(
         id = id,
