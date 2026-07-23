@@ -44,7 +44,12 @@ fun ButtonBase(
 
     val baseModifier = when (type) {
         ButtonType.SQUARE -> modifier.size(ButtonSize.SquareButton.Dimension)
-        ButtonType.TEXT -> modifier.wrapContentWidth()
+        ButtonType.TEXT ->
+            if (modifier == Modifier) {
+                Modifier.wrapContentWidth()
+            } else {
+                modifier
+            }
         else -> modifier
             .fillMaxWidth()
             .height(height)
