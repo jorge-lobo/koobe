@@ -4,7 +4,7 @@ import androidx.compose.ui.unit.dp
 
 object DialogSize {
     object Confirmation {
-        val Discard = 240.dp
+        val Discard = 256.dp
         val Delete = 312.dp
     }
 
