@@ -43,6 +43,8 @@ import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.mappers.toIcon
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutAction.ShortcutActionBottomSheetAction
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutAction.ShortcutActionBottomSheetState
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.AvatarSize
@@ -54,11 +56,14 @@ import com.jorgelobo.koobe.utils.resolvedColor
 @Composable
 fun ShortcutActionBottomSheet(
     sheetState: SheetState,
-    config: ShortcutActionBottomSheetConfig,
+    state: ShortcutActionBottomSheetState,
+    onAction: (ShortcutActionBottomSheetAction) -> Unit
 ) {
+    val visibleState = state as? ShortcutActionBottomSheetState.Visible ?: return
+
     AppModalBottomSheet(
         sheetState = sheetState,
-        onDismissRequest = config.onCancel
+        onDismissRequest = { onAction(ShortcutActionBottomSheetAction.Dismiss) }
     ) {
         BaseBottomSheetContent(
             title = stringResource(R.string.bottom_sheet_headline_shortcut_action),
@@ -66,8 +71,8 @@ fun ShortcutActionBottomSheet(
         ) {
             val typography = AppTheme.typography.text
             val textColors = AppTheme.colors.textColors
-            val shortcut = config.shortcut
-            val category = config.category
+            val shortcut = visibleState.shortcut
+            val category = visibleState.category
 
             Row(
                 modifier = Modifier
@@ -163,7 +168,7 @@ fun ShortcutActionBottomSheet(
                 ButtonConfig(
                     text = stringResource(R.string.btn_create_transaction),
                     type = ButtonType.TEXT,
-                    onClick = config.onConfirm
+                    onClick = { onAction(ShortcutActionBottomSheetAction.Execute(shortcut)) }
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -172,7 +177,7 @@ fun ShortcutActionBottomSheet(
                 ButtonConfig(
                     text = stringResource(R.string.btn_edit_first),
                     type = ButtonType.TEXT,
-                    onClick = config.onEdit
+                    onClick = { onAction(ShortcutActionBottomSheetAction.Edit(shortcut)) }
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -181,7 +186,7 @@ fun ShortcutActionBottomSheet(
                 ButtonConfig(
                     text = stringResource(R.string.btn_cancel),
                     type = ButtonType.TEXT,
-                    onClick = config.onCancel
+                    onClick = { onAction(ShortcutActionBottomSheetAction.Dismiss) }
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -211,6 +216,26 @@ fun PreviewShortcutActionBottomSheet() {
             sheetState.show()
         }
 
+        val shortcut = Shortcut(
+            id = 1,
+            name = "Coffee",
+            icon = IconPack.CAFE_SNACKS,
+            categoryId = 1,
+            amount = 0.80,
+            currency = CurrencyType.EUR,
+            paymentMethod = PaymentMethodType.CARD,
+            transactionType = TransactionType.EXPENSE,
+            repeat = false
+        )
+
+        val category = Category(
+            id = 1,
+            name = "Food",
+            icon = IconPack.CAFE_SNACKS,
+            color = "FF00F0",
+            type = TransactionType.EXPENSE
+        )
+
         Column(
             modifier = Modifier
                 .fillMaxSize()
@@ -219,29 +244,11 @@ fun PreviewShortcutActionBottomSheet() {
         ) {
             ShortcutActionBottomSheet(
                 sheetState = sheetState,
-                config = ShortcutActionBottomSheetConfig(
-                    shortcut = Shortcut(
-                        id = 1,
-                        name = "Coffee",
-                        icon = IconPack.CAFE_SNACKS,
-                        categoryId = 1,
-                        amount = 0.80,
-                        currency = CurrencyType.EUR,
-                        paymentMethod = PaymentMethodType.CARD,
-                        transactionType = TransactionType.EXPENSE,
-                        repeat = false
-                    ),
-                    category = Category(
-                        id = 1,
-                        name = "Food",
-                        icon = IconPack.CAFE_SNACKS,
-                        color = "FF00F0",
-                        type = TransactionType.EXPENSE
-                    ),
-                    onConfirm = {},
-                    onEdit = {},
-                    onCancel = {}
-                )
+                state = ShortcutActionBottomSheetState.Visible(
+                    shortcut = shortcut,
+                    category = category
+                ),
+                onAction = {}
             )
         }
     }
