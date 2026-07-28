@@ -4,16 +4,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.domain.model.constants.enums.CategoryDetailType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
+import com.jorgelobo.koobe.domain.usecase.transaction.CreateTransactionFromShortcutUseCase
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorConfig
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutAction.ShortcutActionBottomSheetAction
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutAction.ShortcutActionBottomSheetState
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutAction.reduceShortcutActionBottomSheet
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
 import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorConfig
+import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -35,7 +41,8 @@ import javax.inject.Inject
 class CategorySelectorViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val subcategoryRepository: SubcategoryRepository,
-    private val shortcutRepository: ShortcutRepository
+    private val shortcutRepository: ShortcutRepository,
+    private val createTransactionFromShortcut: CreateTransactionFromShortcutUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CategorySelectorUiState.initialEmpty())
@@ -189,13 +196,9 @@ class CategorySelectorViewModel @Inject constructor(
 
         if (!state.isPrimaryActionEnabled) return
 
-        val route = config.target.toRoute(config, state)
-        val categoryId = state.selectedCategoryId ?: return
-
-        if (config.mode.returnsResult) {
-            navBackWithResult(categoryId)
-        } else {
-            navigateAndReplace(route)
+        when (state.categoryDetailSelected) {
+            CategoryDetailType.SUBCATEGORIES -> proceedWithSubcategory(state)
+            CategoryDetailType.SHORTCUTS -> openShortcutActionBottomSheet(state)
         }
     }
 
@@ -258,6 +261,86 @@ class CategorySelectorViewModel @Inject constructor(
 
             null -> Unit
         }
+    }
+
+    fun onShortcutAction(action: ShortcutActionBottomSheetAction) {
+        /*shortcutActionHandler.onAction(action)*/
+        _uiState.update {
+            it.copy(shortcutActionSheet = reduceShortcutActionBottomSheet(action))
+        }
+
+        when (action) {
+            is ShortcutActionBottomSheetAction.Execute -> executeShortcut(action.shortcut)
+            is ShortcutActionBottomSheetAction.Edit -> editShortcut(action.shortcut)
+            else -> Unit
+        }
+    }
+
+    private fun proceedWithSubcategory(state: CategorySelectorUiState) {
+        val route = config.target.toRoute(config, state)
+        val categoryId = state.selectedCategoryId ?: return
+
+        if (config.mode.returnsResult) {
+            navBackWithResult(categoryId)
+        } else {
+            navigateAndReplace(route)
+        }
+    }
+
+    private fun openShortcutActionBottomSheet(state: CategorySelectorUiState) {
+        val shortcut = state.shortcuts.firstOrNull { it.id == state.selectedShortcutId } ?: return
+        val category = state.categories.firstOrNull { it.id == state.selectedCategoryId } ?: return
+
+        onShortcutAction(
+            ShortcutActionBottomSheetAction.Open(
+                shortcut = shortcut,
+                category = category
+            )
+        )
+    }
+
+    private fun executeShortcut(shortcut: Shortcut) {
+        viewModelScope.launch {
+            try {
+                _uiState.update {
+                    it.copy(
+                        isLoading = true,
+                        shortcutActionSheet = ShortcutActionBottomSheetState.Hidden
+                    )
+                }
+
+                createTransactionFromShortcut(shortcut)
+
+                emitEvent(CategorySelectorEvent.NavigateTo(Route.Dashboard.route))
+
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = e.message
+                    )
+                }
+            } finally {
+                _uiState.update {
+                    it.copy(isLoading = false)
+                }
+            }
+        }
+    }
+
+    private fun editShortcut(shortcut: Shortcut) {
+        navigateTo(
+            Route.TransactionEditor.create(
+                TransactionEditorConfig(
+                    transactionId = null,
+                    categoryId = shortcut.categoryId,
+                    subcategoryId = null,
+                    shortcutId = shortcut.id,
+                    transactionType = _uiState.value.transactionType,
+                    originRoute = Route.Dashboard.route
+                )
+            )
+        )
     }
 
     // Data loading
@@ -350,7 +433,8 @@ class CategorySelectorViewModel @Inject constructor(
         val state = _uiState.value
 
         val enabled = when (state.step) {
-            SelectorStep.SelectCategory -> state.selectedCategoryId != null && (!config.mode.requiresSubcategorySelection)
+            SelectorStep.SelectCategory ->
+                state.selectedCategoryId != null && (!config.mode.requiresSubcategorySelection)
 
             SelectorStep.SelectSubcategory -> when (state.categoryDetailSelected) {
                 CategoryDetailType.SUBCATEGORIES -> state.selectedSubcategoryId != null
