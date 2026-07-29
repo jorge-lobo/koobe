@@ -4,16 +4,22 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.domain.model.constants.enums.CategoryDetailType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
+import com.jorgelobo.koobe.domain.usecase.transaction.CreateTransactionFromShortcutUseCase
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorConfig
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutAction.ShortcutActionBottomSheetAction
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutAction.ShortcutActionBottomSheetState
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutAction.reduceShortcutActionBottomSheet
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogEffect
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.reduceConfirmationDialog
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
 import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorConfig
+import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,17 +31,19 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * ViewModel responsible for managing the state and user interactions
- * of the category selection flow.
+ * ViewModel responsible for managing the state and user interactions of the category selection flow.
  *
- * It coordinates category, subcategory, and shortcut selection
- * according to the provided [CategorySelectorConfig].
+ * It coordinates the navigation and selection process between categories, subcategories, and
+ * shortcuts based on the provided [CategorySelectorConfig]. It handles business logic for
+ * transaction type filtering, shortcut execution, and state synchronization for the category
+ * selector UI.
  */
 @HiltViewModel
 class CategorySelectorViewModel @Inject constructor(
     private val categoryRepository: CategoryRepository,
     private val subcategoryRepository: SubcategoryRepository,
-    private val shortcutRepository: ShortcutRepository
+    private val shortcutRepository: ShortcutRepository,
+    private val createTransactionFromShortcut: CreateTransactionFromShortcutUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CategorySelectorUiState.initialEmpty())
@@ -184,21 +192,30 @@ class CategorySelectorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles the user's request to proceed with the current selection.
+     *
+     * This function validates if the primary action is enabled based on the current UI state.
+     * Depending on whether the user is selecting a subcategory or a shortcut, it either triggers
+     * the navigation logic to the next screen or opens the shortcut action bottom sheet.
+     */
     fun onProceedRequested() {
         val state = _uiState.value
 
         if (!state.isPrimaryActionEnabled) return
 
-        val route = config.target.toRoute(config, state)
-        val categoryId = state.selectedCategoryId ?: return
-
-        if (config.mode.returnsResult) {
-            navBackWithResult(categoryId)
-        } else {
-            navigateAndReplace(route)
+        when (state.categoryDetailSelected) {
+            CategoryDetailType.SUBCATEGORIES -> proceedWithSubcategory(state)
+            CategoryDetailType.SHORTCUTS -> openShortcutActionBottomSheet(state)
         }
     }
 
+    /**
+     * Triggers navigation to the subcategory editor screen.
+     *
+     * It uses the current UI state to pass the [SubcategoryEditorConfig], including the currently
+     * selected subcategory ID (if editing) and the parent category ID.
+     */
     fun onSubcategoryEditorRequested() {
         val state = _uiState.value
 
@@ -212,6 +229,13 @@ class CategorySelectorViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Navigates to the shortcut editor screen.
+     *
+     * Depending on whether a shortcut is currently selected, it initializes the editor in either
+     * "Edit" mode (using the selected shortcut's ID) or "Create" mode (using the currently
+     * selected category ID).
+     */
     fun onShortcutEditorRequested() {
         val state = _uiState.value
 
@@ -258,6 +282,133 @@ class CategorySelectorViewModel @Inject constructor(
 
             null -> Unit
         }
+    }
+
+    /**
+     * Handles interactions with the shortcut action bottom sheet.
+     *
+     * This function updates the UI state by reducing the provided [action] to determine the new
+     * state of the bottom sheet. It also triggers specific side effects based on the action type,
+     * such as executing a shortcut's logic or navigating to the  shortcut editor.
+     *
+     * @param action The [ShortcutActionBottomSheetAction] to be processed, such as Opening,
+     * Executing, or Editing a shortcut.
+     */
+    fun onShortcutAction(action: ShortcutActionBottomSheetAction) {
+        _uiState.update {
+            it.copy(shortcutActionSheet = reduceShortcutActionBottomSheet(action))
+        }
+
+        when (action) {
+            is ShortcutActionBottomSheetAction.Execute -> executeShortcut(action.shortcut)
+            is ShortcutActionBottomSheetAction.Edit -> editShortcut(action.shortcut)
+            else -> Unit
+        }
+    }
+
+    /**
+     * Finalizes the selection process when a subcategory is selected.
+     *
+     * Depending on the [CategorySelectorConfig], this function either returns the selected
+     * category ID as a result to the previous screen or navigates to the target route defined in
+     * the configuration (e.g., the transaction editor).
+     *
+     * @param state The current [CategorySelectorUiState] containing the selected category and subcategory.
+     */
+    private fun proceedWithSubcategory(state: CategorySelectorUiState) {
+        val route = config.target.toRoute(config, state)
+        val categoryId = state.selectedCategoryId ?: return
+
+        if (config.mode.returnsResult) {
+            navBackWithResult(categoryId)
+        } else {
+            navigateAndReplace(route)
+        }
+    }
+
+    /**
+     * Opens the shortcut action bottom sheet for the currently selected shortcut.
+     *
+     * This function retrieves the shortcut and its parent category from the current UI state.
+     * If both are found, it triggers the [ShortcutActionBottomSheetAction.Open] action to
+     * display the bottom sheet, allowing the user to either execute or edit the shortcut.
+     *
+     * @param state The current [CategorySelectorUiState] containing the list of available
+     * shortcuts, categories, and the current selections.
+     */
+    private fun openShortcutActionBottomSheet(state: CategorySelectorUiState) {
+        val shortcut = state.shortcuts.firstOrNull { it.id == state.selectedShortcutId } ?: return
+        val category = state.categories.firstOrNull { it.id == state.selectedCategoryId } ?: return
+
+        onShortcutAction(
+            ShortcutActionBottomSheetAction.Open(
+                shortcut = shortcut,
+                category = category
+            )
+        )
+    }
+
+    /**
+     * Executes a shortcut by creating a transaction from it and navigating to the dashboard.
+     *
+     * This function updates the UI state to a loading state, hides the shortcut action sheet,
+     * and uses the [createTransactionFromShortcut] use case to perform the operation.
+     * Upon successful execution, it navigates the user to the dashboard. If an error occurs,
+     * it captures the error message to be displayed in the UI.
+     *
+     * @param shortcut The [Shortcut] to be executed.
+     */
+    private fun executeShortcut(shortcut: Shortcut) {
+        viewModelScope.launch {
+            try {
+                _uiState.update {
+                    it.copy(
+                        isLoading = true,
+                        shortcutActionSheet = ShortcutActionBottomSheetState.Hidden
+                    )
+                }
+
+                createTransactionFromShortcut(shortcut)
+
+                emitEvent(CategorySelectorEvent.NavigateTo(Route.Dashboard.route))
+
+            } catch (e: Exception) {
+                _uiState.update {
+                    it.copy(
+                        isLoading = false,
+                        errorMessage = e.message
+                    )
+                }
+            } finally {
+                _uiState.update {
+                    it.copy(isLoading = false)
+                }
+            }
+        }
+    }
+
+    /**
+     * Navigates to the transaction editor to modify or use a specific shortcut.
+     *
+     * This function initializes a [TransactionEditorConfig] with the shortcut's details and
+     * triggers a navigation event to the transaction editor screen, allowing the user to refine
+     * the transaction details before proceeding.
+     *
+     * @param shortcut The [Shortcut] entity containing the predefined transaction data to be edited.
+     */
+    private fun editShortcut(shortcut: Shortcut) {
+        navigateTo(
+            Route.TransactionEditor.create(
+                TransactionEditorConfig(
+                    transactionId = null,
+                    categoryId = shortcut.categoryId,
+                    subcategoryId = null,
+                    shortcutId = shortcut.id,
+                    transactionType = _uiState.value.transactionType,
+                    originRoute = Route.Dashboard.route
+                )
+            )
+        )
     }
 
     // Data loading
@@ -350,7 +501,8 @@ class CategorySelectorViewModel @Inject constructor(
         val state = _uiState.value
 
         val enabled = when (state.step) {
-            SelectorStep.SelectCategory -> state.selectedCategoryId != null && (!config.mode.requiresSubcategorySelection)
+            SelectorStep.SelectCategory ->
+                state.selectedCategoryId != null && (!config.mode.requiresSubcategorySelection)
 
             SelectorStep.SelectSubcategory -> when (state.categoryDetailSelected) {
                 CategoryDetailType.SUBCATEGORIES -> state.selectedSubcategoryId != null

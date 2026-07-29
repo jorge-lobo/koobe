@@ -6,6 +6,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.CategoryDetailType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutAction.ShortcutActionBottomSheetState
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
 
 /**
@@ -20,6 +21,23 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDial
  * - dialog state holders such as [discardDialog]
  *
  * The state is immutable; all updates produce a new copy via the ViewModel.
+ *
+ * @property mode The functional mode the selector is operating in (e.g., Default, Filter).
+ * @property step The current navigation step within the selector flow.
+ * @property transactionType The type of transaction (Income/Expense) being categorized.
+ * @property categories The list of available categories to display.
+ * @property subcategories The list of subcategories associated with the selected category.
+ * @property shortcuts The list of shortcuts associated with the selected category.
+ * @property selectedCategoryId The ID of the currently selected category, if any.
+ * @property selectedSubcategoryId The ID of the currently selected subcategory, if any.
+ * @property selectedShortcutId The ID of the currently selected shortcut, if any.
+ * @property categoryDetailSelected The type of detail view currently active (Subcategories or Shortcuts).
+ * @property isPrimaryActionEnabled Whether the main confirmation action is valid and clickable.
+ * @property isLoading Whether the screen is currently fetching data.
+ * @property errorMessage A user-facing message to display in case of an error.
+ * @property initialSnapshot A record of the selection state at screen initialization for change detection.
+ * @property discardDialog State for the confirmation dialog shown when attempting to leave with unsaved changes.
+ * @property shortcutActionSheet State for the bottom sheet that handles shortcut-specific actions.
  */
 data class CategorySelectorUiState(
     val mode: CategorySelectorMode,
@@ -36,7 +54,8 @@ data class CategorySelectorUiState(
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val initialSnapshot: InitialSnapshot,
-    val discardDialog: ConfirmationDialogState = ConfirmationDialogState()
+    val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
+    val shortcutActionSheet: ShortcutActionBottomSheetState = ShortcutActionBottomSheetState.Hidden
 ) {
     /**
      * Determines if the current selection differs from the initial snapshot.

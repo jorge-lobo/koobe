@@ -2,7 +2,9 @@ package com.jorgelobo.koobe.ui.screen.categories.selector
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberUpdatedState
@@ -33,12 +35,15 @@ import com.jorgelobo.koobe.ui.theme.AppTheme
  * The composable itself contains no business logic and acts purely as a state-to-UI and
  * event-to-navigation bridge.
  */
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun CategorySelectorScreen(
     navController: NavController,
     config: CategorySelectorConfig,
     viewModel: CategorySelectorViewModel = hiltViewModel()
 ) {
+    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val onBack = rememberUpdatedState(viewModel::onBackRequested)
     val mode = config.mode
@@ -56,7 +61,9 @@ fun CategorySelectorScreen(
 
     CategorySelectorDialogs(
         state = uiState,
-        onDiscardDialogAction = viewModel::onDiscardDialogAction
+        sheetState = sheetState,
+        onDiscardDialogAction = viewModel::onDiscardDialogAction,
+        onShortcutAction = viewModel::onShortcutAction
     )
 
     Scaffold(

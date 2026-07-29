@@ -1,6 +1,5 @@
 package com.jorgelobo.koobe.ui.mappers
 
-import androidx.compose.ui.graphics.vector.ImageVector
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 
