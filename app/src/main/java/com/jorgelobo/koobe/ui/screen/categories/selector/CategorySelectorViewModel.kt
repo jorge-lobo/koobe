@@ -31,11 +31,12 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 /**
- * ViewModel responsible for managing the state and user interactions
- * of the category selection flow.
+ * ViewModel responsible for managing the state and user interactions of the category selection flow.
  *
- * It coordinates category, subcategory, and shortcut selection
- * according to the provided [CategorySelectorConfig].
+ * It coordinates the navigation and selection process between categories, subcategories, and
+ * shortcuts based on the provided [CategorySelectorConfig]. It handles business logic for
+ * transaction type filtering, shortcut execution, and state synchronization for the category
+ * selector UI.
  */
 @HiltViewModel
 class CategorySelectorViewModel @Inject constructor(
@@ -191,6 +192,13 @@ class CategorySelectorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles the user's request to proceed with the current selection.
+     *
+     * This function validates if the primary action is enabled based on the current UI state.
+     * Depending on whether the user is selecting a subcategory or a shortcut, it either triggers
+     * the navigation logic to the next screen or opens the shortcut action bottom sheet.
+     */
     fun onProceedRequested() {
         val state = _uiState.value
 
@@ -202,6 +210,12 @@ class CategorySelectorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Triggers navigation to the subcategory editor screen.
+     *
+     * It uses the current UI state to pass the [SubcategoryEditorConfig], including the currently
+     * selected subcategory ID (if editing) and the parent category ID.
+     */
     fun onSubcategoryEditorRequested() {
         val state = _uiState.value
 
@@ -215,6 +229,13 @@ class CategorySelectorViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Navigates to the shortcut editor screen.
+     *
+     * Depending on whether a shortcut is currently selected, it initializes the editor in either
+     * "Edit" mode (using the selected shortcut's ID) or "Create" mode (using the currently
+     * selected category ID).
+     */
     fun onShortcutEditorRequested() {
         val state = _uiState.value
 
@@ -263,8 +284,17 @@ class CategorySelectorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles interactions with the shortcut action bottom sheet.
+     *
+     * This function updates the UI state by reducing the provided [action] to determine the new
+     * state of the bottom sheet. It also triggers specific side effects based on the action type,
+     * such as executing a shortcut's logic or navigating to the  shortcut editor.
+     *
+     * @param action The [ShortcutActionBottomSheetAction] to be processed, such as Opening,
+     * Executing, or Editing a shortcut.
+     */
     fun onShortcutAction(action: ShortcutActionBottomSheetAction) {
-        /*shortcutActionHandler.onAction(action)*/
         _uiState.update {
             it.copy(shortcutActionSheet = reduceShortcutActionBottomSheet(action))
         }
@@ -276,6 +306,15 @@ class CategorySelectorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Finalizes the selection process when a subcategory is selected.
+     *
+     * Depending on the [CategorySelectorConfig], this function either returns the selected
+     * category ID as a result to the previous screen or navigates to the target route defined in
+     * the configuration (e.g., the transaction editor).
+     *
+     * @param state The current [CategorySelectorUiState] containing the selected category and subcategory.
+     */
     private fun proceedWithSubcategory(state: CategorySelectorUiState) {
         val route = config.target.toRoute(config, state)
         val categoryId = state.selectedCategoryId ?: return
@@ -287,6 +326,16 @@ class CategorySelectorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Opens the shortcut action bottom sheet for the currently selected shortcut.
+     *
+     * This function retrieves the shortcut and its parent category from the current UI state.
+     * If both are found, it triggers the [ShortcutActionBottomSheetAction.Open] action to
+     * display the bottom sheet, allowing the user to either execute or edit the shortcut.
+     *
+     * @param state The current [CategorySelectorUiState] containing the list of available
+     * shortcuts, categories, and the current selections.
+     */
     private fun openShortcutActionBottomSheet(state: CategorySelectorUiState) {
         val shortcut = state.shortcuts.firstOrNull { it.id == state.selectedShortcutId } ?: return
         val category = state.categories.firstOrNull { it.id == state.selectedCategoryId } ?: return
@@ -299,6 +348,16 @@ class CategorySelectorViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Executes a shortcut by creating a transaction from it and navigating to the dashboard.
+     *
+     * This function updates the UI state to a loading state, hides the shortcut action sheet,
+     * and uses the [createTransactionFromShortcut] use case to perform the operation.
+     * Upon successful execution, it navigates the user to the dashboard. If an error occurs,
+     * it captures the error message to be displayed in the UI.
+     *
+     * @param shortcut The [Shortcut] to be executed.
+     */
     private fun executeShortcut(shortcut: Shortcut) {
         viewModelScope.launch {
             try {
@@ -328,6 +387,15 @@ class CategorySelectorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Navigates to the transaction editor to modify or use a specific shortcut.
+     *
+     * This function initializes a [TransactionEditorConfig] with the shortcut's details and
+     * triggers a navigation event to the transaction editor screen, allowing the user to refine
+     * the transaction details before proceeding.
+     *
+     * @param shortcut The [Shortcut] entity containing the predefined transaction data to be edited.
+     */
     private fun editShortcut(shortcut: Shortcut) {
         navigateTo(
             Route.TransactionEditor.create(
