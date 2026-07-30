@@ -119,27 +119,39 @@ class TransactionEditorViewModel @Inject constructor(
 
             val safeCategory = category ?: Category.empty()
 
-            if (config.isEditMode && transaction != null) {
-                TransactionEditorUiState.initialFromTransaction(
-                    config = config,
-                    transaction = transaction,
-                    category = safeCategory,
-                    subcategory = subcategory,
-                    shortcut = shortcut
-                ).copy(
-                    language = settings.language
-                )
-            } else {
-                TransactionEditorUiState.initial(
-                    config = config,
-                    category = safeCategory,
-                    subcategory = subcategory,
-                    shortcut = shortcut
-                ).copy(
-                    language = settings.language,
-                    currencyType = settings.currency,
-                    paymentMethodType = settings.paymentMethod
-                )
+            when {
+                config.isEditMode && transaction != null -> {
+                    TransactionEditorUiState.initialFromTransaction(
+                        config = config,
+                        transaction = transaction,
+                        category = safeCategory,
+                        subcategory = subcategory,
+                        shortcut = shortcut,
+                        language = settings.language
+                    )
+                }
+
+                shortcut != null -> {
+                    TransactionEditorUiState.initialFromShortcut(
+                        config = config,
+                        shortcut = shortcut,
+                        category = safeCategory,
+                        subcategory = subcategory,
+                        language = settings.language
+                    )
+                }
+
+                else -> {
+                    TransactionEditorUiState.initial(
+                        config = config,
+                        category = safeCategory,
+                        subcategory = subcategory,
+                        shortcut = shortcut,
+                        language = settings.language,
+                        currencyType = settings.currency,
+                        paymentMethodType = settings.paymentMethod
+                    )
+                }
             }
         }
 

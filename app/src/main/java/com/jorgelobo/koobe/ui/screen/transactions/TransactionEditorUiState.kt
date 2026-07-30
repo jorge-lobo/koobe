@@ -161,7 +161,10 @@ data class TransactionEditorUiState(
             config: TransactionEditorConfig,
             category: Category,
             subcategory: Subcategory?,
-            shortcut: Shortcut?
+            shortcut: Shortcut?,
+            language: AppLanguage,
+            currencyType: CurrencyType,
+            paymentMethodType: PaymentMethodType
         ): TransactionEditorUiState {
 
             return TransactionEditorUiState(
@@ -172,6 +175,9 @@ data class TransactionEditorUiState(
                 shortcut = shortcut,
                 descriptionSource = DescriptionSource.Empty,
                 inputState = InputState.DEFAULT,
+                language = language,
+                currencyType = currencyType,
+                paymentMethodType = paymentMethodType,
                 transactionInitialSnapshot = TransactionInitialSnapshot(
                     category = category,
                     subcategory = subcategory,
@@ -179,13 +185,13 @@ data class TransactionEditorUiState(
                     transactionType = config.transactionType,
                     descriptionSource = DescriptionSource.Empty,
                     date = DateUtils.currentDate,
-                    paymentMethodType = PaymentMethodType.CASH,
-                    currencyType = CurrencyType.EUR,
+                    paymentMethodType = paymentMethodType,
+                    currencyType = currencyType,
                     amount = 0.0
                 ),
                 paymentMethodSelector = SelectorSheetState(
                     visible = false,
-                    selected = PaymentMethodType.CASH
+                    selected = paymentMethodType
                 )
             )
         }
@@ -196,7 +202,8 @@ data class TransactionEditorUiState(
             transaction: Transaction,
             category: Category,
             subcategory: Subcategory?,
-            shortcut: Shortcut?
+            shortcut: Shortcut?,
+            language: AppLanguage
         ): TransactionEditorUiState {
 
             val descriptionSource = DescriptionSource.TextDescription(transaction.description)
@@ -214,6 +221,7 @@ data class TransactionEditorUiState(
                 currencyType = transaction.currency,
                 amount = transaction.amount,
                 amountInput = transaction.amount.toString(),
+                language = language,
                 transactionInitialSnapshot = TransactionInitialSnapshot(
                     category = category,
                     subcategory = subcategory,
@@ -232,7 +240,50 @@ data class TransactionEditorUiState(
                 datePickerDialog = DatePickerDialogState(
                     visible = false,
                     selectedDate = transaction.date,
-                    language = AppLanguage.ENGLISH
+                    language = language
+                )
+            )
+        }
+
+        /** Returns an initial state populated from an existing shortcut (edit mode). */
+        fun initialFromShortcut(
+            config: TransactionEditorConfig,
+            category: Category,
+            subcategory: Subcategory?,
+            shortcut: Shortcut,
+            language: AppLanguage
+        ): TransactionEditorUiState {
+
+            val descriptionSource = DescriptionSource.TextDescription(shortcut.name)
+
+            return TransactionEditorUiState(
+                config = config,
+                originalTransaction = null,
+                category = category,
+                subcategory = subcategory,
+                shortcut = shortcut,
+                descriptionSource = descriptionSource,
+                inputState = InputState.DEFAULT,
+                date = DateUtils.currentDate,
+                paymentMethodType = shortcut.paymentMethod,
+                currencyType = shortcut.currency,
+                amount = shortcut.amount,
+                amountInput = shortcut.amount.toString(),
+                language = language,
+                transactionInitialSnapshot = TransactionInitialSnapshot(
+                    category = category,
+                    subcategory = subcategory,
+                    shortcut = shortcut,
+                    transactionType = shortcut.transactionType,
+                    descriptionSource = descriptionSource,
+                    date = DateUtils.currentDate,
+                    paymentMethodType = shortcut.paymentMethod,
+                    currencyType = shortcut.currency,
+                    amount = shortcut.amount
+                ),
+                paymentMethodSelector = SelectorSheetState(
+                    visible = false,
+                    selected = shortcut.paymentMethod
                 )
             )
         }
