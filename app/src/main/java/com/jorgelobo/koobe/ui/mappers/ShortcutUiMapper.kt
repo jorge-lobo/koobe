@@ -20,6 +20,7 @@ fun ShortcutEditorUiState.toShortcut(
         period = if (repeat) repeatFrequency else null,
         paymentMethod = paymentMethodType,
         currency = currencyType,
-        transactionType = category.type
+        transactionType = category.type,
+        usageCount = originalShortcut?.usageCount ?: 0
     )
 }
