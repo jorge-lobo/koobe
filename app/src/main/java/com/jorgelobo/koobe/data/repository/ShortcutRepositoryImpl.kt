@@ -29,6 +29,9 @@ class ShortcutRepositoryImpl @Inject constructor(
             list.map { it.toDomain() }
         }
 
+    override fun getShortcutByIdFlow(id: Int): Flow<Shortcut?> =
+        dao.getByIdFlow(id).map { it?.toDomain() }
+
     override suspend fun getShortcutById(shortcutId: Int): Shortcut? =
         dao.getById(shortcutId)?.toDomain()
 
@@ -44,6 +47,7 @@ class ShortcutRepositoryImpl @Inject constructor(
         dao.delete(shortcut.toEntity())
     }
 
-    override fun getShortcutByIdFlow(id: Int): Flow<Shortcut?> =
-        dao.getByIdFlow(id).map { it?.toDomain() }
+    override suspend fun incrementShortcutUsageCount(shortcutId: Int) {
+        dao.incrementUsageCount(shortcutId)
+    }
 }

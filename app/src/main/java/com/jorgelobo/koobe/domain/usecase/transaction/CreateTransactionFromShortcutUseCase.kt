@@ -2,6 +2,7 @@ package com.jorgelobo.koobe.domain.usecase.transaction
 
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.domain.model.transaction.Transaction
+import com.jorgelobo.koobe.domain.usecase.shortcut.IncrementShortcutUsageUseCase
 import com.jorgelobo.koobe.utils.date.DateUtils
 import javax.inject.Inject
 
@@ -15,7 +16,8 @@ import javax.inject.Inject
  * @property insertTransaction The use case used to persist the newly created transaction.
  */
 class CreateTransactionFromShortcutUseCase @Inject constructor(
-    private val insertTransaction: InsertTransactionUseCase
+    private val insertTransaction: InsertTransactionUseCase,
+    private val incrementShortcutUsage: IncrementShortcutUsageUseCase
 ) {
     suspend operator fun invoke(shortcut: Shortcut) {
         val transaction = Transaction(
@@ -31,5 +33,6 @@ class CreateTransactionFromShortcutUseCase @Inject constructor(
         )
 
         insertTransaction(transaction)
+        incrementShortcutUsage(shortcut.id)
     }
 }
