@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.jorgelobo.koobe.data.local.KoobeDatabase
 import com.jorgelobo.koobe.data.local.dao.*
+import com.jorgelobo.koobe.data.local.migration.DatabaseMigrations
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -25,6 +26,7 @@ object DatabaseModule {
             KoobeDatabase::class.java,
             "koobe_db"
         )
+            .addMigrations(*DatabaseMigrations.ALL)
             .build()
 
         return database

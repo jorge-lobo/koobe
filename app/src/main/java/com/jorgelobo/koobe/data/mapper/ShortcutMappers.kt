@@ -14,7 +14,8 @@ fun ShortcutEntity.toDomain() = Shortcut(
     currency = currency,
     amount = amount,
     repeat = repeat,
-    period = period
+    period = period,
+    usageCount = usageCount
 )
 
 fun Shortcut.toEntity() = ShortcutEntity(
@@ -27,5 +28,6 @@ fun Shortcut.toEntity() = ShortcutEntity(
     currency = currency,
     amount = amount,
     repeat = repeat,
-    period = period
+    period = period,
+    usageCount = usageCount
 )

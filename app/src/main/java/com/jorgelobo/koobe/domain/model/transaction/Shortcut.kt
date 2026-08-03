@@ -16,5 +16,6 @@ data class Shortcut(
     val currency: CurrencyType,
     val amount: Double,
     val repeat: Boolean = false,
-    val period: PeriodType? = null
+    val period: PeriodType? = null,
+    val usageCount: Int = 0
 )

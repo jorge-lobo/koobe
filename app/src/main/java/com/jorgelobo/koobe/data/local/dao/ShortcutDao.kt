@@ -42,4 +42,7 @@ interface ShortcutDao {
 
     @Query("SELECT * FROM shortcuts WHERE id = :id")
     fun getByIdFlow(id: Int): Flow<ShortcutEntity?>
+
+    @Query("UPDATE shortcuts SET usageCount = usageCount + 1 WHERE id = :id")
+    suspend fun incrementUsageCount(id: Int)
 }

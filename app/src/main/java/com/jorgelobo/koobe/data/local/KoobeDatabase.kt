@@ -15,7 +15,7 @@ import com.jorgelobo.koobe.data.local.entity.*
         SubcategoryEntity::class,
         TransactionEntity::class,
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(KoobeConverters::class)
