@@ -45,4 +45,7 @@ interface ShortcutDao {
 
     @Query("UPDATE shortcuts SET usageCount = usageCount + 1 WHERE id = :id")
     suspend fun incrementUsageCount(id: Int)
+
+    @Query("UPDATE shortcuts SET lastExecutionDate = :date WHERE id = :id")
+    suspend fun updateLastExecutionDate(id: Int, date: Long)
 }

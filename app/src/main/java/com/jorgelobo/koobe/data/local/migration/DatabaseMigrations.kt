@@ -16,7 +16,19 @@ object DatabaseMigrations {
         }
     }
 
+    val MIGRATION_2_3 = object : Migration(2, 3) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+                ALTER TABLE shortcuts
+                ADD COLUMN lastExecutionDate INTEGER
+                """.trimIndent()
+            )
+        }
+    }
+
     val ALL = arrayOf(
-        MIGRATION_1_2
+        MIGRATION_1_2,
+        MIGRATION_2_3
     )
 }

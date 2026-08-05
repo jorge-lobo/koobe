@@ -3,6 +3,7 @@ package com.jorgelobo.koobe.data.mapper
 import com.jorgelobo.koobe.data.local.entity.ShortcutEntity
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import java.util.Date
 
 fun ShortcutEntity.toDomain() = Shortcut(
     id = id,
@@ -15,7 +16,8 @@ fun ShortcutEntity.toDomain() = Shortcut(
     amount = amount,
     repeat = repeat,
     period = period,
-    usageCount = usageCount
+    usageCount = usageCount,
+    lastExecutionDate = lastExecutionDate?.let(::Date)
 )
 
 fun Shortcut.toEntity() = ShortcutEntity(
@@ -29,5 +31,6 @@ fun Shortcut.toEntity() = ShortcutEntity(
     amount = amount,
     repeat = repeat,
     period = period,
-    usageCount = usageCount
+    usageCount = usageCount,
+    lastExecutionDate = lastExecutionDate?.time
 )

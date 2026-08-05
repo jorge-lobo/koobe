@@ -31,5 +31,6 @@ data class ShortcutEntity(
     val amount: Double,
     val repeat: Boolean = false,
     val period: PeriodType? = null,
-    val usageCount: Int = 0
+    val usageCount: Int = 0,
+    val lastExecutionDate: Long? = null
 )
