@@ -8,7 +8,17 @@ import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
 
+/**
+ * Calculates the occurrences of a recurring shortcut that have not yet been executed.
+ *
+ * Returns all missing execution dates between the shortcut's last execution and the provided
+ * current date.
+ */
 class CalculateMissingOccurrencesUseCase @Inject constructor() {
+
+    /**
+     * Returns the list of missing execution dates for the given [shortcut].
+     */
     operator fun invoke(
         shortcut: Shortcut,
         currentDate: Date = DateUtils.currentDate

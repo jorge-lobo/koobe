@@ -8,18 +8,19 @@ import java.util.Date
 import javax.inject.Inject
 
 /**
- * Use case responsible for creating and persisting a new [Transaction] based on a predefined [Shortcut].
+ * Creates a transaction from a shortcut.
  *
- * This use case maps properties from a shortcut to a new transaction, saves it using [InsertTransactionUseCase],
- * and optionally updates the shortcut's usage frequency via [IncrementShortcutUsageUseCase].
- *
- * @property insertTransaction The use case used to persist the newly created transaction.
- * @property incrementShortcutUsage The use case used to increment the usage count of the shortcut.
+ * Inserts a new transaction using the shortcut's data and optionally increments the shortcut's
+ * usage count.
  */
 class CreateTransactionFromShortcutUseCase @Inject constructor(
     private val insertTransaction: InsertTransactionUseCase,
     private val incrementShortcutUsage: IncrementShortcutUsageUseCase
 ) {
+
+    /**
+     * Creates a transaction from the given [shortcut].
+     */
     suspend operator fun invoke(
         shortcut: Shortcut,
         date: Date = DateUtils.currentDate,
