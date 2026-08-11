@@ -35,7 +35,7 @@ class ExecuteScheduledShortcutsUseCase @Inject constructor(
 
             occurrences.lastOrNull()?.let {
                 updateLastExecution(
-                    shortcut = shortcut,
+                    shortcutId = shortcut.id,
                     date = it
                 )
             }

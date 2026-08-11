@@ -1,6 +1,5 @@
 package com.jorgelobo.koobe.domain.usecase.shortcut
 
-import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import java.util.Date
 import javax.inject.Inject
@@ -18,13 +17,12 @@ class UpdateShortcutLastExecutionUseCase @Inject constructor(
      * Updates the shortcut with the specified last execution [date].
      */
     suspend operator fun invoke(
-        shortcut: Shortcut,
+        shortcutId: Int,
         date: Date
     ) {
-        repository.updateShortcut(
-            shortcut.copy(
-                lastExecutionDate = date
-            )
+        repository.updateLastExecutionDate(
+            shortcutId = shortcutId,
+            date = date.time
         )
     }
 }
