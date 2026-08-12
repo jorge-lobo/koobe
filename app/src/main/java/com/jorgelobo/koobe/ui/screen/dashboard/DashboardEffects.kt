@@ -6,7 +6,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.res.pluralStringResource
 import androidx.navigation.NavController
-import com.jorgelobo.koobe.ui.app.AppViewModel
 import com.jorgelobo.koobe.R
 import kotlinx.coroutines.flow.Flow
 
@@ -21,17 +20,17 @@ import kotlinx.coroutines.flow.Flow
  *
  * @param events Flow of one-off Dashboard events.
  * @param navController Controller used for Dashboard navigation.
- * @param appViewModel ViewModel exposing the scheduled shortcut execution count.
  * @param executedShortcuts Number of scheduled shortcuts executed during application startup.
  * @param snackbarHostState Host state used to display the Snackbar.
+ * @param onScheduledShortcutsFeedbackConsumed Callback to clear the scheduled shortcuts feedback.
  */
 @Composable
 fun DashboardEffects(
     events: Flow<DashboardEvent>,
     navController: NavController,
-    appViewModel: AppViewModel,
     executedShortcuts: Int,
-    snackbarHostState: SnackbarHostState
+    snackbarHostState: SnackbarHostState,
+    onScheduledShortcutsFeedbackConsumed: () -> Unit
 ) {
     val message = pluralStringResource(
         id = R.plurals.snackBar_recurring_shortcuts_executed,
@@ -54,7 +53,7 @@ fun DashboardEffects(
                 duration = SnackbarDuration.Short
             )
 
-            appViewModel.clearScheduledShortcutsExecuted()
+            onScheduledShortcutsFeedbackConsumed()
         }
     }
 }

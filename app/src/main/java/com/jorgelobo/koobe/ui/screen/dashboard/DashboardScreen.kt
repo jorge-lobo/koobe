@@ -45,9 +45,9 @@ fun DashboardScreen(
     DashboardEffects(
         events = viewModel.events,
         navController = navController,
-        appViewModel = appViewModel,
         executedShortcuts = executedShortcuts,
-        snackbarHostState = snackbarHostState
+        snackbarHostState = snackbarHostState,
+        onScheduledShortcutsFeedbackConsumed = appViewModel::clearScheduledShortcutsExecuted
     )
 
     Scaffold(
