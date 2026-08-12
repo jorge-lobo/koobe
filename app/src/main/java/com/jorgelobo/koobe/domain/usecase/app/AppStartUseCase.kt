@@ -8,8 +8,8 @@ class AppStartUseCase @Inject constructor(
     private val executeScheduledShortcuts: ExecuteScheduledShortcutsUseCase
 ) {
 
-    suspend operator fun invoke() {
+    suspend operator fun invoke(): Int {
         ensureDefaultData()
-        executeScheduledShortcuts()
+        return executeScheduledShortcuts()
     }
 }

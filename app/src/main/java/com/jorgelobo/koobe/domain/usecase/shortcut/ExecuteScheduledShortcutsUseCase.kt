@@ -19,26 +19,31 @@ class ExecuteScheduledShortcutsUseCase @Inject constructor(
     /**
      * Executes all scheduled shortcuts that are currently due.
      */
-    suspend operator fun invoke() {
+    suspend operator fun invoke(): Int {
         val dueShortcuts = getDueShortcuts()
+        var executedShortcuts = 0
 
         dueShortcuts.forEach { shortcut ->
             val occurrences = calculateMissingOccurrences(shortcut)
 
-            occurrences.forEach { date ->
-                createTransaction(
-                    shortcut = shortcut,
-                    date = date,
-                    incrementUsage = false
-                )
-            }
+            if (occurrences.isNotEmpty()) {
+                occurrences.forEach { date ->
+                    createTransaction(
+                        shortcut = shortcut,
+                        date = date,
+                        incrementUsage = false
+                    )
+                }
 
-            occurrences.lastOrNull()?.let {
                 updateLastExecution(
                     shortcutId = shortcut.id,
-                    date = it
+                    date = occurrences.last()
                 )
+
+                executedShortcuts++
             }
         }
+
+        return executedShortcuts
     }
 }
