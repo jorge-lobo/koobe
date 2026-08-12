@@ -11,13 +11,19 @@ import com.jorgelobo.koobe.R
 import kotlinx.coroutines.flow.Flow
 
 /**
- * Side-effect handler for the Dashboard screen.
+ * Handles one-off side effects for the Dashboard screen.
  *
- * This composable listens to the [events] flow and performs UI-related actions
- * that are not part of the state, such as navigation.
+ * Observes dashboard events for navigation and displays a Snackbar when scheduled shortcuts have
+ * been executed during application startup.
  *
- * @param events A [Flow] of [DashboardEvent]s to be handled.
- * @param navController The [NavController] used to perform navigation actions.
+ * The scheduled shortcut execution count is cleared after the Snackbar has been shown, preventing
+ * the same feedback from being displayed again when the Dashboard screen is revisited.
+ *
+ * @param events Flow of one-off Dashboard events.
+ * @param navController Controller used for Dashboard navigation.
+ * @param appViewModel ViewModel exposing the scheduled shortcut execution count.
+ * @param executedShortcuts Number of scheduled shortcuts executed during application startup.
+ * @param snackbarHostState Host state used to display the Snackbar.
  */
 @Composable
 fun DashboardEffects(

@@ -17,7 +17,9 @@ class GetDueShortcutsUseCase @Inject constructor(
 ) {
 
     /**
-     * Returns the list of shortcuts that should be executed.
+     * Returns all recurring shortcuts that are currently due for execution.
+     *
+     * A shortcut is considered due according to its recurrence configuration and last execution date.
      */
     suspend operator fun invoke(): List<Shortcut> =
         repository

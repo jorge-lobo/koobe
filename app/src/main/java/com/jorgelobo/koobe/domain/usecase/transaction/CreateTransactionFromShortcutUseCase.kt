@@ -19,7 +19,15 @@ class CreateTransactionFromShortcutUseCase @Inject constructor(
 ) {
 
     /**
-     * Creates a transaction from the given [shortcut].
+     * Creates a transaction using the data defined by the given [shortcut].
+     *
+     * Optionally increments the shortcut's usage count. Automatic scheduled executions can
+     * disable usage tracking so that recurring shortcuts do not artificially increase their
+     * usage statistics.
+     *
+     * @param shortcut The shortcut used to create the transaction.
+     * @param date The transaction date.
+     * @param incrementUsage Whether the shortcut usage count should be incremented.
      */
     suspend operator fun invoke(
         shortcut: Shortcut,

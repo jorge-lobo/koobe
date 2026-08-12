@@ -6,8 +6,10 @@ import javax.inject.Inject
 /**
  * Executes all scheduled shortcuts that are currently due.
  *
- * Retrieves all due shortcuts, creates transactions for each missing occurrence, and updates each
- * shortcut's last execution date.
+ * For each due shortcut, creates transactions for all missing occurrences and updates its last
+ * execution date. Automatic executions do not increment the shortcut usage count.
+ *
+ * @return The number of shortcuts for which at least one transaction was created.
  */
 class ExecuteScheduledShortcutsUseCase @Inject constructor(
     private val getDueShortcuts: GetDueShortcutsUseCase,
@@ -17,7 +19,9 @@ class ExecuteScheduledShortcutsUseCase @Inject constructor(
 ) {
 
     /**
-     * Executes all scheduled shortcuts that are currently due.
+     * Executes all currently due scheduled shortcuts.
+     *
+     * @return The number of shortcuts that were executed.
      */
     suspend operator fun invoke(): Int {
         val dueShortcuts = getDueShortcuts()

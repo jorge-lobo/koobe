@@ -14,7 +14,10 @@ class UpdateShortcutLastExecutionUseCase @Inject constructor(
 ) {
 
     /**
-     * Updates the shortcut with the specified last execution [date].
+     * Updates the last execution date of the specified shortcut.
+     *
+     * @param shortcutId The unique identifier of the shortcut to update.
+     * @param date The date of the most recent scheduled execution.
      */
     suspend operator fun invoke(
         shortcutId: Int,

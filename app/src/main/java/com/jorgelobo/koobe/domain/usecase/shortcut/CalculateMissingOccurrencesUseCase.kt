@@ -17,7 +17,15 @@ import javax.inject.Inject
 class CalculateMissingOccurrencesUseCase @Inject constructor() {
 
     /**
-     * Returns the list of missing execution dates for the given [shortcut].
+     * Calculates all scheduled execution dates that are missing for the given [shortcut].
+     *
+     * Occurrences are calculated from the shortcut's last execution date up to the current date,
+     * according to its configured recurrence period. If the shortcut has no previous execution
+     * date, the current day is returned as its first occurrence.
+     *
+     * @param shortcut The recurring shortcut for which missing occurrences are calculated.
+     * @param currentDate The date used as the upper bound when calculating occurrences.
+     * @return A list of missing execution dates in chronological order.
      */
     operator fun invoke(
         shortcut: Shortcut,

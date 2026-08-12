@@ -8,12 +8,20 @@ import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
+/**
+ * Ensures that the application's default categories and subcategories are initialized.
+ *
+ * Default data is inserted only once, based on the corresponding application preference.
+ */
 class EnsureDefaultDataUseCase @Inject constructor(
     private val preferences: AppPreferences,
     private val categoryRepository: CategoryRepository,
     private val subcategoryRepository: SubcategoryRepository
 ) {
 
+    /**
+     * Ensures that the default application data has been initialized.
+     */
     suspend operator fun invoke() {
         if (preferences.defaultsAlreadyInserted()) return
 
