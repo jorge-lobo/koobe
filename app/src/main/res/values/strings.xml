@@ -234,6 +234,10 @@
     <string name="snackBar_duplicate_name">Name already exists.</string>
     <string name="snackBar_name_too_short">Name must have at least 3 characters.</string>
     <string name="snackBar_invalid_first_character">Name must start with a letter.</string>
+    <plurals name="snackBar_recurring_shortcuts_executed">
+        <item quantity="one">%d recurring shortcut executed.</item>
+        <item quantity="other">%d recurring shortcuts executed.</item>
+    </plurals>
 
     <!-- RadioButtons -->
     <string name="radio_cash">Cash</string>

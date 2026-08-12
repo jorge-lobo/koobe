@@ -59,7 +59,13 @@ fun NavGraph(
         }
 
         // Main views
-        composable(Route.Dashboard.route) { DashboardScreen(navController) }
+        composable(Route.Dashboard.route) {
+            DashboardScreen(
+                navController = navController,
+                appViewModel = appViewModel
+            )
+        }
+
         composable(Route.Historic.route) {
             HistoricScreen(
                 navController = navController,
