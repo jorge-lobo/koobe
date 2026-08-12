@@ -34,9 +34,14 @@ class AppViewModel @Inject constructor(
     private val _themeOption = MutableStateFlow(ThemeOption.SYSTEM)
     val themeOption = _themeOption.asStateFlow()
 
+    private val _scheduledShortcutsExecuted = MutableStateFlow(0)
+    val scheduledShortcutsExecuted = _scheduledShortcutsExecuted.asStateFlow()
+
     init {
         viewModelScope.launch {
-            appStartUseCase()
+            val executedShortcuts = appStartUseCase()
+
+            _scheduledShortcutsExecuted.value = executedShortcuts
             _isInitializing.value = false
         }
 
@@ -59,5 +64,9 @@ class AppViewModel @Inject constructor(
         viewModelScope.launch {
             setThemeOptionUseCase(option)
         }
+    }
+
+    fun clearScheduledShortcutsExecuted() {
+        _scheduledShortcutsExecuted.value = 0
     }
 }
