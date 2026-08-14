@@ -267,6 +267,12 @@
     <string name="code_dollar">USD</string>
     <string name="code_pound">GBP</string>
 
+    <!-- Recurrences -->
+    <string name="recurrence_yearly">Yearly</string>
+    <string name="recurrence_monthly">Monthly</string>
+    <string name="recurrence_weekly">Weekly</string>
+    <string name="recurrence_daily">Daily</string>
+
     <!-- Default values -->
     <string name="default_category">Miscellaneous</string>
     <string name="default_payment_method">Cash</string>
