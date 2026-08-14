@@ -29,6 +29,7 @@ fun ShortcutManagerListSection(
     shortcuts: List<ShortcutItemUi>,
     onEditShortcut: (shortcutId: Int) -> Unit,
     onDeleteShortcut: (shortcutId: Int) -> Unit,
+    onChipClick: (shortcutId: Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
     if (isEmpty) {
@@ -64,7 +65,8 @@ fun ShortcutManagerListSection(
                         category = item.category
                     ),
                     onEditClick = { onEditShortcut(item.shortcut.id) },
-                    onDeleteClick = { onDeleteShortcut(item.shortcut.id) }
+                    onDeleteClick = { onDeleteShortcut(item.shortcut.id) },
+                    onChipClick = { onChipClick(item.shortcut.id) }
                 )
             }
         }

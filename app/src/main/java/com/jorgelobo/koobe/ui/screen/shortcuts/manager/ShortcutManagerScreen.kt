@@ -87,7 +87,8 @@ fun ShortcutManagerScreen(
             transactionTypeSelected = uiState.transactionTypeSelected,
             onTransactionTypeChanged = viewModel::onTransactionTypeChange,
             onEditShortcut = { viewModel.onEditShortcut(it) },
-            onDeleteShortcut = { viewModel.onDeleteShortcutClick(it) }
+            onDeleteShortcut = { viewModel.onDeleteShortcutClick(it) },
+            onChipClick = {}
         )
     }
 }
