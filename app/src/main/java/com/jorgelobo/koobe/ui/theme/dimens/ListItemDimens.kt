@@ -11,3 +11,7 @@ object BudgetItemSize {
     val BudgetSimple = 56.dp
     val BudgetDetailed = 96.dp
 }
+
+object ChipSize {
+    val ChipHeight = 24.dp
+}
