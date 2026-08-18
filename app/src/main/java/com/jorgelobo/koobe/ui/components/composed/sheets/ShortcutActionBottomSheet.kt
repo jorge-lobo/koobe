@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -17,7 +16,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
@@ -29,7 +27,6 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
-import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.bottomSheet.AppModalBottomSheet
 import com.jorgelobo.koobe.ui.components.base.bottomSheet.BaseBottomSheetContent
@@ -37,20 +34,16 @@ import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonConfig
 import com.jorgelobo.koobe.ui.components.base.buttons.types.AppButton
 import com.jorgelobo.koobe.ui.components.base.dividers.AppHorizontalDivider
 import com.jorgelobo.koobe.ui.components.common.MoneyText
-import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
-import com.jorgelobo.koobe.ui.mappers.localizedName
 import com.jorgelobo.koobe.ui.mappers.toIcon
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutAction.ShortcutActionBottomSheetAction
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutAction.ShortcutActionBottomSheetState
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
-import com.jorgelobo.koobe.ui.theme.dimens.AvatarSize
 import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
-import com.jorgelobo.koobe.utils.resolvedColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -74,42 +67,10 @@ fun ShortcutActionBottomSheet(
             val shortcut = visibleState.shortcut
             val category = visibleState.category
 
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(vertical = Spacing.Medium)
-                    .height(AvatarSize.Large),
-                horizontalArrangement = Arrangement.spacedBy(Spacing.Medium),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Avatar(
-                    type = AvatarType.LARGE,
-                    icon = shortcut.icon,
-                    color = category.resolvedColor()
-                )
-
-                Column(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f),
-                    verticalArrangement = Arrangement.Top,
-                    horizontalAlignment = Alignment.Start
-                ) {
-                    Text(
-                        text = shortcut.name,
-                        style = typography.titleLarge,
-                        color = textColors.textPrimary
-                    )
-
-                    Spacer(modifier = Modifier.height(Spacing.Micro))
-
-                    Text(
-                        text = category.localizedName(),
-                        style = typography.bodyMedium,
-                        color = textColors.textSupportMessage
-                    )
-                }
-            }
+            ShortcutBottomSheetHeader(
+                shortcut = shortcut,
+                category = category
+            )
 
             Row(
                 modifier = Modifier
