@@ -25,6 +25,8 @@
     <string name="btn_create_subcategory">Create subcategory</string>
     <string name="btn_create_category">Create category</string>
     <string name="btn_create_transaction">Create transaction</string>
+    <string name="btn_change_frequency">Change frequency</string>
+    <string name="btn_disable_recurrence">Disable recurrence</string>
     <string name="btn_edit_first">Edit first</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_apply">Apply</string>
@@ -129,6 +131,7 @@
     <string name="bottom_sheet_headline_sorting">Sorting</string>
     <string name="bottom_sheet_headline_period_selector">Select period</string>
     <string name="bottom_sheet_headline_shortcut_action">Shortcut details</string>
+    <string name="bottom_sheet_headline_shortcut_recurrence">Recurrence</string>
 
     <!-- Cards -->
     <string name="card_finance_stats_balance_overall">Overall balance</string>
@@ -160,6 +163,7 @@
     <string name="label_payment_method">Payment method</string>
     <string name="label_period">First day of week</string>
     <string name="label_amount">Amount</string>
+    <string name="label_frequency">Frequency</string>
 
     <!-- Empty States -->
     <string name="empty_dashboard_shortcuts">No shortcuts added!</string>
