@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.SortingType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.domain.usecase.category.GetAllCategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.DeleteShortcutUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.GetAllShortcutsByTypeUseCase
@@ -15,6 +16,8 @@ import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.handleSelectorSheet
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutRecurrence.ShortcutRecurrenceBottomSheetAction
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutRecurrence.reduceShortcutRecurrenceBottomSheet
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.handleConfirmationDialog
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
@@ -186,6 +189,17 @@ class ShortcutManagerViewModel @Inject constructor(
         navigateTo(route)
     }
 
+    fun onShortcutChipClick(shortcutId: Int) {
+        val item = uiState.value.shortcutItems.find { it.shortcut.id == shortcutId } ?: return
+
+        onShortcutRecurrenceAction(
+            ShortcutRecurrenceBottomSheetAction.Open(
+                shortcut = item.shortcut,
+                category = item.category
+            )
+        )
+    }
+
     /**
      * Triggers navigation to the shortcut editor screen to modify an existing shortcut.
      *
@@ -260,6 +274,18 @@ class ShortcutManagerViewModel @Inject constructor(
         )
     }
 
+    fun onShortcutRecurrenceAction(action: ShortcutRecurrenceBottomSheetAction) {
+        _uiState.update {
+            it.copy(shortcutRecurrenceSheet = reduceShortcutRecurrenceBottomSheet(action))
+        }
+
+        when (action) {
+            is ShortcutRecurrenceBottomSheetAction.Change -> changeRecurrenceFrequency(action.shortcut)
+            is ShortcutRecurrenceBottomSheetAction.Disable -> disableRecurrence(action.shortcut)
+            else -> Unit
+        }
+    }
+
     private fun performDeleteShortcut() {
         viewModelScope.launch {
             val id = uiState.value.deleteDialog.targetId ?: return@launch
@@ -273,6 +299,14 @@ class ShortcutManagerViewModel @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun changeRecurrenceFrequency(shortcut: Shortcut) {
+
+    }
+
+    private fun disableRecurrence(shortcut: Shortcut) {
+
     }
 
     private fun navigateTo(route: String) {

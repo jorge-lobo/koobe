@@ -8,8 +8,10 @@ import com.jorgelobo.koobe.domain.model.constants.enums.SortingType
 import com.jorgelobo.koobe.ui.components.composed.dialogs.DeleteDialog
 import com.jorgelobo.koobe.ui.components.composed.sheets.ListSelectorBottomSheet
 import com.jorgelobo.koobe.ui.components.composed.sheets.ListSelectorBottomSheetConfig
+import com.jorgelobo.koobe.ui.components.composed.sheets.ShortcutRecurrenceBottomSheet
 import com.jorgelobo.koobe.ui.components.model.enums.DeleteType
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutRecurrence.ShortcutRecurrenceBottomSheetAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 
 /**
@@ -17,17 +19,21 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDial
  * bottom sheets for the Shortcut Manager screen.
  *
  * @param state The current UI state containing visibility flags and data for the dialogs.
- * @param sheetState The state used to control the modal bottom sheet.
+ * @param sortingSheetState The state of the sorting bottom sheet.
+ * @param recurrenceSheetState The state of the shortcut recurrence bottom sheet.
  * @param onDeleteDialogAction Callback handled when a user interacts with the delete confirmation dialog.
  * @param onSortingDialogAction Callback handled when a user selects a sorting option or dismisses the sorting sheet.
+ * @param onShortcutRecurrenceAction Callback handled when a user interacts with the shortcut recurrence bottom sheet.
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ShortcutManagerDialogs(
     state: ShortcutManagerUiState,
-    sheetState: SheetState,
+    sortingSheetState: SheetState,
+    recurrenceSheetState: SheetState,
     onDeleteDialogAction: (ConfirmationDialogAction) -> Unit,
-    onSortingDialogAction: (SelectorSheetAction<SortingType>) -> Unit
+    onSortingDialogAction: (SelectorSheetAction<SortingType>) -> Unit,
+    onShortcutRecurrenceAction: (ShortcutRecurrenceBottomSheetAction) -> Unit
 ) {
 
     if (state.deleteDialog.visible) {
@@ -43,7 +49,7 @@ fun ShortcutManagerDialogs(
             onDismissRequest = { onSortingDialogAction(SelectorSheetAction.Dismiss) }
         ) {
             ListSelectorBottomSheet(
-                sheetState = sheetState,
+                sheetState = sortingSheetState,
                 config = ListSelectorBottomSheetConfig.Sorting(
                     selected = state.sortingSelector.selected,
                     onItemSelected = { onSortingDialogAction(SelectorSheetAction.Select(it)) }
@@ -52,4 +58,10 @@ fun ShortcutManagerDialogs(
             )
         }
     }
+
+    ShortcutRecurrenceBottomSheet(
+        sheetState = recurrenceSheetState,
+        state = state.shortcutRecurrenceSheet,
+        onAction = onShortcutRecurrenceAction
+    )
 }

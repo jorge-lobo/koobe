@@ -35,7 +35,8 @@ fun ShortcutManagerScreen(
     config: ShortcutManagerConfig,
     viewModel: ShortcutManagerViewModel = hiltViewModel()
 ) {
-    val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val sortingSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val recurrenceSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ShortcutManagerEffects(
@@ -45,9 +46,11 @@ fun ShortcutManagerScreen(
 
     ShortcutManagerDialogs(
         state = uiState,
-        sheetState = sheetState,
+        sortingSheetState = sortingSheetState,
+        recurrenceSheetState = recurrenceSheetState,
         onDeleteDialogAction = viewModel::onDeleteDialogAction,
-        onSortingDialogAction = { viewModel.onSortingSheetAction(it) }
+        onSortingDialogAction = { viewModel.onSortingSheetAction(it) },
+        onShortcutRecurrenceAction = viewModel::onShortcutRecurrenceAction
     )
 
     Scaffold(
@@ -88,7 +91,7 @@ fun ShortcutManagerScreen(
             onTransactionTypeChanged = viewModel::onTransactionTypeChange,
             onEditShortcut = { viewModel.onEditShortcut(it) },
             onDeleteShortcut = { viewModel.onDeleteShortcutClick(it) },
-            onChipClick = {}
+            onChipClick = { viewModel.onShortcutChipClick(it) }
         )
     }
 }
