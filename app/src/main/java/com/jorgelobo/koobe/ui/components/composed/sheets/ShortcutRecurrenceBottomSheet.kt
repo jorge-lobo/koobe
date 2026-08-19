@@ -30,6 +30,7 @@ import com.jorgelobo.koobe.ui.components.base.bottomSheet.AppModalBottomSheet
 import com.jorgelobo.koobe.ui.components.base.bottomSheet.BaseBottomSheetContent
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonConfig
 import com.jorgelobo.koobe.ui.components.base.buttons.types.AppButton
+import com.jorgelobo.koobe.ui.components.base.chips.AppChip
 import com.jorgelobo.koobe.ui.components.base.dividers.AppHorizontalDivider
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
@@ -73,20 +74,16 @@ fun ShortcutRecurrenceBottomSheet(
                     .padding(vertical = Spacing.Medium),
                 horizontalArrangement = Arrangement.spacedBy(Spacing.Medium)
             ) {
-                val labelStyle = typography.labelLarge
-                val labelColor = textColors.textPrimary
                 val frequency = shortcut.period?.toRecurrenceLabel() ?: return@Row
 
                 Text(
                     text = stringResource(R.string.label_frequency),
-                    style = labelStyle,
-                    color = labelColor
+                    style = typography.labelLarge,
+                    color = textColors.textPrimary
                 )
 
-                Text(
-                    text = stringResource(frequency),
-                    style = labelStyle,
-                    color = labelColor
+                AppChip(
+                    text = stringResource(frequency)
                 )
             }
 

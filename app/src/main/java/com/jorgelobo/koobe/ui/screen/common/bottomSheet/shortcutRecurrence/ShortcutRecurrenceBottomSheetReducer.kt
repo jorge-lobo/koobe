@@ -1,6 +1,6 @@
 package com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutRecurrence
 
-fun reduceShortcutActionBottomSheet(
+fun reduceShortcutRecurrenceBottomSheet(
     action: ShortcutRecurrenceBottomSheetAction
 ) : ShortcutRecurrenceBottomSheetState {
     return when (action) {
