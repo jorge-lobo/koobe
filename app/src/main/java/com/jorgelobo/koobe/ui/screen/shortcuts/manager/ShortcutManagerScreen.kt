@@ -51,6 +51,7 @@ fun ShortcutManagerScreen(
         recurrenceSheetState = recurrenceSheetState,
         periodSheetState = periodSheetState,
         onDeleteDialogAction = viewModel::onDeleteDialogAction,
+        onDisableDialogAction = viewModel::onDisableDialogAction,
         onSortingDialogAction = { viewModel.onSortingSheetAction(it) },
         onShortcutRecurrenceAction = viewModel::onShortcutRecurrenceAction,
         onPeriodSelectorAction = { viewModel.onPeriodSelectorAction(it) }

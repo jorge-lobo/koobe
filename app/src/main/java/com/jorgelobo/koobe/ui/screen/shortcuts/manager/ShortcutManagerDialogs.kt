@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.SortingType
 import com.jorgelobo.koobe.ui.components.composed.dialogs.DeleteDialog
+import com.jorgelobo.koobe.ui.components.composed.dialogs.DisableDialog
 import com.jorgelobo.koobe.ui.components.composed.sheets.ListSelectorBottomSheet
 import com.jorgelobo.koobe.ui.components.composed.sheets.ListSelectorBottomSheetConfig
 import com.jorgelobo.koobe.ui.components.composed.sheets.ShortcutRecurrenceBottomSheet
@@ -24,6 +25,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDial
  * @param recurrenceSheetState The state of the shortcut recurrence bottom sheet.
  * @param periodSheetState The state of the period selector bottom sheet.
  * @param onDeleteDialogAction Callback handled when a user interacts with the delete confirmation dialog.
+ * @param onDisableDialogAction Callback handled when a user interacts with the disable confirmation dialog.
  * @param onSortingDialogAction Callback handled when a user selects a sorting option or dismisses the sorting sheet.
  * @param onShortcutRecurrenceAction Callback handled when a user interacts with the shortcut recurrence bottom sheet.
  * @param onPeriodSelectorAction Callback handled when a user selects a period option or dismisses the period selector sheet.
@@ -36,6 +38,7 @@ fun ShortcutManagerDialogs(
     recurrenceSheetState: SheetState,
     periodSheetState: SheetState,
     onDeleteDialogAction: (ConfirmationDialogAction) -> Unit,
+    onDisableDialogAction: (ConfirmationDialogAction) -> Unit,
     onSortingDialogAction: (SelectorSheetAction<SortingType>) -> Unit,
     onShortcutRecurrenceAction: (ShortcutRecurrenceBottomSheetAction) -> Unit,
     onPeriodSelectorAction: (SelectorSheetAction<PeriodType>) -> Unit
@@ -46,6 +49,13 @@ fun ShortcutManagerDialogs(
             type = DeleteType.SHORTCUT,
             onConfirm = { onDeleteDialogAction(ConfirmationDialogAction.Confirm) },
             onCancel = { onDeleteDialogAction(ConfirmationDialogAction.Dismiss) }
+        )
+    }
+
+    if (state.disableDialog.visible) {
+        DisableDialog(
+            onConfirm = { onDisableDialogAction(ConfirmationDialogAction.Confirm) },
+            onCancel = { onDisableDialogAction(ConfirmationDialogAction.Dismiss) }
         )
     }
 

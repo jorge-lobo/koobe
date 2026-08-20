@@ -15,6 +15,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDial
  * @property shortcutItems The list of shortcut items to be displayed in the manager.
  * @property shortcutRecurrenceTarget The shortcut for which the recurrence is being modified.
  * @property deleteDialog The state of the confirmation dialog used for deleting a shortcut.
+ * @property disableDialog The state of the confirmation dialog used for disabling a shortcut.
  * @property shortcutRecurrenceSheet The state of the shortcut recurrence bottom sheet.
  * @property periodSelector The state of the selector sheet used for choosing the [PeriodType].
  * @property sortingSelector The state of the selector sheet used for choosing the [SortingType].
@@ -26,6 +27,7 @@ data class ShortcutManagerUiState(
     val shortcutItems: List<ShortcutItemUi> = emptyList(),
     val shortcutRecurrenceTarget: Shortcut? = null,
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
+    val disableDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val shortcutRecurrenceSheet: ShortcutRecurrenceBottomSheetState = ShortcutRecurrenceBottomSheetState.Hidden,
     val periodSelector: SelectorSheetState<PeriodType> = SelectorSheetState(
         visible = false,

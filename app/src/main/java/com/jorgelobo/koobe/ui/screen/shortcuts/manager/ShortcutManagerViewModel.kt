@@ -265,6 +265,27 @@ class ShortcutManagerViewModel @Inject constructor(
     }
 
     /**
+     * Handles actions from the recurrence disable confirmation dialog.
+     *
+     * The dialog state is updated according to the provided action, and the recurrence is disabled
+     * when the user confirms.
+     *
+     * @param action The confirmation action performed by the user.
+     */
+    fun onDisableDialogAction(action: ConfirmationDialogAction) {
+        handleConfirmationDialog(
+            current = uiState.value.disableDialog,
+            action = action,
+            updateState = { newState ->
+                updateState {
+                    copy(disableDialog = newState)
+                }
+            },
+            onConfirmed = { disableRecurrence() }
+        )
+    }
+
+    /**
      * Handles actions from the sorting bottom sheet, such as selecting a [SortingType],
      * dismissing the sheet, or applying the selection.
      *
@@ -330,8 +351,24 @@ class ShortcutManagerViewModel @Inject constructor(
 
         when (action) {
             is ShortcutRecurrenceBottomSheetAction.Change -> changeRecurrenceFrequency(action.shortcut)
-            is ShortcutRecurrenceBottomSheetAction.Disable -> disableRecurrence(action.shortcut)
+            is ShortcutRecurrenceBottomSheetAction.Disable -> openDisableDialog(action.shortcut)
             else -> Unit
+        }
+    }
+
+    /**
+     * Prepares the UI state to display the confirmation dialog for disabling a shortcut's recurrence.
+     *
+     * @param shortcut The [Shortcut] whose recurrence is being disabled.
+     */
+    private fun openDisableDialog(shortcut: Shortcut) {
+        updateState {
+            copy(
+                disableDialog = disableDialog.copy(
+                    visible = true,
+                    targetId = shortcut.id
+                )
+            )
         }
     }
 
@@ -379,8 +416,31 @@ class ShortcutManagerViewModel @Inject constructor(
         }
     }
 
-    private fun disableRecurrence(shortcut: Shortcut) {
+    /**
+     * Disables recurrence for the shortcut targeted by the confirmation dialog.
+     *
+     * The shortcut's recurrence flag, period, and last execution date are cleared before the
+     * updated shortcut is persisted.
+     */
+    private fun disableRecurrence() {
+        viewModelScope.launch {
+            val id = uiState.value.disableDialog.targetId ?: return@launch
+            val shortcut = getShortcutById(id) ?: return@launch
 
+            runCatching {
+                updateShortcut(
+                    shortcut.copy(
+                        repeat = false,
+                        period = null,
+                        lastExecutionDate = null
+                    )
+                )
+            }.onFailure { error ->
+                updateState {
+                    copy(errorMessage = error.message)
+                }
+            }
+        }
     }
 
     /**
