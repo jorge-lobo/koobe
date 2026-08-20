@@ -33,6 +33,7 @@
     <string name="btn_ok">OK</string>
     <string name="btn_delete">Delete</string>
     <string name="btn_discard">Discard</string>
+    <string name="btn_disable">Disable</string>
     <string name="btn_repeat">Repeat</string>
     <string name="btn_view_all">View all</string>
 
@@ -102,6 +103,7 @@
     <string name="dialog_headline_first_day_selector">First day of week</string>
     <string name="dialog_headline_payment_method_selector">Payment method</string>
     <string name="dialog_headline_discard_changes">Discard changes?</string>
+    <string name="dialog_headline_disable_recurrence">Disable recurrence?</string>
     <string name="dialog_headline_delete_category">Delete category?</string>
     <string name="dialog_headline_delete_subcategory">Delete subcategory?</string>
     <string name="dialog_headline_delete_shortcut">Delete shortcut?</string>
@@ -110,6 +112,7 @@
     <string name="dialog_headline_info_category">Default category</string>
     <string name="dialog_headline_info_subcategory">Default subcategory</string>
     <string name="dialog_message_discard">If you cancel now, the information you\'ve entered will be lost.</string>
+    <string name="dialog_message_disable_recurrence">This will stop this shortcut from creating transactions automatically.</string>
     <string name="dialog_message_delete_category">Transactions associated with this category will not be deleted. Instead, they will be moved to the "Miscellaneous" category.</string>
     <string name="dialog_message_delete_expense_subcategory">Transactions associated with this subcategory will not be deleted. Instead, they will be moved to the "Unexpected" subcategory.</string>
     <string name="dialog_message_delete_income_subcategory">Transactions associated with this subcategory will not be deleted. Instead, they will be moved to the "Other" subcategory.</string>
