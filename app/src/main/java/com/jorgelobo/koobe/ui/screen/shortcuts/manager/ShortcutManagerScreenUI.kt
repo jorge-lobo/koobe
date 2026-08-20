@@ -22,7 +22,8 @@ fun ShortcutManagerScreenUI(
     transactionTypeSelected: TransactionType,
     onTransactionTypeChanged: (TransactionType) -> Unit,
     onEditShortcut: (shortcutId: Int) -> Unit,
-    onDeleteShortcut: (shortcutId: Int) -> Unit
+    onDeleteShortcut: (shortcutId: Int) -> Unit,
+    onChipClick: (shortcutId: Int) -> Unit
 ) {
     Column(
         modifier = modifier
@@ -39,7 +40,8 @@ fun ShortcutManagerScreenUI(
             isEmpty = state.shortcutItems.isEmpty(),
             shortcuts = state.shortcutItems,
             onEditShortcut = onEditShortcut,
-            onDeleteShortcut = onDeleteShortcut
+            onDeleteShortcut = onDeleteShortcut,
+            onChipClick = onChipClick
         )
     }
 }
@@ -59,7 +61,8 @@ fun PreviewShortcutManagerScreen() {
             transactionTypeSelected = TransactionType.EXPENSE,
             onTransactionTypeChanged = {},
             onEditShortcut = {},
-            onDeleteShortcut = {}
+            onDeleteShortcut = {},
+            onChipClick = {}
         )
     }
 }

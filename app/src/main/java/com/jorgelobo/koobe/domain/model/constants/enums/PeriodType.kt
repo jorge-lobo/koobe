@@ -12,4 +12,11 @@ enum class PeriodType : UiLabel {
         MONTHLY -> R.string.toggle_month
         YEARLY -> R.string.toggle_year
     }
+
+    fun toRecurrenceLabel() = when (this) {
+        DAILY -> R.string.recurrence_daily
+        WEEKLY -> R.string.recurrence_weekly
+        MONTHLY -> R.string.recurrence_monthly
+        YEARLY -> R.string.recurrence_yearly
+    }
 }

@@ -8,9 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -18,12 +16,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
+import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
@@ -32,34 +30,32 @@ import com.jorgelobo.koobe.ui.components.base.bottomSheet.AppModalBottomSheet
 import com.jorgelobo.koobe.ui.components.base.bottomSheet.BaseBottomSheetContent
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonConfig
 import com.jorgelobo.koobe.ui.components.base.buttons.types.AppButton
+import com.jorgelobo.koobe.ui.components.base.chips.AppChip
 import com.jorgelobo.koobe.ui.components.base.dividers.AppHorizontalDivider
-import com.jorgelobo.koobe.ui.components.common.MoneyText
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
-import com.jorgelobo.koobe.ui.mappers.toIcon
-import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutAction.ShortcutActionBottomSheetAction
-import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutAction.ShortcutActionBottomSheetState
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutRecurrence.ShortcutRecurrenceBottomSheetAction
+import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutRecurrence.ShortcutRecurrenceBottomSheetState
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
-import com.jorgelobo.koobe.ui.theme.dimens.IconSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ShortcutActionBottomSheet(
+fun ShortcutRecurrenceBottomSheet(
     sheetState: SheetState,
-    state: ShortcutActionBottomSheetState,
-    onAction: (ShortcutActionBottomSheetAction) -> Unit
+    state: ShortcutRecurrenceBottomSheetState,
+    onAction: (ShortcutRecurrenceBottomSheetAction) -> Unit
 ) {
-    val visibleState = state as? ShortcutActionBottomSheetState.Visible ?: return
+    val visibleState = state as? ShortcutRecurrenceBottomSheetState.Visible ?: return
 
     AppModalBottomSheet(
         sheetState = sheetState,
-        onDismissRequest = { onAction(ShortcutActionBottomSheetAction.Dismiss) }
+        onDismissRequest = { onAction(ShortcutRecurrenceBottomSheetAction.Dismiss) }
     ) {
         BaseBottomSheetContent(
-            title = stringResource(R.string.bottom_sheet_headline_shortcut_action),
+            title = stringResource(R.string.bottom_sheet_headline_shortcut_recurrence),
             showHandle = true
         ) {
             val typography = AppTheme.typography.text
@@ -78,47 +74,17 @@ fun ShortcutActionBottomSheet(
                     .padding(vertical = Spacing.Medium),
                 horizontalArrangement = Arrangement.spacedBy(Spacing.Medium)
             ) {
-                Column(
-                    modifier = Modifier,
-                    verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
-                ) {
-                    val labelStyle = typography.labelLarge
-                    val labelColor = textColors.textPrimary
+                val frequency = shortcut.period?.toRecurrenceLabel() ?: return@Row
 
-                    Text(
-                        text = stringResource(R.string.label_amount),
-                        style = labelStyle,
-                        color = labelColor
-                    )
+                Text(
+                    text = stringResource(R.string.label_frequency),
+                    style = typography.labelLarge,
+                    color = textColors.textPrimary
+                )
 
-                    Text(
-                        text = stringResource(R.string.label_payment_method),
-                        style = labelStyle,
-                        color = labelColor
-                    )
-                }
-
-                Column(
-                    modifier = Modifier,
-                    verticalArrangement = Arrangement.spacedBy(Spacing.MediumSmall)
-                ) {
-                    MoneyText(
-                        amount = shortcut.amount,
-                        currencyType = shortcut.currency,
-                        wholeFontSize = typography.titleMedium.fontSize,
-                        decimalFontSize = typography.labelMedium.fontSize,
-                        textColor = textColors.textPrimary,
-                        textAlign = TextAlign.Start,
-                        isEnabled = true
-                    )
-
-                    Icon(
-                        imageVector = shortcut.paymentMethod.toIcon().icon,
-                        contentDescription = stringResource(R.string.cd_payment),
-                        tint = AppTheme.colors.iconColors.iconPaymentMethod,
-                        modifier = Modifier.size(IconSize.Small)
-                    )
-                }
+                AppChip(
+                    text = stringResource(frequency)
+                )
             }
 
             AppHorizontalDivider()
@@ -127,18 +93,18 @@ fun ShortcutActionBottomSheet(
 
             AppButton(
                 ButtonConfig(
-                    text = stringResource(R.string.btn_create_transaction),
+                    text = stringResource(R.string.btn_change_frequency),
                     type = ButtonType.TEXT,
-                    onClick = { onAction(ShortcutActionBottomSheetAction.Execute(shortcut)) }
+                    onClick = { onAction(ShortcutRecurrenceBottomSheetAction.Change(shortcut)) }
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
 
             AppButton(
                 ButtonConfig(
-                    text = stringResource(R.string.btn_edit_first),
+                    text = stringResource(R.string.btn_disable_recurrence),
                     type = ButtonType.TEXT,
-                    onClick = { onAction(ShortcutActionBottomSheetAction.Edit(shortcut)) }
+                    onClick = { onAction(ShortcutRecurrenceBottomSheetAction.Disable(shortcut)) }
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -147,7 +113,7 @@ fun ShortcutActionBottomSheet(
                 ButtonConfig(
                     text = stringResource(R.string.btn_cancel),
                     type = ButtonType.TEXT,
-                    onClick = { onAction(ShortcutActionBottomSheetAction.Dismiss) }
+                    onClick = { onAction(ShortcutRecurrenceBottomSheetAction.Dismiss) }
                 ),
                 modifier = Modifier.fillMaxWidth()
             )
@@ -165,7 +131,7 @@ private fun rememberPreviewSheetState(): SheetState =
 @OptIn(ExperimentalMaterial3Api::class)
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
-fun PreviewShortcutActionBottomSheet() {
+fun PreviewShortcutRecurrenceBottomSheet() {
     KoobeTheme(
         themeOption = ThemeOption.LIGHT
     ) {
@@ -186,7 +152,8 @@ fun PreviewShortcutActionBottomSheet() {
             currency = CurrencyType.EUR,
             paymentMethod = PaymentMethodType.CARD,
             transactionType = TransactionType.EXPENSE,
-            repeat = false
+            repeat = true,
+            period = PeriodType.DAILY
         )
 
         val category = Category(
@@ -203,9 +170,9 @@ fun PreviewShortcutActionBottomSheet() {
                 .padding(Spacing.Medium),
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
-            ShortcutActionBottomSheet(
+            ShortcutRecurrenceBottomSheet(
                 sheetState = sheetState,
-                state = ShortcutActionBottomSheetState.Visible(
+                state = ShortcutRecurrenceBottomSheetState.Visible(
                     shortcut = shortcut,
                     category = category
                 ),

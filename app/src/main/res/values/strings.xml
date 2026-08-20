@@ -25,12 +25,15 @@
     <string name="btn_create_subcategory">Create subcategory</string>
     <string name="btn_create_category">Create category</string>
     <string name="btn_create_transaction">Create transaction</string>
+    <string name="btn_change_frequency">Change frequency</string>
+    <string name="btn_disable_recurrence">Disable recurrence</string>
     <string name="btn_edit_first">Edit first</string>
     <string name="btn_cancel">Cancel</string>
     <string name="btn_apply">Apply</string>
     <string name="btn_ok">OK</string>
     <string name="btn_delete">Delete</string>
     <string name="btn_discard">Discard</string>
+    <string name="btn_disable">Disable</string>
     <string name="btn_repeat">Repeat</string>
     <string name="btn_view_all">View all</string>
 
@@ -100,6 +103,7 @@
     <string name="dialog_headline_first_day_selector">First day of week</string>
     <string name="dialog_headline_payment_method_selector">Payment method</string>
     <string name="dialog_headline_discard_changes">Discard changes?</string>
+    <string name="dialog_headline_disable_recurrence">Disable recurrence?</string>
     <string name="dialog_headline_delete_category">Delete category?</string>
     <string name="dialog_headline_delete_subcategory">Delete subcategory?</string>
     <string name="dialog_headline_delete_shortcut">Delete shortcut?</string>
@@ -108,6 +112,7 @@
     <string name="dialog_headline_info_category">Default category</string>
     <string name="dialog_headline_info_subcategory">Default subcategory</string>
     <string name="dialog_message_discard">If you cancel now, the information you\'ve entered will be lost.</string>
+    <string name="dialog_message_disable_recurrence">This will stop this shortcut from creating transactions automatically.</string>
     <string name="dialog_message_delete_category">Transactions associated with this category will not be deleted. Instead, they will be moved to the "Miscellaneous" category.</string>
     <string name="dialog_message_delete_expense_subcategory">Transactions associated with this subcategory will not be deleted. Instead, they will be moved to the "Unexpected" subcategory.</string>
     <string name="dialog_message_delete_income_subcategory">Transactions associated with this subcategory will not be deleted. Instead, they will be moved to the "Other" subcategory.</string>
@@ -129,6 +134,7 @@
     <string name="bottom_sheet_headline_sorting">Sorting</string>
     <string name="bottom_sheet_headline_period_selector">Select period</string>
     <string name="bottom_sheet_headline_shortcut_action">Shortcut details</string>
+    <string name="bottom_sheet_headline_shortcut_recurrence">Recurrence</string>
 
     <!-- Cards -->
     <string name="card_finance_stats_balance_overall">Overall balance</string>
@@ -160,6 +166,7 @@
     <string name="label_payment_method">Payment method</string>
     <string name="label_period">First day of week</string>
     <string name="label_amount">Amount</string>
+    <string name="label_frequency">Frequency</string>
 
     <!-- Empty States -->
     <string name="empty_dashboard_shortcuts">No shortcuts added!</string>
@@ -234,6 +241,10 @@
     <string name="snackBar_duplicate_name">Name already exists.</string>
     <string name="snackBar_name_too_short">Name must have at least 3 characters.</string>
     <string name="snackBar_invalid_first_character">Name must start with a letter.</string>
+    <plurals name="snackBar_recurring_shortcuts_executed">
+        <item quantity="one">%d recurring shortcut executed.</item>
+        <item quantity="other">%d recurring shortcuts executed.</item>
+    </plurals>
 
     <!-- RadioButtons -->
     <string name="radio_cash">Cash</string>
@@ -262,6 +273,12 @@
     <string name="code_euro">EUR</string>
     <string name="code_dollar">USD</string>
     <string name="code_pound">GBP</string>
+
+    <!-- Recurrences -->
+    <string name="recurrence_yearly">Yearly</string>
+    <string name="recurrence_monthly">Monthly</string>
+    <string name="recurrence_weekly">Weekly</string>
+    <string name="recurrence_daily">Daily</string>
 
     <!-- Default values -->
     <string name="default_category">Miscellaneous</string>

@@ -50,4 +50,8 @@ class ShortcutRepositoryImpl @Inject constructor(
     override suspend fun incrementShortcutUsageCount(shortcutId: Int) {
         dao.incrementUsageCount(shortcutId)
     }
+
+    override suspend fun updateLastExecutionDate(shortcutId: Int, date: Long) {
+        dao.updateLastExecutionDate(shortcutId, date)
+    }
 }

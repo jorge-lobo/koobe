@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.asPaddingValues
@@ -14,15 +15,14 @@ import androidx.compose.foundation.layout.systemBars
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.compose.rememberNavController
+import com.jorgelobo.koobe.core.localization.setAppLanguage
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.ui.app.AppViewModel
 import com.jorgelobo.koobe.ui.navigation.NavGraph
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
-import com.jorgelobo.koobe.core.localization.setAppLanguage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -30,6 +30,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    private val appViewModel: AppViewModel by viewModels()
 
     @Inject
     lateinit var getUserSettingsUseCase: GetUserSettingsUseCase
@@ -48,14 +50,14 @@ class MainActivity : ComponentActivity() {
             navigationBarStyle = SystemBarStyle.dark(android.graphics.Color.BLACK)
         )
         setContent {
-            Koobe()
+            Koobe(appViewModel)
         }
     }
 }
 
 @Composable
 fun Koobe(
-    appViewModel: AppViewModel = hiltViewModel()
+    appViewModel: AppViewModel
 ) {
     val navController = rememberNavController()
 

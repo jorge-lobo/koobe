@@ -4,22 +4,36 @@ import com.jorgelobo.koobe.domain.model.transaction.Shortcut
 import com.jorgelobo.koobe.domain.model.transaction.Transaction
 import com.jorgelobo.koobe.domain.usecase.shortcut.IncrementShortcutUsageUseCase
 import com.jorgelobo.koobe.utils.date.DateUtils
+import java.util.Date
 import javax.inject.Inject
 
 /**
- * Use case responsible for creating and persisting a new [Transaction] based on a predefined [Shortcut].
+ * Creates a transaction from a shortcut.
  *
- * It maps the properties of a shortcut (amount, category, currency, etc.) to a new transaction
- * instance, setting the current date as the transaction date, and uses [InsertTransactionUseCase]
- * to save it to the data source.
- *
- * @property insertTransaction The use case used to persist the newly created transaction.
+ * Inserts a new transaction using the shortcut's data and optionally increments the shortcut's
+ * usage count.
  */
 class CreateTransactionFromShortcutUseCase @Inject constructor(
     private val insertTransaction: InsertTransactionUseCase,
     private val incrementShortcutUsage: IncrementShortcutUsageUseCase
 ) {
-    suspend operator fun invoke(shortcut: Shortcut) {
+
+    /**
+     * Creates a transaction using the data defined by the given [shortcut].
+     *
+     * Optionally increments the shortcut's usage count. Automatic scheduled executions can
+     * disable usage tracking so that recurring shortcuts do not artificially increase their
+     * usage statistics.
+     *
+     * @param shortcut The shortcut used to create the transaction.
+     * @param date The transaction date.
+     * @param incrementUsage Whether the shortcut usage count should be incremented.
+     */
+    suspend operator fun invoke(
+        shortcut: Shortcut,
+        date: Date = DateUtils.currentDate,
+        incrementUsage: Boolean = true
+    ) {
         val transaction = Transaction(
             id = 0,
             categoryId = shortcut.categoryId,
@@ -28,11 +42,14 @@ class CreateTransactionFromShortcutUseCase @Inject constructor(
             currency = shortcut.currency,
             paymentMethod = shortcut.paymentMethod,
             type = shortcut.transactionType,
-            date = DateUtils.currentDate,
+            date = date,
             description = shortcut.name,
         )
 
         insertTransaction(transaction)
-        incrementShortcutUsage(shortcut.id)
+
+        if (incrementUsage) {
+            incrementShortcutUsage(shortcut.id)
+        }
     }
 }

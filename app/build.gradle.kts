@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     alias(libs.plugins.compose.compiler)
@@ -96,7 +95,7 @@ dependencies {
     // DI (Hilt)
     implementation(libs.hilt.android)
     implementation(libs.hilt.navigation.compose)
-    kapt(libs.hilt.compiler)
+    ksp(libs.hilt.compiler)
 
     // Database (ROOM)
     implementation(libs.room.runtime)
@@ -106,7 +105,7 @@ dependencies {
     // Storage (Datastore)
     implementation(libs.androidx.datastore.preferences)
 
-    // Serialization / Json
+    // Serialization / JSON
     implementation(libs.kotlinx.serialization.json)
 
     // UI Helpers
@@ -127,8 +126,4 @@ dependencies {
 
 ksp {
     arg("room.schemaLocation", "$projectDir/schemas")
-}
-
-kapt {
-    correctErrorTypes = true
 }

@@ -47,6 +47,7 @@ fun NavGraph(
         // Splash
         composable(Route.Splash.route) {
             SplashScreen(
+                viewModel = appViewModel,
                 onFinished = {
                     navController.navigate(Route.Dashboard.route) {
                         popUpTo(Route.Splash.route) {
@@ -58,7 +59,13 @@ fun NavGraph(
         }
 
         // Main views
-        composable(Route.Dashboard.route) { DashboardScreen(navController) }
+        composable(Route.Dashboard.route) {
+            DashboardScreen(
+                navController = navController,
+                appViewModel = appViewModel
+            )
+        }
+
         composable(Route.Historic.route) {
             HistoricScreen(
                 navController = navController,

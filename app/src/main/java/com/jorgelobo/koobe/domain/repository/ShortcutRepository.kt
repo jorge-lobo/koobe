@@ -14,4 +14,5 @@ interface ShortcutRepository {
     suspend fun updateShortcut(shortcut: Shortcut)
     suspend fun deleteShortcut(shortcut: Shortcut)
     suspend fun incrementShortcutUsageCount(shortcutId: Int)
+    suspend fun updateLastExecutionDate(shortcutId: Int, date: Long)
 }

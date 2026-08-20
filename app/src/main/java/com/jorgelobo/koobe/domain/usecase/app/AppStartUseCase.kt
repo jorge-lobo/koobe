@@ -1,32 +1,28 @@
 package com.jorgelobo.koobe.domain.usecase.app
 
-import com.jorgelobo.koobe.data.local.defaults.CategoryDefaults
-import com.jorgelobo.koobe.data.local.defaults.SubcategoryDefaults
-import com.jorgelobo.koobe.data.local.preferences.AppPreferences
-import com.jorgelobo.koobe.domain.repository.CategoryRepository
-import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
-import kotlinx.coroutines.flow.first
+import com.jorgelobo.koobe.domain.usecase.shortcut.ExecuteScheduledShortcutsUseCase
+import javax.inject.Inject
 
-class AppStartUseCase(
-    private val preferences: AppPreferences,
-    private val categoryRepository: CategoryRepository,
-    private val subcategoryRepository: SubcategoryRepository
+/**
+ * Executes all currently due scheduled shortcuts.
+ *
+ * @return The number of shortcuts that were executed.
+ */
+class AppStartUseCase @Inject constructor(
+    private val ensureDefaultData: EnsureDefaultDataUseCase,
+    private val executeScheduledShortcuts: ExecuteScheduledShortcutsUseCase
 ) {
 
-    suspend operator fun invoke() {
-        if (preferences.defaultsAlreadyInserted()) return
-
-        val categoriesExist = categoryRepository.getAllCategories().first().isNotEmpty()
-        val subcategoriesExist = subcategoryRepository.getAllSubcategories().first().isNotEmpty()
-
-        if (!categoriesExist) {
-            categoryRepository.insertCategoryEntities(CategoryDefaults.categories)
-        }
-
-        if (!subcategoriesExist) {
-            subcategoryRepository.insertSubcategoryEntities(SubcategoryDefaults.subcategories)
-        }
-
-        preferences.setDefaultsInserted()
+    /**
+     * Performs the application's startup tasks.
+     *
+     * Ensures that the default application data exists and executes any scheduled shortcuts
+     * that are due.
+     *
+     * @return The number of scheduled shortcuts executed during startup.
+     */
+    suspend operator fun invoke(): Int {
+        ensureDefaultData()
+        return executeScheduledShortcuts()
     }
 }

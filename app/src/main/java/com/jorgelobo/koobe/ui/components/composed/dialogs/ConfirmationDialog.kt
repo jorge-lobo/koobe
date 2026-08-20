@@ -3,7 +3,6 @@ package com.jorgelobo.koobe.ui.components.composed.dialogs
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -49,6 +48,12 @@ fun ConfirmationDialog(
             DialogSize.Confirmation.Discard,
             IconPack.DISCARD,
             stringResource(R.string.btn_discard)
+        )
+
+        ConfirmationType.DISABLE -> Triple(
+            DialogSize.Confirmation.Discard,
+            IconPack.DISCARD,
+            stringResource(R.string.btn_disable)
         )
     }
 
@@ -116,6 +121,22 @@ fun DiscardDialog(
 }
 
 @Composable
+fun DisableDialog(
+    onConfirm: () -> Unit,
+    onCancel: () -> Unit
+) {
+    ConfirmationDialog(
+        config = ConfirmationDialogConfig(
+            type = ConfirmationType.DISABLE,
+            title = stringResource(R.string.dialog_headline_disable_recurrence),
+            message = stringResource(R.string.dialog_message_disable_recurrence),
+            onConfirm = onConfirm,
+            onCancel = onCancel
+        )
+    )
+}
+
+@Composable
 fun DeleteDialog(
     type: DeleteType,
     transactionType: TransactionType? = null,
@@ -175,7 +196,7 @@ fun DeleteDialog(
 
 @Preview(apiLevel = 34, showBackground = true)
 @Composable
-fun PreviewConfirmationDialog() {
+fun PreviewDiscardDialog() {
     KoobeTheme(
         themeOption = ThemeOption.LIGHT
     ) {
@@ -183,7 +204,7 @@ fun PreviewConfirmationDialog() {
 
         Column(
             modifier = Modifier
-                .fillMaxSize()
+                .fillMaxWidth()
                 .padding(Spacing.Medium),
             verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
         ) {
@@ -191,9 +212,48 @@ fun PreviewConfirmationDialog() {
                 onConfirm = {},
                 onCancel = {}
             )
+        }
+    }
+}
 
+@Preview(apiLevel = 34, showBackground = true)
+@Composable
+fun PreviewDeleteDialog() {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
+        Background(BackgroundType.SCREEN)
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Spacing.Medium),
+            verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
+        ) {
             DeleteDialog(
                 type = DeleteType.TRANSACTION,
+                onConfirm = {},
+                onCancel = {}
+            )
+        }
+    }
+}
+
+@Preview(apiLevel = 34, showBackground = true)
+@Composable
+fun PreviewDisableDialog() {
+    KoobeTheme(
+        themeOption = ThemeOption.LIGHT
+    ) {
+        Background(BackgroundType.SCREEN)
+
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(Spacing.Medium),
+            verticalArrangement = Arrangement.spacedBy(Spacing.Medium)
+        ) {
+            DisableDialog(
                 onConfirm = {},
                 onCancel = {}
             )

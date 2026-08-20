@@ -4,13 +4,16 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
 import com.jorgelobo.koobe.ui.components.composed.buttons.EditDeleteActions
 import com.jorgelobo.koobe.ui.components.composed.buttons.EditDeleteActionsConfig
@@ -25,7 +28,8 @@ fun CardManagementItem(
     modifier: Modifier = Modifier,
     config: CardManagementItemConfig,
     onEditClick: () -> Unit,
-    onDeleteClick: () -> Unit
+    onDeleteClick: () -> Unit,
+    supportingContent: @Composable (() -> Unit)? = null
 ) {
     val colors = AppTheme.colors
     val typography = AppTheme.typography.text
@@ -56,10 +60,18 @@ fun CardManagementItem(
             text = config.title,
             style = typography.titleMedium,
             color = colors.textColors.textPrimary,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
             modifier = Modifier
                 .weight(1f)
                 .padding(start = Spacing.Small)
         )
+
+        supportingContent?.let {
+            it()
+
+            Spacer(modifier = Modifier.width(Spacing.Small))
+        }
 
         EditDeleteActions(
             config = EditDeleteActionsConfig(
