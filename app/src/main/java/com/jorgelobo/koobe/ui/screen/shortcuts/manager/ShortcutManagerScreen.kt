@@ -37,6 +37,7 @@ fun ShortcutManagerScreen(
 ) {
     val sortingSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val recurrenceSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    val periodSheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     ShortcutManagerEffects(
@@ -48,9 +49,11 @@ fun ShortcutManagerScreen(
         state = uiState,
         sortingSheetState = sortingSheetState,
         recurrenceSheetState = recurrenceSheetState,
+        periodSheetState = periodSheetState,
         onDeleteDialogAction = viewModel::onDeleteDialogAction,
         onSortingDialogAction = { viewModel.onSortingSheetAction(it) },
-        onShortcutRecurrenceAction = viewModel::onShortcutRecurrenceAction
+        onShortcutRecurrenceAction = viewModel::onShortcutRecurrenceAction,
+        onPeriodSelectorAction = { viewModel.onPeriodSelectorAction(it) }
     )
 
     Scaffold(

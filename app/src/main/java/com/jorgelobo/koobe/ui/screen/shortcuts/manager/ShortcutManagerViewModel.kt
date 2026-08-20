@@ -3,6 +3,7 @@ package com.jorgelobo.koobe.ui.screen.shortcuts.manager
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.domain.model.category.Category
+import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.SortingType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.Shortcut
@@ -10,6 +11,7 @@ import com.jorgelobo.koobe.domain.usecase.category.GetAllCategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.DeleteShortcutUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.GetAllShortcutsByTypeUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.GetShortcutByIdUseCase
+import com.jorgelobo.koobe.domain.usecase.shortcut.UpdateShortcutUseCase
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
@@ -48,13 +50,15 @@ import javax.inject.Inject
  * @property getAllCategories Use case to fetch all categories for mapping shortcuts to their UI representation.
  * @property getShortcutById Use case to retrieve a specific shortcut by its unique identifier.
  * @property deleteShortcut Use case to remove an existing shortcut.
+ * @property updateShortcut Use case to update an existing shortcut.
  */
 @HiltViewModel
 class ShortcutManagerViewModel @Inject constructor(
     private val getAllShortcuts: GetAllShortcutsByTypeUseCase,
     private val getAllCategories: GetAllCategoriesUseCase,
     private val getShortcutById: GetShortcutByIdUseCase,
-    private val deleteShortcut: DeleteShortcutUseCase
+    private val deleteShortcut: DeleteShortcutUseCase,
+    private val updateShortcut: UpdateShortcutUseCase,
 ) : ViewModel() {
 
     /**
@@ -189,6 +193,14 @@ class ShortcutManagerViewModel @Inject constructor(
         navigateTo(route)
     }
 
+    /**
+     * Handles the click event for a shortcut chip, opening the recurrence configuration sheet.
+     *
+     * It locates the shortcut item within the current UI state and triggers the display of the
+     * bottom sheet to manage the shortcut's recurrence settings.
+     *
+     * @param shortcutId The unique identifier of the clicked shortcut.
+     */
     fun onShortcutChipClick(shortcutId: Int) {
         val item = uiState.value.shortcutItems.find { it.shortcut.id == shortcutId } ?: return
 
@@ -274,6 +286,43 @@ class ShortcutManagerViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Handles actions from the period selector bottom sheet, which is used to define the recurrence
+     * frequency of a shortcut.
+     *
+     * Depending on the [action], it either updates the shortcut's frequency with a new [PeriodType]
+     * or dismisses the selector and clears the current target.
+     *
+     * @param action The specific [SelectorSheetAction] performed by the user within the period selector.
+     */
+    fun onPeriodSelectorAction(action: SelectorSheetAction<PeriodType>) {
+        when (action) {
+            is SelectorSheetAction.Select -> {
+                updateShortcutFrequency(action.item)
+            }
+
+            is SelectorSheetAction.Dismiss -> {
+                updateState {
+                    copy(
+                        periodSelector = periodSelector.copy(visible = false),
+                        shortcutRecurrenceTarget = null
+                    )
+                }
+            }
+
+            else -> Unit
+        }
+    }
+
+    /**
+     * Handles actions related to the shortcut recurrence bottom sheet.
+     *
+     * This method updates the UI state by reducing the provided [action] to determine the
+     * visibility and content of the bottom sheet. It also coordinates side effects such as
+     * initiating a frequency change or disabling the recurrence for a specific shortcut.
+     *
+     * @param action The [ShortcutRecurrenceBottomSheetAction] to be processed.
+     */
     fun onShortcutRecurrenceAction(action: ShortcutRecurrenceBottomSheetAction) {
         _uiState.update {
             it.copy(shortcutRecurrenceSheet = reduceShortcutRecurrenceBottomSheet(action))
@@ -286,6 +335,13 @@ class ShortcutManagerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Executes the deletion of the shortcut currently targeted by the deletion confirmation dialog.
+     *
+     * This method retrieves the shortcut ID from the UI state, fetches the corresponding
+     * shortcut entity, and invokes the [deleteShortcut] use case within the [viewModelScope].
+     * If the deletion fails, the UI state is updated with the resulting error message.
+     */
     private fun performDeleteShortcut() {
         viewModelScope.launch {
             val id = uiState.value.deleteDialog.targetId ?: return@launch
@@ -301,12 +357,64 @@ class ShortcutManagerViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Prepares the UI state to change the recurrence frequency of a specific shortcut.
+     *
+     * This method sets the provided [shortcut] as the current target for recurrence modification
+     * and displays the period selector, pre-selecting the shortcut's current recurrence period.
+     *
+     * @param shortcut The [Shortcut] for which the recurrence frequency is being changed.
+     */
     private fun changeRecurrenceFrequency(shortcut: Shortcut) {
+        val period = shortcut.period ?: return
 
+        updateState {
+            copy(
+                shortcutRecurrenceTarget = shortcut,
+                periodSelector = periodSelector.copy(
+                    visible = true,
+                    selected = period
+                )
+            )
+        }
     }
 
     private fun disableRecurrence(shortcut: Shortcut) {
 
+    }
+
+    /**
+     * Updates the recurrence frequency of a specific shortcut and persists the change.
+     *
+     * This method takes the currently targeted shortcut from the UI state, applies the new
+     * [PeriodType], and invokes the update use case. Upon completion or failure, it hides the
+     * period selector and clears the recurrence target.
+     *
+     * @param period The new [PeriodType] to be assigned to the targeted shortcut.
+     */
+    private fun updateShortcutFrequency(period: PeriodType) {
+        val shortcut = uiState.value.shortcutRecurrenceTarget ?: return
+
+        viewModelScope.launch {
+            runCatching {
+                updateShortcut(
+                    shortcut.copy(
+                        period = period
+                    )
+                )
+            }.onFailure { error ->
+                updateState {
+                    copy(errorMessage = error.message)
+                }
+            }
+
+            updateState {
+                copy(
+                    periodSelector = periodSelector.copy(visible = false),
+                    shortcutRecurrenceTarget = null
+                )
+            }
+        }
     }
 
     private fun navigateTo(route: String) {
