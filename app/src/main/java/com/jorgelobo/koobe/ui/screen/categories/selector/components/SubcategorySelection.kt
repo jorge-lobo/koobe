@@ -20,7 +20,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
-import com.jorgelobo.koobe.domain.model.transaction.Shortcut
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
 import com.jorgelobo.koobe.ui.components.base.toggles.CategoryDetailToggle
 import com.jorgelobo.koobe.ui.components.base.toggles.categoryDetailToggleConfig
 import com.jorgelobo.koobe.ui.components.composed.grids.ShortcutsGrid

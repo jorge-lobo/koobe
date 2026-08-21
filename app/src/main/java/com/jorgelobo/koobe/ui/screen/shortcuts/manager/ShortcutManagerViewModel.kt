@@ -6,7 +6,7 @@ import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.SortingType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
-import com.jorgelobo.koobe.domain.model.transaction.Shortcut
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
 import com.jorgelobo.koobe.domain.usecase.category.GetAllCategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.DeleteShortcutUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.GetAllShortcutsByTypeUseCase

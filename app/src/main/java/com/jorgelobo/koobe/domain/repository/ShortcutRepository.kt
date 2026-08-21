@@ -1,7 +1,7 @@
 package com.jorgelobo.koobe.domain.repository
 
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
-import com.jorgelobo.koobe.domain.model.transaction.Shortcut
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
 import kotlinx.coroutines.flow.Flow
 
 interface ShortcutRepository {

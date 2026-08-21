@@ -1,6 +1,6 @@
 package com.jorgelobo.koobe.domain.usecase.transaction
 
-import com.jorgelobo.koobe.domain.model.transaction.Shortcut
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
 import com.jorgelobo.koobe.domain.model.transaction.Transaction
 import com.jorgelobo.koobe.domain.usecase.shortcut.IncrementShortcutUsageUseCase
 import com.jorgelobo.koobe.utils.date.DateUtils

@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.domain.model.transaction
+package com.jorgelobo.koobe.domain.model.shortcut
 
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType

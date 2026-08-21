@@ -8,7 +8,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.DescriptionSource
-import com.jorgelobo.koobe.domain.model.transaction.Shortcut
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
 import com.jorgelobo.koobe.domain.model.transaction.Transaction
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetState

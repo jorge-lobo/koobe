@@ -1,6 +1,6 @@
 package com.jorgelobo.koobe.ui.mappers
 
-import com.jorgelobo.koobe.domain.model.transaction.Shortcut
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorUiState
 
