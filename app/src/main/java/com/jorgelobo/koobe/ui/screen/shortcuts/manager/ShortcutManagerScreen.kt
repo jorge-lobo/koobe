@@ -66,16 +66,24 @@ fun ShortcutManagerScreen(
                         icon = IconPack.BACK,
                         onClick = viewModel::onBackClick
                     ),
-                    trailingActions = listOf(
-                        AppBarAction(
-                            icon = IconPack.FILTER,
-                            onClick = viewModel::onSortingClick
-                        ),
-                        AppBarAction(
-                            icon = IconPack.ADD,
-                            onClick = viewModel::onAddShortcutClick
+                    trailingActions = buildList {
+                        if (uiState.shortcutItems.isNotEmpty()) {
+                            add(
+                                AppBarAction(
+                                    icon = IconPack.SORT,
+                                    onClick = viewModel::onSortingClick
+                                )
+                            )
+
+                        }
+
+                        add(
+                            AppBarAction(
+                                icon = IconPack.ADD,
+                                onClick = viewModel::onAddShortcutClick
+                            )
                         )
-                    )
+                    }
                 )
             )
         },
