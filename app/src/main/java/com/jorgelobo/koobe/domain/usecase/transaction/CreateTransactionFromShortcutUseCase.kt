@@ -38,6 +38,7 @@ class CreateTransactionFromShortcutUseCase @Inject constructor(
             id = 0,
             categoryId = shortcut.categoryId,
             subcategoryId = null,
+            shortcutId = shortcut.id,
             amount = shortcut.amount,
             currency = shortcut.currency,
             paymentMethod = shortcut.paymentMethod,

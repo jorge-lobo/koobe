@@ -9,7 +9,7 @@ import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorUiState
  *
  * @param config The editor configuration containing IDs and mode information.
  * @param resolvedDescription The final transaction description, after resolution (e.g., from user
- * input or auto-filled suggestion).
+ * input or autofill suggestion).
  *
  * This function is used when saving or updating a transaction, encapsulating the mapping from
  * UI state to the domain entity.
@@ -25,6 +25,7 @@ fun TransactionEditorUiState.toTransaction(
         type = transactionInitialSnapshot.transactionType,
         categoryId = category.id,
         subcategoryId = subcategory?.id,
+        shortcutId = shortcut?.id,
         amount = amount,
         paymentMethod = paymentMethodType,
         currency = currencyType

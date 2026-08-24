@@ -12,6 +12,7 @@ data class Transaction(
     val type: TransactionType,
     val categoryId: Int,
     val subcategoryId: Int?,
+    val shortcutId: Int? = null,
     val amount: Double,
     val paymentMethod: PaymentMethodType,
     val currency: CurrencyType
