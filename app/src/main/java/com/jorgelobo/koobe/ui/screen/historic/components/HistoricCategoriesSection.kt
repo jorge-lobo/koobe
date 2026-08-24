@@ -23,6 +23,13 @@ import com.jorgelobo.koobe.ui.theme.dimens.Spacing
  * @param currencyType The currency format used to display monetary values.
  * @param onCategoryExpandToggle Callback invoked when a category's expansion state is toggled,
  * providing the category ID.
+ * @param onSubcategoryExpandToggle Callback invoked when a subcategory's expansion state is toggled,
+ * providing the category ID and subcategory ID.
+ * @param onShortcutExpandToggle Callback invoked when a shortcut's expansion state is toggled,
+ * providing the category ID and shortcut ID.
+ * @param onTransactionClick Callback invoked when a transaction item is clicked, providing the
+ * transaction details.
+ * @param modifier Modifier for styling and layout customization.
  */
 @Composable
 fun HistoricCategoriesSection(
@@ -30,6 +37,7 @@ fun HistoricCategoriesSection(
     currencyType: CurrencyType,
     onCategoryExpandToggle: (Int) -> Unit,
     onSubcategoryExpandToggle: (categoryId: Int, subcategoryId: Int) -> Unit,
+    onShortcutExpandToggle: (categoryId: Int, shortcutId: Int) -> Unit,
     onTransactionClick: (Transaction) -> Unit,
     modifier: Modifier = Modifier
 ) {
@@ -51,9 +59,13 @@ fun HistoricCategoriesSection(
                     currencyType = currencyType,
                     isExpanded = categoryUi.isExpanded,
                     expandedSubcategories = categoryUi.expandedSubcategories,
+                    expandedShortcuts = categoryUi.expandedShortcuts,
                     onCategoryExpandToggle = { onCategoryExpandToggle(categoryUi.category.id) },
                     onSubcategoryExpandToggle = { subcategoryId ->
                         onSubcategoryExpandToggle(categoryUi.category.id, subcategoryId)
+                    },
+                    onShortcutExpandToggle = { shortcutId ->
+                        onShortcutExpandToggle(categoryUi.category.id, shortcutId)
                     },
                     onTransactionClick = onTransactionClick
                 )

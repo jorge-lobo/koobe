@@ -127,6 +127,11 @@ class HistoricViewModel @Inject constructor(
                             categoryUi.expandedSubcategories
                         } else {
                             emptySet()
+                        },
+                        expandedShortcuts = if (newExpanded) {
+                            categoryUi.expandedShortcuts
+                        } else {
+                            emptySet()
                         }
                     )
                 } else {
@@ -164,6 +169,38 @@ class HistoricViewModel @Inject constructor(
                     }
 
                 categoryUi.copy(expandedSubcategories = newExpandedSet)
+            }
+
+            state.copy(categories = updated)
+        }
+    }
+
+    /**
+     * Toggles the expanded or collapsed state of a specific shortcut within a given category.
+     *
+     * This updates the UI state by adding or removing the shortcut ID from the set of expanded
+     * shortcuts for the specified parent category.
+     *
+     * @param categoryId The unique identifier of the parent category.
+     * @param shortcutId The unique identifier of the shortcut to toggle.
+     */
+    fun onShortcutExpandToggle(
+        categoryId: Int,
+        shortcutId: Int
+    ) {
+        _uiState.update { state ->
+            val updated = state.categories.map { categoryUi ->
+
+                if (categoryUi.category.id != categoryId) return@map categoryUi
+
+                val newExpandedSet =
+                    if (shortcutId in categoryUi.expandedShortcuts) {
+                        categoryUi.expandedShortcuts - shortcutId
+                    } else {
+                        categoryUi.expandedShortcuts + shortcutId
+                    }
+
+                categoryUi.copy(expandedShortcuts = newExpandedSet)
             }
 
             state.copy(categories = updated)

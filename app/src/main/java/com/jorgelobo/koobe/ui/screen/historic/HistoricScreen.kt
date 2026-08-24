@@ -85,6 +85,7 @@ fun HistoricScreen(
             onTransactionTypeChange = viewModel::onTransactionTypeChanged,
             onCategoryExpandToggle = viewModel::onCategoryExpandToggle,
             onSubcategoryExpandToggle = viewModel::onSubcategoryExpandToggle,
+            onShortcutExpandToggle = viewModel::onShortcutExpandToggle,
             onTransactionClick = viewModel::onTransactionItemClick
         )
     }
