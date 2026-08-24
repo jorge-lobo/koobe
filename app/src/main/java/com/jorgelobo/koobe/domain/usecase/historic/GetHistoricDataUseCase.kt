@@ -6,9 +6,12 @@ import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.model.subcategory.SubcategoryHistory
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
+import com.jorgelobo.koobe.domain.model.shortcut.ShortcutHistory
 import com.jorgelobo.koobe.domain.model.transaction.Transaction
 import com.jorgelobo.koobe.domain.repository.TransactionRepository
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoriesByTransactionTypeUseCase
+import com.jorgelobo.koobe.domain.usecase.shortcut.GetAllShortcutsUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetAllSubcategoriesUseCase
 import com.jorgelobo.koobe.utils.date.DateUtils
 import kotlinx.coroutines.flow.Flow
@@ -26,11 +29,13 @@ import javax.inject.Inject
  *
  * @property getCategoriesByType Use case to retrieve categories filtered by transaction type.
  * @property getAllSubcategories Use case to retrieve all available subcategories.
+ * @property getAllShortcuts Use case to retrieve all available shortcuts.
  * @property transactionRepository Repository to fetch transaction records from the data source.
  */
 class GetHistoricDataUseCase @Inject constructor(
     private val getCategoriesByType: GetCategoriesByTransactionTypeUseCase,
     private val getAllSubcategories: GetAllSubcategoriesUseCase,
+    private val getAllShortcuts: GetAllShortcutsUseCase,
     private val transactionRepository: TransactionRepository
 ) {
 
@@ -53,16 +58,18 @@ class GetHistoricDataUseCase @Inject constructor(
         return combine(
             getCategoriesByType(transactionType),
             getAllSubcategories(),
+            getAllShortcuts(),
             transactionRepository.getTransactionsByPeriod(
                 type = transactionType,
                 startDate = startDate.time,
                 endDate = endDate.time
             )
-        ) { categories, subcategories, transactions ->
+        ) { categories, subcategories, shortcuts, transactions ->
 
             buildCategoryHistory(
                 categories,
                 subcategories,
+                shortcuts,
                 transactions
             )
         }
@@ -80,12 +87,15 @@ class GetHistoricDataUseCase @Inject constructor(
     private fun buildCategoryHistory(
         categories: List<Category>,
         subcategories: List<Subcategory>,
+        shortcuts: List<Shortcut>,
         transactions: List<Transaction>
     ): List<CategoryHistory> {
 
         val transactionsByCategory = transactions.groupBy { it.categoryId }
         val transactionsBySubcategory = transactions.groupBy { it.subcategoryId }
+        val transactionsByShortcut = transactions.groupBy { it.shortcutId }
         val subcategoriesByCategory = subcategories.groupBy { it.categoryId }
+        val shortcutsByCategory = shortcuts.groupBy { it.categoryId }
 
         return categories.mapNotNull { category ->
             val categoryTransactions = transactionsByCategory[category.id].orEmpty()
@@ -109,11 +119,29 @@ class GetHistoricDataUseCase @Inject constructor(
             }
                 .sortedByDescending { it.totalAmount }
 
+            val categoryShortcuts = shortcutsByCategory[category.id].orEmpty()
+            val shortcutHistories = categoryShortcuts.mapNotNull { shortcut ->
+                val shortcutTransactions = transactionsByShortcut[shortcut.id].orEmpty()
+
+                // Ignore shortcuts without transactions
+                if (shortcutTransactions.isEmpty()) return@mapNotNull null
+
+                ShortcutHistory(
+                    shortcut = shortcut,
+                    transactionCount = shortcutTransactions.size,
+                    totalAmount = shortcutTransactions.sumOf { it.amount },
+                    transactions = shortcutTransactions
+                )
+            }
+                .sortedByDescending { it.totalAmount }
+
+
             CategoryHistory(
                 category = category,
                 transactionCount = categoryTransactions.size,
                 totalAmount = categoryTransactions.sumOf { it.amount },
-                subcategories = subcategoryHistories
+                subcategories = subcategoryHistories,
+                shortcuts = shortcutHistories
             )
         }
             .sortedByDescending { it.totalAmount }
