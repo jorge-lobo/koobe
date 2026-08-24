@@ -13,7 +13,9 @@ data class CardHistoricItemConfig(
     val currencyType: CurrencyType,
     val isExpanded: Boolean,
     val expandedSubcategories: Set<Int>,
+    val expandedShortcuts: Set<Int>,
     val onCategoryExpandToggle: () -> Unit,
     val onSubcategoryExpandToggle: (Int) -> Unit,
+    val onShortcutExpandToggle: (Int) -> Unit,
     val onTransactionClick: (Transaction) -> Unit
 )

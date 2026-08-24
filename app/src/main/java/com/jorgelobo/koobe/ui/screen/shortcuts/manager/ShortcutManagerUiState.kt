@@ -3,7 +3,7 @@ package com.jorgelobo.koobe.ui.screen.shortcuts.manager
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.SortingType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
-import com.jorgelobo.koobe.domain.model.transaction.Shortcut
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetState
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutRecurrence.ShortcutRecurrenceBottomSheetState
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState

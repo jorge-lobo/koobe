@@ -21,6 +21,12 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
             parentColumns = ["id"],
             childColumns = ["subcategoryId"],
             onDelete = ForeignKey.SET_NULL
+        ),
+        ForeignKey(
+            entity = ShortcutEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["shortcutId"],
+            onDelete = ForeignKey.SET_NULL
         )
     ]
 )
@@ -29,6 +35,7 @@ data class TransactionEntity(
     val id: Int = 0,
     val categoryId: Int,
     val subcategoryId: Int? = null,
+    val shortcutId: Int? = null,
     val date: Long,
     val description: String,
     val type: TransactionType,

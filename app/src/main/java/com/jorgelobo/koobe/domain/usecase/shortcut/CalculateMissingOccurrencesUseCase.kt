@@ -1,7 +1,7 @@
 package com.jorgelobo.koobe.domain.usecase.shortcut
 
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
-import com.jorgelobo.koobe.domain.model.transaction.Shortcut
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
 import com.jorgelobo.koobe.utils.date.DateUtils
 import com.jorgelobo.koobe.utils.date.DateUtils.clearTime
 import java.util.Calendar

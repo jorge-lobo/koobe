@@ -1,6 +1,6 @@
 package com.jorgelobo.koobe.domain.usecase.transaction
 
-import com.jorgelobo.koobe.domain.model.transaction.Shortcut
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
 import com.jorgelobo.koobe.domain.model.transaction.Transaction
 import com.jorgelobo.koobe.domain.usecase.shortcut.IncrementShortcutUsageUseCase
 import com.jorgelobo.koobe.utils.date.DateUtils
@@ -38,6 +38,7 @@ class CreateTransactionFromShortcutUseCase @Inject constructor(
             id = 0,
             categoryId = shortcut.categoryId,
             subcategoryId = null,
+            shortcutId = shortcut.id,
             amount = shortcut.amount,
             currency = shortcut.currency,
             paymentMethod = shortcut.paymentMethod,

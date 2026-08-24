@@ -18,7 +18,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.transaction.DescriptionSource
-import com.jorgelobo.koobe.domain.model.transaction.Shortcut
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
 import com.jorgelobo.koobe.ui.common.modifiers.clearFocusOnTap
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
 import com.jorgelobo.koobe.ui.components.model.enums.InputState

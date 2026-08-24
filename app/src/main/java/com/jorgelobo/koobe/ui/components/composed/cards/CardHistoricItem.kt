@@ -18,6 +18,8 @@ import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
+import com.jorgelobo.koobe.domain.model.shortcut.ShortcutHistory
 import com.jorgelobo.koobe.domain.model.transaction.Transaction
 import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
 import com.jorgelobo.koobe.ui.components.base.background.Background
@@ -88,23 +90,22 @@ fun CardHistoricItem(
         },
         expandedContent = {
             categoryHistory.subcategories.forEach { subcategoryHistory ->
-                val subcategory = subcategoryHistory
-                val isSubExpanded =
+                val isSubcategoryExpanded =
                     subcategoryHistory.subcategory.id in config.expandedSubcategories
 
                 BaseExpandableRow(
-                    isExpanded = isSubExpanded,
+                    isExpanded = isSubcategoryExpanded,
                     onExpandedChange = { config.onSubcategoryExpandToggle(subcategoryHistory.subcategory.id) },
                     headerContent = {
                         Avatar(
                             type = AvatarType.SMALL,
-                            icon = subcategory.subcategory.icon,
+                            icon = subcategoryHistory.subcategory.icon,
                             color = category.resolvedColor(),
                             isSelected = false
                         )
 
                         Text(
-                            text = subcategory.subcategory.localizedName(),
+                            text = subcategoryHistory.subcategory.localizedName(),
                             style = typography.text.titleMedium,
                             color = colors.textColors.textPrimary,
                             modifier = Modifier.padding(start = Spacing.Small, end = Spacing.Tiny)
@@ -112,7 +113,7 @@ fun CardHistoricItem(
 
                         AppBadge(
                             value = subcategoryHistory.transactionCount,
-                            isExpanded = isSubExpanded
+                            isExpanded = isSubcategoryExpanded
                         )
 
                         Spacer(modifier = Modifier.weight(1f))
@@ -130,6 +131,58 @@ fun CardHistoricItem(
                     },
                     expandedContent = {
                         subcategoryHistory.transactions.forEach { transaction ->
+                            ListTransactionItem(
+                                config = ListTransactionItemConfig(
+                                    transaction = transaction,
+                                    onClick = { config.onTransactionClick(transaction) }
+                                )
+                            )
+                        }
+                    }
+                )
+            }
+            categoryHistory.shortcuts.forEach { shortcutHistory ->
+                val isShortcutExpanded =
+                    shortcutHistory.shortcut.id in config.expandedShortcuts
+
+                BaseExpandableRow(
+                    isExpanded = isShortcutExpanded,
+                    onExpandedChange = { config.onShortcutExpandToggle(shortcutHistory.shortcut.id) },
+                    headerContent = {
+                        Avatar(
+                            type = AvatarType.SMALL,
+                            icon = shortcutHistory.shortcut.icon,
+                            color = category.resolvedColor(),
+                            isSelected = false
+                        )
+
+                        Text(
+                            text = shortcutHistory.shortcut.name,
+                            style = typography.text.titleMedium,
+                            color = colors.textColors.textPrimary,
+                            modifier = Modifier.padding(start = Spacing.Small, end = Spacing.Tiny)
+                        )
+
+                        AppBadge(
+                            value = shortcutHistory.transactionCount,
+                            isExpanded = isShortcutExpanded
+                        )
+
+                        Spacer(modifier = Modifier.weight(1f))
+
+                        MoneyText(
+                            modifier = Modifier.padding(end = Spacing.Medium),
+                            amount = shortcutHistory.totalAmount,
+                            currencyType = config.currencyType,
+                            wholeFontSize = typography.numbers.bodyLarge.fontSize,
+                            decimalFontSize = typography.numbers.labelMedium.fontSize,
+                            textColor = if (category.type == TransactionType.INCOME) AccentMint else AccentCoral,
+                            textAlign = TextAlign.End,
+                            isEnabled = true
+                        )
+                    },
+                    expandedContent = {
+                        shortcutHistory.transactions.forEach { transaction ->
                             ListTransactionItem(
                                 config = ListTransactionItemConfig(
                                     transaction = transaction,
@@ -167,6 +220,7 @@ fun PreviewCardHistoricItem() {
                     type = TransactionType.EXPENSE,
                     categoryId = 1,
                     subcategoryId = 1,
+                    shortcutId = null,
                     amount = -23.45,
                     paymentMethod = PaymentMethodType.CARD,
                     currency = CurrencyType.EUR
@@ -178,6 +232,7 @@ fun PreviewCardHistoricItem() {
                     type = TransactionType.EXPENSE,
                     categoryId = 1,
                     subcategoryId = 1,
+                    shortcutId = null,
                     amount = -42.10,
                     paymentMethod = PaymentMethodType.CASH,
                     currency = CurrencyType.EUR
@@ -192,6 +247,7 @@ fun PreviewCardHistoricItem() {
                     type = TransactionType.EXPENSE,
                     categoryId = 1,
                     subcategoryId = 2,
+                    shortcutId = null,
                     amount = -15.80,
                     paymentMethod = PaymentMethodType.CARD,
                     currency = CurrencyType.EUR
@@ -228,6 +284,43 @@ fun PreviewCardHistoricItem() {
                 transactions = transactionsGroceries
             )
 
+            // Mock Shortcuts
+            val shortcutFood = Shortcut(
+                id = 1,
+                name = "Bread",
+                icon = IconPack.FOOD_ITEMS,
+                categoryId = 1,
+                transactionType = TransactionType.EXPENSE,
+                paymentMethod = PaymentMethodType.CASH,
+                currency = CurrencyType.EUR,
+                amount = 1.25,
+                repeat = false,
+                period = null,
+                usageCount = 0,
+                lastExecutionDate = null,
+            )
+
+            // Mock ShortcutHistory
+            val shortcutHistoryFood = ShortcutHistory(
+                shortcut = shortcutFood,
+                transactionCount = 1,
+                totalAmount = shortcutFood.amount,
+                transactions = listOf(
+                    Transaction(
+                        id = 4,
+                        date = Date(),
+                        description = "Bread",
+                        type = TransactionType.EXPENSE,
+                        categoryId = 1,
+                        subcategoryId = null,
+                        shortcutId = 1,
+                        amount = shortcutFood.amount,
+                        paymentMethod = PaymentMethodType.CASH,
+                        currency = CurrencyType.EUR
+                    )
+                )
+            )
+
             // Mock Category
             val categoryFood = Category(
                 id = 1,
@@ -243,7 +336,8 @@ fun PreviewCardHistoricItem() {
                 category = categoryFood,
                 transactionCount = 3,
                 totalAmount = transactionsFood.sumOf { it.amount } + transactionsGroceries.sumOf { it.amount },
-                subcategories = listOf(subcategoryHistoryFood, subcategoryHistoryGroceries)
+                subcategories = listOf(subcategoryHistoryFood, subcategoryHistoryGroceries),
+                shortcuts = listOf(shortcutHistoryFood)
             )
 
             // Final Config
@@ -253,9 +347,11 @@ fun PreviewCardHistoricItem() {
                 currencyType = CurrencyType.EUR,
                 isExpanded = false,
                 expandedSubcategories = emptySet(),
+                expandedShortcuts = emptySet(),
                 onCategoryExpandToggle = {},
                 onSubcategoryExpandToggle = {},
-                onTransactionClick = {}
+                onTransactionClick = {},
+                onShortcutExpandToggle = {}
             )
 
             CardHistoricItem(

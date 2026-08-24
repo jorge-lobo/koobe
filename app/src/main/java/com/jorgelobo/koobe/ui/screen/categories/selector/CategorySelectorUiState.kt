@@ -4,7 +4,7 @@ import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.CategoryDetailType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
-import com.jorgelobo.koobe.domain.model.transaction.Shortcut
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.shortcutAction.ShortcutActionBottomSheetState
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState

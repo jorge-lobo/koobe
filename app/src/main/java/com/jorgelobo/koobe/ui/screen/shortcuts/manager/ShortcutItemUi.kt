@@ -1,7 +1,7 @@
 package com.jorgelobo.koobe.ui.screen.shortcuts.manager
 
 import com.jorgelobo.koobe.domain.model.category.Category
-import com.jorgelobo.koobe.domain.model.transaction.Shortcut
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
 
 /**
  * UI representation of a shortcut item, combining the shortcut domain model with its associated

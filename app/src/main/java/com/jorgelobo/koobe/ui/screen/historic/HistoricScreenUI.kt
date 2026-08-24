@@ -34,9 +34,14 @@ import com.jorgelobo.koobe.utils.date.DateUtils
  *
  * @param state The current UI state containing the data to be displayed.
  * @param modifier The [Modifier] to be applied to the component.
- * @param onTransactionTypeChange Callback triggered when the transaction type (Income/Expense) is changed.
- * @param onCategoryExpandToggle Callback triggered when a category is expanded or collapsed, providing the category ID.
- * @param onSubcategoryExpandToggle Callback triggered when a subcategory is expanded or collapsed, providing both category and subcategory IDs.
+ * @param onTransactionTypeChange Callback triggered when the transaction type (Income/Expense)
+ * is changed.
+ * @param onCategoryExpandToggle Callback triggered when a category is expanded or collapsed,
+ * providing the category ID.
+ * @param onSubcategoryExpandToggle Callback triggered when a subcategory is expanded or collapsed,
+ * providing both category and subcategory IDs.
+ * @param onShortcutExpandToggle Callback triggered when a shortcut is expanded or collapsed,
+ * providing both category and shortcut IDs.
  * @param onTransactionClick Callback triggered when a specific transaction is selected.
  */
 @Composable
@@ -46,6 +51,7 @@ fun HistoricScreenUI(
     onTransactionTypeChange: (TransactionType) -> Unit = {},
     onCategoryExpandToggle: (Int) -> Unit = {},
     onSubcategoryExpandToggle: (categoryId: Int, subcategoryId: Int) -> Unit,
+    onShortcutExpandToggle: (categoryId: Int, shortcutId: Int) -> Unit,
     onTransactionClick: (Transaction) -> Unit
 ) {
     Column(
@@ -76,6 +82,7 @@ fun HistoricScreenUI(
             currencyType = state.currencyType,
             onCategoryExpandToggle = onCategoryExpandToggle,
             onSubcategoryExpandToggle = onSubcategoryExpandToggle,
+            onShortcutExpandToggle = onShortcutExpandToggle,
             onTransactionClick = onTransactionClick
         )
     }
@@ -92,6 +99,7 @@ private fun PreviewHistoricScreenUI() {
             onTransactionTypeChange = {},
             onCategoryExpandToggle = {},
             onSubcategoryExpandToggle = { _, _ -> },
+            onShortcutExpandToggle = { _, _ -> },
             onTransactionClick = {}
         )
     }
@@ -158,7 +166,8 @@ fun previewHistoricUiState(): HistoricUiState {
         subcategories = listOf(
             SubcategoryHistory(foodItemsSub, 1, 54.30, listOf(groceryTransactions[0])),
             SubcategoryHistory(drinksSub, 1, 12.80, listOf(groceryTransactions[1]))
-        )
+        ),
+        shortcuts = emptyList()
     )
 
     val groceriesUi = CategoryHistoricUi(
@@ -227,7 +236,8 @@ fun previewHistoricUiState(): HistoricUiState {
         subcategories = listOf(
             SubcategoryHistory(fuelSub, 1, 70.00, listOf(transportTransactions[0])),
             SubcategoryHistory(transitSub, 1, 40.00, listOf(transportTransactions[1]))
-        )
+        ),
+        shortcuts = emptyList()
     )
 
     val transportUi = CategoryHistoricUi(
@@ -295,7 +305,8 @@ fun previewHistoricUiState(): HistoricUiState {
         subcategories = listOf(
             SubcategoryHistory(rentSub, 1, 950.00, listOf(homeTransactions[0])),
             SubcategoryHistory(houseMaintenanceSub, 1, 85.00, listOf(homeTransactions[1]))
-        )
+        ),
+        shortcuts = emptyList()
     )
 
     val homeUi = CategoryHistoricUi(

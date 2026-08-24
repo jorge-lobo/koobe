@@ -10,10 +10,12 @@ import com.jorgelobo.koobe.domain.model.category.CategoryHistory
  * @property history The [CategoryHistory] containing the historical records and statistics for this category.
  * @property isExpanded Boolean flag indicating if the category item is currently expanded in the UI.
  * @property expandedSubcategories A set of IDs for subcategories that are currently expanded within this category's view.
+ * @property expandedShortcuts A set of IDs for shortcuts that are currently expanded within this category's view.
  */
 data class CategoryHistoricUi(
     val category: Category,
     val history: CategoryHistory,
     val isExpanded: Boolean = false,
-    val expandedSubcategories: Set<Int> = emptySet()
+    val expandedSubcategories: Set<Int> = emptySet(),
+    val expandedShortcuts: Set<Int> = emptySet()
 )
