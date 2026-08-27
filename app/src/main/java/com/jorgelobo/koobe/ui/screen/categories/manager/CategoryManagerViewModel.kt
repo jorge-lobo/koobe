@@ -159,12 +159,20 @@ class CategoryManagerViewModel @Inject constructor(
         viewModelScope.launch {
             val subcategory = getSubcategoryById(subcategoryId) ?: return@launch
 
+            updateState {
+                copy(isDeleting = true)
+            }
+
             runCatching {
                 deleteSubcategoryWithReassign(subcategory)
             }.onFailure { error ->
                 updateState {
                     copy(errorMessage = error.message)
                 }
+            }
+
+            updateState {
+                copy(isDeleting = false)
             }
         }
     }

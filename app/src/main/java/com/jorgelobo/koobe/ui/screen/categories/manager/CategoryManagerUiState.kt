@@ -10,5 +10,6 @@ data class CategoryManagerUiState(
     val expandedCategoryId: Int? = null,
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val isLoading: Boolean = false,
+    val isDeleting: Boolean = false,
     val errorMessage: String? = null
 )
