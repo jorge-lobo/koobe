@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoriesWithSubcategoriesUseCase
+import com.jorgelobo.koobe.domain.usecase.subcategory.DeleteSubcategoryWithReassignUseCase
+import com.jorgelobo.koobe.domain.usecase.subcategory.GetSubcategoryByIdUseCase
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
@@ -26,7 +28,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class CategoryManagerViewModel @Inject constructor(
-    private val getCategoriesWithSubcategories: GetCategoriesWithSubcategoriesUseCase
+    private val getCategoriesWithSubcategories: GetCategoriesWithSubcategoriesUseCase,
+    private val getSubcategoryById: GetSubcategoryByIdUseCase,
+    private val deleteSubcategoryWithReassign: DeleteSubcategoryWithReassignUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(CategoryManagerUiState())
@@ -143,16 +147,34 @@ class CategoryManagerViewModel @Inject constructor(
         }
 
         when (effect) {
-            ConfirmationDialogEffect.Confirmed -> deleteSubcategory()
+            ConfirmationDialogEffect.Confirmed -> {
+                uiState.value.deleteDialog.targetId?.let(::deleteSubcategory)
+            }
 
             null -> Unit
         }
     }
 
-    private fun deleteSubcategory() {
-        val id = uiState.value.deleteDialog.targetId ?: return
+    private fun deleteSubcategory(subcategoryId: Int) {
+        viewModelScope.launch {
+            val subcategory = getSubcategoryById(subcategoryId) ?: return@launch
 
-        // TODO: Delete subcategory
+            updateState {
+                copy(isDeleting = true)
+            }
+
+            runCatching {
+                deleteSubcategoryWithReassign(subcategory)
+            }.onFailure { error ->
+                updateState {
+                    copy(errorMessage = error.message)
+                }
+            }
+
+            updateState {
+                copy(isDeleting = false)
+            }
+        }
     }
 
     private fun navigateTo(route: String) {
