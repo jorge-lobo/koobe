@@ -35,7 +35,6 @@ fun CategorySelectorScreenUI(
     onChangeClick: () -> Unit,
     onSubcategoryButtonClick: () -> Unit,
     onShortcutButtonClick: () -> Unit,
-    onProceed: () -> Unit,
     onCreateCategoryClick: () -> Unit
 ) {
     val mode = config.mode
@@ -49,14 +48,11 @@ fun CategorySelectorScreenUI(
         when (state.step) {
             SelectorStep.SelectCategory -> CategorySelection(
                 showToggle = mode.showToggle,
-                showActionButton = mode.showActionButton,
-                actionButtonLabelRes = mode.actionButtonLabelRes,
                 categories = state.categories,
                 transactionSelected = state.transactionType,
                 onTransactionTypeChange = onTransactionTypeChange,
                 selectedCategoryId = state.selectedCategoryId,
                 onCategoryIdChange = onCategorySelected,
-                onActionButtonClick = onProceed,
                 onCreateCategoryClick = onCreateCategoryClick
             )
 
@@ -71,7 +67,6 @@ fun CategorySelectorScreenUI(
                 onSubcategorySelected = onSubcategorySelected,
                 onShortcutSelected = onShortcutSelected,
                 onChangeClick = onChangeClick,
-                onContinueClick = onProceed,
                 onCreateSubcategoryClick = onSubcategoryButtonClick,
                 onCreateShortcutClick = onShortcutButtonClick
             )
@@ -166,7 +161,6 @@ fun PreviewCategorySelectorScreen() {
             onChangeClick = {},
             onSubcategoryButtonClick = {},
             onShortcutButtonClick = {},
-            onProceed = {},
             onCreateCategoryClick = {}
         )
     }

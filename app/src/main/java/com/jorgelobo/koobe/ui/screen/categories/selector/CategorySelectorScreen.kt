@@ -18,6 +18,7 @@ import com.jorgelobo.koobe.ui.components.composed.appBar.AppBarConfig
 import com.jorgelobo.koobe.ui.components.composed.appBar.CommonAppBar
 import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorConfig
+import com.jorgelobo.koobe.ui.screen.categories.selector.components.CategorySelectorBottomBar
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
 import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
@@ -76,6 +77,16 @@ fun CategorySelectorScreen(
                 )
             )
         },
+        bottomBar = {
+            CategorySelectorBottomBar(
+                state = uiState,
+                mode = mode,
+                onCreateCategoryClick = viewModel::onCreateCategoryRequested,
+                onCreateSubcategoryClick = viewModel::onSubcategoryEditorRequested,
+                onCreateShortcutClick = viewModel::onShortcutEditorRequested,
+                onProceed = viewModel::onProceedRequested
+            )
+        },
         containerColor = AppTheme.colors.backgroundColors.screenBackground
     ) { innerPadding ->
         CategorySelectorScreenUI(
@@ -90,7 +101,6 @@ fun CategorySelectorScreen(
             onChangeClick = viewModel::onChangeCategoryClick,
             onSubcategoryButtonClick = viewModel::onSubcategoryEditorRequested,
             onShortcutButtonClick = viewModel::onShortcutEditorRequested,
-            onProceed = viewModel::onProceedRequested,
             onCreateCategoryClick = viewModel::onCreateCategoryRequested,
         )
     }

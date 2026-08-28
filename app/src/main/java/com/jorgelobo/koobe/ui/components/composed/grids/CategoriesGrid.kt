@@ -2,11 +2,13 @@ package com.jorgelobo.koobe.ui.components.composed.grids
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.runtime.Composable
@@ -15,11 +17,14 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.base.background.Background
+import com.jorgelobo.koobe.ui.components.base.buttons.types.ButtonText
 import com.jorgelobo.koobe.ui.components.base.grid.BaseGridItem
 import com.jorgelobo.koobe.ui.components.model.enums.AvatarType
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
@@ -45,7 +50,10 @@ fun CategoriesGrid(
         horizontalArrangement = Arrangement.spacedBy(Spacing.MediumLarge),
         verticalArrangement = Arrangement.spacedBy(Spacing.MediumLarge)
     ) {
-        items(items = config.list) { category ->
+        items(
+            items = config.list,
+            key = { it.id }
+        ) { category ->
             val isSelected = category.id == config.selectedCategoryId
 
             BaseGridItem(
@@ -57,6 +65,23 @@ fun CategoriesGrid(
                 isSelected = isSelected,
                 onClick = { config.onCategoryClick(category.id) }
             )
+        }
+
+        item(
+            span = { GridItemSpan(maxLineSpan) }
+        ) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.Start
+            ) {
+                ButtonText(
+                    onClick = config.onCreateCategoryClick,
+                    enabled = true,
+                    text = stringResource(R.string.btn_create_category),
+                    textColor = AppTheme.colors.buttonColors.buttonTextDefault,
+                    icon = IconPack.ADD
+                )
+            }
         }
     }
 }
@@ -81,11 +106,23 @@ fun PreviewCategoriesGrid() {
                 Category(1, "Home", IconPack.HOME, "#FFB74D", TransactionType.EXPENSE),
                 Category(2, "Grocery", IconPack.GROCERY, "#DAE067", TransactionType.EXPENSE),
                 Category(3, "Dining", IconPack.DINING, "#FFA58A", TransactionType.EXPENSE),
-                Category(4, "Transportation", IconPack.TRANSPORTATION, "#3EB5A9", TransactionType.EXPENSE),
+                Category(
+                    4,
+                    "Transportation",
+                    IconPack.TRANSPORTATION,
+                    "#3EB5A9",
+                    TransactionType.EXPENSE
+                ),
                 Category(5, "Health", IconPack.HEALTH, "#BD5555", TransactionType.EXPENSE),
                 Category(6, "Apparel", IconPack.APPAREL, "#BA68C8", TransactionType.EXPENSE),
                 Category(7, "Technology", IconPack.TECHNOLOGY, "#6476D1", TransactionType.EXPENSE),
-                Category(8, "Entertainment", IconPack.ENTERTAINMENT, "#FFD54F", TransactionType.EXPENSE),
+                Category(
+                    8,
+                    "Entertainment",
+                    IconPack.ENTERTAINMENT,
+                    "#FFD54F",
+                    TransactionType.EXPENSE
+                ),
                 Category(9, "Education", IconPack.EDUCATION, "#59BD5E", TransactionType.EXPENSE),
                 Category(10, "Travel", IconPack.TRAVEL, "#5A9BE0", TransactionType.EXPENSE),
                 Category(11, "Essentials", IconPack.ESSENTIALS, "#A1887F", TransactionType.EXPENSE),
@@ -93,14 +130,21 @@ fun PreviewCategoriesGrid() {
                 Category(13, "Body Care", IconPack.BODY_CARE, "#E5A8F0", TransactionType.EXPENSE),
                 Category(14, "Sports", IconPack.SPORTS, "#B0E86F", TransactionType.EXPENSE),
                 Category(15, "Family", IconPack.FAMILY, "#7DC3E3", TransactionType.EXPENSE),
-                Category(16, "Miscellaneous", IconPack.MISCELLANEOUS, "#B0BEC5", TransactionType.EXPENSE),
+                Category(
+                    16,
+                    "Miscellaneous",
+                    IconPack.MISCELLANEOUS,
+                    "#B0BEC5",
+                    TransactionType.EXPENSE
+                ),
             )
 
             CategoriesGrid(
                 config = CategoriesGridConfig(
                     list = mockCategories,
                     selectedCategoryId = selectedCategoryId,
-                    onCategoryClick = { selectedCategoryId = it }
+                    onCategoryClick = { selectedCategoryId = it },
+                    onCreateCategoryClick = {}
                 )
             )
         }

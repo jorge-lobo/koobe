@@ -44,7 +44,7 @@ import com.jorgelobo.koobe.utils.resolvedColor
  * - A summary of the selected category and subcategory (or shortcut)
  * - A toggle to switch between subcategory and shortcut selection
  * - A grid of selectable subcategories or shortcuts
- * - Action buttons for creating a new subcategory/shortcut or continuing
+ * - Action buttons for creating a new subcategory/shortcut
  *
  * All user interactions are delegated via callback parameters.
  *
@@ -58,7 +58,6 @@ import com.jorgelobo.koobe.utils.resolvedColor
  * @param onSubcategorySelected Callback when a subcategory is selected
  * @param onShortcutSelected Callback when a shortcut is selected
  * @param onChangeClick Callback when the user clicks the “change category” button
- * @param onContinueClick Callback when the user clicks the continue button
  * @param onCreateSubcategoryClick Callback when the user wants to create a new subcategory
  * @param onCreateShortcutClick Callback when the user wants to create a new shortcut
  */
@@ -74,7 +73,6 @@ fun SubcategorySelection(
     onSubcategorySelected: (Int) -> Unit,
     onShortcutSelected: (Int) -> Unit,
     onChangeClick: () -> Unit,
-    onContinueClick: () -> Unit,
     onCreateSubcategoryClick: () -> Unit,
     onCreateShortcutClick: () -> Unit
 ) {
@@ -91,7 +89,6 @@ fun SubcategorySelection(
         val detailUi = if (isSubcategory) {
             CategoryDetailUi(
                 isEmpty = subcategories.isEmpty(),
-                canContinue = selectedSubcategoryId != null,
                 emptyHeadline = R.string.empty_headline_subcategories,
                 emptyHint = R.string.empty_hint_subcategories,
                 createButton = R.string.btn_create_subcategory,
@@ -100,7 +97,6 @@ fun SubcategorySelection(
         } else {
             CategoryDetailUi(
                 isEmpty = shortcuts.isEmpty(),
-                canContinue = selectedShortcutId != null,
                 emptyHeadline = R.string.empty_headline_shortcuts,
                 emptyHint = R.string.empty_hint_shortcuts,
                 createButton = R.string.btn_create_shortcut,
@@ -127,12 +123,10 @@ fun SubcategorySelection(
 
         CategoryDetailContent(
             isEmpty = detailUi.isEmpty,
-            isContinueEnabled = detailUi.canContinue,
             emptyHeadlineRes = detailUi.emptyHeadline,
             emptyHintRes = detailUi.emptyHint,
             createButtonRes = detailUi.createButton,
             onCreateClick = detailUi.onCreate,
-            onContinueClick = onContinueClick
         ) {
             if (isSubcategory) {
                 SubcategoriesGrid(
@@ -161,13 +155,11 @@ fun SubcategorySelection(
  *
  * This class is used internally by [SubcategorySelection] to configure:
  * - Whether the list is empty
- * - Whether the continue button should be enabled
  * - Strings for empty state UI
  * - The create button action
  */
 data class CategoryDetailUi(
     val isEmpty: Boolean,
-    val canContinue: Boolean,
     val emptyHeadline: Int,
     val emptyHint: Int,
     val createButton: Int,
@@ -312,7 +304,6 @@ fun PreviewSubcategorySelection() {
             onSubcategorySelected = { selectedSubcategoryId = it },
             onShortcutSelected = { selectedShortcutId = it },
             onChangeClick = {},
-            onContinueClick = {},
             onCreateSubcategoryClick = {},
             onCreateShortcutClick = {}
         )
