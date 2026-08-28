@@ -7,5 +7,6 @@ import com.jorgelobo.koobe.domain.model.category.Category
 data class CategoriesGridConfig(
     val list: List<Category> = emptyList(),
     val selectedCategoryId: Int? = null ,
-    val onCategoryClick: (Int) -> Unit
+    val onCategoryClick: (Int) -> Unit,
+    val onCreateCategoryClick: () -> Unit
 )
