@@ -159,7 +159,8 @@ object DateUtils {
 
     fun getPeriodRange(
         date: Date,
-        periodType: PeriodType
+        periodType: PeriodType,
+        startOfWeek: StartOfWeek = StartOfWeek.SUNDAY
     ): Pair<Date, Date> {
         val calendar = Calendar.getInstance()
         calendar.time = date
@@ -181,7 +182,8 @@ object DateUtils {
             }
 
             PeriodType.WEEKLY -> {
-                start.set(Calendar.DAY_OF_WEEK, calendar.firstDayOfWeek)
+                start.firstDayOfWeek = startOfWeek.toCalendarValue()
+                start.set(Calendar.DAY_OF_WEEK, start.firstDayOfWeek)
                 start.clearTime()
 
                 end.time = start.time
