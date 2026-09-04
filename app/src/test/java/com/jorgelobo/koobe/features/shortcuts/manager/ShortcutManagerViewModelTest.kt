@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.features.shortcuts
+package com.jorgelobo.koobe.features.shortcuts.manager
 
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
@@ -9,6 +9,7 @@ import com.jorgelobo.koobe.domain.usecase.category.GetAllCategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.DeleteShortcutUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.GetAllShortcutsByTypeUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.GetShortcutByIdUseCase
+import com.jorgelobo.koobe.domain.usecase.shortcut.UpdateShortcutUseCase
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.common.bottomSheet.selector.SelectorSheetAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
@@ -46,7 +47,7 @@ class ShortcutManagerViewModelTest {
     private val getAllCategories: GetAllCategoriesUseCase = mockk()
     private val getShortcutById: GetShortcutByIdUseCase = mockk()
     private val deleteShortcut: DeleteShortcutUseCase = mockk()
-
+    private val updateShortcut: UpdateShortcutUseCase = mockk()
 
     @Before
     fun setup() {
@@ -254,7 +255,8 @@ class ShortcutManagerViewModelTest {
         getAllShortcuts = getAllShortcuts,
         getAllCategories = getAllCategories,
         getShortcutById = getShortcutById,
-        deleteShortcut = deleteShortcut
+        deleteShortcut = deleteShortcut,
+        updateShortcut = updateShortcut
     )
 
     private fun fakeShortcut(id: Int = 2, categoryId: Int = 1, name: String = "Bread") = Shortcut(

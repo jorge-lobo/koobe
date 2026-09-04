@@ -2,12 +2,16 @@ package com.jorgelobo.koobe.ui.screen.dashboard
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jorgelobo.koobe.domain.model.balance.PeriodTotals
+import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.domain.model.settings.DefaultUserSettings
 import com.jorgelobo.koobe.domain.repository.BudgetRepository
 import com.jorgelobo.koobe.domain.repository.CategoryRepository
 import com.jorgelobo.koobe.domain.repository.ShortcutRepository
 import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
+import com.jorgelobo.koobe.domain.usecase.transaction.GetTransactionPeriodTotalsUseCase
 import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
 import com.jorgelobo.koobe.ui.components.model.shortcut.ShortcutUiModel
 import com.jorgelobo.koobe.ui.navigation.Route
@@ -16,12 +20,18 @@ import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
+import com.jorgelobo.koobe.utils.date.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flatMapLatest
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -32,7 +42,8 @@ class DashboardViewModel @Inject constructor(
     private val shortcutRepository: ShortcutRepository,
     private val categoryRepository: CategoryRepository,
     private val subcategoryRepository: SubcategoryRepository,
-    private val getUserSettingsUseCase: GetUserSettingsUseCase
+    private val getTransactionPeriodTotals: GetTransactionPeriodTotalsUseCase,
+    getUserSettingsUseCase: GetUserSettingsUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(DashboardUiState())
@@ -41,9 +52,19 @@ class DashboardViewModel @Inject constructor(
     private val _events = MutableSharedFlow<DashboardEvent>()
     val events = _events.asSharedFlow()
 
+    private val currentDate = DateUtils.currentDate
+
+    private val userSettings = getUserSettingsUseCase()
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = DefaultUserSettings
+        )
+
     init {
-        loadUserSettings()
+        observeUserSettings()
         loadDashboard()
+        observeBalances()
     }
 
     private fun loadDashboard() {
@@ -88,6 +109,57 @@ class DashboardViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private fun observeBalances() {
+        viewModelScope.launch {
+            userSettings
+                .flatMapLatest { settings ->
+                    val monthlyRange = DateUtils.getPeriodRange(
+                        date = currentDate,
+                        periodType = PeriodType.MONTHLY
+                    )
+
+                    val dailyRange = DateUtils.getPeriodRange(
+                        date = currentDate,
+                        periodType = PeriodType.DAILY
+                    )
+
+                    val weeklyRange = DateUtils.getPeriodRange(
+                        date = currentDate,
+                        periodType = PeriodType.WEEKLY,
+                        startOfWeek = settings.startOfWeek
+                    )
+
+                    combine(
+                        getTransactionPeriodTotals(),
+                        getTransactionPeriodTotals(monthlyRange.first, monthlyRange.second),
+                        getTransactionPeriodTotals(dailyRange.first, dailyRange.second),
+                        getTransactionPeriodTotals(weeklyRange.first, weeklyRange.second)
+                    ) { overall, monthly, daily, weekly ->
+                        DashboardBalances(
+                            overall = overall,
+                            monthly = monthly,
+                            daily = daily,
+                            weekly = weekly
+                        )
+                    }
+                }
+                .collect { balances ->
+                    _uiState.update {
+                        it.copy(
+                            overallBalance = balances.overall.balance,
+                            income = balances.monthly.income,
+                            expenses = balances.monthly.expenses,
+                            dailyIncome = balances.daily.income,
+                            dailyExpenses = balances.daily.expenses,
+                            weeklyIncome = balances.weekly.income,
+                            weeklyExpenses = balances.weekly.expenses
+                        )
+                    }
+                }
         }
     }
 
@@ -145,9 +217,9 @@ class DashboardViewModel @Inject constructor(
         navigateTo(route)
     }
 
-    private fun loadUserSettings() {
+    private fun observeUserSettings() {
         viewModelScope.launch {
-            getUserSettingsUseCase().collect { settings ->
+            userSettings.collect { settings ->
                 _uiState.update { state ->
                     state.copy(
                         currencyType = settings.currency,
@@ -165,4 +237,11 @@ class DashboardViewModel @Inject constructor(
     private fun emitEvent(event: DashboardEvent) {
         viewModelScope.launch { _events.emit(event) }
     }
+
+    private data class DashboardBalances(
+        val overall: PeriodTotals,
+        val monthly: PeriodTotals,
+        val daily: PeriodTotals,
+        val weekly: PeriodTotals
+    )
 }
