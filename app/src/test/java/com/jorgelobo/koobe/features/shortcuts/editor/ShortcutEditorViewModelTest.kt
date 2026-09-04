@@ -1,4 +1,4 @@
-package com.jorgelobo.koobe.features.shortcuts
+package com.jorgelobo.koobe.features.shortcuts.editor
 
 import androidx.lifecycle.SavedStateHandle
 import app.cash.turbine.test
@@ -52,6 +52,7 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import kotlin.time.Duration.Companion.milliseconds
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class ShortcutEditorViewModelTest {
@@ -116,7 +117,7 @@ class ShortcutEditorViewModelTest {
 
         val state = viewModel.uiState.first()
 
-        assertTrue(state.config == null)
+        assertEquals(state.config, null)
         assertTrue(state.name.isEmpty())
     }
 
@@ -320,17 +321,17 @@ class ShortcutEditorViewModelTest {
     @Test
     fun `save should set isSaving state`() = runTest {
         coEvery { saveShortcut(any(), any()) } coAnswers {
-            delay(100)
+            delay(100.milliseconds)
         }
 
         val viewModel = createViewModelCreateMode()
         viewModel.uiState.first { it.config != null }
         viewModel.fillValidData()
 
-        advanceTimeBy(1)
+        advanceTimeBy(1.milliseconds)
         viewModel.onIntent(ShortcutEditorIntent.Action.SaveClicked)
 
-        advanceTimeBy(1)
+        advanceTimeBy(1.milliseconds)
         assertTrue(viewModel.uiState.value.isSaving)
     }
 
