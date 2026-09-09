@@ -6,11 +6,11 @@ import com.jorgelobo.koobe.domain.model.balance.PeriodTotals
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.settings.DefaultUserSettings
-import com.jorgelobo.koobe.domain.repository.BudgetRepository
-import com.jorgelobo.koobe.domain.repository.CategoryRepository
-import com.jorgelobo.koobe.domain.repository.ShortcutRepository
-import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
+import com.jorgelobo.koobe.domain.usecase.budget.GetAllBudgetsUseCase
+import com.jorgelobo.koobe.domain.usecase.category.GetAllCategoriesUseCase
+import com.jorgelobo.koobe.domain.usecase.shortcut.GetAllShortcutsUseCase
+import com.jorgelobo.koobe.domain.usecase.subcategory.GetAllSubcategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.GetTransactionPeriodTotalsUseCase
 import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
 import com.jorgelobo.koobe.ui.components.model.shortcut.ShortcutUiModel
@@ -29,7 +29,6 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -38,11 +37,11 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DashboardViewModel @Inject constructor(
-    private val budgetRepository: BudgetRepository,
-    private val shortcutRepository: ShortcutRepository,
-    private val categoryRepository: CategoryRepository,
-    private val subcategoryRepository: SubcategoryRepository,
     private val getTransactionPeriodTotals: GetTransactionPeriodTotalsUseCase,
+    getAllBudgets: GetAllBudgetsUseCase,
+    getAllShortcuts: GetAllShortcutsUseCase,
+    getAllCategories: GetAllCategoriesUseCase,
+    getAllSubcategories: GetAllSubcategoriesUseCase,
     getUserSettingsUseCase: GetUserSettingsUseCase
 ) : ViewModel() {
 
@@ -61,51 +60,85 @@ class DashboardViewModel @Inject constructor(
             initialValue = DefaultUserSettings
         )
 
+    private val budgetItemsFlow =
+        combine(
+            getAllBudgets(),
+            getAllCategories(),
+            getAllSubcategories()
+        ) { budgets, categories, subcategories ->
+
+            val categoriesById = categories.associateBy { it.id }
+            val subcategoriesById = subcategories.associateBy { it.id }
+
+            budgets.mapNotNull { budget ->
+
+                val category = categoriesById[budget.categoryId]
+                val subcategory = subcategoriesById[budget.subcategoryId]
+
+                if (category != null && subcategory != null) {
+                    BudgetUiModel(
+                        budget = budget,
+                        category = category,
+                        subcategory = subcategory
+                    )
+                } else {
+                    null
+                }
+            }
+        }
+
+    private val shortcutItemsFlow =
+        combine(
+            getAllShortcuts(),
+            getAllCategories()
+        ) { shortcuts, categories ->
+
+            val categoriesById = categories.associateBy { it.id }
+
+            shortcuts.mapNotNull { shortcut ->
+                categoriesById[shortcut.categoryId]?.let { category ->
+                    ShortcutUiModel(
+                        shortcut = shortcut,
+                        category = category
+                    )
+                }
+            }
+        }
+
     init {
         observeUserSettings()
-        loadDashboard()
+        observeDashboardData()
         observeBalances()
     }
 
-    private fun loadDashboard() {
+    private fun observeUserSettings() {
         viewModelScope.launch {
-            try {
-                _uiState.update { it.copy(isLoading = true) }
-
-                val budgets = budgetRepository.getAllBudgets().first()
-                val shortcuts = shortcutRepository.getAllShortcuts().first()
-                val categories = categoryRepository.getAllCategories().first()
-                val subcategories = subcategoryRepository.getAllSubcategories().first()
-
-                val budgetItems = budgets.map { budget ->
-                    BudgetUiModel(
-                        budget = budget,
-                        category = categories.first { it.id == budget.categoryId },
-                        subcategory = subcategories.first { it.id == budget.subcategoryId }
+            userSettings.collect { settings ->
+                _uiState.update { state ->
+                    state.copy(
+                        currencyType = settings.currency,
+                        startOfWeek = settings.startOfWeek
                     )
                 }
+            }
+        }
+    }
 
-                val shortcutItems = shortcuts.map { shortcut ->
-                    ShortcutUiModel(
-                        shortcut = shortcut,
-                        category = categories.first { it.id == shortcut.categoryId }
-                    )
-                }
-
+    private fun observeDashboardData() {
+        viewModelScope.launch {
+            combine(
+                budgetItemsFlow,
+                shortcutItemsFlow
+            ) { budgetItems, shortcutItems ->
+                DashboardData(
+                    budgetItems = budgetItems,
+                    shortcutItems = shortcutItems
+                )
+            }.collect { data ->
                 _uiState.update {
                     it.copy(
-                        budgetItems = budgetItems,
-                        shortcutItems = shortcutItems,
-                        isLoading = false,
-                        errorMessage = null
-                    )
-                }
-
-            } catch (e: Exception) {
-                _uiState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = e.message ?: "Unknown error"
+                        budgetItems = data.budgetItems,
+                        shortcutItems = data.shortcutItems
                     )
                 }
             }
@@ -217,19 +250,6 @@ class DashboardViewModel @Inject constructor(
         navigateTo(route)
     }
 
-    private fun observeUserSettings() {
-        viewModelScope.launch {
-            userSettings.collect { settings ->
-                _uiState.update { state ->
-                    state.copy(
-                        currencyType = settings.currency,
-                        startOfWeek = settings.startOfWeek
-                    )
-                }
-            }
-        }
-    }
-
     private fun navigateTo(route: String) {
         emitEvent(DashboardEvent.NavigateTo(route))
     }
@@ -243,5 +263,10 @@ class DashboardViewModel @Inject constructor(
         val monthly: PeriodTotals,
         val daily: PeriodTotals,
         val weekly: PeriodTotals
+    )
+
+    private data class DashboardData(
+        val budgetItems: List<BudgetUiModel>,
+        val shortcutItems: List<ShortcutUiModel>
     )
 }

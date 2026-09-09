@@ -2,17 +2,15 @@ package com.jorgelobo.koobe.features.dashboard
 
 import com.jorgelobo.koobe.domain.model.balance.PeriodTotals
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
-import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.domain.model.settings.DefaultUserSettings
-import com.jorgelobo.koobe.domain.repository.BudgetRepository
-import com.jorgelobo.koobe.domain.repository.CategoryRepository
-import com.jorgelobo.koobe.domain.repository.ShortcutRepository
-import com.jorgelobo.koobe.domain.repository.SubcategoryRepository
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
+import com.jorgelobo.koobe.domain.usecase.budget.GetAllBudgetsUseCase
+import com.jorgelobo.koobe.domain.usecase.category.GetAllCategoriesUseCase
+import com.jorgelobo.koobe.domain.usecase.shortcut.GetAllShortcutsUseCase
+import com.jorgelobo.koobe.domain.usecase.subcategory.GetAllSubcategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.GetTransactionPeriodTotalsUseCase
 import com.jorgelobo.koobe.ui.screen.dashboard.DashboardViewModel
-import com.jorgelobo.koobe.utils.date.DateUtils
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -32,10 +30,10 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 class DashboardViewModelTest {
 
-    private val budgetRepository = mockk<BudgetRepository>()
-    private val shortcutRepository = mockk<ShortcutRepository>()
-    private val categoryRepository = mockk<CategoryRepository>()
-    private val subcategoryRepository = mockk<SubcategoryRepository>()
+    private val getAllBudgets = mockk<GetAllBudgetsUseCase>()
+    private val getAllShortcuts = mockk<GetAllShortcutsUseCase>()
+    private val getAllCategories = mockk<GetAllCategoriesUseCase>()
+    private val getAllSubcategories = mockk<GetAllSubcategoriesUseCase>()
     private val getTransactionPeriodTotals = mockk<GetTransactionPeriodTotalsUseCase>()
     private val getUserSettingsUseCase = mockk<GetUserSettingsUseCase>()
 
@@ -51,72 +49,25 @@ class DashboardViewModelTest {
 
     @Test
     fun `balances should update ui state correctly`() = runTest {
-        every { budgetRepository.getAllBudgets() } returns flowOf(emptyList())
-        every { shortcutRepository.getAllShortcuts() } returns flowOf(emptyList())
-        every { categoryRepository.getAllCategories() } returns flowOf(emptyList())
-        every { subcategoryRepository.getAllSubcategories() } returns flowOf(emptyList())
+        every { getAllBudgets() } returns flowOf(emptyList())
+        every { getAllShortcuts() } returns flowOf(emptyList())
+        every { getAllCategories() } returns flowOf(emptyList())
+        every { getAllSubcategories() } returns flowOf(emptyList())
         every { getUserSettingsUseCase() } returns flowOf(DefaultUserSettings)
 
         every { getTransactionPeriodTotals() } returns flowOf(
-            PeriodTotals(
-                income = 2000.0,
-                expenses = 750.0
-            )
+            PeriodTotals(income = 2000.0, expenses = 750.0)
         )
 
-        val date = DateUtils.currentDate
+        every { getTransactionPeriodTotals(any(), any()) } returnsMany listOf(
+            // Monthly
+            flowOf(PeriodTotals(income = 1200.0, expenses = 600.0)),
 
-        val dailyRange = DateUtils.getPeriodRange(
-            date = date,
-            periodType = PeriodType.DAILY
-        )
+            // Daily
+            flowOf(PeriodTotals(income = 100.0, expenses = 25.0)),
 
-        val weeklyRange = DateUtils.getPeriodRange(
-            date = date,
-            periodType = PeriodType.WEEKLY,
-            startOfWeek = DefaultUserSettings.startOfWeek
-        )
-
-        val monthlyRange = DateUtils.getPeriodRange(
-            date = date,
-            periodType = PeriodType.MONTHLY,
-            startOfWeek = DefaultUserSettings.startOfWeek
-        )
-
-        every {
-            getTransactionPeriodTotals(
-                dailyRange.first,
-                dailyRange.second
-            )
-        } returns flowOf(
-            PeriodTotals(
-                income = 100.0,
-                expenses = 25.0
-            )
-        )
-
-        every {
-            getTransactionPeriodTotals(
-                weeklyRange.first,
-                weeklyRange.second
-            )
-        } returns flowOf(
-            PeriodTotals(
-                income = 500.0,
-                expenses = 200.0
-            )
-        )
-
-        every {
-            getTransactionPeriodTotals(
-                monthlyRange.first,
-                monthlyRange.second
-            )
-        } returns flowOf(
-            PeriodTotals(
-                income = 1200.0,
-                expenses = 600.0
-            )
+            // Weekly
+            flowOf(PeriodTotals(income = 500.0, expenses = 200.0))
         )
 
         val viewModel = createViewModel()
@@ -137,10 +88,10 @@ class DashboardViewModelTest {
     fun `user settings should update currency and start of week`() = runTest {
         val settings = MutableStateFlow(DefaultUserSettings)
 
-        every { budgetRepository.getAllBudgets() } returns flowOf(emptyList())
-        every { shortcutRepository.getAllShortcuts() } returns flowOf(emptyList())
-        every { categoryRepository.getAllCategories() } returns flowOf(emptyList())
-        every { subcategoryRepository.getAllSubcategories() } returns flowOf(emptyList())
+        every { getAllBudgets() } returns flowOf(emptyList())
+        every { getAllShortcuts() } returns flowOf(emptyList())
+        every { getAllCategories() } returns flowOf(emptyList())
+        every { getAllSubcategories() } returns flowOf(emptyList())
         every { getUserSettingsUseCase() } returns settings
         every { getTransactionPeriodTotals() } returns flowOf(PeriodTotals())
         every { getTransactionPeriodTotals(any(), any()) } returns flowOf(PeriodTotals())
@@ -158,12 +109,42 @@ class DashboardViewModelTest {
         assertEquals(StartOfWeek.MONDAY, viewModel.uiState.value.startOfWeek)
     }
 
+    @Test
+    fun `balances should react to start of week changes`() = runTest {
+        val settings = MutableStateFlow(DefaultUserSettings)
+
+        every { getAllBudgets() } returns flowOf(emptyList())
+        every { getAllShortcuts() } returns flowOf(emptyList())
+        every { getAllCategories() } returns flowOf(emptyList())
+        every { getAllSubcategories() } returns flowOf(emptyList())
+        every { getUserSettingsUseCase() } returns settings
+        every { getTransactionPeriodTotals() } returns flowOf(PeriodTotals())
+        every {
+            getTransactionPeriodTotals(any(), any())
+        } returns flowOf(PeriodTotals(income = 100.0, expenses = 25.0))
+
+        val viewModel = createViewModel()
+
+        advanceUntilIdle()
+        assertEquals(100.0, viewModel.uiState.value.weeklyIncome)
+        assertEquals(25.0, viewModel.uiState.value.weeklyExpenses)
+
+        settings.value = DefaultUserSettings.copy(
+            startOfWeek = StartOfWeek.MONDAY
+        )
+
+        advanceUntilIdle()
+        assertEquals(StartOfWeek.MONDAY, viewModel.uiState.value.startOfWeek)
+        assertEquals(100.0, viewModel.uiState.value.weeklyIncome)
+        assertEquals(25.0, viewModel.uiState.value.weeklyExpenses)
+    }
+
     private fun createViewModel() = DashboardViewModel(
-        budgetRepository = budgetRepository,
-        shortcutRepository = shortcutRepository,
-        categoryRepository = categoryRepository,
-        subcategoryRepository = subcategoryRepository,
         getTransactionPeriodTotals = getTransactionPeriodTotals,
+        getAllBudgets = getAllBudgets,
+        getAllShortcuts = getAllShortcuts,
+        getAllCategories = getAllCategories,
+        getAllSubcategories = getAllSubcategories,
         getUserSettingsUseCase = getUserSettingsUseCase
     )
 }
