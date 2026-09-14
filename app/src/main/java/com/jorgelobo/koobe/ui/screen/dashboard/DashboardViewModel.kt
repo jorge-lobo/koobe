@@ -6,6 +6,7 @@ import com.jorgelobo.koobe.domain.model.balance.PeriodTotals
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.settings.DefaultUserSettings
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetAllBudgetsUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetAllCategoriesUseCase
@@ -95,14 +96,20 @@ class DashboardViewModel @Inject constructor(
 
             val categoriesById = categories.associateBy { it.id }
 
-            shortcuts.mapNotNull { shortcut ->
-                categoriesById[shortcut.categoryId]?.let { category ->
-                    ShortcutUiModel(
-                        shortcut = shortcut,
-                        category = category
-                    )
+            shortcuts
+                .sortedWith(
+                    compareByDescending<Shortcut> { it.usageCount }
+                        .thenBy { it.name.lowercase() }
+                )
+                .take(3)
+                .mapNotNull { shortcut ->
+                    categoriesById[shortcut.categoryId]?.let { category ->
+                        ShortcutUiModel(
+                            shortcut = shortcut,
+                            category = category
+                        )
+                    }
                 }
-            }
         }
 
     init {
