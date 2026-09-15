@@ -1,15 +1,20 @@
 package com.jorgelobo.koobe.features.dashboard
 
 import com.jorgelobo.koobe.domain.model.balance.PeriodTotals
+import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
+import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.settings.DefaultUserSettings
+import com.jorgelobo.koobe.domain.model.shortcut.Shortcut
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetAllBudgetsUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetAllCategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.shortcut.GetAllShortcutsUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetAllSubcategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.transaction.GetTransactionPeriodTotalsUseCase
+import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.dashboard.DashboardViewModel
 import io.mockk.every
 import io.mockk.mockk
@@ -46,6 +51,8 @@ class DashboardViewModelTest {
     fun tearDown() {
         Dispatchers.resetMain()
     }
+
+    // region Balances
 
     @Test
     fun `balances should update ui state correctly`() = runTest {
@@ -85,31 +92,6 @@ class DashboardViewModelTest {
     }
 
     @Test
-    fun `user settings should update currency and start of week`() = runTest {
-        val settings = MutableStateFlow(DefaultUserSettings)
-
-        every { getAllBudgets() } returns flowOf(emptyList())
-        every { getAllShortcuts() } returns flowOf(emptyList())
-        every { getAllCategories() } returns flowOf(emptyList())
-        every { getAllSubcategories() } returns flowOf(emptyList())
-        every { getUserSettingsUseCase() } returns settings
-        every { getTransactionPeriodTotals() } returns flowOf(PeriodTotals())
-        every { getTransactionPeriodTotals(any(), any()) } returns flowOf(PeriodTotals())
-
-        val viewModel = createViewModel()
-
-        advanceUntilIdle()
-        settings.value = DefaultUserSettings.copy(
-            currency = CurrencyType.USD,
-            startOfWeek = StartOfWeek.MONDAY
-        )
-
-        advanceUntilIdle()
-        assertEquals(CurrencyType.USD, viewModel.uiState.value.currencyType)
-        assertEquals(StartOfWeek.MONDAY, viewModel.uiState.value.startOfWeek)
-    }
-
-    @Test
     fun `balances should react to start of week changes`() = runTest {
         val settings = MutableStateFlow(DefaultUserSettings)
 
@@ -139,6 +121,95 @@ class DashboardViewModelTest {
         assertEquals(25.0, viewModel.uiState.value.weeklyExpenses)
     }
 
+    // endregion
+
+    // region User Settings
+
+    @Test
+    fun `user settings should update currency and start of week`() = runTest {
+        val settings = MutableStateFlow(DefaultUserSettings)
+
+        every { getAllBudgets() } returns flowOf(emptyList())
+        every { getAllShortcuts() } returns flowOf(emptyList())
+        every { getAllCategories() } returns flowOf(emptyList())
+        every { getAllSubcategories() } returns flowOf(emptyList())
+        every { getUserSettingsUseCase() } returns settings
+        every { getTransactionPeriodTotals() } returns flowOf(PeriodTotals())
+        every { getTransactionPeriodTotals(any(), any()) } returns flowOf(PeriodTotals())
+
+        val viewModel = createViewModel()
+
+        advanceUntilIdle()
+        settings.value = DefaultUserSettings.copy(
+            currency = CurrencyType.USD,
+            startOfWeek = StartOfWeek.MONDAY
+        )
+
+        advanceUntilIdle()
+        assertEquals(CurrencyType.USD, viewModel.uiState.value.currencyType)
+        assertEquals(StartOfWeek.MONDAY, viewModel.uiState.value.startOfWeek)
+    }
+
+    // endregion
+
+    // region Shortcuts
+
+    @Test
+    fun `shortcuts should be ordered by usage count descending`() = runTest {
+        val shortcuts = listOf(
+            fakeShortcut(id = 1, name = "Coffee", usageCount = 2),
+            fakeShortcut(id = 2, name = "Groceries", usageCount = 8),
+            fakeShortcut(id = 3, name = "Lunch", usageCount = 5)
+        )
+
+        every { getAllBudgets() } returns flowOf(emptyList())
+        every { getAllShortcuts() } returns flowOf(shortcuts)
+        every { getAllCategories() } returns flowOf(listOf(fakeCategory()))
+        every { getAllSubcategories() } returns flowOf(emptyList())
+        every { getUserSettingsUseCase() } returns flowOf(DefaultUserSettings)
+
+        every { getTransactionPeriodTotals() } returns flowOf(PeriodTotals())
+        every { getTransactionPeriodTotals(any(), any()) } returns flowOf(PeriodTotals())
+
+        val viewModel = createViewModel()
+
+        advanceUntilIdle()
+        assertEquals(
+            listOf(2, 3, 1),
+            viewModel.uiState.value.shortcutItems.map { it.shortcut.id }
+        )
+    }
+
+    @Test
+    fun `shortcuts should be ordered by usage count and then alphabetically`() = runTest {
+        val shortcuts = listOf(
+            fakeShortcut(id = 1, name = "Lunch", usageCount = 5),
+            fakeShortcut(id = 2, name = "Coffee", usageCount = 10),
+            fakeShortcut(id = 3, name = "Groceries", usageCount = 5),
+            fakeShortcut(id = 4, name = "Breakfast", usageCount = 10),
+            fakeShortcut(id = 5, name = "Dinner", usageCount = 2)
+        )
+
+        every { getAllBudgets() } returns flowOf(emptyList())
+        every { getAllShortcuts() } returns flowOf(shortcuts)
+        every { getAllCategories() } returns flowOf(listOf(fakeCategory()))
+        every { getAllSubcategories() } returns flowOf(emptyList())
+        every { getUserSettingsUseCase() } returns flowOf(DefaultUserSettings)
+
+        every { getTransactionPeriodTotals() } returns flowOf(PeriodTotals())
+        every { getTransactionPeriodTotals(any(), any()) } returns flowOf(PeriodTotals())
+
+        val viewModel = createViewModel()
+
+        advanceUntilIdle()
+        assertEquals(
+            listOf(4, 2, 3),
+            viewModel.uiState.value.shortcutItems.map { it.shortcut.id }
+        )
+    }
+
+    // endregion
+
     private fun createViewModel() = DashboardViewModel(
         getTransactionPeriodTotals = getTransactionPeriodTotals,
         getAllBudgets = getAllBudgets,
@@ -146,5 +217,29 @@ class DashboardViewModelTest {
         getAllCategories = getAllCategories,
         getAllSubcategories = getAllSubcategories,
         getUserSettingsUseCase = getUserSettingsUseCase
+    )
+
+    private fun fakeShortcut(
+        id: Int,
+        name: String,
+        usageCount: Int
+    ) = Shortcut(
+        id = id,
+        name = name,
+        icon = IconPack.EXTRA,
+        categoryId = 1,
+        transactionType = TransactionType.EXPENSE,
+        paymentMethod = PaymentMethodType.CASH,
+        currency = CurrencyType.EUR,
+        amount = 0.0,
+        usageCount = usageCount
+    )
+
+    private fun fakeCategory() = Category(
+        id = 1,
+        name = "Category",
+        icon = IconPack.EXTRA,
+        color = "#FFFFFF",
+        type = TransactionType.EXPENSE
     )
 }
