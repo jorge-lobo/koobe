@@ -11,10 +11,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -23,11 +19,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.budget.Budget
 import com.jorgelobo.koobe.domain.model.category.Category
-import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.dividers.AppHorizontalDivider
 import com.jorgelobo.koobe.ui.components.base.progressBar.AppProgressBar
@@ -41,6 +37,7 @@ import com.jorgelobo.koobe.ui.components.composed.budgets.BudgetItemConfig
 import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
 import com.jorgelobo.koobe.ui.components.model.enums.BackgroundType
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.screen.budgets.manager.model.PeriodicBudgetsUiModel
 import com.jorgelobo.koobe.ui.theme.AppTheme
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
@@ -50,26 +47,20 @@ import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 @Composable
 fun CardPeriodicBudgetsItem(
     modifier: Modifier = Modifier,
-    config: CardPeriodicBudgetsConfig,
-    onItemClick: () -> Unit
+    config: CardPeriodicBudgetsConfig
 ) {
     val colors = AppTheme.colors
     val typography = AppTheme.typography
+    val model = config.model
 
-    var isExpanded by remember { mutableStateOf(false) }
+    val currencyType = model.currencyType
+    val totalLimit = model.totalLimit
+    val totalSpent = model.totalSpent
+    val balance = model.balance
+    val percentage = model.percentage
+    val progress = model.progress
 
-    val currencyType = config.currencyType
-    val totalLimit = config.totalLimit
-    val totalSpent = config.totalSpent
-    val balance = totalLimit - totalSpent
-    val percentage = if (totalLimit > 0) (totalSpent / totalLimit) else 0.0
-    val progress = percentage.toFloat()
-
-    val categoryMap = remember(config.categories) { config.categories.associateBy { it.id } }
-    val subcategoryMap =
-        remember(config.subcategories) { config.subcategories.associateBy { it.id } }
-
-    val headerLabel = when (config.periodType) {
+    val headerLabel = when (model.periodType) {
         PeriodType.DAILY -> stringResource(R.string.budget_header_daily)
         PeriodType.WEEKLY -> stringResource(R.string.budget_header_weekly)
         PeriodType.MONTHLY -> stringResource(R.string.budget_header_monthly)
@@ -78,8 +69,8 @@ fun CardPeriodicBudgetsItem(
 
     BaseExpandableCard(
         modifier = modifier,
-        isExpanded = isExpanded,
-        onExpandedChange = { isExpanded = it },
+        isExpanded = model.isExpanded,
+        onExpandedChange = { config.onExpandToggle() },
         headerContent = {
             Text(
                 text = headerLabel,
@@ -89,14 +80,14 @@ fun CardPeriodicBudgetsItem(
             )
 
             AppBadge(
-                value = config.budgetsCount,
-                isExpanded = isExpanded,
+                value = model.budgetsCount,
+                isExpanded = model.isExpanded,
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
             Text(
-                text = "${(percentage * 100).toInt()}%",
+                text = "${percentage.toInt()}%",
                 style = typography.numbers.labelMedium,
                 color = AccentGold,
                 modifier = Modifier.padding(end = Spacing.Small)
@@ -157,28 +148,17 @@ fun CardPeriodicBudgetsItem(
                     modifier = Modifier.padding(top = Spacing.Tiny)
                 )
 
-                config.budgets.forEachIndexed { index, budget ->
-                    val category = categoryMap[budget.categoryId]
-                    val subcategory = subcategoryMap[budget.subcategoryId]
+                model.budgets.forEachIndexed { index, budget ->
+                    BudgetDetailedItem(
+                        config = BudgetItemConfig(
+                            model = budget,
+                            onClick = { config.onItemClick(budget) }
+                        ),
+                        modifier = Modifier.padding(top = Spacing.Medium, bottom = Spacing.Tiny)
+                    )
 
-                    if (category != null && subcategory != null) {
-                        val model = BudgetUiModel(
-                            budget = budget,
-                            category = category,
-                            subcategory = subcategory
-                        )
-
-                        BudgetDetailedItem(
-                            config = BudgetItemConfig(
-                                model = model,
-                                onClick = onItemClick
-                            ),
-                            modifier = Modifier.padding(top = Spacing.Medium, bottom = Spacing.Tiny)
-                        )
-
-                        if (index < config.budgets.lastIndex) {
-                            AppHorizontalDivider()
-                        }
+                    if (index < model.budgets.lastIndex) {
+                        AppHorizontalDivider()
                     }
                 }
             }
@@ -238,21 +218,27 @@ fun PreviewCardPeriodicBudgetsItem() {
                 Subcategory(2, 1, "Electricity", IconPack.ELECTRICITY)
             )
 
-            val config = CardPeriodicBudgetsConfig(
+            val model = PeriodicBudgetsUiModel(
                 periodType = PeriodType.MONTHLY,
                 currencyType = CurrencyType.EUR,
-                budgetsCount = 2,
+                budgets = budgets.map {
+                    BudgetUiModel.from(
+                        it,
+                        categories.first { category -> category.id == it.categoryId },
+                        subcategories.first { subcategory -> subcategory.id == it.subcategoryId }
+                    )
+                },
                 totalLimit = 500.0,
-                totalSpent = 200.0,
-                budgets = budgets,
-                categories = categories,
-                subcategories = subcategories
+                totalSpent = 200.0
             )
 
-            CardPeriodicBudgetsItem(
-                config = config,
+            val config = CardPeriodicBudgetsConfig(
+                model = model,
+                onExpandToggle = {},
                 onItemClick = {}
             )
+
+            CardPeriodicBudgetsItem(config = config)
         }
     }
 }
