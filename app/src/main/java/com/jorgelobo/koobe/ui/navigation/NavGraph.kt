@@ -11,6 +11,7 @@ import androidx.navigation.navArgument
 import com.jorgelobo.koobe.ui.app.AppViewModel
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorConfig
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorScreen
+import com.jorgelobo.koobe.ui.screen.budgets.manager.BudgetManagerConfig
 import com.jorgelobo.koobe.ui.screen.budgets.manager.BudgetManagerScreen
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.categories.editor.CategoryEditorScreen
@@ -106,7 +107,18 @@ fun NavGraph(
         // Budgets
         composable(Route.BudgetManager.route) {
             BudgetManagerScreen(
-                navController
+                navController = navController,
+                config = BudgetManagerConfig(
+                    currentRoute = Route.BudgetManager.route,
+                    onRouteSelected = { route ->
+                        if (route != Route.BudgetManager.route) {
+                            navController.navigate(route) {
+                                popUpTo(Route.BudgetManager.route)
+                                launchSingleTop = true
+                            }
+                        }
+                    }
+                )
             )
         }
 
