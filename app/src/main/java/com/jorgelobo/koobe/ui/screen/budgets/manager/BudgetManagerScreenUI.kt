@@ -28,7 +28,8 @@ fun BudgetManagerScreenUI(
     state: BudgetManagerUiState,
     modifier: Modifier = Modifier,
     onExpandToggle: (PeriodType) -> Unit,
-    onBudgetClick: (BudgetUiModel) -> Unit
+    onBudgetClick: (BudgetUiModel) -> Unit,
+    onAddBudgetClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -46,9 +47,11 @@ fun BudgetManagerScreenUI(
 
         BudgetManagerListSection(
             modifier = Modifier.weight(1f),
+            isEmpty = state.periodicBudgets.isEmpty(),
             periodicBudgets = state.periodicBudgets,
             onExpandToggle = onExpandToggle,
-            onBudgetClick = onBudgetClick
+            onBudgetClick = onBudgetClick,
+            onAddBudgetClick = onAddBudgetClick
         )
     }
 }
@@ -62,7 +65,8 @@ private fun PreviewBudgetManagerScreenUI() {
         BudgetManagerScreenUI(
             state = previewBudgetManagerUiState(),
             onExpandToggle = {},
-            onBudgetClick = {}
+            onBudgetClick = {},
+            onAddBudgetClick = {}
         )
     }
 }

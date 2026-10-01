@@ -40,12 +40,16 @@ fun BudgetManagerScreen(
                         icon = IconPack.BACK,
                         onClick = {}
                     ),
-                    trailingActions = listOf(
-                        AppBarAction(
-                            icon = IconPack.ADD,
-                            onClick = {}
+                    trailingActions = if (uiState.periodicBudgets.isNotEmpty()) {
+                        listOf(
+                            AppBarAction(
+                                icon = IconPack.ADD,
+                                onClick = {}
+                            )
                         )
-                    )
+                    } else {
+                        emptyList()
+                    }
                 )
             )
         },
@@ -53,7 +57,7 @@ fun BudgetManagerScreen(
             AppBottomNavigation(
                 currentRoute = config.currentRoute,
                 items = BottomNavigationDefaults.items,
-                onItemSelected = { item -> config.onRouteSelected(item.route)}
+                onItemSelected = { item -> config.onRouteSelected(item.route) }
             )
         },
         containerColor = AppTheme.colors.backgroundColors.screenBackground
@@ -62,7 +66,8 @@ fun BudgetManagerScreen(
             modifier = Modifier.padding(padding),
             state = uiState,
             onExpandToggle = {},
-            onBudgetClick = {}
+            onBudgetClick = {},
+            onAddBudgetClick = {}
         )
     }
 }
