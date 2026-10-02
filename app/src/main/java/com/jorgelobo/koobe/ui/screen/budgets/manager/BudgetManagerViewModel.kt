@@ -2,13 +2,18 @@ package com.jorgelobo.koobe.ui.screen.budgets.manager
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.settings.DefaultUserSettings
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetAllBudgetsUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetAllCategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetAllSubcategoriesUseCase
 import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
+import com.jorgelobo.koobe.ui.navigation.Route
 import com.jorgelobo.koobe.ui.screen.budgets.manager.model.PeriodicBudgetsUiModel
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -112,6 +117,35 @@ class BudgetManagerViewModel @Inject constructor(
                     )
                 }
             }
+        }
+    }
+
+    fun onBackClick() {
+        navigateBack()
+    }
+
+    fun onAddBudgetClick() {
+        val route = Route.CategorySelector.create(
+            CategorySelectorConfig(
+                mode = CategorySelectorMode.CREATE_BUDGET,
+                target = CategorySelectorTarget.BUDGET_EDITOR,
+                initialTransactionType = TransactionType.EXPENSE
+            )
+        )
+        navigateTo(route)
+    }
+
+    private fun navigateTo(route: String) {
+        emitEvent(BudgetManagerEvent.NavigateTo(route))
+    }
+
+    private fun navigateBack() {
+        emitEvent(BudgetManagerEvent.NavigateBack)
+    }
+
+    private fun emitEvent(event: BudgetManagerEvent) {
+        viewModelScope.launch {
+            _events.emit(event)
         }
     }
 

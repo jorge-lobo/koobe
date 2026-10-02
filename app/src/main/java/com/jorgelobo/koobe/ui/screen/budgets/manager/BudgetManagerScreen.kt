@@ -38,13 +38,13 @@ fun BudgetManagerScreen(
                     headline = stringResource(R.string.headline_budget_manager),
                     leadingAction = AppBarAction(
                         icon = IconPack.BACK,
-                        onClick = {}
+                        onClick = viewModel::onBackClick
                     ),
                     trailingActions = if (uiState.periodicBudgets.isNotEmpty()) {
                         listOf(
                             AppBarAction(
                                 icon = IconPack.ADD,
-                                onClick = {}
+                                onClick = viewModel::onAddBudgetClick
                             )
                         )
                     } else {
@@ -67,7 +67,7 @@ fun BudgetManagerScreen(
             state = uiState,
             onExpandToggle = {},
             onBudgetClick = {},
-            onAddBudgetClick = {}
+            onAddBudgetClick = viewModel::onAddBudgetClick
         )
     }
 }

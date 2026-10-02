@@ -1,5 +1,6 @@
 package com.jorgelobo.koobe.features.budgets.manager
 
+import app.cash.turbine.test
 import com.jorgelobo.koobe.domain.model.budget.Budget
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
@@ -14,7 +15,12 @@ import com.jorgelobo.koobe.domain.usecase.budget.GetAllBudgetsUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetAllCategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetAllSubcategoriesUseCase
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.navigation.Route
+import com.jorgelobo.koobe.ui.screen.budgets.manager.BudgetManagerEvent
 import com.jorgelobo.koobe.ui.screen.budgets.manager.BudgetManagerViewModel
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -234,6 +240,47 @@ class BudgetManagerViewModelTest {
             CurrencyType.USD,
             viewModel.uiState.value.periodicBudgets.single().currencyType
         )
+    }
+
+    @Test
+    fun `onBackClick emits NavigateBack event`() = runTest {
+        stubFlows()
+
+        val viewModel = createViewModel()
+
+        viewModel.events.test {
+            viewModel.onBackClick()
+
+            assertEquals(BudgetManagerEvent.NavigateBack, awaitItem())
+        }
+    }
+
+    @Test
+    fun `onAddBudgetClick navigates to budget category selector`() = runTest {
+        stubFlows()
+
+        val viewModel = createViewModel()
+
+        viewModel.events.test {
+            viewModel.onAddBudgetClick()
+
+            val event = awaitItem()
+
+            assertTrue(event is BudgetManagerEvent.NavigateTo)
+
+            val route = event.route
+
+            assertEquals(
+                Route.CategorySelector.create(
+                    CategorySelectorConfig(
+                        mode = CategorySelectorMode.CREATE_BUDGET,
+                        target = CategorySelectorTarget.BUDGET_EDITOR,
+                        initialTransactionType = TransactionType.EXPENSE
+                    )
+                ),
+                route
+            )
+        }
     }
 
     private fun createViewModel(): BudgetManagerViewModel {
