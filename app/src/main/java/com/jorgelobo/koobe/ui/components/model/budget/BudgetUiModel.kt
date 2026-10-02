@@ -7,10 +7,14 @@ import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 data class BudgetUiModel(
     val budget: Budget,
     val category: Category,
-    val subcategory: Subcategory
+    val subcategory: Subcategory?
 ) {
     companion object {
-        fun from(budget: Budget, category: Category, subcategory: Subcategory): BudgetUiModel {
+        fun from(
+            budget: Budget,
+            category: Category,
+            subcategory: Subcategory?
+        ): BudgetUiModel {
             return BudgetUiModel(
                 budget = budget,
                 category = category,

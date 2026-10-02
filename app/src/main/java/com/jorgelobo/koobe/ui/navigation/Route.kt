@@ -8,6 +8,7 @@ import com.jorgelobo.koobe.ui.screen.shortcuts.editor.ShortcutEditorConfig
 import com.jorgelobo.koobe.ui.screen.subcategories.SubcategoryEditorConfig
 import com.jorgelobo.koobe.ui.screen.transactions.TransactionEditorConfig
 import kotlinx.serialization.json.Json
+import java.net.URLEncoder
 
 sealed class Route(val route: String) {
     data object Splash : Route("splash")
@@ -30,14 +31,14 @@ sealed class Route(val route: String) {
     data object CategorySelector : Route("category_selector") {
         fun create(config: CategorySelectorConfig): String {
             val json = Json.encodeToString(config)
-            return "$route/${Uri.encode(json)}"
+            return "$route/${URLEncoder.encode(json, "UTF-8")}"
         }
     }
 
     data object CategoryEditor : Route("category_editor") {
         fun create(config: CategoryEditorConfig): String {
             val json = Json.encodeToString(config)
-            return "$route/${Uri.encode(json)}"
+            return "$route/${URLEncoder.encode(json, "UTF-8")}"
         }
     }
 
@@ -45,7 +46,7 @@ sealed class Route(val route: String) {
     data object SubcategoryEditor : Route("subcategory_editor") {
         fun create(config: SubcategoryEditorConfig): String {
             val json = Json.encodeToString(config)
-            return "$route/${Uri.encode(json)}"
+            return "$route/${URLEncoder.encode(json, "UTF-8")}"
         }
     }
 
@@ -54,7 +55,7 @@ sealed class Route(val route: String) {
     data object ShortcutEditor : Route("shortcut_editor") {
         fun create(config: ShortcutEditorConfig): String {
             val json = Json.encodeToString(config)
-            return "$route/${Uri.encode(json)}"
+            return "$route/${URLEncoder.encode(json, "UTF-8")}"
         }
     }
 
@@ -62,7 +63,7 @@ sealed class Route(val route: String) {
     data object TransactionEditor : Route("transaction_editor") {
         fun create(config: TransactionEditorConfig): String {
             val json = Json.encodeToString(config)
-            return "$route/${Uri.encode(json)}"
+            return "$route/${URLEncoder.encode(json, "UTF-8")}"
         }
     }
 }

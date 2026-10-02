@@ -72,7 +72,7 @@ fun BudgetSimpleItem(
         ) {
             Avatar(
                 type = AvatarType.LARGE,
-                icon = config.model.subcategory.icon,
+                icon = config.model.subcategory?.icon ?: IconPack.EXTRA,
                 color = categoryColor,
                 isSelected = false
             )
@@ -87,7 +87,7 @@ fun BudgetSimpleItem(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        text = config.model.subcategory.name,
+                        text = config.model.subcategory?.name ?: "",
                         style = typography.text.titleSmall,
                         color = colors.textColors.textPrimary
                     )
@@ -132,8 +132,8 @@ fun BudgetSimpleItem(
 
                 AppProgressBar(
                     config = ProgressBarConfig(
-                        progress = (spent / limit).toFloat().coerceIn(0f, 1f),
-                        projection = (projected / limit).toFloat().coerceIn(0f, 1f),
+                        progress = spentPercentage.toFloat().coerceIn(0f, 1f),
+                        projection = projectedPercentage.toFloat().coerceIn(0f, 1f),
                         percentageLabel = "${(spentPercentage * 100).toInt()}%"
                     )
                 )
