@@ -51,6 +51,7 @@ fun BudgetsSummaryCard(
                     BudgetSimpleItem(
                         config = BudgetItemConfig(
                             model = item,
+                            currencyType = config.currencyType,
                             onClick = { config.onBudgetClick(item) }
                         )
                     )
@@ -79,6 +80,7 @@ fun BudgetsSummaryCardPreview() {
             BudgetsSummaryCard(
                 config = BudgetsSummaryCardConfig(
                     items = sampleBudgets,
+                    currencyType = CurrencyType.EUR,
                     onBudgetClick = {},
                     onActionClick = {}
                 )
@@ -109,8 +111,6 @@ fun sampleBudgetUiModels(): List<BudgetUiModel> {
         subcategoryId = 11,
         period = PeriodType.MONTHLY,
         repeat = true,
-        paymentMethod = null,
-        currency = CurrencyType.EUR,
         limitAmount = 200.0,
         spentAmount = 150.0,
         projectedAmount = 190.0,

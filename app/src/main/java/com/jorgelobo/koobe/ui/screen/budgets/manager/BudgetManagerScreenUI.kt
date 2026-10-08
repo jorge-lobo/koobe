@@ -11,7 +11,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.domain.model.budget.Budget
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
-import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
@@ -49,6 +48,7 @@ fun BudgetManagerScreenUI(
             modifier = Modifier.weight(1f),
             isEmpty = state.periodicBudgets.isEmpty(),
             periodicBudgets = state.periodicBudgets,
+            currencyType = state.currencyType,
             onExpandToggle = onExpandToggle,
             onBudgetClick = onBudgetClick,
             onAddBudgetClick = onAddBudgetClick
@@ -79,8 +79,6 @@ fun previewBudgetManagerUiState(): BudgetManagerUiState {
         subcategoryId = 1,
         period = PeriodType.WEEKLY,
         repeat = false,
-        paymentMethod = PaymentMethodType.CASH,
-        currency = CurrencyType.EUR,
         limitAmount = 70.0,
         spentAmount = 55.0,
         projectedAmount = 64.0,
@@ -93,8 +91,6 @@ fun previewBudgetManagerUiState(): BudgetManagerUiState {
         subcategoryId = 2,
         period = PeriodType.WEEKLY,
         repeat = false,
-        paymentMethod = PaymentMethodType.CASH,
-        currency = CurrencyType.EUR,
         limitAmount = 150.0,
         spentAmount = 135.0,
         projectedAmount = 164.0,

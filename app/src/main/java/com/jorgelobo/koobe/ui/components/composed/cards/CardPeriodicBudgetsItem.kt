@@ -53,7 +53,7 @@ fun CardPeriodicBudgetsItem(
     val typography = AppTheme.typography
     val model = config.model
 
-    val currencyType = model.currencyType
+    val currencyType = config.currencyType
     val totalLimit = model.totalLimit
     val totalSpent = model.totalSpent
     val balance = model.balance
@@ -152,6 +152,7 @@ fun CardPeriodicBudgetsItem(
                     BudgetDetailedItem(
                         config = BudgetItemConfig(
                             model = budget,
+                            currencyType = currencyType,
                             onClick = { config.onItemClick(budget) }
                         ),
                         modifier = Modifier.padding(top = Spacing.Medium, bottom = Spacing.Tiny)
@@ -187,8 +188,6 @@ fun PreviewCardPeriodicBudgetsItem() {
                     subcategoryId = 1,
                     period = PeriodType.MONTHLY,
                     repeat = false,
-                    paymentMethod = null,
-                    currency = CurrencyType.EUR,
                     limitAmount = 200.0,
                     spentAmount = 50.0,
                     projectedAmount = 150.0,
@@ -200,8 +199,6 @@ fun PreviewCardPeriodicBudgetsItem() {
                     subcategoryId = 2,
                     period = PeriodType.MONTHLY,
                     repeat = false,
-                    paymentMethod = null,
-                    currency = CurrencyType.EUR,
                     limitAmount = 300.0,
                     spentAmount = 150.0,
                     projectedAmount = 250.0,
@@ -234,6 +231,7 @@ fun PreviewCardPeriodicBudgetsItem() {
 
             val config = CardPeriodicBudgetsConfig(
                 model = model,
+                currencyType = CurrencyType.EUR,
                 onExpandToggle = {},
                 onItemClick = {}
             )
