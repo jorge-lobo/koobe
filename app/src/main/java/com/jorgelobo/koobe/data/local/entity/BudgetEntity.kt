@@ -3,8 +3,6 @@ package com.jorgelobo.koobe.data.local.entity
 import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
-import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
-import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 
 @Entity(
@@ -20,7 +18,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
             entity = SubcategoryEntity::class,
             parentColumns = ["id"],
             childColumns = ["subcategoryId"],
-            onDelete = ForeignKey.SET_NULL
+            onDelete = ForeignKey.CASCADE
         )
     ]
 )
@@ -28,11 +26,9 @@ data class BudgetEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Int = 0,
     val categoryId: Int,
-    val subcategoryId: Int? = null,
+    val subcategoryId: Int,
     val period: PeriodType,
     val repeat: Boolean = false,
-    val paymentMethod: PaymentMethodType? = null,
-    val currency: CurrencyType,
     val limitAmount: Double,
     val spentAmount: Double,
     val projectedAmount: Double,
