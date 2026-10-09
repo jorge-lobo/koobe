@@ -3,6 +3,7 @@ package com.jorgelobo.koobe.ui.screen.budgets.editor
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
+import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
@@ -14,6 +15,7 @@ data class BudgetEditorUiState(
     val subcategory: Subcategory? = null,
     val inputState: InputState,
     val language: AppLanguage = AppLanguage.ENGLISH,
+    val currencyType: CurrencyType = CurrencyType.EUR,
     val isRepeat: Boolean = false,
     val period: PeriodType = PeriodType.MONTHLY,
     val limitAmountInput: String = "0",
@@ -83,6 +85,7 @@ data class BudgetEditorUiState(
             category: Category,
             subcategory: Subcategory,
             language: AppLanguage,
+            currencyType: CurrencyType,
             isRepeat: Boolean,
             period: PeriodType,
             limitAmount: Double
@@ -93,6 +96,7 @@ data class BudgetEditorUiState(
                 subcategory = subcategory,
                 inputState = InputState.DEFAULT,
                 language = language,
+                currencyType = currencyType,
                 isRepeat = isRepeat,
                 period = period,
                 limitAmount = limitAmount,
