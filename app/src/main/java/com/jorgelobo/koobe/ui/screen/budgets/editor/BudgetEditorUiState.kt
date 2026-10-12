@@ -11,8 +11,8 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDial
 
 data class BudgetEditorUiState(
     val config: BudgetEditorConfig? = null,
-    val category: Category? = null,
-    val subcategory: Subcategory? = null,
+    val category: Category,
+    val subcategory: Subcategory,
     val inputState: InputState,
     val language: AppLanguage = AppLanguage.ENGLISH,
     val currencyType: CurrencyType = CurrencyType.EUR,
@@ -24,6 +24,8 @@ data class BudgetEditorUiState(
     val projectedAmount: Double = 0.0,
     val dailyAverage: Double = 0.0,
     val isLoading: Boolean = false,
+    val isSaving: Boolean = false,
+    val isDeleting: Boolean = false,
     val errorMessage: String? = null,
     val budgetInitialSnapshot: BudgetInitialSnapshot,
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
@@ -31,9 +33,7 @@ data class BudgetEditorUiState(
 ) {
 
     val isValid: Boolean
-        get() = category != null &&
-                subcategory != null &&
-                limitAmount > 0
+        get() = limitAmount > 0
 
     val isSaveEnabled: Boolean
         get() {
@@ -45,8 +45,8 @@ data class BudgetEditorUiState(
 
             val initial = budgetInitialSnapshot
 
-            return category?.id != initial.categoryId ||
-                    subcategory?.id != initial.subcategoryId ||
+            return category.id != initial.categoryId ||
+                    subcategory.id != initial.subcategoryId ||
                     isRepeat != initial.isRepeat ||
                     period != initial.period ||
                     limitAmount != initial.limitAmount
