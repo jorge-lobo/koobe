@@ -108,8 +108,8 @@ fun SubcategorySelection(
             config = CategorySummaryConfig(
                 icon = category.icon,
                 color = category.resolvedColor(),
-                categoryName = category.localizedName(),
-                subcategoryName = selectedSubcategory?.localizedName(),
+                primaryName = category.localizedName(),
+                secondaryName = selectedSubcategory?.localizedName(),
                 onChangeClick = onChangeClick
             )
         )

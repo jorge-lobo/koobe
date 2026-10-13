@@ -16,8 +16,8 @@ fun BudgetEditorCategorySection(
         config = CategorySummaryConfig(
             icon = state.subcategory.icon,
             color = state.category.resolvedColor(),
-            categoryName = state.subcategory.localizedName(),
-            subcategoryName = state.category.localizedName(),
+            primaryName = state.subcategory.localizedName(),
+            secondaryName = state.category.localizedName(),
             onChangeClick = onChangeClick
         )
     )
