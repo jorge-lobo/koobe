@@ -14,7 +14,12 @@ import com.jorgelobo.koobe.ui.screen.budgets.editor.state.BudgetFormState
 import com.jorgelobo.koobe.ui.screen.budgets.editor.state.BudgetUiStateInternal
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
+import com.jorgelobo.koobe.ui.navigation.Route
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
+import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -201,11 +206,32 @@ class BudgetEditorViewModel @Inject constructor(
     }
 
     private fun handleClose() {
-
+        if (formState.value.hasChanges) {
+            handleDiscardDialog(ConfirmationDialogAction.Open)
+        } else {
+            navigateBack()
+        }
     }
 
     private fun handleChangeCategory() {
+        val state = uiState.value
+        val mode = if (config.isEditMode) {
+            CategorySelectorMode.EDIT_BUDGET
+        } else {
+            CategorySelectorMode.CREATE_BUDGET
+        }
 
+        val route = Route.CategorySelector.create(
+            CategorySelectorConfig(
+                mode = mode,
+                target = CategorySelectorTarget.BUDGET_EDITOR,
+                initialTransactionType = TransactionType.EXPENSE,
+                initialCategoryId = state.category.id,
+                initialSubcategoryId = state.subcategory.id
+            )
+        )
+
+        navigateTo(route)
     }
 
     private fun handleDiscardDialog(action: ConfirmationDialogAction) {
@@ -224,6 +250,14 @@ class BudgetEditorViewModel @Inject constructor(
                 IconPack.WARNING
             )
         )
+    }
+
+    private fun navigateBack() {
+        emitEvent(BudgetEditorEvent.ExitToOrigin)
+    }
+
+    private fun navigateTo(route: String) {
+        emitEvent(BudgetEditorEvent.NavigateTo(route))
     }
 
     private fun emitEvent(event: BudgetEditorEvent) {
