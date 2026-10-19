@@ -52,7 +52,7 @@ object BudgetEditorReducer {
                 val shouldReset = isEditMode && !currentForm.amountKeypadTouched
                 val currentLimit =
                     if (shouldReset) "0"
-                    else currentForm.limitInput.resolve(baseState.limitAmountInput)
+                    else currentForm.limitAmountInput.resolve(baseState.limitAmountInput)
                 val updatedLimit = reduceAmountInput(
                     currentLimit,
                     intent.key.toAmountAction()
@@ -60,7 +60,7 @@ object BudgetEditorReducer {
 
                 Result(
                     form = currentForm.copy(
-                        limitInput = FieldUpdate.Updated(updatedLimit),
+                        limitAmountInput = FieldUpdate.Updated(updatedLimit),
                         amountKeypadTouched = true
                     ),
                     internal = currentInternal
@@ -70,7 +70,7 @@ object BudgetEditorReducer {
             is BudgetEditorIntent.State.AmountResetClicked -> {
                 Result(
                     form = currentForm.copy(
-                        limitInput = FieldUpdate.Updated("0"),
+                        limitAmountInput = FieldUpdate.Updated("0"),
                         amountKeypadTouched = true
                     ),
                     internal = currentInternal
