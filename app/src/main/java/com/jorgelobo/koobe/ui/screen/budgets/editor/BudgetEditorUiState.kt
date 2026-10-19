@@ -87,8 +87,7 @@ data class BudgetEditorUiState(
             language: AppLanguage,
             currencyType: CurrencyType,
             isRepeat: Boolean,
-            period: PeriodType,
-            limitAmount: Double
+            period: PeriodType
         ): BudgetEditorUiState {
             return BudgetEditorUiState(
                 config = config,
@@ -99,14 +98,12 @@ data class BudgetEditorUiState(
                 currencyType = currencyType,
                 isRepeat = isRepeat,
                 period = period,
-                limitAmount = limitAmount,
-                limitAmountInput = limitAmount.toString(),
                 budgetInitialSnapshot = BudgetInitialSnapshot(
                     categoryId = category.id,
                     subcategoryId = subcategory.id,
                     isRepeat = isRepeat,
                     period = period,
-                    limitAmount = limitAmount
+                    limitAmount = 0.0
                 )
             )
         }
