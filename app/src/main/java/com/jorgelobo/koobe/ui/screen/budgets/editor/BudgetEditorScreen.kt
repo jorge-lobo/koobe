@@ -71,7 +71,7 @@ fun BudgetEditorScreen(
                     trailingActions = if (config.isEditMode) listOf(
                         AppBarAction(
                             IconPack.DELETE,
-                            onClick = {}
+                            onClick = { viewModel.onIntent(BudgetEditorIntent.Action.RequestDeleteBudget) }
                         )
                     ) else emptyList()
                 )
@@ -80,7 +80,7 @@ fun BudgetEditorScreen(
         bottomBar = {
             BudgetEditorSaveButton(
                 state = uiState,
-                onSaveClick = {}
+                onSaveClick = { viewModel.onIntent(BudgetEditorIntent.Action.SaveClicked) }
             )
         },
         containerColor = AppTheme.colors.backgroundColors.screenBackground
@@ -90,10 +90,10 @@ fun BudgetEditorScreen(
             modifier = Modifier.padding(padding),
             isRepeatChecked = uiState.isRepeat,
             onChangeCategoryClick = { viewModel.onIntent(BudgetEditorIntent.Action.ChangeCategoryClicked) },
-            onChangePeriodClick = {},
-            onCheckedChange = {},
-            onResetAmountClick = {},
-            onKeyClick = {},
+            onChangePeriodClick = { viewModel.onIntent(BudgetEditorIntent.State.PeriodChanged(it)) },
+            onCheckedChange = { viewModel.onIntent(BudgetEditorIntent.State.RepeatChanged(it)) },
+            onResetAmountClick = { viewModel.onIntent(BudgetEditorIntent.State.AmountResetClicked) },
+            onKeyClick = { viewModel.onIntent(BudgetEditorIntent.State.AmountKeyPressed(it)) },
         )
     }
 }
