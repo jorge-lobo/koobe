@@ -47,6 +47,16 @@ fun BudgetEditorScreen(
         onSnackBarConfigChange = { currentSnackbarConfig = it }
     )
 
+    BudgetEditorDialogs(
+        state = uiState,
+        onDiscardDialogAction = {
+            viewModel.onIntent(BudgetEditorIntent.Action.DiscardDialogUpdated(it))
+        },
+        onDeleteDialogAction = {
+            viewModel.onIntent(BudgetEditorIntent.Action.DeleteDialogUpdated(it))
+        }
+    )
+
     Scaffold(
         topBar = {
             CommonAppBar(
