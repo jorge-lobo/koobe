@@ -3,23 +3,26 @@ package com.jorgelobo.koobe.ui.screen.budgets.editor
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.core.model.resolve
+import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
+import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetBudgetByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoryByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetSubcategoryByIdUseCase
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
-import com.jorgelobo.koobe.ui.screen.budgets.editor.state.BudgetFormState
-import com.jorgelobo.koobe.ui.screen.budgets.editor.state.BudgetUiStateInternal
-import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
-import com.jorgelobo.koobe.R
-import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.navigation.Route
+import com.jorgelobo.koobe.ui.screen.budgets.editor.state.BudgetFormState
+import com.jorgelobo.koobe.ui.screen.budgets.editor.state.BudgetUiStateInternal
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
+import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.handleConfirmationDialog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -27,9 +30,10 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -40,7 +44,7 @@ import javax.inject.Inject
 @HiltViewModel
 class BudgetEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getUserSettings: GetUserSettingsUseCase,
+    getUserSettings: GetUserSettingsUseCase,
     private val getBudgetById: GetBudgetByIdUseCase,
     private val getCategoryById: GetCategoryByIdUseCase,
     private val getSubCategoryById: GetSubcategoryByIdUseCase
@@ -58,18 +62,106 @@ class BudgetEditorViewModel @Inject constructor(
     private val formState = MutableStateFlow(BudgetFormState())
     private val uiInternalState = MutableStateFlow(BudgetUiStateInternal())
 
-    private val _baseState = MutableStateFlow(BudgetEditorUiState.initialEmpty())
-    private val baseState = _baseState.asStateFlow()
+    private val userSettingsFlow: StateFlow<Pair<AppLanguage, CurrencyType>> =
+        getUserSettings()
+            .map { settings ->
+                settings.language to settings.currency
+            }
+            .catch { exception ->
+                if (exception is CancellationException) throw exception
+
+                showSnackBar(R.string.snackBar_load_settings_error)
+
+                emit(
+                    AppLanguage.ENGLISH to CurrencyType.EUR
+                )
+            }
+            .stateIn(
+                scope = viewModelScope,
+                started = SharingStarted.Eagerly,
+                initialValue = AppLanguage.ENGLISH to CurrencyType.EUR
+            )
+
+    private val editorDataFlow: StateFlow<BudgetEditorUiState> = flow {
+        val budget = if (config.isEditMode) {
+            getBudgetById(requireNotNull(config.budgetId))
+                ?: error("Budget not found: ${config.budgetId}")
+        } else {
+            null
+        }
+
+        val categoryId = budget?.categoryId
+            ?: requireNotNull(config.categoryId) { "Missing categoryId for budget creation" }
+        val subcategoryId = budget?.subcategoryId
+            ?: requireNotNull(config.subcategoryId) { "Missing subcategoryId for budget creation" }
+
+        val category = getCategoryById(categoryId) ?: error("Category not found: $categoryId")
+        val subcategory =
+            getSubCategoryById(subcategoryId) ?: error("Subcategory not found: $subcategoryId")
+
+        emit(
+            BudgetEditorUiState.initial(
+                config = config,
+                category = category,
+                subcategory = subcategory,
+                language = AppLanguage.ENGLISH,
+                currencyType = CurrencyType.EUR,
+                isRepeat = budget?.repeat ?: false,
+                period = budget?.period ?: PeriodType.MONTHLY
+            ).copy(
+                spentAmount = budget?.spentAmount ?: 0.0,
+                projectedAmount = budget?.projectedAmount ?: 0.0,
+                dailyAverage = budget?.dailyAverage ?: 0.0,
+                isLoading = false
+            )
+        )
+    }.catch { exception ->
+        if (exception is CancellationException) throw exception
+
+        showSnackBar(R.string.snackBar_load_budget_error)
+
+        emit(
+            BudgetEditorUiState.initialEmpty().copy(
+                config = config,
+                isLoading = false,
+                errorMessage = "Unable to load budget"
+            )
+        )
+    }.stateIn(
+        scope = viewModelScope,
+        started = SharingStarted.Eagerly,
+        initialValue = BudgetEditorUiState.initialEmpty().copy(
+            config = config
+        )
+    )
+
+    private val baseStateFlow: StateFlow<BudgetEditorUiState> =
+        combine(
+            editorDataFlow,
+            userSettingsFlow
+        ) { base, settings ->
+            base.copy(
+                language = settings.first,
+                currencyType = settings.second
+            )
+        }.stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Eagerly,
+            initialValue = BudgetEditorUiState.initialEmpty().copy(
+                config = config
+            )
+        )
+
 
     val uiState: StateFlow<BudgetEditorUiState> =
         combine(
-            _baseState,
+            baseStateFlow,
             formState,
             uiInternalState
         ) { base, form, internal ->
 
-            val updatedLimitInput = form.limitInput.resolve(base.limitAmountInput)
-            val updatedLimit = updatedLimitInput.toDoubleOrNull() ?: 0.0
+            val updatedLimitInput = form.limitAmountInput.resolve(base.limitAmountInput)
+            val updatedLimit = updatedLimitInput.toDoubleOrNull() ?: base.limitAmount
 
             base.copy(
                 category = form.category.resolve(base.category),
@@ -81,6 +173,8 @@ class BudgetEditorViewModel @Inject constructor(
                 inputState = InputState.DEFAULT,
                 discardDialog = internal.discardDialog,
                 deleteDialog = internal.deleteDialog,
+                isSaving = internal.isSaving,
+                isDeleting = internal.isDeleting,
                 isLoading = internal.isSaving || internal.isDeleting
             )
         }.stateIn(
@@ -88,81 +182,6 @@ class BudgetEditorViewModel @Inject constructor(
             started = SharingStarted.WhileSubscribed(5_000),
             initialValue = BudgetEditorUiState.initialEmpty()
         )
-
-    init {
-        observeUserSettings()
-        loadEditor()
-    }
-
-    private fun observeUserSettings() {
-        viewModelScope.launch {
-            getUserSettings()
-                .catch { exception ->
-                    if (exception is CancellationException) throw exception
-
-                    showSnackBar(R.string.snackBar_load_settings_error)
-                }
-                .collect { settings ->
-                    _baseState.update {
-                        it.copy(
-                            language = settings.language,
-                            currencyType = settings.currency
-                        )
-                    }
-                }
-        }
-    }
-
-    private fun loadEditor() {
-        viewModelScope.launch {
-            runCatching {
-                val budget = if (config.isEditMode) {
-                    getBudgetById(requireNotNull(config.budgetId))
-                        ?: error("Budget not found: ${config.budgetId}")
-                } else {
-                    null
-                }
-
-                val categoryId = budget?.categoryId
-                    ?: requireNotNull(config.categoryId) { "Missing categoryId for budget creation" }
-                val subcategoryId = budget?.subcategoryId
-                    ?: requireNotNull(config.subcategoryId) { "Missing subcategoryId for budget creation" }
-
-                val category =
-                    getCategoryById(categoryId) ?: error("Category not found: $categoryId")
-                val subcategory = getSubCategoryById(subcategoryId)
-                    ?: error("Subcategory not found: $subcategoryId")
-
-                Triple(budget, category, subcategory)
-            }.onSuccess { (budget, category, subcategory) ->
-                _baseState.update { current ->
-                    BudgetEditorUiState.initial(
-                        config = config,
-                        category = category,
-                        subcategory = subcategory,
-                        language = current.language,
-                        currencyType = current.currencyType,
-                        isRepeat = budget?.repeat ?: false,
-                        period = budget?.period ?: PeriodType.MONTHLY,
-                        limitAmount = budget?.limitAmount ?: 0.0
-                    ).copy(
-                        spentAmount = budget?.spentAmount ?: 0.0,
-                        projectedAmount = budget?.projectedAmount ?: 0.0,
-                        dailyAverage = budget?.dailyAverage ?: 0.0,
-                        isLoading = false
-                    )
-                }
-            }.onFailure {
-                _baseState.update {
-                    it.copy(
-                        isLoading = false,
-                        errorMessage = it.errorMessage ?: "Unable to load budget"
-                    )
-                }
-                showSnackBar(R.string.snackBar_load_budget_error)
-            }
-        }
-    }
 
     fun onIntent(intent: BudgetEditorIntent) {
         when (intent) {
@@ -176,7 +195,7 @@ class BudgetEditorViewModel @Inject constructor(
             intent = intent,
             currentForm = formState.value,
             currentInternal = uiInternalState.value,
-            baseState = baseState.value
+            baseState = baseStateFlow.value
         )
 
         formState.value = result.form
@@ -235,10 +254,32 @@ class BudgetEditorViewModel @Inject constructor(
     }
 
     private fun handleDiscardDialog(action: ConfirmationDialogAction) {
-
+        handleConfirmationDialog(
+            current = uiInternalState.value.discardDialog,
+            action = action,
+            updateState = { newDialogState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(discardDialog = newDialogState)
+                }
+            },
+            onConfirmed = { navigateBack() }
+        )
     }
 
     private fun handleDeleteDialog(action: ConfirmationDialogAction) {
+        handleConfirmationDialog(
+            current = uiInternalState.value.deleteDialog,
+            action = action,
+            updateState = { newDialogState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(deleteDialog = newDialogState)
+                }
+            },
+            onConfirmed = { deleteCurrentBudget() }
+        )
+    }
+
+    private fun deleteCurrentBudget() {
 
     }
 
