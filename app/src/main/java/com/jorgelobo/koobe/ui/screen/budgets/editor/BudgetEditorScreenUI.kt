@@ -10,6 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.jorgelobo.koobe.domain.model.budget.Budget
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
@@ -86,6 +87,7 @@ fun PreviewBudgetEditorScreen() {
 
         BudgetEditorScreenUI(
             state = BudgetEditorUiState(
+                budget = Budget.empty(),
                 category = category,
                 subcategory = category.subcategories.first(),
                 inputState = InputState.DEFAULT,

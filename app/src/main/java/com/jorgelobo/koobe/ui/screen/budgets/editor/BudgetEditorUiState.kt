@@ -1,6 +1,7 @@
 package com.jorgelobo.koobe.ui.screen.budgets.editor
 
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.model.budget.Budget
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
@@ -11,6 +12,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDial
 
 data class BudgetEditorUiState(
     val config: BudgetEditorConfig? = null,
+    val budget: Budget,
     val category: Category,
     val subcategory: Subcategory,
     val inputState: InputState,
@@ -62,10 +64,12 @@ data class BudgetEditorUiState(
     companion object {
 
         fun initialEmpty(): BudgetEditorUiState {
+            val emptyBudget = Budget.empty()
             val emptyCategory = Category.empty()
             val emptySubcategory = Subcategory.empty()
 
             return BudgetEditorUiState(
+                budget = emptyBudget,
                 category = emptyCategory,
                 subcategory = emptySubcategory,
                 inputState = InputState.DEFAULT,
@@ -82,6 +86,7 @@ data class BudgetEditorUiState(
 
         fun initial(
             config: BudgetEditorConfig,
+            budget: Budget,
             category: Category,
             subcategory: Subcategory,
             language: AppLanguage,
@@ -91,6 +96,7 @@ data class BudgetEditorUiState(
         ): BudgetEditorUiState {
             return BudgetEditorUiState(
                 config = config,
+                budget = budget,
                 category = category,
                 subcategory = subcategory,
                 inputState = InputState.DEFAULT,

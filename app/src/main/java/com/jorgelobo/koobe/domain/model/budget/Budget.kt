@@ -12,4 +12,19 @@ data class Budget(
     val spentAmount: Double,
     val projectedAmount: Double,
     val dailyAverage: Double
-)
+) {
+
+    companion object {
+        fun empty(): Budget = Budget(
+            id = 0,
+            categoryId = 0,
+            subcategoryId = 0,
+            period = PeriodType.MONTHLY,
+            repeat = false,
+            limitAmount = 0.0,
+            spentAmount = 0.0,
+            projectedAmount = 0.0,
+            dailyAverage = 0.0
+        )
+    }
+}
