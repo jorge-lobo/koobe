@@ -5,12 +5,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.core.model.resolve
+import com.jorgelobo.koobe.domain.model.budget.Budget
 import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetBudgetByIdUseCase
+import com.jorgelobo.koobe.domain.usecase.budget.SaveBudgetUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoryByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetSubcategoryByIdUseCase
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
@@ -47,7 +49,8 @@ class BudgetEditorViewModel @Inject constructor(
     getUserSettings: GetUserSettingsUseCase,
     private val getBudgetById: GetBudgetByIdUseCase,
     private val getCategoryById: GetCategoryByIdUseCase,
-    private val getSubCategoryById: GetSubcategoryByIdUseCase
+    private val getSubCategoryById: GetSubcategoryByIdUseCase,
+    private val saveBudget: SaveBudgetUseCase
 ) : ViewModel() {
 
     private val config: BudgetEditorConfig =
@@ -102,6 +105,7 @@ class BudgetEditorViewModel @Inject constructor(
         emit(
             BudgetEditorUiState.initial(
                 config = config,
+                budget = budget ?: Budget.empty(),
                 category = category,
                 subcategory = subcategory,
                 language = AppLanguage.ENGLISH,
@@ -221,7 +225,37 @@ class BudgetEditorViewModel @Inject constructor(
     }
 
     private fun handleSave() {
+        val state = uiState.value
 
+        if (!state.isValid) {
+            showSnackBar(R.string.snackBar_save_budget_error)
+            return
+        }
+
+        val budget = state.budget.copy(
+            categoryId = state.category.id,
+            subcategoryId = state.subcategory.id,
+            period = state.period,
+            repeat = state.isRepeat,
+            limitAmount = state.limitAmount
+        )
+
+        viewModelScope.launch {
+            uiInternalState.update { it.copy(isSaving = true) }
+
+            runCatching {
+                saveBudget(
+                    budget = budget,
+                    isEditorMode = config.isEditMode
+                )
+            }.onSuccess {
+                uiInternalState.update { it.copy(isSaving = false) }
+                navigateBack()
+            }.onFailure {
+                uiInternalState.update { it.copy(isSaving = false) }
+                showSnackBar(R.string.snackBar_save_budget_error)
+            }
+        }
     }
 
     private fun handleClose() {
