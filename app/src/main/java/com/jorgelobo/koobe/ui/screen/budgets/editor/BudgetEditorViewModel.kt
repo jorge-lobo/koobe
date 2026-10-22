@@ -11,6 +11,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
+import com.jorgelobo.koobe.domain.usecase.budget.DeleteBudgetUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetBudgetByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.SaveBudgetUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoryByIdUseCase
@@ -50,7 +51,8 @@ class BudgetEditorViewModel @Inject constructor(
     private val getBudgetById: GetBudgetByIdUseCase,
     private val getCategoryById: GetCategoryByIdUseCase,
     private val getSubCategoryById: GetSubcategoryByIdUseCase,
-    private val saveBudget: SaveBudgetUseCase
+    private val saveBudget: SaveBudgetUseCase,
+    private val deleteBudget: DeleteBudgetUseCase
 ) : ViewModel() {
 
     private val config: BudgetEditorConfig =
@@ -314,7 +316,21 @@ class BudgetEditorViewModel @Inject constructor(
     }
 
     private fun deleteCurrentBudget() {
+        val budget = uiState.value.budget
 
+        viewModelScope.launch {
+            uiInternalState.update { it.copy(isDeleting = true) }
+
+            runCatching {
+                deleteBudget(budget)
+            }.onSuccess {
+                uiInternalState.update { it.copy(isDeleting = false) }
+                navigateBack()
+            }.onFailure {
+                uiInternalState.update { it.copy(isDeleting = false) }
+                showSnackBar(messageRes = R.string.snackBar_delete_budget_error)
+            }
+        }
     }
 
     private fun showSnackBar(messageRes: Int) {
