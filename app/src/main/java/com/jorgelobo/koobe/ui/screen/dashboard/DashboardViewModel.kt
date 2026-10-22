@@ -225,9 +225,15 @@ class DashboardViewModel @Inject constructor(
 
     fun onBudgetActionClick(hasBudgets: Boolean) {
         val route = if (hasBudgets) {
-            Route.BudgetEditor.route
+            Route.BudgetManager.route
         } else {
-            Route.BudgetEditor.create(BudgetEditorConfig(budgetId = null))
+            Route.CategorySelector.create(
+                CategorySelectorConfig(
+                    mode = CategorySelectorMode.CREATE_BUDGET,
+                    target = CategorySelectorTarget.BUDGET_EDITOR,
+                    initialTransactionType = TransactionType.EXPENSE
+                )
+            )
         }
 
         navigateTo(route)
