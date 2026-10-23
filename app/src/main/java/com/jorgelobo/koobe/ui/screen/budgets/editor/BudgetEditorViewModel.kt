@@ -105,21 +105,25 @@ class BudgetEditorViewModel @Inject constructor(
             getSubCategoryById(subcategoryId) ?: error("Subcategory not found: $subcategoryId")
 
         emit(
-            BudgetEditorUiState.initial(
-                config = config,
-                budget = budget ?: Budget.empty(),
-                category = category,
-                subcategory = subcategory,
-                language = AppLanguage.ENGLISH,
-                currencyType = CurrencyType.EUR,
-                isRepeat = budget?.repeat ?: false,
-                period = budget?.period ?: PeriodType.MONTHLY
-            ).copy(
-                spentAmount = budget?.spentAmount ?: 0.0,
-                projectedAmount = budget?.projectedAmount ?: 0.0,
-                dailyAverage = budget?.dailyAverage ?: 0.0,
-                isLoading = false
-            )
+            if (config.isEditMode && budget != null) {
+                BudgetEditorUiState.initialFromBudget(
+                    config = config,
+                    budget = budget,
+                    category = category,
+                    subcategory = subcategory,
+                    isRepeat = budget.repeat,
+                    period = budget.period
+                )
+            } else {
+                BudgetEditorUiState.initial(
+                    config = config,
+                    budget = Budget.empty(),
+                    category = category,
+                    subcategory = subcategory,
+                    isRepeat = false,
+                    period = PeriodType.MONTHLY
+                )
+            }.copy(isLoading = false)
         )
     }.catch { exception ->
         if (exception is CancellationException) throw exception
@@ -181,7 +185,7 @@ class BudgetEditorViewModel @Inject constructor(
                 deleteDialog = internal.deleteDialog,
                 isSaving = internal.isSaving,
                 isDeleting = internal.isDeleting,
-                isLoading = internal.isSaving || internal.isDeleting
+                isLoading = base.isLoading || internal.isSaving || internal.isDeleting
             )
         }.stateIn(
             scope = viewModelScope,
