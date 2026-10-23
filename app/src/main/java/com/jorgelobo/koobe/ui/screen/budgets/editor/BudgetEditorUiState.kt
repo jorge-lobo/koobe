@@ -89,8 +89,6 @@ data class BudgetEditorUiState(
             budget: Budget,
             category: Category,
             subcategory: Subcategory,
-            language: AppLanguage,
-            currencyType: CurrencyType,
             isRepeat: Boolean,
             period: PeriodType
         ): BudgetEditorUiState {
@@ -100,8 +98,6 @@ data class BudgetEditorUiState(
                 category = category,
                 subcategory = subcategory,
                 inputState = InputState.DEFAULT,
-                language = language,
-                currencyType = currencyType,
                 isRepeat = isRepeat,
                 period = period,
                 budgetInitialSnapshot = BudgetInitialSnapshot(
@@ -110,6 +106,38 @@ data class BudgetEditorUiState(
                     isRepeat = isRepeat,
                     period = period,
                     limitAmount = 0.0
+                )
+            )
+        }
+
+        fun initialFromBudget(
+            config: BudgetEditorConfig,
+            budget: Budget,
+            category: Category,
+            subcategory: Subcategory,
+            isRepeat: Boolean,
+            period: PeriodType
+        ): BudgetEditorUiState {
+            return BudgetEditorUiState(
+                config = config,
+                budget = budget,
+                category = category,
+                subcategory = subcategory,
+                inputState = InputState.DEFAULT,
+                isRepeat = isRepeat,
+                period = period,
+                limitAmountInput = budget.limitAmount.toString(),
+                limitAmount = budget.limitAmount,
+                spentAmount = budget.spentAmount,
+                projectedAmount = budget.projectedAmount,
+                dailyAverage = budget.dailyAverage,
+                isLoading = false,
+                budgetInitialSnapshot = BudgetInitialSnapshot(
+                    categoryId = category.id,
+                    subcategoryId = subcategory.id,
+                    isRepeat = isRepeat,
+                    period = period,
+                    limitAmount = budget.limitAmount
                 )
             )
         }
