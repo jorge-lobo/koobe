@@ -48,7 +48,7 @@ object BudgetEditorReducer {
             }
 
             is BudgetEditorIntent.State.AmountKeyPressed -> {
-                val isEditMode = baseState.config?.isEditMode == true
+                val isEditMode = baseState.config is BudgetEditorConfig.Edit
                 val shouldReset = isEditMode && !currentForm.amountKeypadTouched
                 val currentLimit =
                     if (shouldReset) "0"

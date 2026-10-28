@@ -68,12 +68,15 @@ fun BudgetEditorScreen(
                         icon = IconPack.CLOSE,
                         onClick = { viewModel.onIntent(BudgetEditorIntent.Action.CloseClicked) }
                     ),
-                    trailingActions = if (config.isEditMode) listOf(
-                        AppBarAction(
-                            IconPack.DELETE,
-                            onClick = { viewModel.onIntent(BudgetEditorIntent.Action.RequestDeleteBudget) }
+                    trailingActions = when (config) {
+                        is BudgetEditorConfig.Create -> emptyList()
+                        is BudgetEditorConfig.Edit -> listOf(
+                            AppBarAction(
+                                IconPack.DELETE,
+                                onClick = { viewModel.onIntent(BudgetEditorIntent.Action.RequestDeleteBudget) }
+                            )
                         )
-                    ) else emptyList()
+                    }
                 )
             )
         },

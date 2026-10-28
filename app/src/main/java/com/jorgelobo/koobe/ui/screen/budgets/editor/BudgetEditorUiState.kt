@@ -43,22 +43,25 @@ data class BudgetEditorUiState(
 
             if (!isValid) return false
 
-            if (!config.isEditMode) return true
+            return when (config) {
+                is BudgetEditorConfig.Create -> true
+                is BudgetEditorConfig.Edit -> {
+                    val initial = budgetInitialSnapshot
 
-            val initial = budgetInitialSnapshot
-
-            return category.id != initial.categoryId ||
-                    subcategory.id != initial.subcategoryId ||
-                    isRepeat != initial.isRepeat ||
-                    period != initial.period ||
-                    limitAmount != initial.limitAmount
+                    category.id != initial.categoryId ||
+                            subcategory.id != initial.subcategoryId ||
+                            isRepeat != initial.isRepeat ||
+                            period != initial.period ||
+                            limitAmount != initial.limitAmount
+                }
+            }
         }
 
+
     fun headlineRes(): Int =
-        if (config?.isEditMode == true) {
-            R.string.headline_budget_editor
-        } else {
-            R.string.headline_budget_creator
+        when (config) {
+            is BudgetEditorConfig.Create -> R.string.headline_budget_creator
+            else -> R.string.headline_budget_editor
         }
 
     companion object {

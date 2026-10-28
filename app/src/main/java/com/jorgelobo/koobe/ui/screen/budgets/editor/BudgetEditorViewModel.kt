@@ -87,63 +87,48 @@ class BudgetEditorViewModel @Inject constructor(
                 initialValue = AppLanguage.ENGLISH to CurrencyType.EUR
             )
 
-    private val editorDataFlow: StateFlow<BudgetEditorUiState> = flow {
-        val budget = if (config.isEditMode) {
-            getBudgetById(requireNotNull(config.budgetId))
-                ?: error("Budget not found: ${config.budgetId}")
-        } else {
-            null
+    private val editorDataFlow = flow {
+        when (val editorConfig = config) {
+            is BudgetEditorConfig.Create -> {
+                val category = getCategoryById(editorConfig.categoryId)
+                    ?: error("Category not found: ${editorConfig.categoryId}")
+                val subcategory = getSubCategoryById(editorConfig.subcategoryId)
+                    ?: error("Subcategory not found: ${editorConfig.subcategoryId}")
+
+                emit(
+                    BudgetEditorUiState.initial(
+                        config = config,
+                        budget = Budget.empty(),
+                        category = category,
+                        subcategory = subcategory,
+                        isRepeat = false,
+                        period = PeriodType.MONTHLY
+                    )
+                )
+            }
+
+            is BudgetEditorConfig.Edit -> {
+                val budget = getBudgetById(editorConfig.budgetId)
+                    ?: error("Budget not found: ${editorConfig.budgetId}")
+
+                val category = getCategoryById(budget.categoryId)
+                    ?: error("Category not found: ${budget.categoryId}")
+                val subcategory = getSubCategoryById(budget.subcategoryId)
+                    ?: error("Subcategory not found: ${budget.subcategoryId}")
+
+                emit(
+                    BudgetEditorUiState.initialFromBudget(
+                        config = config,
+                        budget = budget,
+                        category = category,
+                        subcategory = subcategory,
+                        isRepeat = budget.repeat,
+                        period = budget.period
+                    )
+                )
+            }
         }
-
-        val categoryId = budget?.categoryId
-            ?: requireNotNull(config.categoryId) { "Missing categoryId for budget creation" }
-        val subcategoryId = budget?.subcategoryId
-            ?: requireNotNull(config.subcategoryId) { "Missing subcategoryId for budget creation" }
-
-        val category = getCategoryById(categoryId) ?: error("Category not found: $categoryId")
-        val subcategory =
-            getSubCategoryById(subcategoryId) ?: error("Subcategory not found: $subcategoryId")
-
-        emit(
-            if (config.isEditMode && budget != null) {
-                BudgetEditorUiState.initialFromBudget(
-                    config = config,
-                    budget = budget,
-                    category = category,
-                    subcategory = subcategory,
-                    isRepeat = budget.repeat,
-                    period = budget.period
-                )
-            } else {
-                BudgetEditorUiState.initial(
-                    config = config,
-                    budget = Budget.empty(),
-                    category = category,
-                    subcategory = subcategory,
-                    isRepeat = false,
-                    period = PeriodType.MONTHLY
-                )
-            }.copy(isLoading = false)
-        )
-    }.catch { exception ->
-        if (exception is CancellationException) throw exception
-
-        showSnackBar(R.string.snackBar_load_budget_error)
-
-        emit(
-            BudgetEditorUiState.initialEmpty().copy(
-                config = config,
-                isLoading = false,
-                errorMessage = "Unable to load budget"
-            )
-        )
-    }.stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.Eagerly,
-        initialValue = BudgetEditorUiState.initialEmpty().copy(
-            config = config
-        )
-    )
+    }
 
     private val baseStateFlow: StateFlow<BudgetEditorUiState> =
         combine(
@@ -232,6 +217,7 @@ class BudgetEditorViewModel @Inject constructor(
 
     private fun handleSave() {
         val state = uiState.value
+        val isEditMode = config is BudgetEditorConfig.Edit
 
         if (!state.isValid) {
             showSnackBar(R.string.snackBar_save_budget_error)
@@ -252,7 +238,7 @@ class BudgetEditorViewModel @Inject constructor(
             runCatching {
                 saveBudget(
                     budget = budget,
-                    isEditorMode = config.isEditMode
+                    isEditorMode = isEditMode
                 )
             }.onSuccess {
                 uiInternalState.update { it.copy(isSaving = false) }
@@ -274,10 +260,9 @@ class BudgetEditorViewModel @Inject constructor(
 
     private fun handleChangeCategory() {
         val state = uiState.value
-        val mode = if (config.isEditMode) {
-            CategorySelectorMode.EDIT_BUDGET
-        } else {
-            CategorySelectorMode.CREATE_BUDGET
+        val mode = when (config) {
+            is BudgetEditorConfig.Create -> CategorySelectorMode.CREATE_BUDGET
+            is BudgetEditorConfig.Edit -> CategorySelectorMode.EDIT_BUDGET
         }
 
         val route = Route.CategorySelector.create(

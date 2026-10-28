@@ -217,7 +217,7 @@ class DashboardViewModel @Inject constructor(
 
     fun onBudgetItemClick(item: BudgetUiModel) {
         val route = Route.BudgetEditor.create(
-            BudgetEditorConfig(budgetId = item.budget.id)
+            BudgetEditorConfig.Edit(budgetId = item.budget.id)
         )
 
         navigateTo(route)

@@ -3,11 +3,16 @@ package com.jorgelobo.koobe.ui.screen.budgets.editor
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class BudgetEditorConfig(
-    val budgetId: Int? = null,
-    val categoryId: Int? = null,
-    val subcategoryId: Int? = null
-) {
-    val isEditMode: Boolean
-        get() = budgetId != null
+sealed interface BudgetEditorConfig {
+
+    @Serializable
+    data class Create(
+        val categoryId: Int,
+        val subcategoryId: Int
+    ) : BudgetEditorConfig
+
+    @Serializable
+    data class Edit(
+        val budgetId: Int
+    ) : BudgetEditorConfig
 }
