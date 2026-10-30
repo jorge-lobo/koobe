@@ -211,6 +211,10 @@
     <string name="budget_label_projection">Projection:</string>
     <string name="budget_label_spent">Spent:</string>
 
+    <!-- Existing Budgets Item -->
+    <string name="existing_budgets_item_recurring">Recurring</string>
+    <string name="existing_budgets_item_non_recurring">One-time</string>
+
     <!-- Numeric Keypad -->
     <string name="keypad_0">0</string>
     <string name="keypad_1">1</string>
