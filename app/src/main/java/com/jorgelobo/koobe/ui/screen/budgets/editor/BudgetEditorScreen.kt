@@ -54,6 +54,15 @@ fun BudgetEditorScreen(
         },
         onDeleteDialogAction = {
             viewModel.onIntent(BudgetEditorIntent.Action.DeleteDialogUpdated(it))
+        },
+        onContinueCreatingBudget = {
+            viewModel.onIntent(BudgetEditorIntent.Action.ContinueCreatingBudget)
+        },
+        onCancelExistingBudgetsDialog = {
+            viewModel.onIntent(BudgetEditorIntent.Action.CancelExistingBudgetsDialog)
+        },
+        onExistingBudgetClick = {
+            viewModel.onIntent(BudgetEditorIntent.Action.EditExistingBudget(it.budget.id))
         }
     )
 

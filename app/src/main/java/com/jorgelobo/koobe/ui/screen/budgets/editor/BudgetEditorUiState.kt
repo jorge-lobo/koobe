@@ -7,6 +7,7 @@ import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
+import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogState
 
@@ -31,7 +32,9 @@ data class BudgetEditorUiState(
     val errorMessage: String? = null,
     val budgetInitialSnapshot: BudgetInitialSnapshot,
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
-    val deleteDialog: ConfirmationDialogState = ConfirmationDialogState()
+    val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
+    val existingBudgets: List<BudgetUiModel> = emptyList(),
+    val isExistingBudgetsDialogVisible: Boolean = false
 ) {
 
     val isValid: Boolean

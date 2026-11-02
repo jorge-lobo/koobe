@@ -13,9 +13,11 @@ import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.DeleteBudgetUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetBudgetByIdUseCase
+import com.jorgelobo.koobe.domain.usecase.budget.GetBudgetsBySubcategoryIdUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.SaveBudgetUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoryByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetSubcategoryByIdUseCase
+import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
 import com.jorgelobo.koobe.ui.components.model.enums.InputState
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.navigation.Route
@@ -28,6 +30,8 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDial
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.handleConfirmationDialog
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -35,7 +39,10 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
@@ -52,7 +59,8 @@ class BudgetEditorViewModel @Inject constructor(
     private val getCategoryById: GetCategoryByIdUseCase,
     private val getSubCategoryById: GetSubcategoryByIdUseCase,
     private val saveBudget: SaveBudgetUseCase,
-    private val deleteBudget: DeleteBudgetUseCase
+    private val deleteBudget: DeleteBudgetUseCase,
+    private val getBudgetsBySubcategoryId: GetBudgetsBySubcategoryIdUseCase
 ) : ViewModel() {
 
     private val config: BudgetEditorConfig =
@@ -147,20 +155,51 @@ class BudgetEditorViewModel @Inject constructor(
             )
         )
 
+    @OptIn(ExperimentalCoroutinesApi::class)
+    private val existingBudgetsFlow: Flow<List<BudgetUiModel>> =
+        combine(
+            baseStateFlow,
+            formState
+        ) { base, form ->
+            val category = form.category.resolve(base.category)
+            val subcategory = form.subcategory.resolve(base.subcategory)
+
+            category to subcategory
+        }
+            .distinctUntilChangedBy { it.second.id }
+            .flatMapLatest { (category, subcategory) ->
+                if (config is BudgetEditorConfig.Create) {
+                    getBudgetsBySubcategoryId(subcategory.id)
+                        .map { budgets ->
+                            budgets.map { budget ->
+                                BudgetUiModel(
+                                    budget = budget,
+                                    category = category,
+                                    subcategory = subcategory
+                                )
+                            }
+                        }
+                } else {
+                    flowOf(emptyList())
+                }
+            }
 
     val uiState: StateFlow<BudgetEditorUiState> =
         combine(
             baseStateFlow,
             formState,
-            uiInternalState
-        ) { base, form, internal ->
+            uiInternalState,
+            existingBudgetsFlow
+        ) { base, form, internal, existingBudgets ->
 
             val updatedLimitInput = form.limitAmountInput.resolve(base.limitAmountInput)
             val updatedLimit = updatedLimitInput.toDoubleOrNull() ?: base.limitAmount
 
+            val subcategory = form.subcategory.resolve(base.subcategory)
+
             base.copy(
                 category = form.category.resolve(base.category),
-                subcategory = form.subcategory.resolve(base.subcategory),
+                subcategory = subcategory,
                 period = form.period.resolve(base.period),
                 isRepeat = form.isRepeat.resolve(base.isRepeat),
                 limitAmountInput = updatedLimitInput,
@@ -170,7 +209,12 @@ class BudgetEditorViewModel @Inject constructor(
                 deleteDialog = internal.deleteDialog,
                 isSaving = internal.isSaving,
                 isDeleting = internal.isDeleting,
-                isLoading = base.isLoading || internal.isSaving || internal.isDeleting
+                isLoading = base.isLoading || internal.isSaving || internal.isDeleting,
+                existingBudgets = existingBudgets,
+                isExistingBudgetsDialogVisible =
+                    config is BudgetEditorConfig.Create &&
+                            existingBudgets.isNotEmpty() &&
+                            internal.existingBudgetsDialogDismissedFor != subcategory.id
             )
         }.stateIn(
             scope = viewModelScope,
@@ -203,15 +247,18 @@ class BudgetEditorViewModel @Inject constructor(
             BudgetEditorIntent.Action.CloseClicked -> handleClose()
             BudgetEditorIntent.Action.RequestDeleteBudget ->
                 handleDeleteDialog(ConfirmationDialogAction.Open)
-
-            BudgetEditorIntent.Action.ChangeCategoryClicked ->
-                handleChangeCategory()
+            BudgetEditorIntent.Action.ChangeCategoryClicked -> handleChangeCategory()
+            BudgetEditorIntent.Action.ContinueCreatingBudget -> handleContinueCreatingBudget()
+            BudgetEditorIntent.Action.CancelExistingBudgetsDialog -> handleCancelExistingBudgetDialog()
 
             is BudgetEditorIntent.Action.DiscardDialogUpdated ->
                 handleDiscardDialog(intent.action)
 
             is BudgetEditorIntent.Action.DeleteDialogUpdated ->
                 handleDeleteDialog(intent.action)
+
+            is BudgetEditorIntent.Action.EditExistingBudget ->
+                handleEditExistingBudget(intent.budgetId)
         }
     }
 
@@ -320,6 +367,25 @@ class BudgetEditorViewModel @Inject constructor(
                 showSnackBar(messageRes = R.string.snackBar_delete_budget_error)
             }
         }
+    }
+
+    private fun handleContinueCreatingBudget() {
+        val subcategoryId = uiState.value.subcategory.id
+
+        uiInternalState.update {
+            it.copy(existingBudgetsDialogDismissedFor = subcategoryId)
+        }
+    }
+
+    private fun handleCancelExistingBudgetDialog() {
+        navigateBack()
+    }
+
+    private fun handleEditExistingBudget(budgetId: Int) {
+        val route = Route.BudgetEditor.create(
+            BudgetEditorConfig.Edit(budgetId)
+        )
+        navigateTo(route)
     }
 
     private fun showSnackBar(messageRes: Int) {

@@ -19,8 +19,11 @@ sealed interface BudgetEditorIntent {
         data object CloseClicked : Action
         data object RequestDeleteBudget : Action
         data object ChangeCategoryClicked : Action
+        data object ContinueCreatingBudget : Action
+        data object CancelExistingBudgetsDialog : Action
 
         data class DiscardDialogUpdated(val action: ConfirmationDialogAction) : Action
         data class DeleteDialogUpdated(val action: ConfirmationDialogAction) : Action
+        data class EditExistingBudget(val budgetId: Int) : Action
     }
 }

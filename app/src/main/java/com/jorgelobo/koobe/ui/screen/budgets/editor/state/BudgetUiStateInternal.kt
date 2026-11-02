@@ -7,5 +7,6 @@ data class BudgetUiStateInternal(
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val isSaving: Boolean = false,
     val isDeleting: Boolean = false,
-    val hasTriedToSave: Boolean = false
+    val hasTriedToSave: Boolean = false,
+    val existingBudgetsDialogDismissedFor: Int? = null
 )
