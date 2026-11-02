@@ -39,6 +39,7 @@ import com.jorgelobo.koobe.ui.theme.dimens.BudgetItemSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.resolvedColor
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.ui.mappers.localizedName
 
 @Composable
 fun ExistingBudgetItem(
@@ -64,7 +65,6 @@ fun ExistingBudgetItem(
         modifier = modifier
             .fillMaxWidth()
             .height(BudgetItemSize.BudgetSimple)
-            .padding(end = Spacing.Medium)
             .clickable(enabled = config.onClick != null) { config.onClick?.invoke() },
         horizontalArrangement = Arrangement.spacedBy(Spacing.Small),
         verticalAlignment = Alignment.CenterVertically
@@ -82,7 +82,7 @@ fun ExistingBudgetItem(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = subcategory.name,
+                text = subcategory.localizedName(),
                 style = typography.text.titleSmall,
                 color = colors.textColors.textPrimary
             )

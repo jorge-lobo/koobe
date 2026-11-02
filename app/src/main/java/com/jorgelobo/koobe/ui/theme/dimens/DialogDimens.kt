@@ -20,10 +20,10 @@ object DialogSize {
     }
 
     object ExistingBudgets {
-        val DialogHeightOneItem = 320.dp
-        val DialogHeightTwoItems = 376.dp
-        val DialogHeightThreeItems = 432.dp
-        val DialogHeightFourItems = 488.dp
+        val DialogHeightOneItem = 352.dp
+        val DialogHeightTwoItems = 408.dp
+        val DialogHeightThreeItems = 464.dp
+        val DialogHeightFourItems = 520.dp
         val ContentHeightMax = 168.dp
     }
 }

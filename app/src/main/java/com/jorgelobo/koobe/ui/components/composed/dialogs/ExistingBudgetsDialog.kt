@@ -76,6 +76,8 @@ fun ExistingBudgetsDialog(
             color = colors.textColors.textPrimary
         )
 
+        Spacer(modifier = Modifier.height(Spacing.Medium))
+
         LazyColumn(
             modifier = Modifier
                 .fillMaxWidth()
