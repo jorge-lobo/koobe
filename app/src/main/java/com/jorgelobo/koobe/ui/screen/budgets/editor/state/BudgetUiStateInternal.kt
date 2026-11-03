@@ -5,6 +5,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDial
 data class BudgetUiStateInternal(
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
+    val duplicateBudgetDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val isSaving: Boolean = false,
     val isDeleting: Boolean = false,
     val hasTriedToSave: Boolean = false,

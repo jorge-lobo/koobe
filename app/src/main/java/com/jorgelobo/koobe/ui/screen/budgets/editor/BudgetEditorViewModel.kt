@@ -14,6 +14,7 @@ import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.DeleteBudgetUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetBudgetByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetBudgetsBySubcategoryIdUseCase
+import com.jorgelobo.koobe.domain.usecase.budget.HasExistingBudgetForPeriodUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.SaveBudgetUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoryByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetSubcategoryByIdUseCase
@@ -60,7 +61,8 @@ class BudgetEditorViewModel @Inject constructor(
     private val getSubCategoryById: GetSubcategoryByIdUseCase,
     private val saveBudget: SaveBudgetUseCase,
     private val deleteBudget: DeleteBudgetUseCase,
-    private val getBudgetsBySubcategoryId: GetBudgetsBySubcategoryIdUseCase
+    private val getBudgetsBySubcategoryId: GetBudgetsBySubcategoryIdUseCase,
+    private val hasExistingBudgetForPeriod: HasExistingBudgetForPeriodUseCase
 ) : ViewModel() {
 
     private val config: BudgetEditorConfig =
@@ -207,6 +209,7 @@ class BudgetEditorViewModel @Inject constructor(
                 inputState = InputState.DEFAULT,
                 discardDialog = internal.discardDialog,
                 deleteDialog = internal.deleteDialog,
+                duplicateBudgetDialog = internal.duplicateBudgetDialog,
                 isSaving = internal.isSaving,
                 isDeleting = internal.isDeleting,
                 isLoading = base.isLoading || internal.isSaving || internal.isDeleting,
@@ -247,6 +250,7 @@ class BudgetEditorViewModel @Inject constructor(
             BudgetEditorIntent.Action.CloseClicked -> handleClose()
             BudgetEditorIntent.Action.RequestDeleteBudget ->
                 handleDeleteDialog(ConfirmationDialogAction.Open)
+
             BudgetEditorIntent.Action.ChangeCategoryClicked -> handleChangeCategory()
             BudgetEditorIntent.Action.ContinueCreatingBudget -> handleContinueCreatingBudget()
             BudgetEditorIntent.Action.CancelExistingBudgetsDialog -> handleCancelExistingBudgetDialog()
@@ -259,27 +263,53 @@ class BudgetEditorViewModel @Inject constructor(
 
             is BudgetEditorIntent.Action.EditExistingBudget ->
                 handleEditExistingBudget(intent.budgetId)
+
+            is BudgetEditorIntent.Action.DuplicateBudgetDialogUpdated ->
+                handleDuplicateBudgetDialog(intent.action)
         }
     }
 
     private fun handleSave() {
-        val state = uiState.value
-        val isEditMode = config is BudgetEditorConfig.Edit
-
-        if (!state.isValid) {
-            showSnackBar(R.string.snackBar_save_budget_error)
-            return
-        }
-
-        val budget = state.budget.copy(
-            categoryId = state.category.id,
-            subcategoryId = state.subcategory.id,
-            period = state.period,
-            repeat = state.isRepeat,
-            limitAmount = state.limitAmount
-        )
-
         viewModelScope.launch {
+            val state = uiState.value
+
+            uiInternalState.update { it.copy(hasTriedToSave = true) }
+
+            if (!state.isValid) {
+                showSnackBar(R.string.snackBar_save_budget_error)
+                return@launch
+            }
+
+            val hasDuplicate = hasExistingBudgetForPeriod(
+                subcategoryId = state.subcategory.id,
+                period = state.period,
+                budgetId = state.budget.id.takeIf {
+                    config is BudgetEditorConfig.Edit
+                }
+            )
+
+            if (hasDuplicate) {
+                handleDuplicateBudgetDialog(ConfirmationDialogAction.Open)
+                return@launch
+            }
+
+            saveBudget()
+        }
+    }
+
+    private fun saveBudget() {
+        viewModelScope.launch {
+            val state = uiState.value
+            val isEditMode = config is BudgetEditorConfig.Edit
+
+            val budget = state.budget.copy(
+                categoryId = state.category.id,
+                subcategoryId = state.subcategory.id,
+                period = state.period,
+                repeat = state.isRepeat,
+                limitAmount = state.limitAmount
+            )
+
             uiInternalState.update { it.copy(isSaving = true) }
 
             runCatching {
@@ -348,6 +378,19 @@ class BudgetEditorViewModel @Inject constructor(
                 }
             },
             onConfirmed = { deleteCurrentBudget() }
+        )
+    }
+
+    private fun handleDuplicateBudgetDialog(action: ConfirmationDialogAction) {
+        handleConfirmationDialog(
+            current = uiInternalState.value.duplicateBudgetDialog,
+            action = action,
+            updateState = { newDialogState ->
+                uiInternalState.update { currentState ->
+                    currentState.copy(duplicateBudgetDialog = newDialogState)
+                }
+            },
+            onConfirmed = { navigateBack() }
         )
     }
 

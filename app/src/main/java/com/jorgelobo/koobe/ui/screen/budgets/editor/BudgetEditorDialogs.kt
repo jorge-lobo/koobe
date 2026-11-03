@@ -3,6 +3,8 @@ package com.jorgelobo.koobe.ui.screen.budgets.editor
 import androidx.compose.runtime.Composable
 import com.jorgelobo.koobe.ui.components.composed.dialogs.DeleteDialog
 import com.jorgelobo.koobe.ui.components.composed.dialogs.DiscardDialog
+import com.jorgelobo.koobe.ui.components.composed.dialogs.DuplicateBudgetDialog
+import com.jorgelobo.koobe.ui.components.composed.dialogs.DuplicateBudgetDialogConfig
 import com.jorgelobo.koobe.ui.components.composed.dialogs.ExistingBudgetsDialog
 import com.jorgelobo.koobe.ui.components.composed.dialogs.ExistingBudgetsDialogConfig
 import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
@@ -14,6 +16,7 @@ fun BudgetEditorDialogs(
     state: BudgetEditorUiState,
     onDiscardDialogAction: (ConfirmationDialogAction) -> Unit,
     onDeleteDialogAction: (ConfirmationDialogAction) -> Unit,
+    onDuplicateDialogAction: (ConfirmationDialogAction) -> Unit,
     onContinueCreatingBudget: () -> Unit,
     onCancelExistingBudgetsDialog: () -> Unit,
     onExistingBudgetClick: (BudgetUiModel) -> Unit
@@ -30,6 +33,15 @@ fun BudgetEditorDialogs(
             type = DeleteType.BUDGET,
             onConfirm = { onDeleteDialogAction(ConfirmationDialogAction.Confirm) },
             onCancel = { onDeleteDialogAction(ConfirmationDialogAction.Dismiss) }
+        )
+    }
+
+    if (state.duplicateBudgetDialog.visible) {
+        DuplicateBudgetDialog(
+            config = DuplicateBudgetDialogConfig(
+                onContinueEditing = { onDuplicateDialogAction(ConfirmationDialogAction.Dismiss) },
+                onDiscard = { onDuplicateDialogAction(ConfirmationDialogAction.Confirm) }
+            )
         )
     }
 

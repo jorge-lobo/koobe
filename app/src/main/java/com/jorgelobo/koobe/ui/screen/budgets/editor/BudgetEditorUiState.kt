@@ -33,6 +33,7 @@ data class BudgetEditorUiState(
     val budgetInitialSnapshot: BudgetInitialSnapshot,
     val discardDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val deleteDialog: ConfirmationDialogState = ConfirmationDialogState(),
+    val duplicateBudgetDialog: ConfirmationDialogState = ConfirmationDialogState(),
     val existingBudgets: List<BudgetUiModel> = emptyList(),
     val isExistingBudgetsDialogVisible: Boolean = false
 ) {

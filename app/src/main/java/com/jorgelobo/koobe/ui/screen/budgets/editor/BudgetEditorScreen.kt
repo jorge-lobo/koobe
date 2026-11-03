@@ -55,6 +55,9 @@ fun BudgetEditorScreen(
         onDeleteDialogAction = {
             viewModel.onIntent(BudgetEditorIntent.Action.DeleteDialogUpdated(it))
         },
+        onDuplicateDialogAction = {
+            viewModel.onIntent(BudgetEditorIntent.Action.DuplicateBudgetDialogUpdated(it))
+        },
         onContinueCreatingBudget = {
             viewModel.onIntent(BudgetEditorIntent.Action.ContinueCreatingBudget)
         },

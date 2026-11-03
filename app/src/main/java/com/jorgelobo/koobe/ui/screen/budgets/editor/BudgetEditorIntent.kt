@@ -24,6 +24,7 @@ sealed interface BudgetEditorIntent {
 
         data class DiscardDialogUpdated(val action: ConfirmationDialogAction) : Action
         data class DeleteDialogUpdated(val action: ConfirmationDialogAction) : Action
+        data class DuplicateBudgetDialogUpdated(val action: ConfirmationDialogAction) : Action
         data class EditExistingBudget(val budgetId: Int) : Action
     }
 }
