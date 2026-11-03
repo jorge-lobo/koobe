@@ -37,6 +37,7 @@ fun BaseDialog(
     height: Dp,
     confirmText: String,
     confirmTextColor: Color? = null,
+    dismissTest: String? = null,
     enable: Boolean,
     showCancelButton: Boolean = true,
     onDismissRequest: () -> Unit,
@@ -72,7 +73,7 @@ fun BaseDialog(
                     ConfirmCancelButtons(
                         config = ConfirmCancelButtonsConfig(
                             confirmText = confirmText,
-                            cancelText = stringResource(R.string.btn_cancel),
+                            cancelText = dismissTest ?: stringResource(R.string.btn_cancel),
                             confirmTextColor = confirmTextColor,
                             isConfirmEnabled = enable,
                             onConfirmClick = onConfirm,
