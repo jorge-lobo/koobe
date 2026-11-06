@@ -4,7 +4,6 @@ import app.cash.turbine.test
 import com.jorgelobo.koobe.domain.model.budget.Budget
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
-import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.settings.DefaultUserSettings
@@ -146,6 +145,7 @@ class BudgetManagerViewModelTest {
             fakeBudget(
                 id = 1,
                 categoryId = 999,
+                subcategoryId = 999,
                 period = PeriodType.MONTHLY
             )
         )
@@ -308,7 +308,7 @@ class BudgetManagerViewModelTest {
     private fun fakeBudget(
         id: Int = 1,
         categoryId: Int = 1,
-        subcategoryId: Int? = null,
+        subcategoryId: Int,
         period: PeriodType = PeriodType.MONTHLY,
         limitAmount: Double = 500.0,
         spentAmount: Double = 100.0
@@ -318,8 +318,6 @@ class BudgetManagerViewModelTest {
         subcategoryId = subcategoryId,
         period = period,
         repeat = false,
-        paymentMethod = null,
-        currency = CurrencyType.EUR,
         limitAmount = limitAmount,
         spentAmount = spentAmount,
         projectedAmount = spentAmount,
@@ -349,8 +347,6 @@ class BudgetManagerViewModelTest {
         spentAmount = 200.0,
         subcategoryId = 10,
         repeat = false,
-        paymentMethod = PaymentMethodType.CASH,
-        currency = CurrencyType.EUR,
         projectedAmount = 450.0,
         dailyAverage = 15.0
     )
@@ -361,10 +357,8 @@ class BudgetManagerViewModelTest {
         period = PeriodType.MONTHLY,
         limitAmount = 300.0,
         spentAmount = 100.0,
-        subcategoryId = null,
+        subcategoryId = 2,
         repeat = false,
-        paymentMethod = PaymentMethodType.CASH,
-        currency = CurrencyType.EUR,
         projectedAmount = 275.0,
         dailyAverage = 15.0
     )
@@ -375,10 +369,8 @@ class BudgetManagerViewModelTest {
         period = PeriodType.WEEKLY,
         limitAmount = 100.0,
         spentAmount = 40.0,
-        subcategoryId = null,
+        subcategoryId = 3,
         repeat = false,
-        paymentMethod = PaymentMethodType.CASH,
-        currency = CurrencyType.EUR,
         projectedAmount = 95.0,
         dailyAverage = 12.0
     )
