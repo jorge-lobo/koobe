@@ -26,6 +26,7 @@ import com.jorgelobo.koobe.ui.screen.budgets.manager.model.PeriodicBudgetsUiMode
 import com.jorgelobo.koobe.ui.theme.color.LightThemeGrey2
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.R
+import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.ui.components.base.buttons.base.ButtonConfig
 import com.jorgelobo.koobe.ui.components.base.buttons.types.AppButton
 import com.jorgelobo.koobe.ui.components.model.enums.ButtonType
@@ -37,6 +38,7 @@ fun BudgetManagerListSection(
     modifier: Modifier = Modifier,
     isEmpty: Boolean,
     periodicBudgets: List<PeriodicBudgetsUiModel>,
+    currencyType: CurrencyType,
     onExpandToggle: (PeriodType) -> Unit,
     onBudgetClick: (BudgetUiModel) -> Unit,
     onAddBudgetClick: () -> Unit
@@ -97,6 +99,7 @@ fun BudgetManagerListSection(
                 CardPeriodicBudgetsItem(
                     config = CardPeriodicBudgetsConfig(
                         model = model,
+                        currencyType = currencyType,
                         onExpandToggle = { onExpandToggle(model.periodType) },
                         onItemClick = onBudgetClick
                     )

@@ -94,9 +94,74 @@ object DatabaseMigrations {
         }
     }
 
+    val MIGRATION_4_5 = object : Migration(4, 5) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+            CREATE TABLE budgets_new (
+                id INTEGER NOT NULL,
+                categoryId INTEGER NOT NULL,
+                subcategoryId INTEGER NOT NULL,
+                period TEXT NOT NULL,
+                repeat INTEGER NOT NULL,
+                limitAmount REAL NOT NULL,
+                spentAmount REAL NOT NULL,
+                projectedAmount REAL NOT NULL,
+                dailyAverage REAL NOT NULL,
+                PRIMARY KEY(id),
+                FOREIGN KEY(categoryId)
+                    REFERENCES categories(id)
+                    ON DELETE CASCADE,
+                FOREIGN KEY(subcategoryId)
+                    REFERENCES subcategories(id)
+                    ON DELETE CASCADE
+            )
+            """.trimIndent()
+            )
+
+            db.execSQL(
+                """
+            INSERT INTO budgets_new (
+                id,
+                categoryId,
+                subcategoryId,
+                period,
+                repeat,
+                limitAmount,
+                spentAmount,
+                projectedAmount,
+                dailyAverage
+            )
+            SELECT
+                id,
+                categoryId,
+                subcategoryId,
+                period,
+                repeat,
+                limitAmount,
+                spentAmount,
+                projectedAmount,
+                dailyAverage
+            FROM budgets
+            WHERE subcategoryId IS NOT NULL
+            """.trimIndent()
+            )
+
+            db.execSQL("DROP TABLE budgets")
+
+            db.execSQL(
+                """
+            ALTER TABLE budgets_new
+            RENAME TO budgets
+            """.trimIndent()
+            )
+        }
+    }
+
     val ALL = arrayOf(
         MIGRATION_1_2,
         MIGRATION_2_3,
-        MIGRATION_3_4
+        MIGRATION_3_4,
+        MIGRATION_4_5
     )
 }

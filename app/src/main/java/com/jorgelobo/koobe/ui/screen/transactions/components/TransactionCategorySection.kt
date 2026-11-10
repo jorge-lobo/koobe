@@ -16,8 +16,8 @@ fun TransactionCategorySection(
         config = CategorySummaryConfig(
             icon = state.category.icon,
             color = state.category.resolvedColor(),
-            categoryName = state.category.localizedName(),
-            subcategoryName = state.subcategory?.localizedName() ?: state.shortcut?.name,
+            primaryName = state.category.localizedName(),
+            secondaryName = state.subcategory?.localizedName() ?: state.shortcut?.name,
             onChangeClick = onChangeClick
         )
     )

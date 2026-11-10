@@ -144,10 +144,13 @@ fun CategorySelectorTarget.toRoute(
     )
 
     CategorySelectorTarget.BUDGET_EDITOR -> Route.BudgetEditor.create(
-        BudgetEditorConfig(
-            budgetId = config.budgetId,
-            categoryId = uiState.selectedCategoryId,
-            subcategoryId = uiState.selectedSubcategoryId
-        )
+        if (config.budgetId != null) {
+            BudgetEditorConfig.Edit(budgetId = config.budgetId)
+        } else {
+            BudgetEditorConfig.Create(
+                categoryId = requireNotNull(uiState.selectedCategoryId),
+                subcategoryId = requireNotNull(uiState.selectedSubcategoryId)
+            )
+        }
     )
 }

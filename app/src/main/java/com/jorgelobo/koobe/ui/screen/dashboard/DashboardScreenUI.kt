@@ -121,8 +121,6 @@ private fun sampleBudgetUiModels(): List<BudgetUiModel> {
         subcategoryId = 11,
         period = PeriodType.MONTHLY,
         repeat = true,
-        paymentMethod = null,
-        currency = CurrencyType.EUR,
         limitAmount = 200.0,
         spentAmount = 150.0,
         projectedAmount = 190.0,

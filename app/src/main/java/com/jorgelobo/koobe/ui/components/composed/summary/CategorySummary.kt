@@ -58,12 +58,12 @@ fun CategorySummary(
             horizontalAlignment = Alignment.Start
         ) {
             Text(
-                text = config.categoryName,
+                text = config.primaryName,
                 style = typography.titleLarge,
                 color = color.textPrimary
             )
 
-            config.subcategoryName?.let {
+            config.secondaryName?.let {
                 Spacer(modifier = Modifier.height(Spacing.Micro))
                 Text(
                     text = it,
@@ -72,7 +72,7 @@ fun CategorySummary(
                 )
             }
 
-            if (config.subcategoryName.isNullOrEmpty()) {
+            if (config.secondaryName.isNullOrEmpty()) {
                 Spacer(modifier = Modifier.weight(1f))
             }
         }
@@ -111,8 +111,8 @@ fun PreviewCategorySummary() {
                 config = CategorySummaryConfig(
                     icon = IconPack.HOME,
                     color = AccentGold,
-                    categoryName = "Home",
-                    subcategoryName = "Water",
+                    primaryName = "Home",
+                    secondaryName = "Water",
                     onChangeClick = { }
                 )
             )

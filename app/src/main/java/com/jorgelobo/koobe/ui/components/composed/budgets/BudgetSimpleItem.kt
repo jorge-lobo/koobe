@@ -50,6 +50,8 @@ fun BudgetSimpleItem(
     val colors = AppTheme.colors
     val typography = AppTheme.typography
     val categoryColor = config.model.category.resolvedColor()
+    val currencyType = config.currencyType
+
     val spent = config.model.budget.spentAmount
     val limit = config.model.budget.limitAmount
     val projected = config.model.budget.projectedAmount
@@ -105,7 +107,7 @@ fun BudgetSimpleItem(
                 ) {
                     MoneyText(
                         amount = spent,
-                        currencyType = config.model.budget.currency,
+                        currencyType = currencyType,
                         wholeFontSize = typography.numbers.labelMedium.fontSize,
                         decimalFontSize = typography.numbers.labelSmall.fontSize,
                         textColor = if (spent > limit) AccentCoral else colors.textColors.textSecondary,
@@ -121,7 +123,7 @@ fun BudgetSimpleItem(
 
                     MoneyText(
                         amount = limit,
-                        currencyType = config.model.budget.currency,
+                        currencyType = currencyType,
                         wholeFontSize = typography.numbers.labelMedium.fontSize,
                         decimalFontSize = typography.numbers.labelSmall.fontSize,
                         textColor = colors.textColors.textSecondary,
@@ -164,8 +166,6 @@ fun PreviewBudgetSimpleItem() {
                 subcategoryId = 1,
                 period = PeriodType.MONTHLY,
                 repeat = false,
-                paymentMethod = null,
-                currency = CurrencyType.EUR,
                 limitAmount = 200.0,
                 spentAmount = 150.0,
                 projectedAmount = 190.0,
@@ -196,6 +196,7 @@ fun PreviewBudgetSimpleItem() {
             BudgetSimpleItem(
                 config = BudgetItemConfig(
                     model = model,
+                    currencyType = CurrencyType.EUR,
                     onClick = {}
                 )
             )

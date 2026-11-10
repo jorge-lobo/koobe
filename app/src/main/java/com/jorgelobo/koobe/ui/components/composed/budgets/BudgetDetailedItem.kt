@@ -53,6 +53,8 @@ fun BudgetDetailedItem(
     val colors = AppTheme.colors
     val typography = AppTheme.typography
     val categoryColor = config.model.category.resolvedColor()
+    val currencyType = config.currencyType
+
     val spent = config.model.budget.spentAmount
     val limit = config.model.budget.limitAmount
     val projected = config.model.budget.projectedAmount
@@ -98,7 +100,7 @@ fun BudgetDetailedItem(
 
                     AmountDisplay(
                         amount = balance,
-                        currencyType = config.model.budget.currency
+                        currencyType = currencyType
                     )
                 }
 
@@ -141,7 +143,7 @@ fun BudgetDetailedItem(
                     ) {
                         MoneyText(
                             amount = dailyAverage,
-                            currencyType = config.model.budget.currency,
+                            currencyType = currencyType,
                             wholeFontSize = typography.numbers.labelLarge.fontSize,
                             decimalFontSize = typography.numbers.labelSmall.fontSize,
                             textColor = colors.textColors.textSupportMessage,
@@ -151,7 +153,7 @@ fun BudgetDetailedItem(
 
                         MoneyText(
                             amount = projected,
-                            currencyType = config.model.budget.currency,
+                            currencyType = currencyType,
                             wholeFontSize = typography.numbers.labelLarge.fontSize,
                             decimalFontSize = typography.numbers.labelSmall.fontSize,
                             textColor = colors.textColors.textSupportMessage,
@@ -189,7 +191,7 @@ fun BudgetDetailedItem(
                     ) {
                         MoneyText(
                             amount = limit,
-                            currencyType = config.model.budget.currency,
+                            currencyType = currencyType,
                             wholeFontSize = typography.numbers.labelLarge.fontSize,
                             decimalFontSize = typography.numbers.labelSmall.fontSize,
                             textColor = colors.textColors.textSupportMessage,
@@ -199,7 +201,7 @@ fun BudgetDetailedItem(
 
                         MoneyText(
                             amount = spent,
-                            currencyType = config.model.budget.currency,
+                            currencyType = currencyType,
                             wholeFontSize = typography.numbers.labelLarge.fontSize,
                             decimalFontSize = typography.numbers.labelSmall.fontSize,
                             textColor = colors.textColors.textSupportMessage,
@@ -241,8 +243,6 @@ fun PreviewBudgetDetailedItem() {
                 subcategoryId = 1,
                 period = PeriodType.MONTHLY,
                 repeat = false,
-                paymentMethod = null,
-                currency = CurrencyType.EUR,
                 limitAmount = 200.0,
                 spentAmount = 150.0,
                 projectedAmount = 150.0,
@@ -273,6 +273,7 @@ fun PreviewBudgetDetailedItem() {
             BudgetDetailedItem(
                 config = BudgetItemConfig(
                     model = model,
+                    currencyType = CurrencyType.EUR,
                     onClick = {}
                 )
             )

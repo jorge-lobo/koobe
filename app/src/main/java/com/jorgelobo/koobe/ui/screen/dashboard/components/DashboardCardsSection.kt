@@ -52,6 +52,7 @@ fun DashboardCardsSection(
         BudgetsSummaryCard(
             config = BudgetsSummaryCardConfig(
                 items = budgetItems,
+                currencyType = currencyType,
                 onBudgetClick = onBudgetItemClick,
                 onActionClick = onBudgetActionClick
             )
