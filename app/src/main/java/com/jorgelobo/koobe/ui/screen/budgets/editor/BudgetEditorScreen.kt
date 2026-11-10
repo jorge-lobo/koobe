@@ -23,6 +23,17 @@ import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.screen.budgets.editor.components.BudgetEditorSaveButton
 import com.jorgelobo.koobe.ui.theme.AppTheme
 
+/**
+ * Composable screen that allows users to create or edit budgets.
+ *
+ * This screen provides the user interface for inputting budget details, including amount, category,
+ * and recurrence settings. It handles both the creation of new budgets and the modification of
+ * existing ones based on the provided configuration.
+ *
+ * @param navController The navigation controller used to handle screen transitions.
+ *  * @param config Configuration identifying whether the screen is in create or edit mode.
+ *  * @param viewModel The business logic handler for managing shortcut data and user intents.
+ */
 @Composable
 fun BudgetEditorScreen(
     navController: NavController,

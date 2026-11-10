@@ -9,6 +9,16 @@ import com.jorgelobo.koobe.ui.components.base.snackbar.SnackBarConfig
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
+/**
+ * Handles the side effects for the Budget Editor screen, such as navigation and displaying
+ * snackbar notifications based on events emitted by the [BudgetEditorViewModel].
+ *
+ * @param navController The controller used to handle screen navigation.
+ * @param viewModel The view model that provides the stream of [BudgetEditorEvent]s.
+ * @param snackBarHostState The state for managing the display of snackbars.
+ * @param scope The coroutine scope used for launching snackbar-related tasks.
+ * @param onSnackBarConfigChange Callback triggered to update the configuration of the custom snackbar UI.
+ */
 @Composable
 fun BudgetEditorEffects(
     navController: NavController,

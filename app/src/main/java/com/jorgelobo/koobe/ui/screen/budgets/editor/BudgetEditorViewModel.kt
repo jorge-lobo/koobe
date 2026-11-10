@@ -52,6 +52,26 @@ import kotlinx.serialization.json.Json
 import java.net.URLDecoder
 import javax.inject.Inject
 
+/**
+ * ViewModel responsible for managing the state and business logic of the Budget Editor screen.
+ *
+ * This class handles both the creation of new budgets and the editing of existing ones,
+ * reacting to [BudgetEditorIntent]s to update the [BudgetEditorUiState]. It manages asynchronous
+ * data loading, input validation, duplicate budget detection, and persistence operations via
+ * specialized use cases.
+ *
+ * It utilizes [SavedStateHandle] to retrieve navigation arguments and leverages
+ * [BudgetEditorReducer] to maintain a clean separation between state transitions
+ * and side effects.
+ *
+ * @property getBudgetById Use case to load an existing budget for editing.
+ * @property getCategoryById Use case to retrieve category details for display.
+ * @property getSubCategoryById Use case to retrieve subcategory details for display.
+ * @property saveBudget Use case to persist or update a budget.
+ * @property deleteBudget Use case to remove an existing budget.
+ * @property getBudgetsBySubcategoryId Use case to check for existing budgets in the same subcategory.
+ * @property hasExistingBudgetForPeriod Use case to validate that no other budget exists for the same period/subcategory.
+ */
 @HiltViewModel
 class BudgetEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
@@ -71,6 +91,9 @@ class BudgetEditorViewModel @Inject constructor(
             ?.let { Json.decodeFromString<BudgetEditorConfig>(it) }
             ?: error("Missing BudgetEditorConfig")
 
+    /**
+     * Emits one-off UI events such as navigation actions and snackbar messages.
+     */
     private val _events = MutableSharedFlow<BudgetEditorEvent>()
     val events = _events.asSharedFlow()
 
@@ -186,6 +209,13 @@ class BudgetEditorViewModel @Inject constructor(
                 }
             }
 
+    /**
+     * Exposes the current state of the Budget Editor screen.
+     *
+     * This [StateFlow] represents the unified view state, synthesized from the editor's
+     * configuration, user settings, form inputs, internal UI logic, and existing budget data.
+     * It is updated reactively as the user interacts with the editor or as background data loads.
+     */
     val uiState: StateFlow<BudgetEditorUiState> =
         combine(
             baseStateFlow,
@@ -225,6 +255,15 @@ class BudgetEditorViewModel @Inject constructor(
             initialValue = BudgetEditorUiState.initialEmpty()
         )
 
+    /**
+     * Processes incoming user intents to update the UI state or perform specific actions.
+     *
+     * This function acts as the central entry point for all user interactions, delegating
+     * intents to either [handleAction] for side-effect-heavy operations or [reduceState] for
+     * synchronous state updates.
+     *
+     * @param intent The [BudgetEditorIntent] representing the user action or state change.
+     */
     fun onIntent(intent: BudgetEditorIntent) {
         when (intent) {
             is BudgetEditorIntent.State -> reduceState(intent)

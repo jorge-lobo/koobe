@@ -6,6 +6,7 @@ import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDial
 
 sealed interface BudgetEditorIntent {
 
+    // Form field updates — handled synchronously by the Reducer.
     sealed interface State : BudgetEditorIntent {
         data class AmountKeyPressed(val key: KeypadKey) : State
         data class PeriodChanged(val period: PeriodType) : State
@@ -14,6 +15,7 @@ sealed interface BudgetEditorIntent {
         data object AmountResetClicked : State
     }
 
+    // User actions — may trigger coroutines, navigation, or dialog side effects.
     sealed interface Action : BudgetEditorIntent {
         data object SaveClicked : Action
         data object CloseClicked : Action
