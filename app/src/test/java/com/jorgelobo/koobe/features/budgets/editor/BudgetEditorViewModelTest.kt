@@ -2,8 +2,10 @@ package com.jorgelobo.koobe.features.budgets.editor
 
 import androidx.lifecycle.SavedStateHandle
 import com.jorgelobo.koobe.domain.model.budget.Budget
+import com.jorgelobo.koobe.domain.model.budget.BudgetPeriod
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.settings.DefaultUserSettings
 import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
@@ -13,6 +15,7 @@ import com.jorgelobo.koobe.domain.usecase.budget.GetBudgetByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetBudgetsBySubcategoryIdUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.HasExistingBudgetForPeriodUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.SaveBudgetUseCase
+import com.jorgelobo.koobe.domain.usecase.budget.period.GetBudgetPeriodUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoryByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetSubcategoryByIdUseCase
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
@@ -21,6 +24,7 @@ import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorConfig
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorEvent
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorIntent
 import com.jorgelobo.koobe.ui.screen.budgets.editor.BudgetEditorViewModel
+import com.jorgelobo.koobe.utils.date.DateUtils
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.every
@@ -46,6 +50,7 @@ import org.junit.Before
 import org.junit.Test
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
+import java.util.Date
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -61,6 +66,7 @@ class BudgetEditorViewModelTest {
     private val deleteBudget: DeleteBudgetUseCase = mockk()
     private val getBudgetsBySubcategoryId: GetBudgetsBySubcategoryIdUseCase = mockk()
     private val hasExistingBudgetForPeriod: HasExistingBudgetForPeriodUseCase = mockk()
+    private val getBudgetPeriod: GetBudgetPeriodUseCase = mockk()
 
     @Before
     fun setup() {
@@ -77,6 +83,10 @@ class BudgetEditorViewModelTest {
         coEvery {
             hasExistingBudgetForPeriod(any(), any(), any())
         } returns false
+
+        coEvery {
+            getBudgetPeriod(any(), PeriodType.MONTHLY, StartOfWeek.SUNDAY)
+        } returns fakeBudgetPeriod()
 
         coEvery {
             saveBudget(any(), any())
@@ -328,7 +338,8 @@ class BudgetEditorViewModelTest {
             saveBudget = saveBudget,
             deleteBudget = deleteBudget,
             getBudgetsBySubcategoryId = getBudgetsBySubcategoryId,
-            hasExistingBudgetForPeriod = hasExistingBudgetForPeriod
+            hasExistingBudgetForPeriod = hasExistingBudgetForPeriod,
+            getBudgetPeriod = getBudgetPeriod
         ).also { viewModel ->
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
                 viewModel.uiState.collect()
@@ -372,10 +383,20 @@ class BudgetEditorViewModelTest {
         categoryId = 1,
         subcategoryId = 10,
         period = PeriodType.MONTHLY,
+        periodStartDate = DateUtils.currentDate,
+        isActive = true,
         repeat = false,
         limitAmount = 100.0,
         spentAmount = 25.0,
         projectedAmount = 80.0,
         dailyAverage = 2.5
+    )
+
+    private fun fakeBudgetPeriod(
+        startDate: Date = Date(),
+        endDate: Date = Date()
+    ) = BudgetPeriod(
+        startDate = startDate,
+        endDate = endDate
     )
 }

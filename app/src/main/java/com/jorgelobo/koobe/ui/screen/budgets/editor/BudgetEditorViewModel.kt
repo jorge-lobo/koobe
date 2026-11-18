@@ -9,13 +9,16 @@ import com.jorgelobo.koobe.domain.model.budget.Budget
 import com.jorgelobo.koobe.domain.model.constants.enums.AppLanguage
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.domain.model.settings.DefaultUserSettings
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.DeleteBudgetUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetBudgetByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetBudgetsBySubcategoryIdUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.HasExistingBudgetForPeriodUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.SaveBudgetUseCase
+import com.jorgelobo.koobe.domain.usecase.budget.period.GetBudgetPeriodUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoryByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetSubcategoryByIdUseCase
 import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
@@ -29,6 +32,7 @@ import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.ConfirmationDialogAction
 import com.jorgelobo.koobe.ui.screen.common.dialog.confirmation.handleConfirmationDialog
+import com.jorgelobo.koobe.utils.date.DateUtils
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -41,6 +45,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -75,14 +80,15 @@ import javax.inject.Inject
 @HiltViewModel
 class BudgetEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    getUserSettings: GetUserSettingsUseCase,
+    private val getUserSettings: GetUserSettingsUseCase,
     private val getBudgetById: GetBudgetByIdUseCase,
     private val getCategoryById: GetCategoryByIdUseCase,
     private val getSubCategoryById: GetSubcategoryByIdUseCase,
     private val saveBudget: SaveBudgetUseCase,
     private val deleteBudget: DeleteBudgetUseCase,
     private val getBudgetsBySubcategoryId: GetBudgetsBySubcategoryIdUseCase,
-    private val hasExistingBudgetForPeriod: HasExistingBudgetForPeriodUseCase
+    private val hasExistingBudgetForPeriod: HasExistingBudgetForPeriodUseCase,
+    private val getBudgetPeriod: GetBudgetPeriodUseCase
 ) : ViewModel() {
 
     private val config: BudgetEditorConfig =
@@ -100,10 +106,14 @@ class BudgetEditorViewModel @Inject constructor(
     private val formState = MutableStateFlow(BudgetFormState())
     private val uiInternalState = MutableStateFlow(BudgetUiStateInternal())
 
-    private val userSettingsFlow: StateFlow<Pair<AppLanguage, CurrencyType>> =
+    private val userSettingsFlow: StateFlow<Triple<AppLanguage, CurrencyType, StartOfWeek>> =
         getUserSettings()
             .map { settings ->
-                settings.language to settings.currency
+                Triple(
+                    settings.language,
+                    settings.currency,
+                    settings.startOfWeek
+                )
             }
             .catch { exception ->
                 if (exception is CancellationException) throw exception
@@ -111,13 +121,21 @@ class BudgetEditorViewModel @Inject constructor(
                 showSnackBar(R.string.snackBar_load_settings_error)
 
                 emit(
-                    AppLanguage.ENGLISH to CurrencyType.EUR
+                    Triple(
+                        DefaultUserSettings.language,
+                        DefaultUserSettings.currency,
+                        DefaultUserSettings.startOfWeek
+                    )
                 )
             }
             .stateIn(
                 scope = viewModelScope,
                 started = SharingStarted.Eagerly,
-                initialValue = AppLanguage.ENGLISH to CurrencyType.EUR
+                initialValue = Triple(
+                    DefaultUserSettings.language,
+                    DefaultUserSettings.currency,
+                    DefaultUserSettings.startOfWeek
+                )
             )
 
     private val editorDataFlow = flow {
@@ -332,37 +350,53 @@ class BudgetEditorViewModel @Inject constructor(
                 return@launch
             }
 
-            saveBudget()
+            persistBudget(state)
         }
     }
 
-    private fun saveBudget() {
-        viewModelScope.launch {
-            val state = uiState.value
-            val isEditMode = config is BudgetEditorConfig.Edit
+    private suspend fun persistBudget(state: BudgetEditorUiState) {
+        val isEditMode = config is BudgetEditorConfig.Edit
+        val periodChanged = isEditMode && state.budget.period != state.period
 
-            val budget = state.budget.copy(
-                categoryId = state.category.id,
-                subcategoryId = state.subcategory.id,
-                period = state.period,
-                repeat = state.isRepeat,
-                limitAmount = state.limitAmount
+        val periodStartDate = if (!isEditMode || periodChanged) {
+            val startOfWeek = getUserSettings()
+                .first()
+                .startOfWeek
+
+            getBudgetPeriod(
+                date = DateUtils.currentDate,
+                periodType = state.period,
+                startOfWeek = startOfWeek
+            ).startDate
+        } else {
+            state.budget.periodStartDate
+        }
+
+        val budget = state.budget.copy(
+            categoryId = state.category.id,
+            subcategoryId = state.subcategory.id,
+            period = state.period,
+            periodStartDate = periodStartDate,
+            isActive = !isEditMode || state.budget.isActive,
+            repeat = state.isRepeat,
+            limitAmount = state.limitAmount
+        )
+
+        uiInternalState.update { it.copy(isSaving = true) }
+
+        runCatching {
+            saveBudget(
+                budget = budget,
+                isEditorMode = isEditMode
             )
+        }.onSuccess {
+            uiInternalState.update { it.copy(isSaving = false) }
+            navigateBack()
+        }.onFailure { exception ->
+            if (exception is CancellationException) throw exception
 
-            uiInternalState.update { it.copy(isSaving = true) }
-
-            runCatching {
-                saveBudget(
-                    budget = budget,
-                    isEditorMode = isEditMode
-                )
-            }.onSuccess {
-                uiInternalState.update { it.copy(isSaving = false) }
-                navigateBack()
-            }.onFailure {
-                uiInternalState.update { it.copy(isSaving = false) }
-                showSnackBar(R.string.snackBar_save_budget_error)
-            }
+            uiInternalState.update { it.copy(isSaving = false) }
+            showSnackBar(R.string.snackBar_save_budget_error)
         }
     }
 
