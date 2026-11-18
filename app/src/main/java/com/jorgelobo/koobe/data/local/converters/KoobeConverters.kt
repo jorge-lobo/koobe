@@ -5,8 +5,9 @@ import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PaymentMethodType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import java.util.Date
 
-object KoobeConverters {
+class KoobeConverters {
 
     // Converters for the TransactionType enum
     @TypeConverter
@@ -36,4 +37,11 @@ object KoobeConverters {
 
     @TypeConverter
     fun toPeriodType(value: String?): PeriodType? = value?.let { PeriodType.valueOf(it) }
+
+    // Converters for date
+    @TypeConverter
+    fun fromDate(date: Date?): Long? = date?.time
+
+    @TypeConverter
+    fun toDate(timestamp: Long?): Date? = timestamp?.let(::Date)
 }
