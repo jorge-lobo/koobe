@@ -40,6 +40,7 @@ import com.jorgelobo.koobe.ui.theme.dimens.Spacing
 import com.jorgelobo.koobe.utils.resolvedColor
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.ui.mappers.localizedName
+import com.jorgelobo.koobe.utils.date.DateUtils
 
 @Composable
 fun ExistingBudgetItem(
@@ -152,6 +153,8 @@ fun PreviewExistingBudgetItem() {
                 categoryId = 1,
                 subcategoryId = 1,
                 period = PeriodType.MONTHLY,
+                periodStartDate = DateUtils.currentDate,
+                isActive = true,
                 repeat = false,
                 limitAmount = 200.0,
                 spentAmount = 150.0,

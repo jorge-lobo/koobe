@@ -22,11 +22,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.jorgelobo.koobe.R
 import com.jorgelobo.koobe.domain.model.budget.Budget
 import com.jorgelobo.koobe.domain.model.category.Category
-import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
 import com.jorgelobo.koobe.domain.model.constants.enums.ThemeOption
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
+import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.ui.components.base.avatar.Avatar
 import com.jorgelobo.koobe.ui.components.base.background.Background
 import com.jorgelobo.koobe.ui.components.base.progressBar.AppProgressBar
@@ -43,6 +43,7 @@ import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.AvatarSize
 import com.jorgelobo.koobe.ui.theme.dimens.BudgetItemSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
+import com.jorgelobo.koobe.utils.date.DateUtils
 import com.jorgelobo.koobe.utils.resolvedColor
 
 @Composable
@@ -242,6 +243,8 @@ fun PreviewBudgetDetailedItem() {
                 categoryId = 1,
                 subcategoryId = 1,
                 period = PeriodType.MONTHLY,
+                periodStartDate = DateUtils.currentDate,
+                isActive = true,
                 repeat = false,
                 limitAmount = 200.0,
                 spentAmount = 150.0,

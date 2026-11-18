@@ -28,6 +28,7 @@ import com.jorgelobo.koobe.ui.components.model.enums.DashboardCardType
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
+import com.jorgelobo.koobe.utils.date.DateUtils
 
 @Composable
 fun BudgetsSummaryCard(
@@ -110,6 +111,8 @@ fun sampleBudgetUiModels(): List<BudgetUiModel> {
         categoryId = 1,
         subcategoryId = 11,
         period = PeriodType.MONTHLY,
+        periodStartDate = DateUtils.currentDate,
+        isActive = true,
         repeat = true,
         limitAmount = 200.0,
         spentAmount = 150.0,

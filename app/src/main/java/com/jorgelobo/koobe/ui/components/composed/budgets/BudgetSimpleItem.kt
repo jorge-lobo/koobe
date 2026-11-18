@@ -40,6 +40,7 @@ import com.jorgelobo.koobe.ui.theme.color.AccentCoral
 import com.jorgelobo.koobe.ui.theme.dimens.AvatarSize
 import com.jorgelobo.koobe.ui.theme.dimens.BudgetItemSize
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
+import com.jorgelobo.koobe.utils.date.DateUtils
 import com.jorgelobo.koobe.utils.resolvedColor
 
 @Composable
@@ -165,6 +166,8 @@ fun PreviewBudgetSimpleItem() {
                 categoryId = 1,
                 subcategoryId = 1,
                 period = PeriodType.MONTHLY,
+                periodStartDate = DateUtils.currentDate,
+                isActive = true,
                 repeat = false,
                 limitAmount = 200.0,
                 spentAmount = 150.0,

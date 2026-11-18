@@ -20,6 +20,7 @@ import com.jorgelobo.koobe.ui.screen.budgets.manager.BudgetManagerViewModel
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
+import com.jorgelobo.koobe.utils.date.DateUtils
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
@@ -317,6 +318,8 @@ class BudgetManagerViewModelTest {
         categoryId = categoryId,
         subcategoryId = subcategoryId,
         period = period,
+        periodStartDate = DateUtils.currentDate,
+        isActive = true,
         repeat = false,
         limitAmount = limitAmount,
         spentAmount = spentAmount,
@@ -343,6 +346,8 @@ class BudgetManagerViewModelTest {
         id = 1,
         categoryId = 1,
         period = PeriodType.MONTHLY,
+        periodStartDate = DateUtils.currentDate,
+        isActive = true,
         limitAmount = 500.0,
         spentAmount = 200.0,
         subcategoryId = 10,
@@ -355,6 +360,8 @@ class BudgetManagerViewModelTest {
         id = 2,
         categoryId = 1,
         period = PeriodType.MONTHLY,
+        periodStartDate = DateUtils.currentDate,
+        isActive = true,
         limitAmount = 300.0,
         spentAmount = 100.0,
         subcategoryId = 2,
@@ -367,6 +374,8 @@ class BudgetManagerViewModelTest {
         id = 3,
         categoryId = 1,
         period = PeriodType.WEEKLY,
+        periodStartDate = DateUtils.currentDate,
+        isActive = true,
         limitAmount = 100.0,
         spentAmount = 40.0,
         subcategoryId = 3,

@@ -21,6 +21,7 @@ import com.jorgelobo.koobe.ui.screen.budgets.manager.components.BudgetManagerLis
 import com.jorgelobo.koobe.ui.screen.budgets.manager.model.PeriodicBudgetsUiModel
 import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
+import com.jorgelobo.koobe.utils.date.DateUtils
 
 @Composable
 fun BudgetManagerScreenUI(
@@ -78,6 +79,8 @@ fun previewBudgetManagerUiState(): BudgetManagerUiState {
         categoryId = 1,
         subcategoryId = 1,
         period = PeriodType.WEEKLY,
+        periodStartDate = DateUtils.currentDate,
+        isActive = true,
         repeat = false,
         limitAmount = 70.0,
         spentAmount = 55.0,
@@ -90,6 +93,8 @@ fun previewBudgetManagerUiState(): BudgetManagerUiState {
         categoryId = 2,
         subcategoryId = 2,
         period = PeriodType.WEEKLY,
+        periodStartDate = DateUtils.currentDate,
+        isActive = true,
         repeat = false,
         limitAmount = 150.0,
         spentAmount = 135.0,
