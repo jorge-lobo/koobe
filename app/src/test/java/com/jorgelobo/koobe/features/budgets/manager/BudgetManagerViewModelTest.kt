@@ -5,12 +5,13 @@ import com.jorgelobo.koobe.domain.model.budget.Budget
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.settings.DefaultUserSettings
 import com.jorgelobo.koobe.domain.model.settings.UserSettings
 import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
-import com.jorgelobo.koobe.domain.usecase.budget.GetAllBudgetsUseCase
+import com.jorgelobo.koobe.domain.usecase.budget.period.GetActiveBudgetsUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetAllCategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetAllSubcategoriesUseCase
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
@@ -46,11 +47,10 @@ class BudgetManagerViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
-    private val getAllBudgets = mockk<GetAllBudgetsUseCase>()
+    private val getActiveBudgets = mockk<GetActiveBudgetsUseCase>()
     private val getAllCategories = mockk<GetAllCategoriesUseCase>()
     private val getAllSubcategories = mockk<GetAllSubcategoriesUseCase>()
     private val getUserSettings = mockk<GetUserSettingsUseCase>()
-
 
     @Before
     fun setup() {
@@ -190,6 +190,41 @@ class BudgetManagerViewModelTest {
     }
 
     @Test
+    fun `reloads active budgets when start of week changes`() = runTest {
+        val settingsFlow = MutableStateFlow(DefaultUserSettings)
+        val requestedStartOfWeeks = mutableListOf<StartOfWeek>()
+
+        stubFlows(
+            userSettings = settingsFlow
+        )
+
+        every { getActiveBudgets(any()) } answers {
+            requestedStartOfWeeks.add(firstArg())
+            flowOf(emptyList())
+        }
+
+        val viewModel = createViewModel()
+
+        runCurrent()
+        assertEquals(
+            listOf(StartOfWeek.SUNDAY),
+            requestedStartOfWeeks
+        )
+
+        settingsFlow.value = DefaultUserSettings.copy(
+            startOfWeek = StartOfWeek.MONDAY
+        )
+
+        runCurrent()
+        assertEquals(
+            listOf(StartOfWeek.SUNDAY, StartOfWeek.MONDAY),
+            requestedStartOfWeeks
+        )
+
+        assertTrue(viewModel.uiState.value.periodicBudgets.isEmpty())
+    }
+
+    @Test
     fun `updates currency when user settings change`() = runTest {
         val settingsFlow = MutableStateFlow(
             DefaultUserSettings.copy(currency = CurrencyType.EUR)
@@ -286,7 +321,7 @@ class BudgetManagerViewModelTest {
 
     private fun createViewModel(): BudgetManagerViewModel {
         return BudgetManagerViewModel(
-            getAllBudgets = getAllBudgets,
+            getActiveBudgets = getActiveBudgets,
             getAllCategories = getAllCategories,
             getAllSubcategories = getAllSubcategories,
             getUserSettings = getUserSettings
@@ -300,7 +335,7 @@ class BudgetManagerViewModelTest {
         userSettings: Flow<UserSettings> =
             flowOf(DefaultUserSettings)
     ) {
-        every { getAllBudgets() } returns flowOf(budgets)
+        every { getActiveBudgets(any()) } returns flowOf(budgets)
         every { getAllCategories() } returns flowOf(categories)
         every { getAllSubcategories() } returns flowOf(subcategories)
         every { getUserSettings() } returns userSettings

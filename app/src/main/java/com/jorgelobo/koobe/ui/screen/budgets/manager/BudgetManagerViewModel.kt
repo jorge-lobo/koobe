@@ -5,7 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.settings.DefaultUserSettings
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
-import com.jorgelobo.koobe.domain.usecase.budget.GetAllBudgetsUseCase
+import com.jorgelobo.koobe.domain.usecase.budget.period.GetActiveBudgetsUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetAllCategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetAllSubcategoriesUseCase
 import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
@@ -15,6 +15,7 @@ import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -23,14 +24,16 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @HiltViewModel
 class BudgetManagerViewModel @Inject constructor(
-    getAllBudgets: GetAllBudgetsUseCase,
+    getActiveBudgets: GetActiveBudgetsUseCase,
     getAllCategories: GetAllCategoriesUseCase,
     getAllSubcategories: GetAllSubcategoriesUseCase,
     getUserSettings: GetUserSettingsUseCase
@@ -49,27 +52,29 @@ class BudgetManagerViewModel @Inject constructor(
             initialValue = DefaultUserSettings
         )
 
-    private val budgetItemsFlow = combine(
-        getAllBudgets(),
-        getAllCategories(),
-        getAllSubcategories()
-    ) { budgets, categories, subcategories ->
+    private val budgetItemsFlow = userSettings.flatMapLatest { settings ->
+        combine(
+            getActiveBudgets(settings.startOfWeek),
+            getAllCategories(),
+            getAllSubcategories()
+        ) { budgets, categories, subcategories ->
 
-        val categoriesById = categories.associateBy { it.id }
-        val subcategoriesById = subcategories.associateBy { it.id }
+            val categoriesById = categories.associateBy { it.id }
+            val subcategoriesById = subcategories.associateBy { it.id }
 
-        budgets.mapNotNull { budget ->
-            val category = categoriesById[budget.categoryId]
-            val subcategory = budget.subcategoryId?.let(subcategoriesById::get)
+            budgets.mapNotNull { budget ->
+                val category = categoriesById[budget.categoryId]
+                val subcategory = budget.subcategoryId.let(subcategoriesById::get)
 
-            if (category == null) {
-                null
-            } else {
-                BudgetUiModel.from(
-                    budget = budget,
-                    category = category,
-                    subcategory = subcategory
-                )
+                if (category == null) {
+                    null
+                } else {
+                    BudgetUiModel.from(
+                        budget = budget,
+                        category = category,
+                        subcategory = subcategory
+                    )
+                }
             }
         }
     }
