@@ -16,9 +16,9 @@ import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.DeleteBudgetUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetBudgetByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetBudgetsBySubcategoryIdUseCase
-import com.jorgelobo.koobe.domain.usecase.budget.HasExistingBudgetForPeriodUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.SaveBudgetUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.period.GetBudgetPeriodUseCase
+import com.jorgelobo.koobe.domain.usecase.budget.period.HasConflictingBudgetUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoryByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetSubcategoryByIdUseCase
 import com.jorgelobo.koobe.ui.components.model.budget.BudgetUiModel
@@ -45,7 +45,6 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChangedBy
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
@@ -75,19 +74,18 @@ import javax.inject.Inject
  * @property saveBudget Use case to persist or update a budget.
  * @property deleteBudget Use case to remove an existing budget.
  * @property getBudgetsBySubcategoryId Use case to check for existing budgets in the same subcategory.
- * @property hasExistingBudgetForPeriod Use case to validate that no other budget exists for the same period/subcategory.
  */
 @HiltViewModel
 class BudgetEditorViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
-    private val getUserSettings: GetUserSettingsUseCase,
+    getUserSettings: GetUserSettingsUseCase,
     private val getBudgetById: GetBudgetByIdUseCase,
     private val getCategoryById: GetCategoryByIdUseCase,
     private val getSubCategoryById: GetSubcategoryByIdUseCase,
     private val saveBudget: SaveBudgetUseCase,
     private val deleteBudget: DeleteBudgetUseCase,
     private val getBudgetsBySubcategoryId: GetBudgetsBySubcategoryIdUseCase,
-    private val hasExistingBudgetForPeriod: HasExistingBudgetForPeriodUseCase,
+    private val hasConflictingBudget: HasConflictingBudgetUseCase,
     private val getBudgetPeriod: GetBudgetPeriodUseCase
 ) : ViewModel() {
 
@@ -337,50 +335,61 @@ class BudgetEditorViewModel @Inject constructor(
                 return@launch
             }
 
-            val hasDuplicate = hasExistingBudgetForPeriod(
-                subcategoryId = state.subcategory.id,
-                period = state.period,
-                budgetId = state.budget.id.takeIf {
-                    config is BudgetEditorConfig.Edit
-                }
+            val startOfWeek = userSettingsFlow.value.third
+
+            val budget = buildBudget(
+                state = state,
+                startOfWeek = startOfWeek
             )
 
-            if (hasDuplicate) {
+            val hasConflict = hasConflictingBudget(
+                budget = budget,
+                startOfWeek = startOfWeek
+            )
+
+            if (hasConflict) {
                 handleDuplicateBudgetDialog(ConfirmationDialogAction.Open)
                 return@launch
             }
 
-            persistBudget(state)
+            persistBudget(budget)
         }
     }
 
-    private suspend fun persistBudget(state: BudgetEditorUiState) {
-        val isEditMode = config is BudgetEditorConfig.Edit
-        val periodChanged = isEditMode && state.budget.period != state.period
-
-        val periodStartDate = if (!isEditMode || periodChanged) {
-            val startOfWeek = getUserSettings()
-                .first()
-                .startOfWeek
-
+    private fun buildBudget(
+        state: BudgetEditorUiState,
+        startOfWeek: StartOfWeek
+    ): Budget {
+        val isEditeMode = config is BudgetEditorConfig.Edit
+        val existingBudget = state.budget
+        val periodChanged = isEditeMode && existingBudget.period != state.period
+        val periodStartDate = if (!isEditeMode || periodChanged) {
             getBudgetPeriod(
                 date = DateUtils.currentDate,
                 periodType = state.period,
                 startOfWeek = startOfWeek
             ).startDate
         } else {
-            state.budget.periodStartDate
+            existingBudget.periodStartDate
         }
 
-        val budget = state.budget.copy(
+        return Budget(
+            id = existingBudget.id,
             categoryId = state.category.id,
             subcategoryId = state.subcategory.id,
             period = state.period,
-            periodStartDate = periodStartDate,
-            isActive = !isEditMode || state.budget.isActive,
+            periodStartDate= periodStartDate,
+            isActive = !isEditeMode || existingBudget.isActive,
             repeat = state.isRepeat,
-            limitAmount = state.limitAmount
+            limitAmount = state.limitAmount,
+            spentAmount = if (isEditeMode) existingBudget.spentAmount else 0.0,
+            projectedAmount = if (isEditeMode) existingBudget.projectedAmount else 0.0,
+            dailyAverage = if (isEditeMode) existingBudget.dailyAverage else 0.0
         )
+    }
+
+    private suspend fun persistBudget(budget: Budget) {
+        val isEditMode = config is BudgetEditorConfig.Edit
 
         uiInternalState.update { it.copy(isSaving = true) }
 

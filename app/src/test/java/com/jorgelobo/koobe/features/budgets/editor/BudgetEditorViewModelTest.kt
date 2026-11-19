@@ -13,9 +13,9 @@ import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.DeleteBudgetUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetBudgetByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.GetBudgetsBySubcategoryIdUseCase
-import com.jorgelobo.koobe.domain.usecase.budget.HasExistingBudgetForPeriodUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.SaveBudgetUseCase
 import com.jorgelobo.koobe.domain.usecase.budget.period.GetBudgetPeriodUseCase
+import com.jorgelobo.koobe.domain.usecase.budget.period.HasConflictingBudgetUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetCategoryByIdUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetSubcategoryByIdUseCase
 import com.jorgelobo.koobe.ui.components.base.numericKeypad.KeypadKey
@@ -65,7 +65,7 @@ class BudgetEditorViewModelTest {
     private val saveBudget: SaveBudgetUseCase = mockk()
     private val deleteBudget: DeleteBudgetUseCase = mockk()
     private val getBudgetsBySubcategoryId: GetBudgetsBySubcategoryIdUseCase = mockk()
-    private val hasExistingBudgetForPeriod: HasExistingBudgetForPeriodUseCase = mockk()
+    private val hasConflictingBudget: HasConflictingBudgetUseCase = mockk()
     private val getBudgetPeriod: GetBudgetPeriodUseCase = mockk()
 
     @Before
@@ -81,7 +81,7 @@ class BudgetEditorViewModelTest {
         every { getBudgetsBySubcategoryId(10) } returns flowOf(emptyList())
 
         coEvery {
-            hasExistingBudgetForPeriod(any(), any(), any())
+            hasConflictingBudget(any(), any())
         } returns false
 
         coEvery {
@@ -247,10 +247,15 @@ class BudgetEditorViewModelTest {
 
         advanceUntilIdle()
         coVerify {
-            hasExistingBudgetForPeriod(
-                subcategoryId = 10,
-                period = PeriodType.MONTHLY,
-                budgetId = null
+            hasConflictingBudget(
+                budget = match {
+                    it.id == 0 &&
+                            it.categoryId == 1 &&
+                            it.subcategoryId == 10 &&
+                            it.period == PeriodType.MONTHLY &&
+                            it.limitAmount == 1.0
+                },
+                startOfWeek = StartOfWeek.SUNDAY
             )
         }
 
@@ -265,7 +270,7 @@ class BudgetEditorViewModelTest {
     @Test
     fun `save should show duplicate dialog when budget already exists`() = runTest {
         coEvery {
-            hasExistingBudgetForPeriod(10, PeriodType.MONTHLY, null)
+            hasConflictingBudget(any(), any())
         } returns true
 
         val viewModel = createViewModel(BudgetEditorConfig.Create(1, 10))
@@ -294,10 +299,14 @@ class BudgetEditorViewModelTest {
 
         advanceUntilIdle()
         coVerify {
-            hasExistingBudgetForPeriod(
-                subcategoryId = 10,
-                period = PeriodType.MONTHLY,
-                budgetId = 100
+            hasConflictingBudget(
+                budget = match {
+                    it.id == 100 &&
+                            it.categoryId == 1 &&
+                            it.subcategoryId == 10 &&
+                            it.period == PeriodType.MONTHLY
+                },
+                startOfWeek = StartOfWeek.SUNDAY
             )
         }
     }
@@ -338,7 +347,7 @@ class BudgetEditorViewModelTest {
             saveBudget = saveBudget,
             deleteBudget = deleteBudget,
             getBudgetsBySubcategoryId = getBudgetsBySubcategoryId,
-            hasExistingBudgetForPeriod = hasExistingBudgetForPeriod,
+            hasConflictingBudget = hasConflictingBudget,
             getBudgetPeriod = getBudgetPeriod
         ).also { viewModel ->
             backgroundScope.launch(UnconfinedTestDispatcher(testScheduler)) {
