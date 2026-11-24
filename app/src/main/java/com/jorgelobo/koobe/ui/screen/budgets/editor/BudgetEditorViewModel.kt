@@ -342,10 +342,17 @@ class BudgetEditorViewModel @Inject constructor(
                 startOfWeek = startOfWeek
             )
 
-            val hasConflict = hasConflictingBudget(
-                budget = budget,
-                startOfWeek = startOfWeek
-            )
+            val hasConflict = try {
+                hasConflictingBudget(
+                    budget = budget,
+                    startOfWeek = startOfWeek
+                )
+            } catch (exception: CancellationException) {
+                throw exception
+            } catch (_: Exception) {
+                showSnackBar(R.string.snackBar_save_budget_error)
+                return@launch
+            }
 
             if (hasConflict) {
                 handleDuplicateBudgetDialog(ConfirmationDialogAction.Open)
@@ -360,10 +367,10 @@ class BudgetEditorViewModel @Inject constructor(
         state: BudgetEditorUiState,
         startOfWeek: StartOfWeek
     ): Budget {
-        val isEditeMode = config is BudgetEditorConfig.Edit
+        val isEditMode = config is BudgetEditorConfig.Edit
         val existingBudget = state.budget
-        val periodChanged = isEditeMode && existingBudget.period != state.period
-        val periodStartDate = if (!isEditeMode || periodChanged) {
+        val periodChanged = isEditMode && existingBudget.period != state.period
+        val periodStartDate = if (!isEditMode || periodChanged) {
             getBudgetPeriod(
                 date = DateUtils.currentDate,
                 periodType = state.period,
@@ -374,17 +381,17 @@ class BudgetEditorViewModel @Inject constructor(
         }
 
         return Budget(
-            id = existingBudget.id,
+            id = if (isEditMode) existingBudget.id else 0,
             categoryId = state.category.id,
             subcategoryId = state.subcategory.id,
             period = state.period,
-            periodStartDate= periodStartDate,
-            isActive = !isEditeMode || existingBudget.isActive,
+            periodStartDate = periodStartDate,
+            isActive = !isEditMode || existingBudget.isActive,
             repeat = state.isRepeat,
             limitAmount = state.limitAmount,
-            spentAmount = if (isEditeMode) existingBudget.spentAmount else 0.0,
-            projectedAmount = if (isEditeMode) existingBudget.projectedAmount else 0.0,
-            dailyAverage = if (isEditeMode) existingBudget.dailyAverage else 0.0
+            spentAmount = if (isEditMode) existingBudget.spentAmount else 0.0,
+            projectedAmount = if (isEditMode) existingBudget.projectedAmount else 0.0,
+            dailyAverage = if (isEditMode) existingBudget.dailyAverage else 0.0
         )
     }
 
@@ -487,7 +494,9 @@ class BudgetEditorViewModel @Inject constructor(
             }.onSuccess {
                 uiInternalState.update { it.copy(isDeleting = false) }
                 navigateBack()
-            }.onFailure {
+            }.onFailure { exception ->
+                if (exception is CancellationException) throw exception
+
                 uiInternalState.update { it.copy(isDeleting = false) }
                 showSnackBar(messageRes = R.string.snackBar_delete_budget_error)
             }

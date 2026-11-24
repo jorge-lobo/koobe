@@ -31,6 +31,7 @@ import io.mockk.every
 import io.mockk.just
 import io.mockk.mockk
 import io.mockk.runs
+import io.mockk.slot
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.collect
@@ -311,6 +312,148 @@ class BudgetEditorViewModelTest {
         }
     }
 
+    @Test
+    fun `save in create mode should calculate period start date and activate budget`() = runTest {
+        val expectedStartDate = Date(1_700_000_000_000L)
+
+        coEvery {
+            getBudgetPeriod(
+                date = any(),
+                periodType = PeriodType.MONTHLY,
+                startOfWeek = StartOfWeek.SUNDAY
+            )
+        } returns fakeBudgetPeriod(startDate = expectedStartDate)
+
+        val viewModel = createViewModel(BudgetEditorConfig.Create(1, 10))
+        val savedBudget = slot<Budget>()
+
+        advanceUntilIdle()
+        viewModel.onIntent(
+            BudgetEditorIntent.State.AmountKeyPressed(KeypadKey.Digit(1))
+        )
+
+        advanceUntilIdle()
+        viewModel.onIntent(BudgetEditorIntent.Action.SaveClicked)
+
+        advanceUntilIdle()
+        coVerify {
+            saveBudget(capture(savedBudget), false)
+        }
+
+        assertEquals(0, savedBudget.captured.id)
+        assertEquals(expectedStartDate, savedBudget.captured.periodStartDate)
+        assertTrue(savedBudget.captured.isActive)
+
+        assertEquals(0.0, savedBudget.captured.spentAmount)
+        assertEquals(0.0, savedBudget.captured.projectedAmount)
+        assertEquals(0.0, savedBudget.captured.dailyAverage)
+
+        coVerify {
+            getBudgetPeriod(
+                date = any(),
+                periodType = PeriodType.MONTHLY,
+                startOfWeek = StartOfWeek.SUNDAY
+            )
+        }
+    }
+
+    @Test
+    fun `save in edit mode without changing period should preserve existing budget data`() =
+        runTest {
+            val originalStartDate = Date(1_700_000_000_000L)
+
+            coEvery {
+                getBudgetById(100)
+            } returns fakeBudget(
+                periodStartDate = originalStartDate,
+                isActive = false
+            )
+
+            val viewModel = createViewModel(BudgetEditorConfig.Edit(100))
+            val savedBudget = slot<Budget>()
+
+            advanceUntilIdle()
+            viewModel.onIntent(
+                BudgetEditorIntent.State.AmountKeyPressed(KeypadKey.Digit(5))
+            )
+
+            advanceUntilIdle()
+            viewModel.onIntent(BudgetEditorIntent.Action.SaveClicked)
+
+            advanceUntilIdle()
+            coVerify {
+                saveBudget(capture(savedBudget), true)
+            }
+
+            with(savedBudget.captured) {
+                assertEquals(100, id)
+                assertEquals(originalStartDate, periodStartDate)
+                assertEquals(PeriodType.MONTHLY, period)
+
+                assertFalse(isActive)
+
+                assertEquals(25.0, spentAmount)
+                assertEquals(80.0, projectedAmount)
+                assertEquals(2.5, dailyAverage)
+            }
+
+            coVerify(exactly = 0) {
+                getBudgetPeriod(any(), any(), any())
+            }
+        }
+
+    @Test
+    fun `save in edit mode after changing period should calculate new period start date`() =
+        runTest {
+            val expectedStartDate = Date(1_800_000_000_000L)
+
+            coEvery {
+                getBudgetPeriod(
+                    date = any(),
+                    periodType = PeriodType.YEARLY,
+                    startOfWeek = StartOfWeek.SUNDAY
+                )
+            } returns fakeBudgetPeriod(startDate = expectedStartDate)
+
+            val viewModel = createViewModel(BudgetEditorConfig.Edit(100))
+            val savedBudget = slot<Budget>()
+
+            advanceUntilIdle()
+            viewModel.onIntent(
+                BudgetEditorIntent.State.PeriodChanged(PeriodType.YEARLY)
+            )
+
+            viewModel.onIntent(
+                BudgetEditorIntent.State.AmountKeyPressed(KeypadKey.Digit(5))
+            )
+
+            advanceUntilIdle()
+            viewModel.onIntent(BudgetEditorIntent.Action.SaveClicked)
+
+            advanceUntilIdle()
+            coVerify {
+                saveBudget(capture(savedBudget), true)
+            }
+
+            with(savedBudget.captured) {
+                assertEquals(100, id)
+                assertEquals(PeriodType.YEARLY, period)
+                assertEquals(expectedStartDate, periodStartDate)
+
+                assertEquals(25.0, spentAmount)
+                assertEquals(80.0, projectedAmount)
+                assertEquals(2.5, dailyAverage)
+            }
+
+            coVerify {
+                getBudgetPeriod(
+                    date = any(),
+                    periodType = PeriodType.YEARLY,
+                    startOfWeek = StartOfWeek.SUNDAY
+                )
+            }
+        }
+
     // -------------------------------------------------------------------------
     // Navigation
     // -------------------------------------------------------------------------
@@ -387,13 +530,16 @@ class BudgetEditorViewModelTest {
         icon = IconPack.FOOD
     )
 
-    private fun fakeBudget() = Budget(
+    private fun fakeBudget(
+        periodStartDate: Date = DateUtils.currentDate,
+        isActive: Boolean = true
+    ) = Budget(
         id = 100,
         categoryId = 1,
         subcategoryId = 10,
         period = PeriodType.MONTHLY,
-        periodStartDate = DateUtils.currentDate,
-        isActive = true,
+        periodStartDate = periodStartDate,
+        isActive = isActive,
         repeat = false,
         limitAmount = 100.0,
         spentAmount = 25.0,
