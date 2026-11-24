@@ -23,6 +23,7 @@ import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -112,16 +113,31 @@ class BudgetManagerViewModel @Inject constructor(
 
     private fun observeBudgets() {
         viewModelScope.launch {
-            updateState { copy(isLoading = true) }
-
-            periodicBudgetsFlow.collect { periodicBudgets ->
-                updateState {
-                    copy(
-                        periodicBudgets = periodicBudgets,
-                        isLoading = false
-                    )
-                }
+            updateState {
+                copy(
+                    isLoading = true,
+                    errorMessage = null
+                )
             }
+
+            periodicBudgetsFlow
+                .catch {
+                    updateState {
+                        copy(
+                            isLoading = false,
+                            errorMessage = "Unable to load budgets."
+                        )
+                    }
+                }
+                .collect { periodicBudgets ->
+                    updateState {
+                        copy(
+                            periodicBudgets = periodicBudgets,
+                            isLoading = false,
+                            errorMessage = null
+                        )
+                    }
+                }
         }
     }
 

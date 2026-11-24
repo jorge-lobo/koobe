@@ -28,6 +28,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -166,7 +167,7 @@ class BudgetManagerViewModelTest {
     }
 
     @Test
-    fun `uses nullable subcategory when budget has no subcategory`() = runTest {
+    fun `uses nullable subcategory when subcategory does not exist`() = runTest {
         val category = fakeCategory()
 
         stubFlows(
@@ -187,6 +188,23 @@ class BudgetManagerViewModelTest {
 
         assertEquals(null, budgetItem.subcategory)
         assertEquals(category, budgetItem.category)
+    }
+
+    @Test
+    fun `sets error state when loading budgets fails`() = runTest {
+        stubFlows()
+
+        every { getActiveBudgets(any()) } returns flow {
+            throw IllegalStateException("Failed to load budgets")
+        }
+
+        val viewModel = createViewModel()
+
+        runCurrent()
+        val state = viewModel.uiState.value
+
+        assertFalse(state.isLoading)
+        assertEquals("Unable to load budgets.", state.errorMessage)
     }
 
     @Test
