@@ -43,6 +43,7 @@ import com.jorgelobo.koobe.ui.theme.KoobeTheme
 import com.jorgelobo.koobe.ui.theme.color.AccentCoral
 import com.jorgelobo.koobe.ui.theme.color.AccentGold
 import com.jorgelobo.koobe.ui.theme.dimens.Spacing
+import com.jorgelobo.koobe.utils.date.DateUtils
 
 @Composable
 fun CardPeriodicBudgetsItem(
@@ -187,6 +188,8 @@ fun PreviewCardPeriodicBudgetsItem() {
                     categoryId = 1,
                     subcategoryId = 1,
                     period = PeriodType.MONTHLY,
+                    periodStartDate = DateUtils.currentDate,
+                    isActive = true,
                     repeat = false,
                     limitAmount = 200.0,
                     spentAmount = 50.0,
@@ -198,6 +201,8 @@ fun PreviewCardPeriodicBudgetsItem() {
                     categoryId = 1,
                     subcategoryId = 2,
                     period = PeriodType.MONTHLY,
+                    periodStartDate = DateUtils.currentDate,
+                    isActive = true,
                     repeat = false,
                     limitAmount = 300.0,
                     spentAmount = 150.0,

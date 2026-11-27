@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import java.util.Date
 
 @Entity(
     tableName = "budgets",
@@ -28,6 +29,8 @@ data class BudgetEntity(
     val categoryId: Int,
     val subcategoryId: Int,
     val period: PeriodType,
+    val periodStartDate: Date,
+    val isActive: Boolean,
     val repeat: Boolean = false,
     val limitAmount: Double,
     val spentAmount: Double,

@@ -1,12 +1,16 @@
 package com.jorgelobo.koobe.domain.model.budget
 
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.utils.date.DateUtils
+import java.util.Date
 
 data class Budget(
     val id: Int,
     val categoryId: Int,
     val subcategoryId: Int,
     val period: PeriodType,
+    val periodStartDate: Date,
+    val isActive: Boolean,
     val repeat: Boolean,
     val limitAmount: Double,
     val spentAmount: Double,
@@ -20,6 +24,8 @@ data class Budget(
             categoryId = 0,
             subcategoryId = 0,
             period = PeriodType.MONTHLY,
+            periodStartDate = DateUtils.currentDate,
+            isActive = false,
             repeat = false,
             limitAmount = 0.0,
             spentAmount = 0.0,

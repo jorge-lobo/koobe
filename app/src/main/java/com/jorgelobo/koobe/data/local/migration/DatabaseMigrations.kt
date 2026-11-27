@@ -31,7 +31,7 @@ object DatabaseMigrations {
         override fun migrate(db: SupportSQLiteDatabase) {
             db.execSQL(
                 """
-            CREATE TABLE transactions_new (
+                CREATE TABLE transactions_new (
                 id INTEGER NOT NULL,
                 categoryId INTEGER NOT NULL,
                 subcategoryId INTEGER,
@@ -52,13 +52,13 @@ object DatabaseMigrations {
                 FOREIGN KEY(shortcutId)
                     REFERENCES shortcuts(id)
                     ON DELETE SET NULL
-            )
-            """.trimIndent()
+                )
+                """.trimIndent()
             )
 
             db.execSQL(
                 """
-            INSERT INTO transactions_new (
+                INSERT INTO transactions_new (
                 id,
                 categoryId,
                 subcategoryId,
@@ -68,28 +68,28 @@ object DatabaseMigrations {
                 amount,
                 paymentMethod,
                 currency
-            )
-            SELECT
-                id,
-                categoryId,
-                subcategoryId,
-                date,
-                description,
-                type,
-                amount,
-                paymentMethod,
-                currency
-            FROM transactions
-            """.trimIndent()
+                )
+                SELECT
+                    id,
+                    categoryId,
+                    subcategoryId,
+                    date,
+                    description,
+                    type,
+                    amount,
+                    paymentMethod,
+                    currency
+                FROM transactions
+                """.trimIndent()
             )
 
             db.execSQL("DROP TABLE transactions")
 
             db.execSQL(
                 """
-            ALTER TABLE transactions_new
-            RENAME TO transactions
-            """.trimIndent()
+                ALTER TABLE transactions_new
+                RENAME TO transactions
+                """.trimIndent()
             )
         }
     }
@@ -98,62 +98,80 @@ object DatabaseMigrations {
         override fun migrate(db: SupportSQLiteDatabase) {
             db.execSQL(
                 """
-            CREATE TABLE budgets_new (
-                id INTEGER NOT NULL,
-                categoryId INTEGER NOT NULL,
-                subcategoryId INTEGER NOT NULL,
-                period TEXT NOT NULL,
-                repeat INTEGER NOT NULL,
-                limitAmount REAL NOT NULL,
-                spentAmount REAL NOT NULL,
-                projectedAmount REAL NOT NULL,
-                dailyAverage REAL NOT NULL,
-                PRIMARY KEY(id),
-                FOREIGN KEY(categoryId)
-                    REFERENCES categories(id)
-                    ON DELETE CASCADE,
-                FOREIGN KEY(subcategoryId)
-                    REFERENCES subcategories(id)
-                    ON DELETE CASCADE
-            )
-            """.trimIndent()
+                CREATE TABLE budgets_new (
+                    id INTEGER NOT NULL,
+                    categoryId INTEGER NOT NULL,
+                    subcategoryId INTEGER NOT NULL,
+                    period TEXT NOT NULL,
+                    repeat INTEGER NOT NULL,
+                    limitAmount REAL NOT NULL,
+                    spentAmount REAL NOT NULL,
+                    projectedAmount REAL NOT NULL,
+                    dailyAverage REAL NOT NULL,
+                    PRIMARY KEY(id),
+                    FOREIGN KEY(categoryId)
+                        REFERENCES categories(id)
+                        ON DELETE CASCADE,
+                    FOREIGN KEY(subcategoryId)
+                        REFERENCES subcategories(id)
+                        ON DELETE CASCADE
+                )
+                """.trimIndent()
             )
 
             db.execSQL(
                 """
-            INSERT INTO budgets_new (
-                id,
-                categoryId,
-                subcategoryId,
-                period,
-                repeat,
-                limitAmount,
-                spentAmount,
-                projectedAmount,
-                dailyAverage
-            )
-            SELECT
-                id,
-                categoryId,
-                subcategoryId,
-                period,
-                repeat,
-                limitAmount,
-                spentAmount,
-                projectedAmount,
-                dailyAverage
-            FROM budgets
-            WHERE subcategoryId IS NOT NULL
-            """.trimIndent()
+                INSERT INTO budgets_new (
+                    id,
+                    categoryId,
+                    subcategoryId,
+                    period,
+                    repeat,
+                    limitAmount,
+                    spentAmount,
+                    projectedAmount,
+                    dailyAverage
+                )
+                SELECT
+                    id,
+                    categoryId,
+                    subcategoryId,
+                    period,
+                    repeat,
+                    limitAmount,
+                    spentAmount,
+                    projectedAmount,
+                    dailyAverage
+                FROM budgets
+                WHERE subcategoryId IS NOT NULL
+                """.trimIndent()
             )
 
             db.execSQL("DROP TABLE budgets")
 
             db.execSQL(
                 """
-            ALTER TABLE budgets_new
-            RENAME TO budgets
-            """.trimIndent()
+                ALTER TABLE budgets_new
+                RENAME TO budgets
+                """.trimIndent()
+            )
+        }
+    }
+
+    val MIGRATION_5_6 = object : Migration(5, 6) {
+        override fun migrate(db: SupportSQLiteDatabase) {
+            db.execSQL(
+                """
+                ALTER TABLE budgets
+                ADD COLUMN periodStartDate INTEGER NOT NULL DEFAULT 0
+                """.trimIndent()
+            )
+
+            db.execSQL(
+                """
+                ALTER TABLE budgets
+                ADD COLUMN isActive INTEGER NOT NULL DEFAULT 1
+                """.trimIndent()
             )
         }
     }
@@ -162,6 +180,7 @@ object DatabaseMigrations {
         MIGRATION_1_2,
         MIGRATION_2_3,
         MIGRATION_3_4,
-        MIGRATION_4_5
+        MIGRATION_4_5,
+        MIGRATION_5_6
     )
 }

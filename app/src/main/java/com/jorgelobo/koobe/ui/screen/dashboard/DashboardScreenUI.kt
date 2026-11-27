@@ -120,6 +120,8 @@ private fun sampleBudgetUiModels(): List<BudgetUiModel> {
         categoryId = 1,
         subcategoryId = 11,
         period = PeriodType.MONTHLY,
+        periodStartDate = DateUtils.currentDate,
+        isActive = true,
         repeat = true,
         limitAmount = 200.0,
         spentAmount = 150.0,

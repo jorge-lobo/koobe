@@ -5,12 +5,13 @@ import com.jorgelobo.koobe.domain.model.budget.Budget
 import com.jorgelobo.koobe.domain.model.category.Category
 import com.jorgelobo.koobe.domain.model.constants.enums.CurrencyType
 import com.jorgelobo.koobe.domain.model.constants.enums.PeriodType
+import com.jorgelobo.koobe.domain.model.constants.enums.StartOfWeek
 import com.jorgelobo.koobe.domain.model.constants.enums.TransactionType
 import com.jorgelobo.koobe.domain.model.settings.DefaultUserSettings
 import com.jorgelobo.koobe.domain.model.settings.UserSettings
 import com.jorgelobo.koobe.domain.model.subcategory.Subcategory
 import com.jorgelobo.koobe.domain.settings.GetUserSettingsUseCase
-import com.jorgelobo.koobe.domain.usecase.budget.GetAllBudgetsUseCase
+import com.jorgelobo.koobe.domain.usecase.budget.period.GetActiveBudgetsUseCase
 import com.jorgelobo.koobe.domain.usecase.category.GetAllCategoriesUseCase
 import com.jorgelobo.koobe.domain.usecase.subcategory.GetAllSubcategoriesUseCase
 import com.jorgelobo.koobe.ui.components.model.icons.IconPack
@@ -20,12 +21,14 @@ import com.jorgelobo.koobe.ui.screen.budgets.manager.BudgetManagerViewModel
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorConfig
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorMode
 import com.jorgelobo.koobe.ui.screen.categories.selector.CategorySelectorTarget
+import com.jorgelobo.koobe.utils.date.DateUtils
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -45,11 +48,10 @@ class BudgetManagerViewModelTest {
 
     private val testDispatcher = StandardTestDispatcher()
 
-    private val getAllBudgets = mockk<GetAllBudgetsUseCase>()
+    private val getActiveBudgets = mockk<GetActiveBudgetsUseCase>()
     private val getAllCategories = mockk<GetAllCategoriesUseCase>()
     private val getAllSubcategories = mockk<GetAllSubcategoriesUseCase>()
     private val getUserSettings = mockk<GetUserSettingsUseCase>()
-
 
     @Before
     fun setup() {
@@ -165,7 +167,7 @@ class BudgetManagerViewModelTest {
     }
 
     @Test
-    fun `uses nullable subcategory when budget has no subcategory`() = runTest {
+    fun `uses nullable subcategory when subcategory does not exist`() = runTest {
         val category = fakeCategory()
 
         stubFlows(
@@ -186,6 +188,58 @@ class BudgetManagerViewModelTest {
 
         assertEquals(null, budgetItem.subcategory)
         assertEquals(category, budgetItem.category)
+    }
+
+    @Test
+    fun `sets error state when loading budgets fails`() = runTest {
+        stubFlows()
+
+        every { getActiveBudgets(any()) } returns flow {
+            throw IllegalStateException("Failed to load budgets")
+        }
+
+        val viewModel = createViewModel()
+
+        runCurrent()
+        val state = viewModel.uiState.value
+
+        assertFalse(state.isLoading)
+        assertEquals("Unable to load budgets.", state.errorMessage)
+    }
+
+    @Test
+    fun `reloads active budgets when start of week changes`() = runTest {
+        val settingsFlow = MutableStateFlow(DefaultUserSettings)
+        val requestedStartOfWeeks = mutableListOf<StartOfWeek>()
+
+        stubFlows(
+            userSettings = settingsFlow
+        )
+
+        every { getActiveBudgets(any()) } answers {
+            requestedStartOfWeeks.add(firstArg())
+            flowOf(emptyList())
+        }
+
+        val viewModel = createViewModel()
+
+        runCurrent()
+        assertEquals(
+            listOf(StartOfWeek.SUNDAY),
+            requestedStartOfWeeks
+        )
+
+        settingsFlow.value = DefaultUserSettings.copy(
+            startOfWeek = StartOfWeek.MONDAY
+        )
+
+        runCurrent()
+        assertEquals(
+            listOf(StartOfWeek.SUNDAY, StartOfWeek.MONDAY),
+            requestedStartOfWeeks
+        )
+
+        assertTrue(viewModel.uiState.value.periodicBudgets.isEmpty())
     }
 
     @Test
@@ -285,7 +339,7 @@ class BudgetManagerViewModelTest {
 
     private fun createViewModel(): BudgetManagerViewModel {
         return BudgetManagerViewModel(
-            getAllBudgets = getAllBudgets,
+            getActiveBudgets = getActiveBudgets,
             getAllCategories = getAllCategories,
             getAllSubcategories = getAllSubcategories,
             getUserSettings = getUserSettings
@@ -299,7 +353,7 @@ class BudgetManagerViewModelTest {
         userSettings: Flow<UserSettings> =
             flowOf(DefaultUserSettings)
     ) {
-        every { getAllBudgets() } returns flowOf(budgets)
+        every { getActiveBudgets(any()) } returns flowOf(budgets)
         every { getAllCategories() } returns flowOf(categories)
         every { getAllSubcategories() } returns flowOf(subcategories)
         every { getUserSettings() } returns userSettings
@@ -317,6 +371,8 @@ class BudgetManagerViewModelTest {
         categoryId = categoryId,
         subcategoryId = subcategoryId,
         period = period,
+        periodStartDate = DateUtils.currentDate,
+        isActive = true,
         repeat = false,
         limitAmount = limitAmount,
         spentAmount = spentAmount,
@@ -343,6 +399,8 @@ class BudgetManagerViewModelTest {
         id = 1,
         categoryId = 1,
         period = PeriodType.MONTHLY,
+        periodStartDate = DateUtils.currentDate,
+        isActive = true,
         limitAmount = 500.0,
         spentAmount = 200.0,
         subcategoryId = 10,
@@ -355,6 +413,8 @@ class BudgetManagerViewModelTest {
         id = 2,
         categoryId = 1,
         period = PeriodType.MONTHLY,
+        periodStartDate = DateUtils.currentDate,
+        isActive = true,
         limitAmount = 300.0,
         spentAmount = 100.0,
         subcategoryId = 2,
@@ -367,6 +427,8 @@ class BudgetManagerViewModelTest {
         id = 3,
         categoryId = 1,
         period = PeriodType.WEEKLY,
+        periodStartDate = DateUtils.currentDate,
+        isActive = true,
         limitAmount = 100.0,
         spentAmount = 40.0,
         subcategoryId = 3,
