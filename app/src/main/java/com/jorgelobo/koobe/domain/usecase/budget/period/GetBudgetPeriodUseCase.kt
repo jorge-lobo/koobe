@@ -10,8 +10,23 @@ import java.util.Calendar
 import java.util.Date
 import javax.inject.Inject
 
+/**
+ * Use case responsible for calculating the start and end dates of a [BudgetPeriod].
+ *
+ * Given a reference date, a [PeriodType] (daily, weekly, monthly, or yearly), and a user-configured
+ * [StartOfWeek], this use case computes the normalized start date (with time components cleared to 00:00:00)
+ * and the corresponding end date for the budget period.
+ */
 class GetBudgetPeriodUseCase @Inject constructor() {
 
+    /**
+     * Calculates the [BudgetPeriod] enclosing the given [date].
+     *
+     * @param date The reference date used to locate the period boundaries.
+     * @param periodType The frequency interval of the budget period ([PeriodType.DAILY], [PeriodType.WEEKLY], [PeriodType.MONTHLY], or [PeriodType.YEARLY]).
+     * @param startOfWeek User preference specifying the first day of the week, used when calculating weekly period boundaries.
+     * @return A [BudgetPeriod] containing the calculated normalized start date and end date.
+     */
     operator fun invoke(
         date: Date,
         periodType: PeriodType,
@@ -34,6 +49,21 @@ class GetBudgetPeriodUseCase @Inject constructor() {
         )
     }
 
+    /**
+     * Computes the normalized start date for the given [periodType] enclosing [date].
+     *
+     * Clears the time components (hours, minutes, seconds, milliseconds) to midnight and aligns the date
+     * to the start of the specified period:
+     * - [PeriodType.DAILY]: Same day at 00:00:00.
+     * - [PeriodType.WEEKLY]: First day of the week based on [startOfWeek] at 00:00:00.
+     * - [PeriodType.MONTHLY]: First day of the month at 00:00:00.
+     * - [PeriodType.YEARLY]: First day of the year at 00:00:00.
+     *
+     * @param periodType The type of budget period.
+     * @param date The reference date.
+     * @param startOfWeek User preference defining the starting day of the week.
+     * @return The normalized start [Date].
+     */
     private fun getPeriodStartDate(
         periodType: PeriodType,
         date: Date,
@@ -64,6 +94,15 @@ class GetBudgetPeriodUseCase @Inject constructor() {
         time
     }
 
+    /**
+     * Computes the end date for the budget period given its [startDate] and [periodType].
+     *
+     * Adds the corresponding time interval (1 day, 1 week, 1 month, or 1 year) to [startDate].
+     *
+     * @param startDate The start date of the period.
+     * @param periodType The type of budget period.
+     * @return The calculated end [Date].
+     */
     private fun getPeriodEndDate(
         startDate: Date,
         periodType: PeriodType

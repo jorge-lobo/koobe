@@ -68,12 +68,16 @@ import javax.inject.Inject
  * [BudgetEditorReducer] to maintain a clean separation between state transitions
  * and side effects.
  *
+ * @param savedStateHandle Handle to saved state passed during ViewModel creation, used to retrieve navigation arguments.
+ * @param getUserSettings Use case to observe user preferences (language, currency, start of week).
  * @property getBudgetById Use case to load an existing budget for editing.
  * @property getCategoryById Use case to retrieve category details for display.
  * @property getSubCategoryById Use case to retrieve subcategory details for display.
  * @property saveBudget Use case to persist or update a budget.
  * @property deleteBudget Use case to remove an existing budget.
  * @property getBudgetsBySubcategoryId Use case to check for existing budgets in the same subcategory.
+ * @property hasConflictingBudget Use case to check for conflicting budget periods in the same subcategory.
+ * @property getBudgetPeriod Use case to calculate period boundaries for budgets.
  */
 @HiltViewModel
 class BudgetEditorViewModel @Inject constructor(
@@ -89,21 +93,28 @@ class BudgetEditorViewModel @Inject constructor(
     private val getBudgetPeriod: GetBudgetPeriodUseCase
 ) : ViewModel() {
 
+    /** Editor configuration decoded from navigation arguments. */
     private val config: BudgetEditorConfig =
         savedStateHandle.get<String>("config")
             ?.let { URLDecoder.decode(it, "UTF-8") }
             ?.let { Json.decodeFromString<BudgetEditorConfig>(it) }
             ?: error("Missing BudgetEditorConfig")
 
+    /** Internal backing flow for one-off UI events. */
+    private val _events = MutableSharedFlow<BudgetEditorEvent>()
+
     /**
      * Emits one-off UI events such as navigation actions and snackbar messages.
      */
-    private val _events = MutableSharedFlow<BudgetEditorEvent>()
     val events = _events.asSharedFlow()
 
+    /** Mutable form state representing user input changes. */
     private val formState = MutableStateFlow(BudgetFormState())
+
+    /** Mutable internal UI state representing dialog states and operation progress. */
     private val uiInternalState = MutableStateFlow(BudgetUiStateInternal())
 
+    /** Flow of user settings (language, currency, start of week). */
     private val userSettingsFlow: StateFlow<Triple<AppLanguage, CurrencyType, StartOfWeek>> =
         getUserSettings()
             .map { settings ->
@@ -136,6 +147,7 @@ class BudgetEditorViewModel @Inject constructor(
                 )
             )
 
+    /** Initial data flow that loads budget, category, and subcategory data based on [config]. */
     private val editorDataFlow = flow {
         when (val editorConfig = config) {
             is BudgetEditorConfig.Create -> {
@@ -179,6 +191,7 @@ class BudgetEditorViewModel @Inject constructor(
         }
     }
 
+    /** Base UI state derived from combining initial editor data with user settings. */
     private val baseStateFlow: StateFlow<BudgetEditorUiState> =
         combine(
             editorDataFlow,
@@ -196,6 +209,7 @@ class BudgetEditorViewModel @Inject constructor(
             )
         )
 
+    /** Flow emitting existing budgets for the selected subcategory when creating a new budget. */
     @OptIn(ExperimentalCoroutinesApi::class)
     private val existingBudgetsFlow: Flow<List<BudgetUiModel>> =
         combine(
@@ -287,6 +301,11 @@ class BudgetEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Reduces synchronous state intents using [BudgetEditorReducer] and updates internal state flows.
+     *
+     * @param intent The state intent representing input or selection changes.
+     */
     private fun reduceState(intent: BudgetEditorIntent.State) {
         val result = BudgetEditorReducer.reduce(
             intent = intent,
@@ -299,6 +318,11 @@ class BudgetEditorViewModel @Inject constructor(
         uiInternalState.value = result.internal
     }
 
+    /**
+     * Handles action intents that involve side effects, navigation, dialogs, or asynchronous operations.
+     *
+     * @param intent The action intent to handle.
+     */
     private fun handleAction(intent: BudgetEditorIntent.Action) {
         when (intent) {
             BudgetEditorIntent.Action.SaveClicked -> handleSave()
@@ -324,6 +348,10 @@ class BudgetEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles the save action by validating input, checking for duplicate/conflicting budget periods,
+     * and persisting the budget via [persistBudget].
+     */
     private fun handleSave() {
         viewModelScope.launch {
             val state = uiState.value
@@ -363,6 +391,16 @@ class BudgetEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Constructs a [Budget] domain model based on the current editor UI state and user preferences.
+     *
+     * Calculates the period start date depending on whether the budget is newly created,
+     * being edited, or if its period type has been modified.
+     *
+     * @param state The current [BudgetEditorUiState] containing user inputs and configuration.
+     * @param startOfWeek The user's preferred [StartOfWeek] day for calculating period boundaries.
+     * @return A [Budget] domain model configured for saving or updating.
+     */
     private fun buildBudget(
         state: BudgetEditorUiState,
         startOfWeek: StartOfWeek
@@ -395,6 +433,11 @@ class BudgetEditorViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Persists the [budget] using [saveBudget] use case and updates UI saving state flags.
+     *
+     * @param budget The domain budget entity to save or update.
+     */
     private suspend fun persistBudget(budget: Budget) {
         val isEditMode = config is BudgetEditorConfig.Edit
 
@@ -416,6 +459,10 @@ class BudgetEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handles closing the editor screen by prompting to discard unsaved changes if any exist,
+     * or navigating back immediately if no changes were made.
+     */
     private fun handleClose() {
         if (formState.value.hasChanges) {
             handleDiscardDialog(ConfirmationDialogAction.Open)
@@ -424,6 +471,9 @@ class BudgetEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Navigates to the category selector screen to allow the user to select a new category/subcategory.
+     */
     private fun handleChangeCategory() {
         val state = uiState.value
         val mode = when (config) {
@@ -444,6 +494,11 @@ class BudgetEditorViewModel @Inject constructor(
         navigateTo(route)
     }
 
+    /**
+     * Updates the discard changes dialog state based on [action].
+     *
+     * @param action The confirmation dialog action (e.g. Open, Dismiss, Confirm).
+     */
     private fun handleDiscardDialog(action: ConfirmationDialogAction) {
         handleConfirmationDialog(
             current = uiInternalState.value.discardDialog,
@@ -457,6 +512,11 @@ class BudgetEditorViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Updates the delete budget confirmation dialog state based on [action].
+     *
+     * @param action The confirmation dialog action (e.g. Open, Dismiss, Confirm).
+     */
     private fun handleDeleteDialog(action: ConfirmationDialogAction) {
         handleConfirmationDialog(
             current = uiInternalState.value.deleteDialog,
@@ -470,6 +530,11 @@ class BudgetEditorViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Updates the duplicate budget warning dialog state based on [action].
+     *
+     * @param action The confirmation dialog action (e.g. Open, Dismiss, Confirm).
+     */
     private fun handleDuplicateBudgetDialog(action: ConfirmationDialogAction) {
         handleConfirmationDialog(
             current = uiInternalState.value.duplicateBudgetDialog,
@@ -483,6 +548,9 @@ class BudgetEditorViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Deletes the currently edited budget via [deleteBudget] use case and exits on success.
+     */
     private fun deleteCurrentBudget() {
         val budget = uiState.value.budget
 
@@ -503,6 +571,10 @@ class BudgetEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Marks the existing budgets warning dialog as dismissed for the currently selected subcategory,
+     * allowing the user to continue creating the budget.
+     */
     private fun handleContinueCreatingBudget() {
         val subcategoryId = uiState.value.subcategory.id
 
@@ -511,10 +583,18 @@ class BudgetEditorViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Cancels budget creation from the existing budgets dialog and exits the screen.
+     */
     private fun handleCancelExistingBudgetDialog() {
         navigateBack()
     }
 
+    /**
+     * Navigates to edit mode for an existing budget specified by [budgetId].
+     *
+     * @param budgetId The ID of the existing budget to edit.
+     */
     private fun handleEditExistingBudget(budgetId: Int) {
         val route = Route.BudgetEditor.create(
             BudgetEditorConfig.Edit(budgetId)
@@ -522,6 +602,11 @@ class BudgetEditorViewModel @Inject constructor(
         navigateTo(route)
     }
 
+    /**
+     * Emits a snackbar UI event with a string resource message.
+     *
+     * @param messageRes Resource ID of the string to display in the snackbar.
+     */
     private fun showSnackBar(messageRes: Int) {
         emitEvent(
             BudgetEditorEvent.ShowSnackBar(
@@ -532,14 +617,27 @@ class BudgetEditorViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Emits an exit event to navigate back to the previous screen.
+     */
     private fun navigateBack() {
         emitEvent(BudgetEditorEvent.ExitToOrigin)
     }
 
+    /**
+     * Emits a navigation event to navigate to the specified [route].
+     *
+     * @param route The target destination route string.
+     */
     private fun navigateTo(route: String) {
         emitEvent(BudgetEditorEvent.NavigateTo(route))
     }
 
+    /**
+     * Emits a [BudgetEditorEvent] on the [_events] flow.
+     *
+     * @param event The event to emit.
+     */
     private fun emitEvent(event: BudgetEditorEvent) {
         viewModelScope.launch { _events.emit(event) }
     }

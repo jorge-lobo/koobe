@@ -6,11 +6,26 @@ import com.jorgelobo.koobe.domain.usecase.budget.GetAllBudgetsUseCase
 import kotlinx.coroutines.flow.first
 import javax.inject.Inject
 
+/**
+ * Checks whether a candidate budget conflicts with any existing active budget.
+ *
+ * A conflict exists if there is already an active budget for the same subcategory and period type:
+ * - If the existing budget is recurring, it conflicts with any candidate budget of that subcategory and period type.
+ * - If the existing budget is non-recurring, it conflicts only if its calculated period start date matches the candidate's period start date.
+ * - Inactive budgets and the candidate budget itself (matching ID during updates) are ignored.
+ */
 class HasConflictingBudgetUseCase @Inject constructor(
     private val getAllBudgets: GetAllBudgetsUseCase,
     private val getBudgetPeriod: GetBudgetPeriodUseCase
 ) {
 
+    /**
+     * Determines if the given [budget] conflicts with any existing active budget.
+     *
+     * @param budget The candidate budget to check for conflicts.
+     * @param startOfWeek The start of week setting used to calculate period boundaries.
+     * @return `true` if a conflicting active budget exists, `false` otherwise.
+     */
     suspend operator fun invoke(
         budget: Budget,
         startOfWeek: StartOfWeek

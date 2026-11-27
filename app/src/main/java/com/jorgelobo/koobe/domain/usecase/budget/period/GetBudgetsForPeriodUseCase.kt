@@ -8,11 +8,24 @@ import kotlinx.coroutines.flow.map
 import java.util.Date
 import javax.inject.Inject
 
+/**
+ * Retrieves all active budgets for a specific date and week configuration.
+ *
+ * Filters all available budgets, retaining only those that are active on the target date
+ * according to the specified start of week setting.
+ */
 class GetBudgetsForPeriodUseCase @Inject constructor(
     private val getAllBudgets: GetAllBudgetsUseCase,
     private val isBudgetActive: IsBudgetActiveUseCase
 ) {
 
+    /**
+     * Executes the use case to obtain a stream of active budgets for the given date.
+     *
+     * @param date The reference date to evaluate budget activity against.
+     * @param startOfWeek The user preference specifying the first day of the week.
+     * @return A [Flow] emitting a list of active [Budget] objects for the specified date.
+     */
     operator fun invoke(
         date: Date,
         startOfWeek: StartOfWeek
